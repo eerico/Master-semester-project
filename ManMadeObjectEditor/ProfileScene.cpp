@@ -89,6 +89,9 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
                 this->addItem(edge2);
                 this->removeItem(currentEdge);
                 delete currentEdge;
+
+                // tell the mesh to generate new point/triangle
+                mesh->setUpdateOnMesh();
             } else {
                 // we don't have clicked on an edge, we will put the point at the current position
 
@@ -102,6 +105,9 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
                 this->currentProfile->addVertexEnd(newVertex);
                 this->addItem(newVertex->getEllipse());
                 this->addItem(newVertex->getEdge1());
+
+                // tell the mesh to generate new point/triangle
+                mesh->setUpdateOnMesh();
             }
 
         } else if (shift_pressed) {
@@ -140,6 +146,9 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
                 }
                 delete ellipse;
                 delete currentVertex;
+
+                // tell the mesh to generate new point/triangle
+                mesh->setUpdateOnMesh();
             }
         } else {
             // we have have at least one vertex on the profile plan, if we click on it, we can move it
@@ -154,6 +163,8 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
                         break;
                     }
                     currentVertex = currentVertex->getNeighbor2();
+                    // tell the mesh to generate new point/triangle
+                    mesh->setUpdateOnMesh();
                 }
             }
         }
@@ -240,6 +251,9 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         adjustCoordinatesSceneTo3D(x, y);
         currentlyMovingVertex->setX(x);
         currentlyMovingVertex->setY(y);
+
+        // tell the mesh to generate new point/triangle
+        mesh->setUpdateOnMesh();
     }
 }
 
@@ -256,6 +270,7 @@ void ProfileScene::loadProfile()
     // clean profile before drawing he new one
     // maybe there is a better way to do it..
     this->clear(); // if I understand correctly, this method already delete the ellipse in our scene, we have to create new one
+
     if (currentProfile != 0) {
 
         Vertex* currentVertex = currentProfile->getProfileVertex();

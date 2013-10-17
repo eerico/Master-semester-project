@@ -114,13 +114,6 @@ void ObjectViewer::init()
 
      glEnd();
 
-
-     ///TODO on va pas forcement effacer sa la... lol
-     for( unsigned int i(0); i < size; ++i)
-     {
-         qglviewer::Vec* tmp = points[i];
-         delete tmp;
-     }
  }
 
  // press enter to stop/start animation
@@ -143,26 +136,43 @@ void ObjectViewer::init()
  void ObjectViewer::wireframeMode()
  {
      vMode = wireframe;
+
+     // tell the mesh to generate new point/triangle
+     mesh->setUpdateOnMesh();
+
  }
 
  void ObjectViewer::flatMode()
  {
     vMode = flat;
+
+
+    // tell the mesh to generate new point/triangle
+    mesh->setUpdateOnMesh();
  }
 
 
  void ObjectViewer::smoothMode()
  {
      vMode = smooth;
+
+     // tell the mesh to generate new point/triangle
+     mesh->setUpdateOnMesh();
  }
 
  void ObjectViewer::pointMode()
  {
      vMode = point;
+
+     // tell the mesh to generate new point/triangle
+     mesh->setUpdateOnMesh();
  }
 
  void ObjectViewer::pointSampledMode()
  {
      vMode = pointSampled;
+
+     // tell the mesh to generate new point/triangle
+     mesh->setUpdateOnMesh();
  }
 

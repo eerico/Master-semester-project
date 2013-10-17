@@ -82,6 +82,10 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
                 this->addItem(edge2);
                 this->removeItem(currentEdge);
                 delete currentEdge;
+
+
+                // tell the mesh to generate new point/triangle
+                mesh->setUpdateOnMesh();
             }
 
 
@@ -125,6 +129,10 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 
                     mesh->decrementFloorPlanSize();
 
+
+                    // tell the mesh to generate new point/triangle
+                    mesh->setUpdateOnMesh();
+
                     break;
                 }
                 currentVertex = currentVertex->getNeighbor2();
@@ -147,6 +155,10 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
                         break;
                     }
                     currentVertex = currentVertex->getNeighbor2();
+
+                    // tell the mesh to generate new point/triangle
+                    mesh->setLongUpdateOnMesh(true);
+
                 }
             // else if we do not have any vertices on the floor plan, we create a floor plan
             } else {
@@ -191,6 +203,9 @@ void FloorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         if (isVertexMoving) {
             isVertexMoving = false;
             currentlyMovingVertex = 0;
+
+            // tell the mesh to generate new point/triangle
+            mesh->setLongUpdateOnMesh(false);
         }
     }
 }
@@ -264,6 +279,9 @@ void FloorScene::basicCircle(QPoint *mousePos, int numSample)
 
     loadFloorPlan();
     //this->addLine(first->getX(), first->getY(), current->getX(), current->getY());
+
+    // tell the mesh to generate new point/triangle
+    mesh->setUpdateOnMesh();
 }
 
 void FloorScene::newProfileSelected(Profile* p)
@@ -321,6 +339,10 @@ void FloorScene::loadFloorPlan() {
         }
         currentVertex = currentVertex->getNeighbor2();
     }
+
+
+    // tell the mesh to generate new point/triangle
+    mesh->setUpdateOnMesh();
 }
 
 void FloorScene::adjustCoordinates3DToScene(float& x, float& y)
