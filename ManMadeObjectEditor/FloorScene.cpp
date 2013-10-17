@@ -147,15 +147,13 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
                     if (ellipse->isUnderMouse()) {
                         isVertexMoving = true;
                         currentlyMovingVertex = currentVertex;
-
                         newProfileSelected(((FloorVertex*)currentVertex)->getProfile());
+
+                        // tell the mesh to generate new point/triangle
+                        mesh->setLongUpdateOnMesh(true);
                         break;
                     }
                     currentVertex = currentVertex->getNeighbor2();
-
-                    // tell the mesh to generate new point/triangle
-                    mesh->setLongUpdateOnMesh(true);
-
                 }
             // else if we do not have any vertices on the floor plan, we create a floor plan
             } else {
@@ -196,7 +194,7 @@ void FloorScene::keyReleaseEvent(QKeyEvent *event)
 void FloorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 
-    if (event->button() ==  Qt::LeftButton) {
+    if (event->button() ==  Qt::RightButton) {
         if (isVertexMoving) {
             isVertexMoving = false;
             currentlyMovingVertex = 0;
