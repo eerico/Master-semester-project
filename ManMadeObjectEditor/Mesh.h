@@ -25,7 +25,7 @@ public:
     const std::vector<qglviewer::Vec *>& getTriangles();
     // moreSample: if we want more sample to be rendered than the number of point we really have
     // ds: space between sample
-    const std::vector<qglviewer::Vec*> getPoints(bool moreSample = false, float ds = 0.1f);
+    std::vector<qglviewer::Vec*>* getPoints(bool moreSample = false, float ds = 0.1f);
 
     void update();
     unsigned int getFloorPlanSize();
@@ -54,9 +54,9 @@ private:
 
     float distance(float x1, float y1, float x2, float y2);
     void inversePolar(float x, float y, float& r, float& phi);
-    void getPointBasic(std::vector<qglviewer::Vec*>& points);
-    void getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>& points, float ds);
-    std::vector<qglviewer::Vec*> points;
+    void getPointBasic(std::vector<qglviewer::Vec*>* points);
+    void getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* points, float ds);
+    std::vector<qglviewer::Vec*>* points;
 };
 
 #endif // MESH_H
