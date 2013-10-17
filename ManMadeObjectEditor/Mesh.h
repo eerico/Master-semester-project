@@ -8,6 +8,7 @@
 #include <cmath>
 
 #include "FloorVertex.h"
+#include "FloorPlanAndProfileExtractor.h"
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 
@@ -45,7 +46,7 @@ private:
     FloorVertex* floorPlan; // linked list, can iterate on it using the neighbor
     Profile* currentProfile;
     OMMesh* inputMesh;
-    void floorplanAndProfileExtraction();
+
     float distance(float x1, float y1, float x2, float y2);
     void inversePolar(float x, float y, float& r, float& phi);
     unsigned int floorPlanSize;
