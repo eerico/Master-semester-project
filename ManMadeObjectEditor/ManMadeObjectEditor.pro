@@ -23,12 +23,8 @@ SOURCES +=\
     FloorScene.cpp \
     ProfileScene.cpp \
     Vertex.cpp \
-<<<<<<< HEAD
-    FloorPlanAndProfileExtractor.cpp
-=======
     FloorPlanAndProfileExtractor.cpp \
     BasicQGraphicsView.cpp
->>>>>>> Erico
 
 HEADERS  += \
     Mesh.h \
@@ -40,12 +36,8 @@ HEADERS  += \
     FloorScene.h \
     ProfileScene.h \
     Vertex.h \
-<<<<<<< HEAD
-    FloorPlanAndProfileExtractor.h
-=======
     FloorPlanAndProfileExtractor.h \
     BasicQGraphicsView.h
->>>>>>> Erico
 
 #QT *= xml opengl
 
