@@ -22,7 +22,8 @@ SOURCES +=\
     CentralWidget.cpp \
     FloorScene.cpp \
     ProfileScene.cpp \
-    Vertex.cpp
+    Vertex.cpp \
+    FloorPlanAndProfileExtractor.cpp
 
 HEADERS  += \
     Mesh.h \
@@ -33,7 +34,8 @@ HEADERS  += \
     CentralWidget.h \
     FloorScene.h \
     ProfileScene.h \
-    Vertex.h
+    Vertex.h \
+    FloorPlanAndProfileExtractor.h
 
 #QT *= xml opengl
 
