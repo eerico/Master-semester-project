@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-Mesh::Mesh(): inputMesh(0), floorPlan(0)
+Mesh::Mesh(): inputMesh(0), floorPlan(0), updateOnMesh(false), longUpdateOnMesh(false), floorPlanSize(0)
 {
     // simple test
     triangles.push_back(new qglviewer::Vec(-1.0f, 0.0f, 0.5f));
@@ -58,7 +58,18 @@ const std::vector<qglviewer::Vec *>& Mesh::getTriangles()
 const std::vector<qglviewer::Vec*> Mesh::getPoints(bool moreSample, float ds)
 {
 
-    std::vector<qglviewer::Vec*> points;
+    if (!updateOnMesh && !longUpdateOnMesh) {
+        return points;
+    }
+
+    unsigned int size = points.size();
+    for( unsigned int i(0); i < size; ++i)
+    {
+        qglviewer::Vec* tmp = points[i];
+        delete tmp;
+    }
+
+    points.clear();
 
     if (floorPlanSize == 0) {
         return points;
@@ -69,6 +80,8 @@ const std::vector<qglviewer::Vec*> Mesh::getPoints(bool moreSample, float ds)
     } else {
         getPointBasic(points);
     }
+
+    updateOnMesh = false;
 
     return points;
 }
@@ -255,7 +268,6 @@ void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>& poi
                 float deltaW = sampledW - nextW;
                 float deltaZ = newZ - nextZ;
 
-                // if the distance beween the samplend W,Z and next W,Z is small, stop
                 do {
                     sampledW = currentW + dirW * t;
                     newZ = currentZ + dirZ * t;
@@ -272,7 +284,7 @@ void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>& poi
                     dirX = dirX / norm;
                     dirY = dirY / norm;
 
-                    // if the distance beween the samplend X,Y and next X,Y is small, stop
+
                     float deltaX = sampledX - nextX;
                     float deltaY = sampledY - nextY;
                     do {
@@ -288,10 +300,11 @@ void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>& poi
                         points.push_back(new qglviewer::Vec(newX, newY, newZ));
 
                         tt += ds;
+                    // if the distance beween the samplend X,Y and next X,Y is small, stop
                     } while(std::sqrt(deltaX*deltaX + deltaY*deltaY) > ds);
 
                     t += ds;
-
+                // if the distance beween the samplend W,Z and next W,Z is small, stop
                 } while (std::sqrt(deltaW*deltaW + deltaZ*deltaZ) > ds);
 
                 pVertex = pVertex->getNeighbor2();
@@ -383,3 +396,14 @@ FloorVertex* Mesh::getFloorPlan()
 {
     return floorPlan;
 }
+
+void Mesh::setUpdateOnMesh()
+{
+    updateOnMesh = true;
+}
+
+void Mesh::setLongUpdateOnMesh(bool b) {
+    longUpdateOnMesh = b;
+}
+
+

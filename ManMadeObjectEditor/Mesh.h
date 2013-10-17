@@ -37,6 +37,8 @@ public:
     void loadMesh(QString fileName);
     FloorVertex* getFloorPlan();
     void setFloorPlan(FloorVertex* vertex);
+    void setUpdateOnMesh();
+    void setLongUpdateOnMesh(bool b);
 
 signals:
     void newFloorPlan();
@@ -46,12 +48,15 @@ private:
     FloorVertex* floorPlan; // linked list, can iterate on it using the neighbor
     Profile* currentProfile;
     OMMesh* inputMesh;
+    bool updateOnMesh;
+    bool longUpdateOnMesh;
+    unsigned int floorPlanSize;
 
     float distance(float x1, float y1, float x2, float y2);
     void inversePolar(float x, float y, float& r, float& phi);
-    unsigned int floorPlanSize;
     void getPointBasic(std::vector<qglviewer::Vec*>& points);
     void getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>& points, float ds);
+    std::vector<qglviewer::Vec*> points;
 };
 
 #endif // MESH_H
