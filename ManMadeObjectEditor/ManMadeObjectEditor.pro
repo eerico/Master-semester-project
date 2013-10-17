@@ -23,7 +23,8 @@ SOURCES +=\
     FloorScene.cpp \
     ProfileScene.cpp \
     Vertex.cpp \
-    FloorPlanAndProfileExtractor.cpp
+    FloorPlanAndProfileExtractor.cpp \
+    BasicQGraphicsView.cpp
 
 HEADERS  += \
     Mesh.h \
@@ -35,7 +36,8 @@ HEADERS  += \
     FloorScene.h \
     ProfileScene.h \
     Vertex.h \
-    FloorPlanAndProfileExtractor.h
+    FloorPlanAndProfileExtractor.h \
+    BasicQGraphicsView.h
 
 #QT *= xml opengl
 

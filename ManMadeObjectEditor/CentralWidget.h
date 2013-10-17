@@ -5,10 +5,10 @@
 #include <QWidget>
 #include <QGridLayout>
 #include <QGraphicsScene>
-#include <QGraphicsView>
 #include "ProfileScene.h"
 #include "FloorScene.h"
 #include "Mesh.h"
+#include "BasicQGraphicsView.h"
 
 class CentralWidget : public QWidget
 {
@@ -19,9 +19,9 @@ public:
 
     QGridLayout *layout;
     FloorScene *floorScene;
-    QGraphicsView *floorView;
+    BasicQGraphicsView *floorView;
     ProfileScene *profileScene;
-    QGraphicsView *profileView;
+    BasicQGraphicsView *profileView;
 };
 
 #endif // CENTRALWIDGET_H

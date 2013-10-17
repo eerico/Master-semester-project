@@ -6,11 +6,12 @@ CentralWidget::CentralWidget(Mesh* mesh) :
     layout = new QGridLayout();
 
     floorScene = new FloorScene(mesh);
-    floorView = new QGraphicsView(floorScene);
+    floorView = new BasicQGraphicsView(floorScene);
+
     layout->addWidget(floorView, 0, 0);
 
     profileScene = new ProfileScene(mesh);
-    profileView = new QGraphicsView(profileScene);
+    profileView = new BasicQGraphicsView(profileScene);
     layout->addWidget(profileView, 0, 1);
 
     QObject::connect(floorScene, SIGNAL(newProfileSelected()), profileScene, SLOT(newProfileSelected()));
