@@ -113,7 +113,6 @@ void ObjectViewer::init()
      }
 
      glEnd();
-
  }
 
  // press enter to stop/start animation
@@ -139,13 +138,11 @@ void ObjectViewer::init()
 
      // tell the mesh to generate new point/triangle
      mesh->setUpdateOnMesh();
-
  }
 
  void ObjectViewer::flatMode()
  {
     vMode = flat;
-
 
     // tell the mesh to generate new point/triangle
     mesh->setUpdateOnMesh();

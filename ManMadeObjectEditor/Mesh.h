@@ -37,7 +37,6 @@ public:
     void loadMesh(QString fileName);
     FloorVertex* getFloorPlan();
     void setFloorPlan(FloorVertex* vertex);
-
     void setUpdateOnMesh();
     void setLongUpdateOnMesh(bool b);
 
@@ -49,7 +48,6 @@ private:
     FloorVertex* floorPlan; // linked list, can iterate on it using the neighbor
     Profile* currentProfile;
     OMMesh* inputMesh;
-
     bool updateOnMesh;
     bool longUpdateOnMesh;
     unsigned int floorPlanSize;

@@ -38,11 +38,7 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
     }*/
 
 
-<<<<<<< HEAD
     if (mouseEvent->button() ==  Qt::LeftButton){
-=======
-    if (mouseEvent->button() ==  Qt::RightButton){
->>>>>>> Erico
         if(ctrl_pressed){
             //add point
 

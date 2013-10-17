@@ -34,11 +34,7 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
     }*/
 
 
-<<<<<<< HEAD
     if (mouseEvent->button() ==  Qt::LeftButton){
-=======
-    if (mouseEvent->button() ==  Qt::RightButton){
->>>>>>> Erico
         if(ctrl_pressed){
             //add point if clicked on an edge
             FloorVertex* floorplan = mesh->getFloorPlan();
@@ -87,7 +83,6 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
                 this->removeItem(currentEdge);
                 delete currentEdge;
 
-
                 // tell the mesh to generate new point/triangle
                 mesh->setUpdateOnMesh();
             }
@@ -133,7 +128,6 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 
                     mesh->decrementFloorPlanSize();
 
-
                     // tell the mesh to generate new point/triangle
                     mesh->setUpdateOnMesh();
 
@@ -143,7 +137,6 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
             }
         } else {
             unsigned int size = mesh->getFloorPlanSize();
-
             // we have have at least one vertex on the floor plan, if we click on it, we can move it
             // and we draw his profile
             if (size != 0) {
@@ -162,7 +155,6 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 
                     // tell the mesh to generate new point/triangle
                     mesh->setLongUpdateOnMesh(true);
-
                 }
             // else if we do not have any vertices on the floor plan, we create a floor plan
             } else {
@@ -343,7 +335,6 @@ void FloorScene::loadFloorPlan() {
         }
         currentVertex = currentVertex->getNeighbor2();
     }
-
 
     // tell the mesh to generate new point/triangle
     mesh->setUpdateOnMesh();
