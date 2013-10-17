@@ -98,18 +98,18 @@ void ObjectViewer::init()
      glPointSize(1.0f);
      glBegin(GL_POINTS);
 
-     std::vector<qglviewer::Vec *> points;
+     std::vector<qglviewer::Vec *>* points;
      if (sampledPoint){
         points = mesh->getPoints(true, distanceBetweenSampleForRendering);
      } else {
         points = mesh->getPoints();
      }
 
-     unsigned int size = points.size();
+     unsigned int size = points->size();
      for( unsigned int i(0); i < size; ++i)
      {
          glColor3fv(color);
-         glVertex3fv(*points[i]);
+         glVertex3fv(*(*points)[i]);
      }
 
      glEnd();

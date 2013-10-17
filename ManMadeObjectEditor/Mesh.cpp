@@ -2,6 +2,9 @@
 
 Mesh::Mesh(): inputMesh(0), floorPlan(0), updateOnMesh(false), longUpdateOnMesh(false), floorPlanSize(0)
 {
+    points = new std::vector<qglviewer::Vec*>;
+
+
     // simple test
     triangles.push_back(new qglviewer::Vec(-1.0f, 0.0f, 0.5f));
     triangles.push_back(new qglviewer::Vec(-1.0f, 1.0f, 0.5f));
@@ -43,6 +46,8 @@ Mesh::~Mesh()
         }
         currentVertex = next;
     }
+
+    delete points;
 }
 
 void Mesh::setFloorPlan(FloorVertex* vertex) {
@@ -55,21 +60,21 @@ const std::vector<qglviewer::Vec *>& Mesh::getTriangles()
     return triangles;
 }
 
-const std::vector<qglviewer::Vec*> Mesh::getPoints(bool moreSample, float ds)
+std::vector<qglviewer::Vec*>* Mesh::getPoints(bool moreSample, float ds)
 {
 
     if (!updateOnMesh && !longUpdateOnMesh) {
         return points;
     }
 
-    unsigned int size = points.size();
+    unsigned int size = points->size();
     for( unsigned int i(0); i < size; ++i)
     {
-        qglviewer::Vec* tmp = points[i];
+        qglviewer::Vec* tmp = (*points)[i];
         delete tmp;
     }
 
-    points.clear();
+    points->clear();
 
     if (floorPlanSize == 0) {
         return points;
@@ -86,7 +91,7 @@ const std::vector<qglviewer::Vec*> Mesh::getPoints(bool moreSample, float ds)
     return points;
 }
 
-void Mesh::getPointBasic(std::vector<qglviewer::Vec*>& points)
+void Mesh::getPointBasic(std::vector<qglviewer::Vec*>* points)
 {
     float centerX(0.0f);
     float centerY(0.0f);
@@ -116,7 +121,7 @@ void Mesh::getPointBasic(std::vector<qglviewer::Vec*>& points)
                 float x = floorVertexTmp->getX()* (1.0f - w) + centerX * w;
                 float y = floorVertexTmp->getY()* (1.0f - w) + centerY * w;
 
-                points.push_back(new qglviewer::Vec(x, y, z));
+                points->push_back(new qglviewer::Vec(x, y, z));
                 pVertex = pVertex->getNeighbor2();
             }
         }
@@ -204,7 +209,7 @@ void Mesh::getPointBasic(std::vector<qglviewer::Vec*>& points)
     }
 }*/
 
-void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>& points, float ds)
+void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* points, float ds)
 {
     // very basic. Let say we have two vertices on the floor plan v1 and v2,
     // we interpolate new vertices between these two and take the profile of v1
@@ -297,7 +302,7 @@ void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>& poi
                         float newX = sampledX * (1.0f - sampledW) + centerX * sampledW;
                         float newY = sampledY * (1.0f - sampledW) + centerY * sampledW;
 
-                        points.push_back(new qglviewer::Vec(newX, newY, newZ));
+                        points->push_back(new qglviewer::Vec(newX, newY, newZ));
 
                         tt += ds;
                     // if the distance beween the samplend X,Y and next X,Y is small, stop
