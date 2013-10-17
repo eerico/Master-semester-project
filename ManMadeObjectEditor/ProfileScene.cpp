@@ -160,11 +160,13 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
                     if (ellipse->isUnderMouse()) {
                         isVertexMoving = true;
                         currentlyMovingVertex = currentVertex;
+
+                        // tell the mesh to generate new point/triangle
+                        mesh->setLongUpdateOnMesh(true);
                         break;
                     }
                     currentVertex = currentVertex->getNeighbor2();
-                    // tell the mesh to generate new point/triangle
-                    mesh->setUpdateOnMesh();
+
                 }
             }
         }
@@ -211,10 +213,11 @@ void ProfileScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    if (event->button() ==  Qt::LeftButton) {
+    if (event->button() ==  Qt::RightButton) {
         if (isVertexMoving) {
             isVertexMoving = false;
             currentlyMovingVertex = 0;
+            mesh->setLongUpdateOnMesh(false);
         }
     }
 }
@@ -251,9 +254,6 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         adjustCoordinatesSceneTo3D(x, y);
         currentlyMovingVertex->setX(x);
         currentlyMovingVertex->setY(y);
-
-        // tell the mesh to generate new point/triangle
-        mesh->setUpdateOnMesh();
     }
 }
 
