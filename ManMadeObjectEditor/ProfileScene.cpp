@@ -38,7 +38,7 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
     }*/
 
 
-    if (mouseEvent->button() ==  Qt::LeftButton){
+    if (mouseEvent->button() ==  Qt::RightButton){
         if(ctrl_pressed){
             //add point
 
