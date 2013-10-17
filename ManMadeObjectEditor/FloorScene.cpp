@@ -34,7 +34,11 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
     }*/
 
 
+<<<<<<< HEAD
     if (mouseEvent->button() ==  Qt::LeftButton){
+=======
+    if (mouseEvent->button() ==  Qt::RightButton){
+>>>>>>> Erico
         if(ctrl_pressed){
             //add point if clicked on an edge
             FloorVertex* floorplan = mesh->getFloorPlan();
