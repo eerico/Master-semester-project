@@ -16,6 +16,7 @@ FloorScene::~FloorScene()
     // peu etre possibilité de creer un vecteur de pointeur sur profile, et qui contiendrais
     // les profiles que 1 seul fois chacun et on les efface depuis la a chaque arret de programme et
     // chaque loadProfile
+
 }
 
 

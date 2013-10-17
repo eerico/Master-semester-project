@@ -48,7 +48,6 @@ private:
     void newProfileSelected(Profile* p);
     void adjustCoordinates3DToScene(float& x, float& y);
     Vertex* currentlyMovingVertex;
-    vector<Profile*> garbage;
 };
 
 #endif // FLOORSCENE_H
