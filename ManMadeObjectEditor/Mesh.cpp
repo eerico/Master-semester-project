@@ -373,6 +373,9 @@ void Mesh::loadMesh(QString fileName)
     floorPlanSize = 0;
     currentProfile = 0;
 
+    // we will delete the previous profiles after having loaded the new profiles
+    ProfileDestructorManager::swap();
+
     inputMesh->request_face_normals();
     inputMesh->request_vertex_normals();
 
@@ -394,7 +397,6 @@ void Mesh::loadMesh(QString fileName)
 
     delete inputMesh;
     inputMesh = 0;
-
 }
 
 FloorVertex* Mesh::getFloorPlan()

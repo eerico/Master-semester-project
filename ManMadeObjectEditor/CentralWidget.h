@@ -22,6 +22,7 @@ public:
     BasicQGraphicsView *floorView;
     ProfileScene *profileScene;
     BasicQGraphicsView *profileView;
+
 };
 
 #endif // CENTRALWIDGET_H

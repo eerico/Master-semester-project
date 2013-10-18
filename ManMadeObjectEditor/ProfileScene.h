@@ -28,6 +28,10 @@ private:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
+    void addVertex(QPoint mousePos);
+    void removeVertex();
+    void moveVertex();
+
     void keyPressEvent(QKeyEvent* keyEvent);
     void keyReleaseEvent(QKeyEvent *event);
 

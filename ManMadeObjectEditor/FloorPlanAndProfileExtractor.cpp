@@ -190,6 +190,8 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, FloorV
         // get the angle defining the 2D position on the floor vertex
         inversePolar(v->getX(), v->getY(), r1, phi1);
         p = new Profile(true);
+        ProfileDestructorManager::putProfile(p);
+
         p->addProfileVertex(distance(v->getX(), v->getY(), cx, cy), floorPlanIndex * dz);
 
         for (int j = floorPlanIndex + 1; j < totalNumberPlan; ++j ) {

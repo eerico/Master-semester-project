@@ -16,7 +16,7 @@ FloorVertex::FloorVertex(float x, float y, Profile* profile)
 
 FloorVertex::~FloorVertex()
 {
- //delete profile
+
 }
 Profile* FloorVertex::getProfile()
 {

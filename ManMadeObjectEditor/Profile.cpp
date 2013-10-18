@@ -20,6 +20,10 @@ Profile::~Profile()
     while(pVertex != 0)
     {
         next = pVertex->getNeighbor2();
+        if (next != 0) {
+            delete pVertex->getEdge2();
+        }
+        delete pVertex->getEllipse();
         delete pVertex;
         pVertex = next;
     }

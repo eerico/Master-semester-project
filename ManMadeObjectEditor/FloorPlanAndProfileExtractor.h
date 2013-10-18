@@ -2,6 +2,7 @@
 #define FLOORPLANANDPROFILEEXTRACTOR_H
 
 #include "FloorVertex.h"
+#include "ProfileDestructorManager.h"
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 
 class FloorPlanAndProfileExtractor

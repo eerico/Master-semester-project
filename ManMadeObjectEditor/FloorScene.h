@@ -13,6 +13,7 @@
 #include <QColor>
 #include "FloorVertex.h"
 #include "Mesh.h"
+#include "ProfileDestructorManager.h"
 
 
 class FloorScene : public QGraphicsScene
@@ -33,6 +34,10 @@ private:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
+    void addVertex(QPoint mousePos);
+    void removeVertex();
+    void moveVertex();
+
     void keyPressEvent(QKeyEvent* keyEvent);
     void keyReleaseEvent(QKeyEvent *event);
 
@@ -42,12 +47,13 @@ private:
 
     static const int vertexRadius;
     Mesh* mesh;
+    Vertex* currentlyMovingVertex;
 
     void basicCircle(QPoint* mousePos, int numSample);
     void adjustCoordinatesSceneTo3D(float& x, float& y);
     void newProfileSelected(Profile* p);
     void adjustCoordinates3DToScene(float& x, float& y);
-    Vertex* currentlyMovingVertex;
+
 };
 
 #endif // FLOORSCENE_H
