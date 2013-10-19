@@ -5,8 +5,6 @@
 #include "Profile.h"
 #include "Vertex.h"
 
-//class FloorEdge; // special declaration to make the compiler understand that this class exist even if it is not yet compiled
-
 class FloorVertex : public Vertex
 {
 public:

@@ -27,7 +27,7 @@ public:
     // ds: space between sample
     std::vector<qglviewer::Vec*>* getPoints(bool moreSample = false, float ds = 0.1f);
 
-    void update();
+    //void update();
     unsigned int getFloorPlanSize();
     void incrementFloorPlanSize();
     void decrementFloorPlanSize();

@@ -25,7 +25,7 @@ public:
     ObjectViewer(Mesh* const mesh);
     void init();
     void draw();
-    void animate();
+    //void animate();
     void closeEvent(QCloseEvent *event);
 
 public slots:

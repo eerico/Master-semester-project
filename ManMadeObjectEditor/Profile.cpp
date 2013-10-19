@@ -9,7 +9,7 @@ Profile::Profile(bool empty): pVertex(0)
 {
     if (!empty) {
         pVertex = new Vertex(0,0);
-        //initProfileSkewedLine(3);
+        //initProfileSkewedLine(20);
         initProfileBezier(10);
     }
 }
@@ -33,8 +33,8 @@ void Profile::initProfileSkewedLine(int numSample)
 {
     float fromW(0.0f);
     float fromZ(0.0f);
-    float toW(1.0f);
-    float toZ(1.0f);
+    float toW(0.5f);
+    float toZ(0.5f);
 
     float w(0.0f);
     float z(0.0f);

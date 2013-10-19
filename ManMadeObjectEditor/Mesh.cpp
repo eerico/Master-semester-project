@@ -320,13 +320,13 @@ void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* poi
     }
 }
 
-
+/*
 void Mesh::update()
 {
     // hum surement que va reconstruire la liste de triangle en fonction du nouvelle input de point/profile donnée
     qglviewer::Vec* tmp = triangles[0];
     tmp->x -= 0.0001f;
-}
+}*/
 
 unsigned int Mesh::getFloorPlanSize()
 {
@@ -412,5 +412,3 @@ void Mesh::setUpdateOnMesh()
 void Mesh::setLongUpdateOnMesh(bool b) {
     longUpdateOnMesh = b;
 }
-
-

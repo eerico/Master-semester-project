@@ -122,6 +122,7 @@ void FloorPlanAndProfileExtractor::floorPlanConstruction(FloorVertex*& floorPlan
         currentPoint = currentVertex.point;
         currentVertexNeighbor1 = currentVertex.neighbor1;
         currentVertexNeighbor2 = currentVertex.neighbor2;
+
         found = false;
 
         for(unsigned int j(0); (j < size) && !found; ++j) {
@@ -162,19 +163,19 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, FloorV
 
     // we have the floorplan, so now we must compute the profiles
 
-    // mass center -> profile oriented toward the mass center
-    float cx(0.0f);
-    float cy(0.0f);
+    float c1x(0.0f);
+    float c1y(0.0f);
 
-    Vertex* vMC = floorPlan;
+    // center computation of the floor plan
+    Vertex* vMC1 = floorPlan;
     for(unsigned int i(0); i < floorPlanSize; ++i){
-        cx += vMC->getX();
-        cy += vMC->getY();
-        vMC = vMC->getNeighbor2();
+        c1x += vMC1->getX();
+        c1y += vMC1->getY();
+        vMC1 = vMC1->getNeighbor2();
     }
 
-    cx = cx / floorPlanSize;
-    cy = cy / floorPlanSize;
+    c1x = c1x / floorPlanSize;
+    c1y = c1y / floorPlanSize;
 
     int totalNumberPlan = plan.size();
     int numberFloorPlanVertex = floorPlanSize;
@@ -184,33 +185,44 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, FloorV
     FloorVertex* v = floorPlan;
     for(int i(0); i < numberFloorPlanVertex; ++i){
 
-        float phi1;
-        float r1;
-
-        // get the angle defining the 2D position on the floor vertex
-        inversePolar(v->getX(), v->getY(), r1, phi1);
         p = new Profile(true);
         ProfileDestructorManager::putProfile(p);
 
-        p->addProfileVertex(distance(v->getX(), v->getY(), cx, cy), floorPlanIndex * dz);
+        p->addProfileVertex(distance(v->getX(), v->getY(), v->getX(), v->getY()), floorPlanIndex * dz);
 
         for (int j = floorPlanIndex + 1; j < totalNumberPlan; ++j ) {
             std::vector<OMMesh::VertexIter>* planJ = plan[j];
             int numVertices = planJ->size();
 
+
             // for each vertex of the current plan, we want to find the one that has the most similar
             // angle with the current floor plan vertex (because if it is the same angle, it is on the same profile)
+            // To do it,we have to compute the center of the plan in which the current possible profile point
+            // belongs to.
+            // center computation of the current plan
+            float c2x(0.0f);
+            float c2y(0.0f);
+            OMMesh::VertexIter v_it_tmp;
+            OMMesh::Point point_tmp;
+            unsigned int sizeTmp = planJ->size();
+            for(unsigned int m(0); m < sizeTmp; ++m){
+                v_it_tmp = (*planJ)[m];
+                point_tmp = inputMesh->point(v_it_tmp);
+                c2x += point_tmp[0];
+                c2y += point_tmp[1];
+            }
+            c2x = c2x / sizeTmp;
+            c2y = c2y / sizeTmp;
+
+
             for (int k(0); k < numVertices; ++k) {
                 OMMesh::VertexIter v_it = (*planJ)[k];
                 OMMesh::Point point = inputMesh->point(v_it);
 
-                float r2;
-                float phi2;
                 // get the angle defining the 2D position on the current plan
-                inversePolar(point[0], point[1], r2, phi2);
 
-                if (abs(phi2 - phi1) < 0.001f || phi2 == 0.0f) {// je ne sait pas si tu veut mettre +- 0.001 comme d'abitude
-                   p->addProfileVertex(distance(point[0], point[1], cx, cy), point[2] - baseZ);
+                if (isSameAngle(point[0], point[1], c1x, c1y, v->getX(), v->getY(), c2x, c2y)) {
+                    p->addProfileVertex(distance(point[0], point[1], v->getX(), v->getY()), point[2] - baseZ);
                     break;
                 }
             }
@@ -239,16 +251,32 @@ float FloorPlanAndProfileExtractor::distance(float x1, float y1, float x2, float
 {
     float diffX = x1 - x2;
     float diffY = y1 - y2;
-    // -1.0f car: quand on calcul avec le profil pour generer 3D, en 0 s est droit et 1 s est pencher (fermer)
-    // donc si distance 1.0f alors le cone est ouvert donc -1.0f
-    // SA revient a dire que w est la distance entre le bord et le point x, y
-    return 1.0f - sqrt(diffX * diffX + diffY * diffY);
+    return std::sqrt(diffX * diffX + diffY * diffY);
 }
 
-void FloorPlanAndProfileExtractor::inversePolar(float x, float y, float& r, float& phi)
+bool FloorPlanAndProfileExtractor::isSameAngle(float x1, float y1, float cx1, float cy1,
+                                               float x2, float y2, float cx2, float cy2)
 {
-    //http://en.wikipedia.org/wiki/Polar_coordinate_system
-    r = sqrt(x*x + y*y);
-    phi = atan2f(y, x);
+    if ((abs(x1 - cx1) < 0.001f  && abs(y1 - cy1) < 0.001f) || (abs(x2 - cx2) < 0.001f  && abs(y2 - cy2) < 0.001f)) {
+        return true;
+    }
 
+    float norm1 = distance(x1, y1, cx1, cy1);
+    float norm2 = distance(x2, y2, cx2, cy2);
+
+    float v1x = x1 - cx1;
+    float v1y = y1 - cy1;
+
+    v1x = v1x / norm1;
+    v1y = v1y / norm1;
+
+    float v2x = x2 - cx2;
+    float v2y = y2 - cy2;
+
+    v2x = v2x / norm2;
+    v2y = v2y / norm2;
+
+    float dotProduct = v1x * v2x + v1y * v2y;
+
+    return abs(1.0f - dotProduct) < 0.00001f;
 }

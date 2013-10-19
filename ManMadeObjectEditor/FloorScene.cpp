@@ -231,7 +231,8 @@ void FloorScene::basicCircle(QPoint *mousePos, int numSample)
     Profile* commonProfile = new Profile(false);
     ProfileDestructorManager::putProfile(commonProfile);
 
-    int radius(100);
+    QRectF thisSize = this->sceneRect();
+    int radius(thisSize.width()/4);
     float x(0.0f);
     float y(0.0f);
     float alpha(0.0f);

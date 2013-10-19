@@ -23,7 +23,8 @@ public:
 
 private:
     float distance(float x1, float y1, float x2, float y2);
-    void inversePolar(float x, float y, float& r, float& phi);
+    bool isSameAngle(float x1, float y1, float cx1, float cy1,
+                     float x2, float y2, float cx2, float cy2);
     void extractAllPlan(OMMesh* inputMesh);
     void floorPlanConstruction(FloorVertex*& floorPlan, unsigned int& floorPlanSize);
     void profileConstruction(OMMesh* inputMesh, FloorVertex*& floorPlan,

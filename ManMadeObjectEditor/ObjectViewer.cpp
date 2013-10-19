@@ -116,10 +116,10 @@ void ObjectViewer::init()
  }
 
  // press enter to stop/start animation
- void ObjectViewer::animate()
+ /*void ObjectViewer::animate()
  {
      mesh->update();
- }
+ }*/
 
  void ObjectViewer::closeEvent(QCloseEvent *event)
  {
