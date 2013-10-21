@@ -71,10 +71,10 @@ void Profile::initProfileBezier(int numSample)
     float p0Y(0.0f);
     float c0X(0.0f);
     float c0Y(1.0f);
-    float p1X(1.0f);
-    float p1Y(1.0f);
-    float c1X(-1.0f);
-    float c1Y(1.0f);
+    float p1X(0.5f);
+    float p1Y(0.5f);
+    float c1X(0.5f);
+    float c1Y(0.5f);
 
     float w(0.0f);
     float z(0.0f);

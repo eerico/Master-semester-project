@@ -27,7 +27,7 @@ public:
     // ds: space between sample
     std::vector<qglviewer::Vec*>* getPoints(bool moreSample = false, float ds = 0.1f);
 
-    //void update();
+    void update();
     unsigned int getFloorPlanSize();
     void incrementFloorPlanSize();
     void decrementFloorPlanSize();
@@ -53,9 +53,10 @@ private:
     unsigned int floorPlanSize;
 
     float distance(float x1, float y1, float x2, float y2);
-    void inversePolar(float x, float y, float& r, float& phi);
     void getPointBasic(std::vector<qglviewer::Vec*>* points);
     void getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* points, float ds);
+    void computeNormals();
+
     std::vector<qglviewer::Vec*>* points;
 };
 

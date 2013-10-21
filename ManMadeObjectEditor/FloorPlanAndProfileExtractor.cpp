@@ -39,6 +39,7 @@ void FloorPlanAndProfileExtractor::extractAllPlan(OMMesh* inputMesh)
                 currentVertex.point = point;
                 currentVertex.neighbor1Used = false;
                 currentVertex.neighbor2Used = false;
+                currentVertex.v_it = v_it;
 
                 // find the two neighbor of this floor plan vertex
                 for (vv_it=inputMesh->vv_iter(v_it); vv_it; ++vv_it) {
@@ -66,7 +67,8 @@ void FloorPlanAndProfileExtractor::extractAllPlan(OMMesh* inputMesh)
     }
 }
 
-void FloorPlanAndProfileExtractor::floorPlanConstruction(FloorVertex*& floorPlan, unsigned int& floorPlanSize)
+void FloorPlanAndProfileExtractor::floorPlanConstruction(FloorVertex*& floorPlan, unsigned int& floorPlanSize
+                                                         ,OMMesh* inputMesh)
 {
     // with the previous computed information, we will construct the floor plan
     // on which we will work
@@ -104,6 +106,10 @@ void FloorPlanAndProfileExtractor::floorPlanConstruction(FloorVertex*& floorPlan
             } else {
                 possibleNeighbor.neighbor2Used = false;
             }
+
+            OMMesh::VertexIter v_it = currentVertex.v_it;
+            OMMesh::Point point = inputMesh->normal(v_it);
+            currentFloorVertexPoint->setNormal(point[0], point[1]);
 
             previousFloorVertexNeighbor = currentFloorVertexNeighbor;
             firstPoint = currentFloorVertexPoint;
@@ -144,11 +150,19 @@ void FloorPlanAndProfileExtractor::floorPlanConstruction(FloorVertex*& floorPlan
                     possibleNeighbor.neighbor2Used = false;
                 }
 
+                OMMesh::VertexIter v_it = currentVertex.v_it;
+                OMMesh::Point point = inputMesh->normal(v_it);
+                previousFloorVertexNeighbor->setNormal(point[0], point[1]);
+
                 previousFloorVertexNeighbor = currentFloorVertexNeighbor;
                 found = true;
             }
         }
     }
+
+    OMMesh::VertexIter v_it = possibleNeighbor.v_it;
+    OMMesh::Point point = inputMesh->normal(v_it);
+    previousFloorVertexNeighbor->setNormal(point[0], point[1]);
 
     // define the neighboring relationship between the last and first vertex
     floorPlanSize++;
@@ -237,7 +251,7 @@ void FloorPlanAndProfileExtractor::extract(OMMesh* inputMesh, FloorVertex*& floo
                                            Profile*& currentProfile, unsigned int& floorPlanSize)
 {
     extractAllPlan(inputMesh);
-    floorPlanConstruction(floorPlan, floorPlanSize);
+    floorPlanConstruction(floorPlan, floorPlanSize, inputMesh);
     profileConstruction(inputMesh, floorPlan, currentProfile, floorPlanSize);
 
     for(int i(0); i < totalNumPlan; ++i){
@@ -268,7 +282,7 @@ bool FloorPlanAndProfileExtractor::isSameAngle(float x1, float y1, float cx1, fl
     float v1y = y1 - cy1;
 
     v1x = v1x / norm1;
-    v1y = v1y / norm1;
+    v1y= v1y / norm1;
 
     float v2x = x2 - cx2;
     float v2y = y2 - cy2;

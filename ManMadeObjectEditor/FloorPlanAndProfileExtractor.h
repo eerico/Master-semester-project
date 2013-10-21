@@ -15,6 +15,7 @@ class FloorPlanAndProfileExtractor
         OMMesh::Point neighbor2;
         bool neighbor1Used;
         bool neighbor2Used;
+        OMMesh::VertexIter v_it;
     };
 
 public:
@@ -26,7 +27,7 @@ private:
     bool isSameAngle(float x1, float y1, float cx1, float cy1,
                      float x2, float y2, float cx2, float cy2);
     void extractAllPlan(OMMesh* inputMesh);
-    void floorPlanConstruction(FloorVertex*& floorPlan, unsigned int& floorPlanSize);
+    void floorPlanConstruction(FloorVertex*& floorPlan, unsigned int& floorPlanSize, OMMesh* inputMesh);
     void profileConstruction(OMMesh* inputMesh, FloorVertex*& floorPlan,
                              Profile*& currentProfile, unsigned int& floorPlanSize);
 
