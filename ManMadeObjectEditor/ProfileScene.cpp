@@ -59,7 +59,8 @@ void ProfileScene::addVertex(QPoint mousePos)
 
     if (foundEdge) {
         QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(w - vertexRadius, z - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f);
-        adjustCoordinatesSceneTo3D(w, z);
+        QRectF thisSize = this->sceneRect();
+        Utils::adjustCoordinatesSceneTo3D(w, z, thisSize.width(), thisSize.height());
 
         //build the new vertex and add the edges between the new neighbour
         Vertex* newVertex = new Vertex(w, z);
@@ -93,7 +94,8 @@ void ProfileScene::addVertex(QPoint mousePos)
         Vertex * newVertex = new Vertex(0,0);
 
         newVertex->setEllipse(new QGraphicsEllipseItem(w - vertexRadius, z - vertexRadius, vertexRadius * 2.0f, vertexRadius*2.0f));
-        adjustCoordinatesSceneTo3D(w, z);
+        QRectF thisSize = this->sceneRect();
+        Utils::adjustCoordinatesSceneTo3D(w, z, thisSize.width(), thisSize.height());
         newVertex->setX(w);
         newVertex->setY(z);
 
@@ -248,7 +250,8 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                        neighbor2->getEllipse()->rect().center().rx(), neighbor2->getEllipse()->rect().center().ry());
         }
 
-        adjustCoordinatesSceneTo3D(x, y);
+        QRectF thisSize = this->sceneRect();
+        Utils::adjustCoordinatesSceneTo3D(x, y, thisSize.width(), thisSize.height());
         currentlyMovingVertex->setX(x);
         currentlyMovingVertex->setY(y);
     }
@@ -283,84 +286,46 @@ void ProfileScene::loadProfile()
 
     Vertex* currentVertex = currentProfile->getProfileVertex();
 
+    float x(0.0f);
+    float y(0.0f);
+    while(currentVertex != 0)
+    {
+        if(currentVertex->getEllipse() == 0){
+            x = currentVertex->getX();
+            y = currentVertex->getY();
+            QRectF thisSize = this->sceneRect();
+            Utils::adjustCoordinates3DToScene(x, y, thisSize.width(), thisSize.height());
 
-        float x(0.0f);
-        float y(0.0f);
-        while(currentVertex != 0)
-        {
-            if(currentVertex->getEllipse() == 0){
-                x = currentVertex->getX();
-                y = currentVertex->getY();
-                adjustCoordinates3DToScene(x, y);
+            currentVertex->setEllipse(new QGraphicsEllipseItem(x - vertexRadius, y - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f));
+            this->addItem(currentVertex->getEllipse());
 
-                currentVertex->setEllipse(new QGraphicsEllipseItem(x - vertexRadius, y - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f));
-                this->addItem(currentVertex->getEllipse());
-
-            }else {
-                this->addItem(currentVertex->getEllipse());
-                if (currentVertex->getNeighbor2() != 0) {
-                    this->addItem(currentVertex->getEdge2());
-                }
+        }else {
+            this->addItem(currentVertex->getEllipse());
+            if (currentVertex->getNeighbor2() != 0) {
+                this->addItem(currentVertex->getEdge2());
             }
-            currentVertex = currentVertex->getNeighbor2();
         }
+        currentVertex = currentVertex->getNeighbor2();
+    }
 
 
-        currentVertex = currentProfile->getProfileVertex();
+    currentVertex = currentProfile->getProfileVertex();
 
-        while(currentVertex->getNeighbor2() != 0)
-        {
-            if(currentVertex->addEdge2()){
-               currentVertex->getNeighbor2()->setEdge1(currentVertex->getEdge2());
-               this->addItem(currentVertex->getEdge2());
-            }
-            currentVertex = currentVertex->getNeighbor2();
+    while(currentVertex->getNeighbor2() != 0)
+    {
+        if(currentVertex->addEdge2()){
+            currentVertex->getNeighbor2()->setEdge1(currentVertex->getEdge2());
+            this->addItem(currentVertex->getEdge2());
         }
+        currentVertex = currentVertex->getNeighbor2();
+    }
 
-        // now we can delete the old profiles from the previous mesh
-        // take the old profiles
-        ProfileDestructorManager::swap();
-        // destroy them
-        ProfileDestructorManager::deleteProfiles();
-        // take again the current profiles
-        ProfileDestructorManager::swap();
-}
-
-void ProfileScene::adjustCoordinates3DToScene(float& w, float& z)
-{
-    // from 3D to Scene coord
-    QRectF thisSize = this->sceneRect();
-    float width = thisSize.width();
-    float height = thisSize.height();
-
-    /*w += 1.0f;
-    z += 1.0f;
-    w = w * width / 2.0f;
-    z = height - z * width / 2.0f /*+ height * 0.25f*/;
-
-    float width_2 = width/ 2.0f;
-    float height_2 = height / 2.0f;
-
-    w = w * width_2;
-    z = z * width_2;
-
-    z = height_2 - z;
-    w = w + width_2;
-}
-
-void ProfileScene::adjustCoordinatesSceneTo3D(float& w, float& z)
-{
-    // from scene coord to 3D
-    QRectF thisSize = this->sceneRect();
-    float width = thisSize.width();
-    float height = thisSize.height();
-    float width_2 = width/ 2.0f;
-    float height_2 = height / 2.0f;
-
-    z = height_2  - z;
-    w = -width_2 + w;
-
-    w = w/width_2;
-    z = z/width_2;
+    // now we can delete the old profiles from the previous mesh
+    // take the old profiles
+    ProfileDestructorManager::swap();
+    // destroy them
+    ProfileDestructorManager::deleteProfiles();
+    // take again the current profiles
+    ProfileDestructorManager::swap();
 }
 

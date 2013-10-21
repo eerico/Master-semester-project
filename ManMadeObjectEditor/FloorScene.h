@@ -14,7 +14,7 @@
 #include "FloorVertex.h"
 #include "Mesh.h"
 #include "ProfileDestructorManager.h"
-
+#include "Utils.h"
 
 class FloorScene : public QGraphicsScene
 {
@@ -47,12 +47,11 @@ private:
 
     static const int vertexRadius;
     Mesh* mesh;
-    Vertex* currentlyMovingVertex;
+    FloorVertex* currentlyMovingVertex;
 
     void basicCircle(QPoint* mousePos, int numSample);
-    void adjustCoordinatesSceneTo3D(float& x, float& y);
     void newProfileSelected(Profile* p);
-    void adjustCoordinates3DToScene(float& x, float& y);
+
 
 };
 

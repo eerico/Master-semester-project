@@ -9,6 +9,8 @@
 
 #include "FloorVertex.h"
 #include "FloorPlanAndProfileExtractor.h"
+#include "Utils.h"
+
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 
@@ -24,8 +26,8 @@ public:
     ~Mesh();
     const std::vector<qglviewer::Vec *>& getTriangles();
     // moreSample: if we want more sample to be rendered than the number of point we really have
-    // ds: space between sample
-    std::vector<qglviewer::Vec*>* getPoints(bool moreSample = false, float ds = 0.1f);
+    // spaceBetweenSample: space between sample
+    std::vector<qglviewer::Vec*>* getPoints(bool moreSample = false, float spaceBetweenSample = 0.1f);
 
     void update();
     unsigned int getFloorPlanSize();
@@ -52,9 +54,8 @@ private:
     bool longUpdateOnMesh;
     unsigned int floorPlanSize;
 
-    float distance(float x1, float y1, float x2, float y2);
     void getPointBasic(std::vector<qglviewer::Vec*>* points);
-    void getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* points, float ds);
+    void getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* points, float spaceBetweenSample);
     void computeNormals();
 
     std::vector<qglviewer::Vec*>* points;

@@ -1,9 +1,8 @@
 #include "FloorPlanAndProfileExtractor.h"
 
 FloorPlanAndProfileExtractor::FloorPlanAndProfileExtractor()
-    :dz(0.1f), totalNumPlan(11), baseZ(-0.5f), floorPlanIndex(0)
+    :intervalBetweenZValue(0.1f), totalNumPlan(11), smallestZValue(-0.5f), floorPlanIndex(0)
 {
-
     for(int i(0); i < totalNumPlan; ++i){
         std::vector<OMMesh::VertexIter>* planTmp = new std::vector<OMMesh::VertexIter>();
         plan.push_back(planTmp);
@@ -21,20 +20,20 @@ void FloorPlanAndProfileExtractor::extractAllPlan(OMMesh* inputMesh)
     // it will be usefull to construct the profiles
     for (v_it=inputMesh->vertices_begin(); v_it!=v_end; ++v_it) {
         OMMesh::Point point = inputMesh->point(v_it);
-        float planNumTmp = (point[2] - baseZ) / dz;
-        int planNum = floor(planNumTmp + 0.5f);
+        float planNumberTmp = (point[2] - smallestZValue) / intervalBetweenZValue;
+        int planNumber = floor(planNumberTmp + 0.5f);
 
-        // check if planNum is really a correct plan number
+        // check if planNumber is really a correct plan number
         // 0.001f because of precision problem
-        if ((abs(planNumTmp - planNum) < 0.001f) && (planNum >= floorPlanIndex)) {
+        if ((abs(planNumberTmp - planNumber) < 0.001f) && (planNumber >= floorPlanIndex)) {
 
             // store the vertices with the associated plan
-            std::vector<OMMesh::VertexIter>* planTmp = plan[planNum];
+            std::vector<OMMesh::VertexIter>* planTmp = plan[planNumber];
             planTmp->push_back(v_it);
             point = inputMesh->point(v_it);
 
             // check is the current vertex is on the floor plan
-            if (abs(planNum - floorPlanIndex) < 0.001f) {
+            if (abs(planNumber - floorPlanIndex) < 0.001f) {
                 TmpFloorVertex currentVertex;
                 currentVertex.point = point;
                 currentVertex.neighbor1Used = false;
@@ -44,10 +43,10 @@ void FloorPlanAndProfileExtractor::extractAllPlan(OMMesh* inputMesh)
                 // find the two neighbor of this floor plan vertex
                 for (vv_it=inputMesh->vv_iter(v_it); vv_it; ++vv_it) {
                     OMMesh::Point neighborTmp = inputMesh->point(vv_it);
-                    planNumTmp = (neighborTmp[2] - baseZ) / dz;
-                    planNum = floor(planNumTmp + 0.5);
-                    if (abs(planNumTmp - planNum) < 0.001f ) {
-                        if (abs(planNum - floorPlanIndex) < 0.001f) {
+                    planNumberTmp = (neighborTmp[2] - smallestZValue) / intervalBetweenZValue;
+                    planNumber = floor(planNumberTmp + 0.5);
+                    if (abs(planNumberTmp - planNumber) < 0.001f ) {
+                        if (abs(planNumber - floorPlanIndex) < 0.001f) {
                             if (currentVertex.neighbor1Used == false) {
                                 currentVertex.neighbor1 = neighborTmp;
                                 currentVertex.neighbor1Used = true;
@@ -177,72 +176,78 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, FloorV
 
     // we have the floorplan, so now we must compute the profiles
 
-    float c1x(0.0f);
-    float c1y(0.0f);
+    float centerFloorPlanX(0.0f);
+    float centerFloorPlanY(0.0f);
 
     // center computation of the floor plan
-    Vertex* vMC1 = floorPlan;
+    Vertex* vertexIterator = floorPlan;
     for(unsigned int i(0); i < floorPlanSize; ++i){
-        c1x += vMC1->getX();
-        c1y += vMC1->getY();
-        vMC1 = vMC1->getNeighbor2();
+        centerFloorPlanX += vertexIterator->getX();
+        centerFloorPlanY += vertexIterator->getY();
+        vertexIterator = vertexIterator->getNeighbor2();
     }
 
-    c1x = c1x / floorPlanSize;
-    c1y = c1y / floorPlanSize;
+    centerFloorPlanX = centerFloorPlanX / floorPlanSize;
+    centerFloorPlanY = centerFloorPlanY / floorPlanSize;
 
     int totalNumberPlan = plan.size();
     int numberFloorPlanVertex = floorPlanSize;
     Profile* p;
 
     // will compute a profile for each vertex in the floor plan
-    FloorVertex* v = floorPlan;
+    FloorVertex* floorVertexIterator = floorPlan;
     for(int i(0); i < numberFloorPlanVertex; ++i){
 
         p = new Profile(true);
         ProfileDestructorManager::putProfile(p);
 
-        p->addProfileVertex(distance(v->getX(), v->getY(), v->getX(), v->getY()), floorPlanIndex * dz);
+        p->addProfileVertex(Utils::distance(floorVertexIterator->getX(), floorVertexIterator->getY(),
+                                            floorVertexIterator->getX(), floorVertexIterator->getY()),
+                            floorPlanIndex * intervalBetweenZValue);
 
         for (int j = floorPlanIndex + 1; j < totalNumberPlan; ++j ) {
             std::vector<OMMesh::VertexIter>* planJ = plan[j];
-            int numVertices = planJ->size();
+            int numberVertices = planJ->size();
 
 
             // for each vertex of the current plan, we want to find the one that has the most similar
             // angle with the current floor plan vertex (because if it is the same angle, it is on the same profile)
             // To do it,we have to compute the center of the plan in which the current possible profile point
             // belongs to.
+
             // center computation of the current plan
-            float c2x(0.0f);
-            float c2y(0.0f);
+            float centerCurrentPlanX(0.0f);
+            float centerCurrentPlanY(0.0f);
             OMMesh::VertexIter v_it_tmp;
             OMMesh::Point point_tmp;
-            unsigned int sizeTmp = planJ->size();
-            for(unsigned int m(0); m < sizeTmp; ++m){
+            unsigned int sizeCurrentPlan = planJ->size();
+            for(unsigned int m(0); m < sizeCurrentPlan; ++m){
                 v_it_tmp = (*planJ)[m];
                 point_tmp = inputMesh->point(v_it_tmp);
-                c2x += point_tmp[0];
-                c2y += point_tmp[1];
+                centerCurrentPlanX += point_tmp[0];
+                centerCurrentPlanY += point_tmp[1];
             }
-            c2x = c2x / sizeTmp;
-            c2y = c2y / sizeTmp;
+            centerCurrentPlanX = centerCurrentPlanX / sizeCurrentPlan;
+            centerCurrentPlanY = centerCurrentPlanY / sizeCurrentPlan;
 
 
-            for (int k(0); k < numVertices; ++k) {
+            for (int k(0); k < numberVertices; ++k) {
                 OMMesh::VertexIter v_it = (*planJ)[k];
                 OMMesh::Point point = inputMesh->point(v_it);
 
                 // get the angle defining the 2D position on the current plan
 
-                if (isSameAngle(point[0], point[1], c1x, c1y, v->getX(), v->getY(), c2x, c2y)) {
-                    p->addProfileVertex(distance(point[0], point[1], v->getX(), v->getY()), point[2] - baseZ);
+                if (isSameAngle(point[0], point[1], centerFloorPlanX, centerFloorPlanY,
+                                floorVertexIterator->getX(), floorVertexIterator->getY(),
+                                centerCurrentPlanX, centerCurrentPlanY)) {
+                    p->addProfileVertex(Utils::distance(point[0], point[1], floorVertexIterator->getX(),
+                            floorVertexIterator->getY()), point[2] - smallestZValue);
                     break;
                 }
             }
         }
-        v->setProfile(p);
-        v = (FloorVertex*)v->getNeighbor2();
+        floorVertexIterator->setProfile(p);
+        floorVertexIterator= (FloorVertex*)floorVertexIterator->getNeighbor2();
     }
     currentProfile = p;
 }
@@ -254,41 +259,28 @@ void FloorPlanAndProfileExtractor::extract(OMMesh* inputMesh, FloorVertex*& floo
     floorPlanConstruction(floorPlan, floorPlanSize, inputMesh);
     profileConstruction(inputMesh, floorPlan, currentProfile, floorPlanSize);
 
+    // we do not need all these plans anymore
     for(int i(0); i < totalNumPlan; ++i){
         std::vector<OMMesh::VertexIter>* planTmp = plan[i];
         delete planTmp;
     }
 }
 
-
-float FloorPlanAndProfileExtractor::distance(float x1, float y1, float x2, float y2)
+bool FloorPlanAndProfileExtractor::isSameAngle(float toX1, float toY1, float fromX1, float fromY1,
+                                               float toX2, float toY2, float fromX2, float fromY2)
 {
-    float diffX = x1 - x2;
-    float diffY = y1 - y2;
-    return std::sqrt(diffX * diffX + diffY * diffY);
-}
-
-bool FloorPlanAndProfileExtractor::isSameAngle(float x1, float y1, float cx1, float cy1,
-                                               float x2, float y2, float cx2, float cy2)
-{
-    if ((abs(x1 - cx1) < 0.001f  && abs(y1 - cy1) < 0.001f) || (abs(x2 - cx2) < 0.001f  && abs(y2 - cy2) < 0.001f)) {
+    if ((abs(toX1 - fromX1) < 0.001f  && abs(toY1 - fromY1) < 0.001f) || (abs(toX2 - fromX2) < 0.001f  && abs(toY2 - fromY2) < 0.001f)) {
         return true;
     }
 
-    float norm1 = distance(x1, y1, cx1, cy1);
-    float norm2 = distance(x2, y2, cx2, cy2);
+    float v1x = toX1 - fromX1;
+    float v1y = toY1 - fromY1;
 
-    float v1x = x1 - cx1;
-    float v1y = y1 - cy1;
+    float v2x = toX2 - fromX2;
+    float v2y = toY2 - fromY2;
 
-    v1x = v1x / norm1;
-    v1y= v1y / norm1;
-
-    float v2x = x2 - cx2;
-    float v2y = y2 - cy2;
-
-    v2x = v2x / norm2;
-    v2y = v2y / norm2;
+    Utils::normalize(v1x, v1y);
+    Utils::normalize(v2x, v2y);
 
     float dotProduct = v1x * v2x + v1y * v2y;
 

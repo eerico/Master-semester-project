@@ -12,6 +12,7 @@
 #include <QList>
 #include "Profile.h"
 #include "Mesh.h"
+#include "Utils.h"
 
 class ProfileScene : public QGraphicsScene
 {
@@ -45,8 +46,6 @@ private:
     Profile* currentProfile;
 
     void basicBezier(QPoint* mousePos, int numSample);
-    void adjustCoordinates3DToScene(float& w, float& z);
-    void adjustCoordinatesSceneTo3D(float& x, float& y);
     void loadProfile();
     Vertex* currentlyMovingVertex;
 };

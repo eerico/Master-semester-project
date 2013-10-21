@@ -50,12 +50,6 @@ Mesh::~Mesh()
     delete points;
 }
 
-float Mesh::distance(float x1, float y1, float x2, float y2) {
-    float diffX = x1 - x2;
-    float diffY = y1 - y2;
-    return std::sqrt(diffX * diffX + diffY * diffY);
-}
-
 void Mesh::setFloorPlan(FloorVertex* vertex) {
    floorPlan = vertex;
 }
@@ -66,63 +60,87 @@ const std::vector<qglviewer::Vec *>& Mesh::getTriangles()
     return triangles;
 }
 
-std::vector<qglviewer::Vec*>* Mesh::getPoints(bool moreSample, float ds)
+std::vector<qglviewer::Vec*>* Mesh::getPoints(bool moreSample, float spaceBetweenSample)
 {
 
     if (!updateOnMesh && !longUpdateOnMesh) {
+        // there is no update on the mesh thus we can render the previous result
         return points;
     }
 
-    unsigned int size = points->size();
-    for( unsigned int i(0); i < size; ++i)
+    // we first delete the old result
+    unsigned int numberPoint = points->size();
+    for( unsigned int i(0); i < numberPoint; ++i)
     {
-        qglviewer::Vec* tmp = (*points)[i];
-        delete tmp;
+        qglviewer::Vec* pointToDelete = (*points)[i];
+        delete pointToDelete;
     }
-
     points->clear();
 
     if (floorPlanSize == 0) {
         return points;
     }
 
+    computeNormals();
+
+    //choose if we want only the real point or the real point with additionnal sampled point
     if (moreSample) {
-        getPointWithAdditionnalSampledPoint(points, ds);
+        getPointWithAdditionnalSampledPoint(points, spaceBetweenSample);
     } else {
         getPointBasic(points);
     }
 
+    //the update is done
     updateOnMesh = false;
 
     return points;
 }
 
-void Mesh::computeNormals() {
+//TODO changer comme j ai dans floorScene
+/*void Mesh::computeNormals() {
     // if the normal are not defined we will defined them
     // their directions will be from the center to the vertex
     std::cout << "no normals" << std::endl;
 
-    Vertex* tmp = floorPlan;
+    Vertex* VertexIterator = floorPlan;
     float centerX(0.0f);
     float centerY(0.0f);
     for(unsigned int i(0); i < floorPlanSize; ++i) {
-        centerX += tmp->getX();
-        centerY += tmp->getY();
-        tmp = tmp->getNeighbor2();
+        centerX += VertexIterator->getX();
+        centerY += VertexIterator->getY();
+        VertexIterator = VertexIterator->getNeighbor2();
     }
 
     centerX = centerX / (float)(floorPlanSize);
     centerY = centerY / (float)(floorPlanSize);
 
     // assign the new computed normal to each floorplan vertices
-    FloorVertex* floorVertexTmp = floorPlan;
+    FloorVertex* floorVertexIterator = floorPlan;
     for(unsigned int i(0); i < floorPlanSize; ++i) {
-        float nx = floorVertexTmp->getX() - centerX;
-        float ny = floorVertexTmp->getY() - centerY;
+        float normalX = floorVertexIterator->getX() - centerX;
+        float normalY = floorVertexIterator->getY() - centerY;
         // the setNormal method will normalize our normal
-        floorVertexTmp->setNormal(nx, ny);
+        floorVertexIterator->setNormal(normalX, normalY);
 
-        floorVertexTmp = (FloorVertex*)floorVertexTmp->getNeighbor2();
+        floorVertexIterator = (FloorVertex*)floorVertexIterator->getNeighbor2();
+    }
+}*/
+
+void Mesh::computeNormals()
+{
+    float normalX(0.0f);
+    float normalY(0.0f);
+
+    FloorVertex* floorVertexTmp = floorPlan;
+    floorVertexTmp->getNormal(normalX, normalY);
+
+    if ((normalX == 0.0f) && (normalY == 0.0f)) {
+        //computeNormals();
+        std::cout << "no normals" << std::endl;
+        for(unsigned int i(0); i < floorPlanSize; ++i) {
+            floorVertexTmp->computeNormal();
+            floorVertexTmp = (FloorVertex*)floorVertexTmp->getNeighbor2();
+        }
     }
 }
 
@@ -130,13 +148,8 @@ void Mesh::getPointBasic(std::vector<qglviewer::Vec*>* points)
 {
     FloorVertex* floorVertexTmp = floorPlan;
 
-    float nx(0.0f);
-    float ny(0.0f);
-
-    floorVertexTmp->getNormal(nx, ny);
-    if ((nx == 0.0f) && (ny == 0.0f)) {
-        computeNormals();
-    }
+    float normalX(0.0f);
+    float normalY(0.0f);
 
     for(unsigned int i(0); i < floorPlanSize; ++i) {
 
@@ -151,9 +164,9 @@ void Mesh::getPointBasic(std::vector<qglviewer::Vec*>* points)
                 //float x = floorVertexTmp->getX()* (1.0f - w) + centerX * w;
                 //float y = floorVertexTmp->getY()* (1.0f - w) + centerY * w;
 
-                floorVertexTmp->getNormal(nx, ny);
-                float x = floorVertexTmp->getX() + (-nx) * w;
-                float y = floorVertexTmp->getY() + (-ny) * w;
+                floorVertexTmp->getNormal(normalX, normalY);
+                float x = floorVertexTmp->getX() + (-normalX) * w;
+                float y = floorVertexTmp->getY() + (-normalY) * w;
 
                 points->push_back(new qglviewer::Vec(x, y, z));
                 pVertex = pVertex->getNeighbor2();
@@ -163,7 +176,7 @@ void Mesh::getPointBasic(std::vector<qglviewer::Vec*>* points)
     }
 }
 
-void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* points, float ds)
+void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* points, float spaceBetweenSample)
 {
     // very basic. Let say we have two vertices on the floor plan v1 and v2,
     // we interpolate new vertices between these two and take the profile of v1
@@ -175,13 +188,8 @@ void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* poi
 
     FloorVertex* floorVertexTmp = floorPlan;
 
-    float nx(0.0f);
-    float ny(0.0f);
-
-    floorVertexTmp->getNormal(nx, ny);
-    if ((nx == 0.0f) && (ny == 0.0f)) {
-        computeNormals();
-    }
+    float normalX(0.0f);
+    float normalY(0.0f);
 
     FloorVertex* nextFloorVertexTmp = (FloorVertex*)floorVertexTmp->getNeighbor2();
 
@@ -193,32 +201,30 @@ void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* poi
 
         Profile* profile = floorVertexTmp->getProfile();
         if (profile != 0) {
-           Vertex* pVertex = profile->getProfileVertex();
+           Vertex* profileVertex = profile->getProfileVertex();
 
            float nextX = nextFloorVertexTmp->getX();
            float nextY = nextFloorVertexTmp->getY();
            float currentX = floorVertexTmp->getX();
            float currentY = floorVertexTmp->getY();
-           float nx(0.0f);
-           float ny(0.0f);
-           floorVertexTmp->getNormal(nx, ny);
+           floorVertexTmp->getNormal(normalX, normalY);
 
-           float nextNx(0.0f);
-           float nextNy(0.0f);
-           nextFloorVertexTmp->getNormal(nextNx, nextNy);
+           float nextNormalX(0.0f);
+           float nextNormalY(0.0f);
+           nextFloorVertexTmp->getNormal(nextNormalX, nextNormalY);
 
-           float distanceCurrentToNext = distance(currentX, currentY, nextX, nextY);
+           float distanceCurrentToNext = Utils::distance(currentX, currentY, nextX, nextY);
 
-           // we take a new sample at every ds between two neighbor
+           // we take a new sample at every spaceBetweenSample between two neighbor
            // and use the profile of the first neighbor
-            while(pVertex->getNeighbor2() != 0)
+            while(profileVertex->getNeighbor2() != 0)
             {
-                float currentW = pVertex->getX();
+                float currentW = profileVertex->getX();
 
-                Vertex* nextPVertex = pVertex->getNeighbor2();
-                float nextW = nextPVertex->getX();
-                float currentZ = pVertex->getY();
-                float nextZ = nextPVertex->getY();
+                Vertex* nextProfileVertex = profileVertex->getNeighbor2();
+                float nextW = nextProfileVertex->getX();
+                float currentZ = profileVertex->getY();
+                float nextZ = nextProfileVertex->getY();
 
                 float dirW = nextW - currentW;
                 float dirZ = nextZ - currentZ;
@@ -248,30 +254,30 @@ void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* poi
                         sampledX = currentX + dirX * tt;
                         sampledY = currentY + dirY * tt;
 
-                        distanceSampledToNext = distance(sampledX, sampledY, nextX, nextY);
+                        distanceSampledToNext = Utils::distance(sampledX, sampledY, nextX, nextY);
 
 
                         //float newX = sampledX * (1.0f - sampledW) + centerX * sampledW;
                         //float newY = sampledY * (1.0f - sampledW) + centerY * sampledW;
                         //normal interpolation
                         float normalInterpolationFactor = distanceSampledToNext / distanceCurrentToNext;
-                        float currentNx = nx * normalInterpolationFactor + (1.0f - normalInterpolationFactor) * nextNx;
-                        float currentNy = ny * normalInterpolationFactor + (1.0f - normalInterpolationFactor) * nextNy;
+                        float currentNormalX = normalX * normalInterpolationFactor + (1.0f - normalInterpolationFactor) * nextNormalX;
+                        float currentNormalY = normalY * normalInterpolationFactor + (1.0f - normalInterpolationFactor) * nextNormalY;
 
-                        float newX = sampledX + (-currentNx) * sampledW;
-                        float newY = sampledY + (-currentNy) * sampledW;
+                        float newX = sampledX + (-currentNormalX) * sampledW;
+                        float newY = sampledY + (-currentNormalY) * sampledW;
 
                         points->push_back(new qglviewer::Vec(newX, newY, newZ));
 
-                        tt += ds;
-                    // if the distance beween the samplend X,Y and next X,Y is small, stop
-                    } while(distanceSampledToNext > ds);
+                        tt += spaceBetweenSample;
+                    // if the distance beween the sample X,Y and next X,Y is small, stop
+                    } while(distanceSampledToNext > spaceBetweenSample);
 
-                    t += ds;
+                    t += spaceBetweenSample;
                 // if the distance beween the samplend W,Z and next W,Z is small, stop
-                } while (distance(sampledW, newZ, nextW, nextZ) > ds);
+                } while (Utils::distance(sampledW, newZ, nextW, nextZ) > spaceBetweenSample);
 
-                pVertex = pVertex->getNeighbor2();
+                profileVertex = profileVertex->getNeighbor2();
             }
         }
         floorVertexTmp = (FloorVertex*)floorVertexTmp->getNeighbor2();
@@ -335,18 +341,7 @@ void Mesh::loadMesh(QString fileName)
     // we will delete the previous profiles after having loaded the new profiles
     ProfileDestructorManager::swap();
 
-    /*inputMesh->request_face_normals();
-    inputMesh->request_vertex_normals();
-
-    OpenMesh::IO::Options ropt;
-    ropt += OpenMesh::IO::Options::VertexNormal;
-    if (OpenMesh::IO::read_mesh(*inputMesh, fileName.toLocal8Bit().constData()),
-            ropt)
-    {
-        inputMesh->update_face_normals();
-        inputMesh->update_vertex_normals();
-    }*/
-
+    //load the mesh
     //http://openmesh.org/Documentation/OpenMesh-Doc-Latest/tutorial_05.html
     inputMesh->request_vertex_normals();
     OpenMesh::IO::Options option;
@@ -360,6 +355,7 @@ void Mesh::loadMesh(QString fileName)
 		}
 	} else {
 		std::cerr << "Error while reading the mesh" << std::endl;
+
 		delete inputMesh;
 		inputMesh = 0;
 		
