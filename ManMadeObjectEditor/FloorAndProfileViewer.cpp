@@ -22,6 +22,7 @@ FloorAndProfileViewer::~FloorAndProfileViewer()
 {
     delete centralWidget;
     delete openAction;
+    delete clearAction;
     delete exitAction;
     delete aboutQtAction;
     delete wireframeAction;
@@ -60,6 +61,13 @@ void FloorAndProfileViewer::createFileMenu()
     openAction->setShortcut(tr("Ctrl+O"));
     fileMenu->addAction(openAction);
     QObject::connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
+
+   //maybe more interesting to name it new....
+    clearAction = new QAction(tr("&Clear"), this);
+    clearAction->setShortcut(tr("Ctrl+N"));
+    fileMenu->addAction(clearAction);
+    QObject::connect(clearAction, SIGNAL(triggered()), this, SLOT(clearFile()));
+
 
     exitAction = new QAction(tr("&Exit"), this);
     exitAction->setShortcut(tr("Esc"));
@@ -115,4 +123,43 @@ void FloorAndProfileViewer::openFile()
         return;
     }
     mesh->loadMesh(file);
+}
+
+void FloorAndProfileViewer::clearFile(){
+    this->hide();
+    std::cout << QObject::disconnect(objViewer, SIGNAL(closeSignal()), this, SLOT(close())) << std::endl;
+    emit closeSignal();
+    std::cout << QObject::disconnect(this, SIGNAL(closeSignal()), objViewer, SLOT(close()))<< std::endl;
+
+    Mesh* mesh2 = new Mesh();
+    objViewer = new ObjectViewer(mesh2);
+    objViewer->setWindowTitle("Object Viewer");
+    objViewer->show();
+    CentralWidget* newCentralWidget = new CentralWidget(mesh2);
+    this->setCentralWidget(newCentralWidget);
+
+    ProfileDestructorManager::deleteProfiles();
+
+    this->menuBar()->clear();
+    delete openAction;
+    delete clearAction;
+    delete exitAction;
+    delete aboutQtAction;
+    delete wireframeAction;
+    delete flatAction;
+    delete smoothAction;
+    delete pointAction;
+    delete pointSampledAction;
+    createMenuBar();
+
+    delete centralWidget;
+    delete mesh;
+    centralWidget = newCentralWidget;
+    mesh = mesh2;
+
+
+    this->show();
+    QObject::connect(this, SIGNAL(closeSignal()), objViewer, SLOT(close()));
+    QObject::connect(objViewer, SIGNAL(closeSignal()), this, SLOT(close()));
+
 }
