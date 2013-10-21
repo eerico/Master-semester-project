@@ -163,86 +163,6 @@ void Mesh::getPointBasic(std::vector<qglviewer::Vec*>* points)
     }
 }
 
-// First try
-/*void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>& points, float ds)
-{
-    // very basic. Let say we have two vertices on the floor plan v1 and v2,
-    // we interpolate new vertices between these two and take the profile of v1
-    // and "associate" this profile to the new vertices. This is the idea
-    // used to add new sample in the floor plan
-    // To add new sample for the profile, we take vertices of the profile
-    // two by two and interpolate
-    // This method is only used to show more points on the 3D rendering
-    float centerX(0.0f);
-    float centerY(0.0f);
-
-    Vertex* tmp = floorPlan;
-    for(unsigned int i(0); i < floorPlanSize; ++i) {
-        centerX += tmp->getX();
-        centerY += tmp->getY();
-        tmp = tmp->getNeighbor2();
-    }
-
-    centerX = centerX / (float)(floorPlanSize);
-    centerY = centerY / (float)(floorPlanSize);
-
-    FloorVertex* floorVertexTmp = floorPlan;
-    FloorVertex* nextFloorVertexTmp = (FloorVertex*)floorVertexTmp->getNeighbor2();
-
-    if (nextFloorVertexTmp == 0) {
-        return;
-    }
-
-    for(unsigned int i(0); i < floorPlanSize; ++i) {
-
-        Profile* profile = floorVertexTmp->getProfile();
-        if (profile != 0) {
-           Vertex* pVertex = profile->getProfileVertex();
-
-           float nextX = nextFloorVertexTmp->getX();
-           float nextY = nextFloorVertexTmp->getY();
-
-
-            while(pVertex->getNeighbor2() != 0)
-            {
-                float currentW = pVertex->getX();
-
-                Vertex* nextPVertex = pVertex->getNeighbor2();
-                float nextW = nextPVertex->getX();
-                float currentZ = pVertex->getY();
-                float nextZ = nextPVertex->getY();
-
-                float t = 0.0f;
-                while(t < 1.0f) {
-                    float t_1 = 1.0f - t;
-                    float w = currentW * t + nextW * t_1;
-                    float z = currentZ * t + nextZ * t_1;
-
-                    // we take a new sample at every ds between two neighbor
-                    // and use the profile of the first neighbor
-                    float tt = 0.0f;
-                    while(tt < 1.0f) {
-                        float tt_1 = 1.0f - tt;
-                        float sampledX = floorVertexTmp->getX() * tt + tt_1 * nextX;
-                        float sampledY = floorVertexTmp->getY() * tt + tt_1 * nextY;
-
-                        float newX = sampledX * (1.0f - w) + centerX * w;
-                        float newY = sampledY * (1.0f - w) + centerY * w;
-
-                        points.push_back(new qglviewer::Vec(newX, newY, z));
-
-                        tt += ds;
-                    }
-                    t += ds;
-                }
-                pVertex = pVertex->getNeighbor2();
-            }
-        }
-        floorVertexTmp = (FloorVertex*)floorVertexTmp->getNeighbor2();
-        nextFloorVertexTmp = (FloorVertex*)nextFloorVertexTmp->getNeighbor2();
-    }
-}*/
-
 void Mesh::getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* points, float ds)
 {
     // very basic. Let say we have two vertices on the floor plan v1 and v2,
@@ -415,7 +335,7 @@ void Mesh::loadMesh(QString fileName)
     // we will delete the previous profiles after having loaded the new profiles
     ProfileDestructorManager::swap();
 
-    inputMesh->request_face_normals();
+    /*inputMesh->request_face_normals();
     inputMesh->request_vertex_normals();
 
     OpenMesh::IO::Options ropt;
@@ -425,8 +345,26 @@ void Mesh::loadMesh(QString fileName)
     {
         inputMesh->update_face_normals();
         inputMesh->update_vertex_normals();
-    }
+    }*/
 
+    //http://openmesh.org/Documentation/OpenMesh-Doc-Latest/tutorial_05.html
+    inputMesh->request_vertex_normals();
+    OpenMesh::IO::Options option;
+    if (OpenMesh::IO::read_mesh(*inputMesh, fileName.toLocal8Bit().constData(), option)){
+
+		// compute the vertex normals if the mesh doesnt provide them
+		if (!option.check(OpenMesh::IO::Options::VertexNormal )) {
+			inputMesh->request_face_normals();
+			inputMesh->update_normals();
+			inputMesh->release_face_normals();
+		}
+	} else {
+		std::cerr << "Error while reading the mesh" << std::endl;
+		delete inputMesh;
+		inputMesh = 0;
+		
+		return;
+    }
 
     FloorPlanAndProfileExtractor extractor;
 
