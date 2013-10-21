@@ -30,10 +30,13 @@ public:
 public slots:
     void closeViewer();
     void openFile();
+    void clearFile();
     void aboutQtMessageBox();
+
 
 signals:
     void closeSignal();
+
 
 private:
     CentralWidget* centralWidget;
@@ -41,6 +44,7 @@ private:
     Mesh* mesh;
     QMenu* fileMenu;
     QAction* openAction;
+    QAction* clearAction;
     QAction* exitAction;
     QMenu* aboutMenu;
     QAction* aboutQtAction;
@@ -50,6 +54,7 @@ private:
     QAction* smoothAction;
     QAction* pointAction;
     QAction* pointSampledAction;
+
 };
 
 #endif // FLOORANDPROFILEVIEWER_H
