@@ -3,6 +3,8 @@
 
 #include "FloorVertex.h"
 #include "ProfileDestructorManager.h"
+#include "Utils.h"
+
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 
 class FloorPlanAndProfileExtractor
@@ -15,6 +17,7 @@ class FloorPlanAndProfileExtractor
         OMMesh::Point neighbor2;
         bool neighbor1Used;
         bool neighbor2Used;
+        OMMesh::VertexIter v_it;
     };
 
 public:
@@ -22,11 +25,10 @@ public:
     void extract(OMMesh* inputMesh, FloorVertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize);
 
 private:
-    float distance(float x1, float y1, float x2, float y2);
-    bool isSameAngle(float x1, float y1, float cx1, float cy1,
-                     float x2, float y2, float cx2, float cy2);
+    bool isSameAngle(float toX1, float toY1, float fromX1, float fromY1,
+                    float toX2, float toY2, float fromX2, float fromY2);
     void extractAllPlan(OMMesh* inputMesh);
-    void floorPlanConstruction(FloorVertex*& floorPlan, unsigned int& floorPlanSize);
+    void floorPlanConstruction(FloorVertex*& floorPlan, unsigned int& floorPlanSize, OMMesh* inputMesh);
     void profileConstruction(OMMesh* inputMesh, FloorVertex*& floorPlan,
                              Profile*& currentProfile, unsigned int& floorPlanSize);
 
@@ -37,9 +39,9 @@ private:
 
     //TODO trouver comment computer ces chiffre magique
     // la c est exemple avec le cone
-    float dz; //le delta entre 2 plan
+    float intervalBetweenZValue; //le delta entre 2 plan
     int totalNumPlan; // nombre de plan jusqu au sommet
-    float baseZ; // le z minimum ou se trouve le floor plan
+    float smallestZValue; // le z minimum ou se trouve le floor plan
 
     // pas le vrai floorplan, un cran au dessus afin d eviter d'avoir un fond plein donc que 2 neighbor au meme
     // plan par vertex!

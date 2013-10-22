@@ -1,12 +1,4 @@
 #include "Vertex.h"
-/*
-Vertex::Vertex(float x, float y, FloorEdge* edge)
-    : x(x), y(y), profile(profile)
-{
-    edge->splitEdgeAtVertex(this, edge1, edge2);
-    delete edge;
-}*/
-
 
 Vertex::Vertex(float x, float y)
     : x(x), y(y), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0)
@@ -70,8 +62,8 @@ QGraphicsLineItem* Vertex::removeVertex() {
         neighbor2->setNeighbor1(neighbor1);
 
         edge = new QGraphicsLineItem(neighbor1->getEllipse()->rect().center().rx(),
-                                                   neighbor1->getEllipse()->rect().center().ry(),
-                                                   neighbor2->getEllipse()->rect().center().rx(),                                                   neighbor2->getEllipse()->rect().center().ry());
+                                     neighbor1->getEllipse()->rect().center().ry(),
+                                     neighbor2->getEllipse()->rect().center().rx(),                                                   neighbor2->getEllipse()->rect().center().ry());
         neighbor1->setEdge2(edge);
         neighbor2->setEdge1(edge);
         edge->setPen(edgePen);
@@ -171,10 +163,3 @@ void Vertex::setX(float i){
     x = i;
 }
 
-/*
-Vertex::~Vertex()
-{
-    delete edge1;
-    delete edge2;
-}
-*/

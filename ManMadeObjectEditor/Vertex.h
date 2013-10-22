@@ -10,7 +10,6 @@
 class Vertex
 {
 public:
-    //Vertex(float x, float y/*, FloorEdge* edge,*/ Profile* profile = 0);
     Vertex(float x, float y);
     virtual ~Vertex();
 
