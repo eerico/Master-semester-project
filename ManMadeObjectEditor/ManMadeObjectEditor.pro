@@ -49,17 +49,17 @@ HEADERS  += \
 
 
 win32{
-    INCLUDEPATH *= D:\Qt\libQGLViewer-2.4.0
-    LIBS *= -LD:\Qt\libQGLViewer-2.4.0/QGLViewer -lQGLViewer2
+    INCLUDEPATH *= "C:\Program Files (x86)\libQGLViewer-2.4.0"
+    LIBS *= -L"C:\Program Files (x86)\libQGLViewer-2.4.0/QGLViewer" -lQGLViewer2
 
-    win32:CONFIG(release, debug|release): LIBS += -LD:\OpenMesh\lib\ -lOpenMeshCore
-    else:win32:CONFIG(debug, debug|release): LIBS += -LD:\OpenMesh\lib\ -lOpenMeshCored
+    win32:CONFIG(release, debug|release): LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshCore
+    else:win32:CONFIG(debug, debug|release): LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshCored
 
-    INCLUDEPATH += D:\OpenMesh\include
-    DEPENDPATH += D:\OpenMesh\include
+    INCLUDEPATH += "C:\Program Files (x86)\OpenMesh\include"
+    DEPENDPATH += "C:\Program Files (x86)\OpenMesh\include"
 
-    win32:CONFIG(release, debug|release): LIBS += -LD:\OpenMesh\lib\ -lOpenMeshTools
-    else:win32:CONFIG(debug, debug|release): LIBS += -LD:\OpenMesh\lib\ -lOpenMeshToolsd
+    win32:CONFIG(release, debug|release): LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshTools
+    else:win32:CONFIG(debug, debug|release): LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshToolsd
 
     DEFINES +=  _USE_MATH_DEFINES
 }
