@@ -63,7 +63,8 @@ QGraphicsLineItem* Vertex::removeVertex() {
 
         edge = new QGraphicsLineItem(neighbor1->getEllipse()->rect().center().rx(),
                                      neighbor1->getEllipse()->rect().center().ry(),
-                                     neighbor2->getEllipse()->rect().center().rx(),                                                   neighbor2->getEllipse()->rect().center().ry());
+                                     neighbor2->getEllipse()->rect().center().rx(),
+                                     neighbor2->getEllipse()->rect().center().ry());
         neighbor1->setEdge2(edge);
         neighbor2->setEdge1(edge);
         edge->setPen(edgePen);

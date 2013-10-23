@@ -16,7 +16,6 @@ SOURCES +=\
         ObjectViewer.cpp \
     Main.cpp \
     Mesh.cpp \
-    FloorVertex.cpp \
     Profile.cpp \
     FloorAndProfileViewer.cpp \
     CentralWidget.cpp \
@@ -26,12 +25,12 @@ SOURCES +=\
     FloorPlanAndProfileExtractor.cpp \
     BasicQGraphicsView.cpp \
     ProfileDestructorManager.cpp \
-    Utils.cpp
+    Utils.cpp \
+    Edge.cpp
 
 HEADERS  += \
     Mesh.h \
     ObjectViewer.h \
-    FloorVertex.h \
     Profile.h \
     FloorAndProfileViewer.h \
     CentralWidget.h \
@@ -41,7 +40,8 @@ HEADERS  += \
     FloorPlanAndProfileExtractor.h \
     BasicQGraphicsView.h \
     ProfileDestructorManager.h \
-    Utils.h
+    Utils.h \
+    Edge.h
 
 #QT *= xml opengl
 

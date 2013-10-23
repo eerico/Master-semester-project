@@ -14,6 +14,7 @@ public:
     static void adjustCoordinatesSceneTo3D(float& x, float& y, float width, float height);
 
     static void normalize(float& n_x, float& n_y);
+    static float dotProduct(float x1, float y1, float x2, float y2);
 };
 
 #endif // UTILS_H
