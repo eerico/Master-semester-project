@@ -25,7 +25,7 @@ void FloorPlanAndProfileExtractor::extractAllPlan(OMMesh* inputMesh)
 
         // check if planNumber is really a correct plan number
         // 0.001f because of precision problem
-        if ((abs(planNumberTmp - planNumber) < 0.001f) && (planNumber >= floorPlanIndex)) {
+        if ((planNumberTmp == ((float)(planNumber))) && (planNumber >= floorPlanIndex)) {
 
             // store the vertices with the associated plan
             std::vector<OMMesh::VertexIter>* planTmp = plan[planNumber];
@@ -33,7 +33,7 @@ void FloorPlanAndProfileExtractor::extractAllPlan(OMMesh* inputMesh)
             point = inputMesh->point(v_it);
 
             // check is the current vertex is on the floor plan
-            if (abs(planNumber - floorPlanIndex) < 0.001f) {
+            if (planNumber == floorPlanIndex) {
                 TmpFloorVertex currentVertex;
                 currentVertex.point = point;
                 currentVertex.neighbor1Used = false;
@@ -45,8 +45,8 @@ void FloorPlanAndProfileExtractor::extractAllPlan(OMMesh* inputMesh)
                     OMMesh::Point neighborTmp = inputMesh->point(vv_it);
                     planNumberTmp = (neighborTmp[2] - smallestZValue) / intervalBetweenZValue;
                     planNumber = floor(planNumberTmp + 0.5);
-                    if (abs(planNumberTmp - planNumber) < 0.001f ) {
-                        if (abs(planNumber - floorPlanIndex) < 0.001f) {
+                    if (planNumberTmp == ((float)(planNumber))) {
+                        if ((planNumber - floorPlanIndex)) {
                             if (currentVertex.neighbor1Used == false) {
                                 currentVertex.neighbor1 = neighborTmp;
                                 currentVertex.neighbor1Used = true;
@@ -269,7 +269,7 @@ void FloorPlanAndProfileExtractor::extract(OMMesh* inputMesh, FloorVertex*& floo
 bool FloorPlanAndProfileExtractor::isSameAngle(float toX1, float toY1, float fromX1, float fromY1,
                                                float toX2, float toY2, float fromX2, float fromY2)
 {
-    if ((abs(toX1 - fromX1) < 0.001f  && abs(toY1 - fromY1) < 0.001f) || (abs(toX2 - fromX2) < 0.001f  && abs(toY2 - fromY2) < 0.001f)) {
+    if (((toX1 == fromX1)  && (toY1==fromY1))  || ((toX2 == fromX2)  &&(toY2 == fromY2))) {
         return true;
     }
 
@@ -284,5 +284,5 @@ bool FloorPlanAndProfileExtractor::isSameAngle(float toX1, float toY1, float fro
 
     float dotProduct = v1x * v2x + v1y * v2y;
 
-    return abs(1.0f - dotProduct) < 0.00001f;
+    return std::abs(1.0f - dotProduct) < 0.00001f;
 }
