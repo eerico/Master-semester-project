@@ -93,7 +93,10 @@ void FloorScene::removeVertex()
 
             // we find one vertex to remove under the mouse, we remove it
             Edge* newEdge = currentVertex->removeVertex();
-            newEdge->setProfile(new Profile(false));
+            Profile* profile = new Profile(false);
+            newEdge->setProfile(profile);
+            ProfileDestructorManager::putProfile(profile);
+
             Edge* oldEdge1 = currentVertex->getEdge1();
             Edge* oldEdge2 = currentVertex->getEdge2();
             this->removeItem(ellipse);
