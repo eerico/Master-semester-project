@@ -2,7 +2,7 @@
 //#include <iostream>
 
 // Tres similaire a floorScene pour le moment mais je garde 2 classe au cas ou faut tout changer..
-const int ProfileScene::vertexRadius(3);
+const int ProfileScene::vertexRadius(6);
 
 // il va prendre de mesh le profile courant a modifier
 ProfileScene::ProfileScene(Mesh* mesh)
@@ -94,7 +94,9 @@ void ProfileScene::addVertex(QPoint mousePos)
 
         Vertex * newVertex = new Vertex(0,0);
 
-        newVertex->setEllipse(new QGraphicsEllipseItem(w - vertexRadius, z - vertexRadius, vertexRadius * 2.0f, vertexRadius*2.0f));
+        QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(w - vertexRadius, z - vertexRadius, vertexRadius * 2.0f, vertexRadius*2.0f);
+        newVertex->setEllipse(ellipse);
+
         QRectF thisSize = this->sceneRect();
         Utils::adjustCoordinatesSceneTo3D(w, z, thisSize.width(), thisSize.height());
         newVertex->setX(w);
@@ -298,7 +300,8 @@ void ProfileScene::loadProfile()
             QRectF thisSize = this->sceneRect();
             Utils::adjustCoordinates3DToScene(x, y, thisSize.width(), thisSize.height());
 
-            currentVertex->setEllipse(new QGraphicsEllipseItem(x - vertexRadius, y - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f));
+            QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(x - vertexRadius, y - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f);
+            currentVertex->setEllipse(ellipse);
             this->addItem(currentVertex->getEllipse());
 
         }else {

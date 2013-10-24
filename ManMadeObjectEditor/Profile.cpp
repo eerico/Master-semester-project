@@ -7,9 +7,12 @@ Profile::Profile(bool empty): pVertex(0)
 {
     if (!empty) {
         pVertex = new Vertex(0,0);
-        //initProfileSkewedLine(20);
-        initProfileBezier(10);
+        initProfileSkewedLine(4);
+        //initProfileBezier(10);
     }
+
+    profileColorIdentification = new QColor;
+    profileColorIdentification->setRgb(std::rand()%256, std::rand()%256, std::rand()%256);
 }
 
 Profile::~Profile()
@@ -25,6 +28,13 @@ Profile::~Profile()
         delete pVertex;
         pVertex = next;
     }
+
+    delete profileColorIdentification;
+}
+
+QColor* Profile::getProfileColorIdentification()
+{
+    return profileColorIdentification;
 }
 
 void Profile::initProfileSkewedLine(int numSample)

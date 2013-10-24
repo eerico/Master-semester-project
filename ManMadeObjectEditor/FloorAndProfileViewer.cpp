@@ -123,9 +123,9 @@ void FloorAndProfileViewer::openFile()
 
 void FloorAndProfileViewer::clearFile(){
     this->hide();
-    std::cout << QObject::disconnect(objViewer, SIGNAL(closeSignal()), this, SLOT(close())) << std::endl;
+    QObject::disconnect(objViewer, SIGNAL(closeSignal()), this, SLOT(close()));
     emit closeSignal();
-    std::cout << QObject::disconnect(this, SIGNAL(closeSignal()), objViewer, SLOT(close()))<< std::endl;
+    QObject::disconnect(this, SIGNAL(closeSignal()), objViewer, SLOT(close()));
 
     Mesh* mesh2 = new Mesh();
     objViewer = new ObjectViewer(mesh2);

@@ -3,6 +3,8 @@
 
 #include <QGraphicsLineItem>
 #include "Utils.h"
+#include <QPen>
+#include <QBrush>
 
 class Vertex;
 class Profile;
@@ -33,6 +35,8 @@ private:
     Vertex* vertex2;
     Profile* profile;
     QGraphicsLineItem* lineItem;
+
+    QPen edgePen;
 };
 
 #endif // EDGE_H

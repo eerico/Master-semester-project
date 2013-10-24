@@ -5,7 +5,7 @@
 Edge::Edge(Vertex* vertex1, Vertex* vertex2, Profile* p)
     :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0)
 {
-
+    edgePen.setWidth(3);
 }
 
 Edge::~Edge()
@@ -59,9 +59,14 @@ QGraphicsLineItem* Edge::computeLineItem()
                                      vertex1->getEllipse()->rect().center().ry(),
                                      vertex2->getEllipse()->rect().center().rx(),
                                      vertex2->getEllipse()->rect().center().ry());
-    QPen edgePen;
-    edgePen.setWidth(2);
+
+
+    if(profile != 0) {
+        edgePen.setColor(*profile->getProfileColorIdentification());
+    }
     lineItem->setPen(edgePen);
+    lineItem->setZValue(Utils::getZValueBackground());
+
     return lineItem;
 }
 

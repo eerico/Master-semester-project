@@ -4,7 +4,9 @@
 #include <iostream>
 #include <QGraphicsEllipseItem>
 #include <QPen>
+#include <QBrush>
 #include "Edge.h"
+
 //class Edge;
 
 class Vertex
@@ -43,6 +45,9 @@ private:
     Edge* edge1;
     Vertex *neighbor2;
     Edge* edge2;
+
+    QPen vertexPen;
+    QBrush vertexBrush;
 };
 
 #endif // VERTEX_H

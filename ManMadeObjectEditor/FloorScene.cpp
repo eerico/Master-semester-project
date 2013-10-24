@@ -1,7 +1,7 @@
 #include "FloorScene.h"
 #include <iostream>
 
-const int FloorScene::vertexRadius(3);
+const int FloorScene::vertexRadius(6);
 
 FloorScene::FloorScene(Mesh* mesh)
     : QGraphicsScene(), ctrl_pressed(false), shift_pressed(false), mesh(mesh)
@@ -42,10 +42,8 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 void FloorScene::moveVertexOrLoadProfile()
 {
     unsigned int floorPlanSize = mesh->getFloorPlanSize();
-    // find which vertex we have selected
-    // or which edge
+    // find which vertex we have selected    
     Vertex* currentVertex = mesh->getFloorPlan();
-    Edge* currentEdge = currentVertex->getEdge2();
     for (unsigned int i(0); i < floorPlanSize; ++i) {
         QGraphicsEllipseItem* ellipse = currentVertex->getEllipse();
         if (ellipse->isUnderMouse()) {
@@ -54,7 +52,15 @@ void FloorScene::moveVertexOrLoadProfile()
             // tell the mesh to generate new point/triangle
             mesh->setLongUpdateOnMesh(true);
             return;
-        } else if (currentEdge->getLineItem()->isUnderMouse()) {
+        }
+        currentVertex = currentVertex->getNeighbor2();
+    }
+
+    // or which edge
+    currentVertex = mesh->getFloorPlan();
+    Edge* currentEdge = currentVertex->getEdge2();
+    for (unsigned int i(0); i < floorPlanSize; ++i) {
+        if (currentEdge->getLineItem()->isUnderMouse()) {
             newProfileSelected(currentEdge->getProfile());
             return;
         }
@@ -87,6 +93,7 @@ void FloorScene::removeVertex()
 
             // we find one vertex to remove under the mouse, we remove it
             Edge* newEdge = currentVertex->removeVertex();
+            newEdge->setProfile(new Profile(false));
             Edge* oldEdge1 = currentVertex->getEdge1();
             Edge* oldEdge2 = currentVertex->getEdge2();
             this->removeItem(ellipse);
@@ -151,6 +158,9 @@ void FloorScene::addVertex(QPoint mousePos)
 
         Edge* edge1 = previousVertex->replaceNeighbour(nextVertex, newVertex);
         Edge* edge2 = nextVertex->replaceNeighbour(previousVertex, newVertex);
+
+        edge1->setProfile(currentEdge->getProfile());
+        edge2->setProfile(currentEdge->getProfile());
 
         //set all neighbour/edges of the new vertex
         newVertex->setNeighbor1(previousVertex); //addNeighbor
@@ -241,6 +251,7 @@ void FloorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void FloorScene::basicCircle(QPoint *mousePos, int numSample)
 {
+
     Profile* commonProfile = new Profile(false);
     ProfileDestructorManager::putProfile(commonProfile);
 
@@ -320,7 +331,8 @@ void FloorScene::loadFloorPlan() {
         QRectF thisSize = this->sceneRect();
         Utils::adjustCoordinates3DToScene(x, y, thisSize.width(), thisSize.height());
         if(currentVertex->getEllipse() == 0){
-            currentVertex->setEllipse(new QGraphicsEllipseItem(x - vertexRadius, y - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f));
+            QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(x - vertexRadius, y - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f);
+            currentVertex->setEllipse(ellipse);
             this->addItem(currentVertex->getEllipse());
         } else {
             std::cerr << "something strange happen, try to reload an already loaded floorplan maybe is ok and i shouldn't do anything";

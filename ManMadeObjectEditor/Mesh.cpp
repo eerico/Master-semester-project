@@ -115,6 +115,7 @@ void Mesh::loadMesh(QString fileName)
     for( unsigned int i(0); i < floorPlanSize; ++i)
     {
         Vertex* next = currentVertex->getNeighbor2();
+        delete currentVertex->getEdge2()->getLineItem();
         delete currentVertex->getEdge2();
         delete currentVertex->getEllipse();
         delete currentVertex;

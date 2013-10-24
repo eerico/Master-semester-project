@@ -14,6 +14,9 @@ public:
 
     static void normalize(float& n_x, float& n_y);
     static float dotProduct(float x1, float y1, float x2, float y2);
+
+    static float getZValueForeground();
+    static float getZValueBackground();
 };
 
 #endif // UTILS_H
