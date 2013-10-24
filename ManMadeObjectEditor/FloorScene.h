@@ -9,12 +9,12 @@
 #include <iostream>
 #include <vector>
 #include <QGraphicsEllipseItem>
-#include <QPen>
 #include <QColor>
-#include "FloorVertex.h"
+#include "Vertex.h"
 #include "Mesh.h"
 #include "ProfileDestructorManager.h"
 #include "Utils.h"
+#include "Edge.h"
 
 class FloorScene : public QGraphicsScene
 {
@@ -36,7 +36,7 @@ private:
 
     void addVertex(QPoint mousePos);
     void removeVertex();
-    void moveVertex();
+    void moveVertexOrLoadProfile();
 
     void keyPressEvent(QKeyEvent* keyEvent);
     void keyReleaseEvent(QKeyEvent *event);
@@ -45,14 +45,13 @@ private:
     bool shift_pressed;
     bool isVertexMoving;
 
-    static const int vertexRadius;
     Mesh* mesh;
-    FloorVertex* currentlyMovingVertex;
+    Vertex* currentlyMovingVertex;
 
     void basicCircle(QPoint* mousePos, int numSample);
     void newProfileSelected(Profile* p);
 
-
+    static const int vertexRadius;
 };
 
 #endif // FLOORSCENE_H

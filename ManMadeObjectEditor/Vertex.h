@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <QGraphicsEllipseItem>
-#include <QGraphicsLineItem>
 #include <QPen>
-
+#include "Edge.h"
+//class Edge;
 
 class Vertex
 {
@@ -17,20 +17,22 @@ public:
     float getY();
     void setX(float i);
     void setY(float i);
+
     Vertex* getNeighbor1();
     Vertex* getNeighbor2();
-    QGraphicsLineItem* replaceNeighbour(Vertex* oldVx, Vertex* newVx);
-    QGraphicsEllipseItem* getEllipse();
-    void setEllipse(QGraphicsEllipseItem* e);
-    bool addEdge1();
-    bool addEdge2();
-    QGraphicsLineItem* getEdge1();
-    QGraphicsLineItem* getEdge2();
-    void setEdge1(QGraphicsLineItem* e);
-    void setEdge2(QGraphicsLineItem* e);
     void setNeighbor1(Vertex *vx);
     void setNeighbor2(Vertex *vx);
-    QGraphicsLineItem* removeVertex();
+    Edge* replaceNeighbour(Vertex* oldVx, Vertex* newVx);
+
+    QGraphicsEllipseItem* getEllipse();
+    void setEllipse(QGraphicsEllipseItem* e);
+
+    Edge* getEdge1();
+    Edge* getEdge2();
+    void setEdge1(Edge* e);
+    void setEdge2(Edge* e);
+
+    Edge* removeVertex();
 
 
 private:
@@ -38,10 +40,9 @@ private:
     float y;
     QGraphicsEllipseItem* ellipse;
     Vertex *neighbor1;
-    QGraphicsLineItem* edge1;
+    Edge* edge1;
     Vertex *neighbor2;
-    QGraphicsLineItem* edge2;
-    QPen edgePen;
+    Edge* edge2;
 };
 
 #endif // VERTEX_H

@@ -1,17 +1,16 @@
 #include "Edge.h"
+#include "Vertex.h"
+#include "Profile.h"
 
 Edge::Edge(Vertex* vertex1, Vertex* vertex2, Profile* p)
-    :vertex1(vertex1), vertex2(vertex2), profile(p)
+    :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0)
 {
-    lineItem = new QGraphicsLineItem(vertex1->getEllipse()->rect().center().rx(),
-                                     vertex1->getEllipse()->rect().center().ry(),
-                                     vertex2->getEllipse()->getEllipse()->rect().center().rx(),
-                                     vertex2->getEllipse()->getEllipse()->rect().center().ry());
+
 }
 
 Edge::~Edge()
 {
-    delete lineItem;
+
 }
 
 Profile* Edge::getProfile()
@@ -54,6 +53,18 @@ QGraphicsLineItem* Edge::getLineItem()
     return lineItem;
 }
 
+QGraphicsLineItem* Edge::computeLineItem()
+{
+    lineItem = new QGraphicsLineItem(vertex1->getEllipse()->rect().center().rx(),
+                                     vertex1->getEllipse()->rect().center().ry(),
+                                     vertex2->getEllipse()->rect().center().rx(),
+                                     vertex2->getEllipse()->rect().center().ry());
+    QPen edgePen;
+    edgePen.setWidth(2);
+    lineItem->setPen(edgePen);
+    return lineItem;
+}
+
 bool Edge::isParallel(Edge* edge)
 {
     //to check if the current edge and the compared edge are parallel
@@ -81,8 +92,9 @@ bool Edge::isParallel(Edge* edge)
     float comparedEdgeDirectionY = toY - fromY;
     Utils::normalize(thisEdgeDirectionX, thisEdgeDirectionY);
 
-    float dotProduct = Utils::dotProduct(thisEdgeDirectionX, thisEdgeDirectionYm, comparedEdgeDirectionX, comparedEdgeDirectionY);
+    float dotProduct = Utils::dotProduct(thisEdgeDirectionX, thisEdgeDirectionY, comparedEdgeDirectionX, comparedEdgeDirectionY);
 
-    //use 0.001f for precision issues
+    //use 0.001f for precision, what error can we consider maximal
+    //before considering the two edge not parallel ?
     return (std::abs(1.0f - dotProduct) < 0.001f) || (std::abs(-1.0f - dotProduct) < 0.001f);
 }

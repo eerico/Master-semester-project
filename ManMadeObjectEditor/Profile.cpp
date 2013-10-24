@@ -1,10 +1,8 @@
 #include "Profile.h"
+#include "Edge.h"
 #include <iostream>
 
-// chaque profile est diriger vers le centre de gravité du floor plan ?
 
-// Convention: profile are directed toward the center of the floorplan
-// and w max is 1.0f
 Profile::Profile(bool empty): pVertex(0)
 {
     if (!empty) {
@@ -53,6 +51,9 @@ void Profile::initProfileSkewedLine(int numSample)
         current->setNeighbor1(previous);
         if (t != 0) {
             previous->setNeighbor2(current);
+            Edge* edge = new Edge(previous, current);
+            previous->setEdge2(edge);
+            current->setEdge1(edge);
         }
         previous = current;
 
@@ -94,6 +95,9 @@ void Profile::initProfileBezier(int numSample)
         current->setNeighbor1(previous);
         if (t != 0) {
             previous->setNeighbor2(current);
+            Edge* edge = new Edge(previous, current);
+            previous->setEdge2(edge);
+            current->setEdge1(edge);
         }
         previous = current;
 
@@ -119,8 +123,9 @@ void Profile::addVertexEnd(Vertex * v){
     }
     current->setNeighbor2(v);
     v->setNeighbor1(current);
-    current->addEdge2();
-    v->setEdge1(current->getEdge2());
+    Edge* edge = new Edge(current, v);
+    current->setEdge2(edge);
+    v->setEdge1(edge);
 
 }
 

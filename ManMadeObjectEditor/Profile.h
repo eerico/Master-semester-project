@@ -4,6 +4,7 @@
 #include <cmath>
 #include "Vertex.h"
 
+class Edge;
 
 class Profile
 {

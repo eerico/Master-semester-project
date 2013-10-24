@@ -2,7 +2,6 @@
 #define UTILS_H
 
 #include <cmath>
-#include "FloorVertex.h"
 
 class Utils
 {

@@ -13,6 +13,8 @@
 #include "Profile.h"
 #include "Mesh.h"
 #include "Utils.h"
+#include "Edge.h"
+#include "ProfileDestructorManager.h"
 
 class ProfileScene : public QGraphicsScene
 {

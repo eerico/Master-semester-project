@@ -29,7 +29,6 @@ FloorAndProfileViewer::~FloorAndProfileViewer()
     delete flatAction;
     delete smoothAction;
     delete pointAction;
-    delete pointSampledAction;
     delete mesh;
     delete objViewer;
 }
@@ -104,9 +103,6 @@ void FloorAndProfileViewer::createViewMenu()
     viewMenu->addAction(pointAction);
     QObject::connect(pointAction, SIGNAL(triggered()), objViewer, SLOT(pointMode()));
 
-    pointSampledAction = new QAction(tr("&Point Sampled"), this);
-    viewMenu->addAction(pointSampledAction);
-    QObject::connect(pointSampledAction, SIGNAL(triggered()), objViewer, SLOT(pointSampledMode()));
 }
 
 void FloorAndProfileViewer::aboutQtMessageBox()
@@ -149,7 +145,6 @@ void FloorAndProfileViewer::clearFile(){
     delete flatAction;
     delete smoothAction;
     delete pointAction;
-    delete pointSampledAction;
     createMenuBar();
 
     delete centralWidget;

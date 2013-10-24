@@ -39,14 +39,14 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 void ProfileScene::addVertex(QPoint mousePos)
 {
     //if clicked on an edge, add point on this edge
-    QGraphicsLineItem* currentEdge = 0;
+    Edge* currentEdge(0);
     bool foundEdge(false);
     Profile* profile = currentProfile;
     Vertex* currentVertex = profile->getProfileVertex();
 
     while(currentVertex->getNeighbor2() != 0) {
         currentEdge = currentVertex->getEdge2();
-        if (currentEdge->isUnderMouse()) {
+        if (currentEdge->getLineItem()->isUnderMouse()) {
             foundEdge = true;
             break;
         }
@@ -68,8 +68,9 @@ void ProfileScene::addVertex(QPoint mousePos)
 
         Vertex* nextVertex = currentVertex->getNeighbor2();
         Vertex* previousVertex = currentVertex;
-        QGraphicsLineItem* edge1 = previousVertex->replaceNeighbour(nextVertex, newVertex);
-        QGraphicsLineItem* edge2 = nextVertex->replaceNeighbour(previousVertex, newVertex);
+
+        Edge* edge1 = previousVertex->replaceNeighbour(nextVertex, newVertex);
+        Edge* edge2 = nextVertex->replaceNeighbour(previousVertex, newVertex);
 
 
         //set all neighbour/edges of the new vertex
@@ -81,9 +82,9 @@ void ProfileScene::addVertex(QPoint mousePos)
 
         //finally show the ellipse and delete the old edge
         this->addItem(ellipse);
-        this->addItem(edge1);
-        this->addItem(edge2);
-        this->removeItem(currentEdge);
+        this->addItem(edge1->computeLineItem());
+        this->addItem(edge2->computeLineItem());
+        this->removeItem(currentEdge->getLineItem());
         delete currentEdge;
 
         // tell the mesh to generate new point/triangle
@@ -101,7 +102,7 @@ void ProfileScene::addVertex(QPoint mousePos)
 
         this->currentProfile->addVertexEnd(newVertex);
         this->addItem(newVertex->getEllipse());
-        this->addItem(newVertex->getEdge1());
+        this->addItem(newVertex->getEdge1()->computeLineItem());
 
         // tell the mesh to generate new point/triangle
         mesh->setUpdateOnMesh();
@@ -126,21 +127,23 @@ void ProfileScene::removeVertex()
 
     // cannot remove if we do not find the vertex or if it is the first one
     if (foundVertex && currentVertex->getNeighbor1() != 0) {
-        QGraphicsLineItem* newEdge = currentVertex->removeVertex();
+        Edge* newEdge = currentVertex->removeVertex();
         this->removeItem(ellipse);
-        QGraphicsLineItem* oldEdge1 = currentVertex->getEdge1();
-        QGraphicsLineItem* oldEdge2 = currentVertex->getEdge2();
+        Edge* oldEdge1 = currentVertex->getEdge1();
+        Edge* oldEdge2 = currentVertex->getEdge2();
 
         if (currentVertex->getNeighbor1() != 0) {
-            this->removeItem(oldEdge1);
+            this->removeItem(oldEdge1->getLineItem());
+            delete oldEdge1->getLineItem();
             delete oldEdge1;
         }
         if (currentVertex->getNeighbor2() != 0) {
-            this->removeItem(oldEdge2);
+            this->removeItem(oldEdge2->getLineItem());
+            delete oldEdge2->getLineItem();
             delete oldEdge2;
         }
         if (newEdge != 0) {
-            this->addItem(newEdge);
+            this->addItem(newEdge->computeLineItem());
         }
         delete ellipse;
         delete currentVertex;
@@ -164,7 +167,7 @@ void ProfileScene::moveVertex()
 
                 // tell the mesh to generate new point/triangle
                 mesh->setLongUpdateOnMesh(true);
-                break;
+                return;
             }
             currentVertex = currentVertex->getNeighbor2();
 
@@ -238,15 +241,15 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
         Vertex* neighbor1 = currentlyMovingVertex->getNeighbor1();
         if (neighbor1 != 0){
-            QGraphicsLineItem* edge1 = currentlyMovingVertex->getEdge1();
-            edge1->setLine(ellipse->rect().center().rx(), ellipse->rect().center().ry(),
+            Edge* edge1 = currentlyMovingVertex->getEdge1();
+            edge1->getLineItem()->setLine(ellipse->rect().center().rx(), ellipse->rect().center().ry(),
                        neighbor1->getEllipse()->rect().center().rx(), neighbor1->getEllipse()->rect().center().ry());
         }
 
         Vertex* neighbor2 = currentlyMovingVertex->getNeighbor2();
         if (neighbor2 != 0) {
-            QGraphicsLineItem* edge2 = currentlyMovingVertex->getEdge2();
-            edge2->setLine(ellipse->rect().center().rx(), ellipse->rect().center().ry(),
+            Edge* edge2 = currentlyMovingVertex->getEdge2();
+            edge2->getLineItem()->setLine(ellipse->rect().center().rx(), ellipse->rect().center().ry(),
                        neighbor2->getEllipse()->rect().center().rx(), neighbor2->getEllipse()->rect().center().ry());
         }
 
@@ -266,7 +269,6 @@ void ProfileScene::newProfileSelected()
 
 void ProfileScene::loadProfile()
 {
-
     if (currentProfile != 0) {
 
         Vertex* currentVertex = currentProfile->getProfileVertex();
@@ -274,7 +276,7 @@ void ProfileScene::loadProfile()
         while(currentVertex != 0){
             this->removeItem(currentVertex->getEllipse());
             if (currentVertex->getNeighbor2() != 0) {
-                this->removeItem(currentVertex->getEdge2());
+                this->removeItem(currentVertex->getEdge2()->getLineItem());
             }
 
             currentVertex = currentVertex->getNeighbor2();
@@ -302,20 +304,18 @@ void ProfileScene::loadProfile()
         }else {
             this->addItem(currentVertex->getEllipse());
             if (currentVertex->getNeighbor2() != 0) {
-                this->addItem(currentVertex->getEdge2());
+                this->addItem(currentVertex->getEdge2()->getLineItem());
             }
         }
         currentVertex = currentVertex->getNeighbor2();
     }
 
-
     currentVertex = currentProfile->getProfileVertex();
 
-    while(currentVertex->getNeighbor2() != 0)
-    {
-        if(currentVertex->addEdge2()){
-            currentVertex->getNeighbor2()->setEdge1(currentVertex->getEdge2());
-            this->addItem(currentVertex->getEdge2());
+    // go through the vertices of the floor plan, create and draw their edges item
+    while(currentVertex->getNeighbor2() != 0){
+        if (currentVertex->getEdge2()->getLineItem() == 0) {
+            this->addItem(currentVertex->getEdge2()->computeLineItem());
         }
         currentVertex = currentVertex->getNeighbor2();
     }

@@ -2,11 +2,10 @@
 #define EDGE_H
 
 #include <QGraphicsLineItem>
-
-#include "Vertex.h"
-#include "Profile.h"
 #include "Utils.h"
 
+class Vertex;
+class Profile;
 
 class Edge
 {
@@ -25,6 +24,7 @@ public:
 
     void setLineItem(QGraphicsLineItem* item);
     QGraphicsLineItem* getLineItem();
+    QGraphicsLineItem* computeLineItem();
 
     bool isParallel(Edge* edge);
 

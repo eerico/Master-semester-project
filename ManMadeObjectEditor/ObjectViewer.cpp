@@ -63,12 +63,7 @@ void ObjectViewer::init()
          case point:
              color = qglviewer::Vec(0.0f, 0.0f, 0.0f);
              glDisable(GL_LIGHTING);
-             drawPoints(false);
-             break;
-         case pointSampled:
-             color = qglviewer::Vec(0.0f, 0.0f, 0.0f);
-             glDisable(GL_LIGHTING);
-             drawPoints(true);
+             drawPoints();
              break;
      }
 
@@ -93,17 +88,13 @@ void ObjectViewer::init()
      glEnd();
  }
 
- void ObjectViewer::drawPoints(bool sampledPoint)
+ void ObjectViewer::drawPoints()
  {
      glPointSize(1.0f);
      glBegin(GL_POINTS);
 
      std::vector<qglviewer::Vec *>* points;
-     if (sampledPoint){
-        points = mesh->getPoints(true, distanceBetweenSampleForRendering);
-     } else {
-        points = mesh->getPoints();
-     }
+     points = mesh->getPoints();
 
      unsigned int size = points->size();
      for( unsigned int i(0); i < size; ++i)
@@ -113,12 +104,6 @@ void ObjectViewer::init()
      }
 
      glEnd();
- }
-
- // press enter to stop/start animation
- void ObjectViewer::animate()
- {
-     mesh->update();
  }
 
  void ObjectViewer::closeEvent(QCloseEvent *event)
@@ -160,14 +145,6 @@ void ObjectViewer::init()
  void ObjectViewer::pointMode()
  {
      vMode = point;
-
-     // tell the mesh to generate new point/triangle
-     mesh->setUpdateOnMesh();
- }
-
- void ObjectViewer::pointSampledMode()
- {
-     vMode = pointSampled;
 
      // tell the mesh to generate new point/triangle
      mesh->setUpdateOnMesh();

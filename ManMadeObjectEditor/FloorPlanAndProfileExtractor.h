@@ -1,30 +1,32 @@
 #ifndef FLOORPLANANDPROFILEEXTRACTOR_H
 #define FLOORPLANANDPROFILEEXTRACTOR_H
 
-#include "FloorVertex.h"
-#include "ProfileDestructorManager.h"
-#include "Utils.h"
 
+//TOUT REFAIRE
+
+
+#include "Vertex.h"
+#include "Profile.h"
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 
 class FloorPlanAndProfileExtractor
 {
     typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
 
-    struct TmpFloorVertex {
+    /*struct TmpFloorVertex {
         OMMesh::Point point;
         OMMesh::Point neighbor1;
         OMMesh::Point neighbor2;
         bool neighbor1Used;
         bool neighbor2Used;
         OMMesh::VertexIter v_it;
-    };
+    };*/
 
 public:
     FloorPlanAndProfileExtractor();
-    void extract(OMMesh* inputMesh, FloorVertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize);
+    void extract(OMMesh* inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize);
 
-private:
+/*private:
     bool isSameAngle(float toX1, float toY1, float fromX1, float fromY1,
                     float toX2, float toY2, float fromX2, float fromY2);
     void extractAllPlan(OMMesh* inputMesh);
@@ -45,7 +47,7 @@ private:
 
     // pas le vrai floorplan, un cran au dessus afin d eviter d'avoir un fond plein donc que 2 neighbor au meme
     // plan par vertex!
-    int floorPlanIndex;
+    int floorPlanIndex;*/
 
 };
 

@@ -7,9 +7,10 @@
 #include <QObject>
 #include <cmath>
 
-#include "FloorVertex.h"
+#include "Vertex.h"
 #include "FloorPlanAndProfileExtractor.h"
 #include "Utils.h"
+#include "ProfileDestructorManager.h"
 
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
@@ -27,7 +28,7 @@ public:
     const std::vector<qglviewer::Vec *>& getTriangles();
     // moreSample: if we want more sample to be rendered than the number of point we really have
     // spaceBetweenSample: space between sample
-    std::vector<qglviewer::Vec*>* getPoints(bool moreSample = false, float spaceBetweenSample = 0.1f);
+    std::vector<qglviewer::Vec*>* getPoints();
 
     void update();
     unsigned int getFloorPlanSize();
@@ -37,8 +38,8 @@ public:
     Profile* getCurrentProfile();
     void setCurrentProfile(Profile* p);
     void loadMesh(QString fileName);
-    FloorVertex* getFloorPlan();
-    void setFloorPlan(FloorVertex* vertex);
+    Vertex* getFloorPlan();
+    void setFloorPlan(Vertex* vertex);
     void setUpdateOnMesh();
     void setLongUpdateOnMesh(bool b);
 
@@ -47,7 +48,7 @@ signals:
 
 private:
     std::vector<qglviewer::Vec *> triangles;
-    FloorVertex* floorPlan; // linked list, can iterate on it using the neighbor
+    Vertex* floorPlan; // linked list, can iterate on it using the neighbor
     Profile* currentProfile;
     OMMesh* inputMesh;
     bool updateOnMesh;

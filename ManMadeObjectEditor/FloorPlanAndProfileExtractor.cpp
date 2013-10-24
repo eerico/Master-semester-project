@@ -1,14 +1,19 @@
 #include "FloorPlanAndProfileExtractor.h"
 
+
+
+// TOUT REFAIRE
+
+
 FloorPlanAndProfileExtractor::FloorPlanAndProfileExtractor()
-    :intervalBetweenZValue(0.1f), totalNumPlan(11), smallestZValue(-0.5f), floorPlanIndex(0)
+    //:intervalBetweenZValue(0.1f), totalNumPlan(11), smallestZValue(-0.5f), floorPlanIndex(0)
 {
-    for(int i(0); i < totalNumPlan; ++i){
+    /*for(int i(0); i < totalNumPlan; ++i){
         std::vector<OMMesh::VertexIter>* planTmp = new std::vector<OMMesh::VertexIter>();
         plan.push_back(planTmp);
-    }
+    }*/
 }
-
+/*
 void FloorPlanAndProfileExtractor::extractAllPlan(OMMesh* inputMesh)
 {
     OMMesh::VertexIter v_it, v_end(inputMesh->vertices_end());
@@ -250,12 +255,12 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, FloorV
         floorVertexIterator= (FloorVertex*)floorVertexIterator->getNeighbor2();
     }
     currentProfile = p;
-}
+}*/
 
-void FloorPlanAndProfileExtractor::extract(OMMesh* inputMesh, FloorVertex*& floorPlan,
+void FloorPlanAndProfileExtractor::extract(OMMesh* inputMesh, Vertex*& floorPlan,
                                            Profile*& currentProfile, unsigned int& floorPlanSize)
 {
-    extractAllPlan(inputMesh);
+    /*extractAllPlan(inputMesh);
     floorPlanConstruction(floorPlan, floorPlanSize, inputMesh);
     profileConstruction(inputMesh, floorPlan, currentProfile, floorPlanSize);
 
@@ -263,9 +268,9 @@ void FloorPlanAndProfileExtractor::extract(OMMesh* inputMesh, FloorVertex*& floo
     for(int i(0); i < totalNumPlan; ++i){
         std::vector<OMMesh::VertexIter>* planTmp = plan[i];
         delete planTmp;
-    }
+    }*/
 }
-
+/*
 bool FloorPlanAndProfileExtractor::isSameAngle(float toX1, float toY1, float fromX1, float fromY1,
                                                float toX2, float toY2, float fromX2, float fromY2)
 {
@@ -286,3 +291,4 @@ bool FloorPlanAndProfileExtractor::isSameAngle(float toX1, float toY1, float fro
 
     return abs(1.0f - dotProduct) < 0.00001f;
 }
+*/

@@ -15,7 +15,6 @@ enum ViewMode {
     flat,
     smooth,
     point,
-    pointSampled
 };
 
 class ObjectViewer : public QGLViewer
@@ -25,7 +24,6 @@ public:
     ObjectViewer(Mesh* const mesh);
     void init();
     void draw();
-    void animate();
     void closeEvent(QCloseEvent *event);
 
 public slots:
@@ -34,7 +32,6 @@ public slots:
     void flatMode();
     void smoothMode();
     void pointMode();
-    void pointSampledMode();
 
 signals:
     void closeSignal();
@@ -46,7 +43,7 @@ private:
     qglviewer::Vec color;
     ViewMode vMode;
     void drawTriangles();
-    void drawPoints(bool sampledPoint);
+    void drawPoints();
 };
 
 
