@@ -6,13 +6,16 @@
 #include <QPen>
 #include <QBrush>
 #include "Edge.h"
+#include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 
 //class Edge;
 
 class Vertex
 {
+    typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
+
 public:
-    Vertex(float x, float y);
+    Vertex(float x, float y, bool addFaces=false);
     virtual ~Vertex();
 
     float getX();
@@ -34,6 +37,9 @@ public:
     void setEdge1(Edge* e);
     void setEdge2(Edge* e);
 
+    std::vector<OMMesh::FaceHandle>* getFaces();
+    void addFace(OMMesh::FaceHandle face);
+
     Edge* removeVertex();
 
 
@@ -45,6 +51,8 @@ private:
     Edge* edge1;
     Vertex *neighbor2;
     Edge* edge2;
+    bool bFaces;
+    std::vector<OMMesh::FaceHandle>* faces;
 
     QPen vertexPen;
     QBrush vertexBrush;

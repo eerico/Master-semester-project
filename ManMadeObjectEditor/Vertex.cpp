@@ -1,17 +1,27 @@
 #include "Vertex.h"
 
 
-Vertex::Vertex(float x, float y)
+Vertex::Vertex(float x, float y, bool addFaces)
     : x(x), y(y), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0)
 {
     vertexPen.setWidth(5);
     vertexPen.setColor(Qt::white);
     vertexBrush.setColor(Qt::red);
     vertexBrush.setStyle(Qt::SolidPattern);
+    bFaces = addFaces;
+    if(addFaces){
+        faces = new std::vector<OMMesh::FaceHandle>;
+    }
+
 }
+
 
 Vertex::~Vertex()
 {
+    if(bFaces){
+        faces->clear();
+        delete faces;
+    }
 
 }
 
@@ -117,4 +127,14 @@ void Vertex::setY(float i){
 void Vertex::setX(float i){
     x = i;
 }
+
+void Vertex::addFace(OMMesh::FaceHandle face){
+    faces->push_back(face);
+}
+
+std::vector<OpenMesh::PolyMesh_ArrayKernelT<>::FaceHandle >* Vertex::getFaces(){
+    return faces;
+}
+
+
 

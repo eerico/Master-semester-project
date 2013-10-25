@@ -6,6 +6,7 @@
 #include "Profile.h"
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 
+
 class FloorPlanAndProfileExtractor
 {
     typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
@@ -13,7 +14,7 @@ class FloorPlanAndProfileExtractor
 
 public:
     FloorPlanAndProfileExtractor();
-    void extract(OMMesh* inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize);
+    void extract(const OMMesh* inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize);
 };
 
 #endif // FLOORPLANANDPROFILEEXTRACTOR_H
