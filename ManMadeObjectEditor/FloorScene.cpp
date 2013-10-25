@@ -5,7 +5,7 @@ const int FloorScene::vertexRadius(6);
 
 FloorScene::FloorScene(Mesh* mesh)
     : QGraphicsScene(), ctrl_pressed(false), shift_pressed(false), mesh(mesh)
-    , currentlyMovingVertex(0), isVertexMoving(false)
+    , currentlyMovingVertex(0), isVertexMoving(false), selectedEdgeLineItem(0)
 {
     this->setSceneRect(QRectF(0, 0, 400, 600));
 }
@@ -59,9 +59,21 @@ void FloorScene::moveVertexOrLoadProfile()
     // or which edge
     currentVertex = mesh->getFloorPlan();
     Edge* currentEdge = currentVertex->getEdge2();
+    QGraphicsLineItem* currentlySelectedEdgeLineItem(0);
     for (unsigned int i(0); i < floorPlanSize; ++i) {
         if (currentEdge->getLineItem()->isUnderMouse()) {
+            currentlySelectedEdgeLineItem = currentEdge->getLineItem();
+            QPen pen = currentlySelectedEdgeLineItem->pen();
+            pen.setWidth(pen.width()* 2);
+            currentlySelectedEdgeLineItem->setPen(pen);
             newProfileSelected(currentEdge->getProfile());
+
+            if (selectedEdgeLineItem != 0) {
+                QPen pen = selectedEdgeLineItem->pen();
+                pen.setWidth(pen.width() / 2);
+                selectedEdgeLineItem->setPen(pen);
+            }
+            selectedEdgeLineItem = currentlySelectedEdgeLineItem;
             return;
         }
         currentVertex = currentVertex->getNeighbor2();
@@ -86,6 +98,7 @@ void FloorScene::removeVertex()
         QGraphicsEllipseItem* ellipse = currentVertex->getEllipse();
 
         if (ellipse->isUnderMouse()) {
+
             // first set the floorplan pointer in mesh to be the neighbor of the
             // currently deleted vertex. Because it can be the one pointed in
             // the mesh class used to iterate over the floorplan
@@ -93,6 +106,7 @@ void FloorScene::removeVertex()
 
             // we find one vertex to remove under the mouse, we remove it
             Edge* newEdge = currentVertex->removeVertex();
+
             Profile* profile = new Profile(false);
             newEdge->setProfile(profile);
             ProfileDestructorManager::putProfile(profile);
@@ -117,7 +131,6 @@ void FloorScene::removeVertex()
 
             // tell the mesh to generate new point/triangle
             mesh->setUpdateOnMesh();
-
             break;
         }
         currentVertex = currentVertex->getNeighbor2();

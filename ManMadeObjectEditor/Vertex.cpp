@@ -4,7 +4,7 @@
 Vertex::Vertex(float x, float y)
     : x(x), y(y), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0)
 {
-    vertexPen.setWidth(5);
+    vertexPen.setWidth(4);
     vertexPen.setColor(Qt::white);
     vertexBrush.setColor(Qt::red);
     vertexBrush.setStyle(Qt::SolidPattern);

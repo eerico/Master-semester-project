@@ -47,6 +47,7 @@ private:
 
     Mesh* mesh;
     Vertex* currentlyMovingVertex;
+    QGraphicsLineItem* selectedEdgeLineItem;
 
     void basicCircle(QPoint* mousePos, int numSample);
     void newProfileSelected(Profile* p);

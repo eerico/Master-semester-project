@@ -4,6 +4,7 @@ BasicQGraphicsView::BasicQGraphicsView(QGraphicsScene* parent): QGraphicsView(pa
 {
     //Use ScrollHand Drag Mode to enable Panning
         setDragMode(ScrollHandDrag);
+        //viewport()->setCursor(Qt::ArrowCursor);
 }
 
 void BasicQGraphicsView::wheelEvent(QWheelEvent* event) {
@@ -20,7 +21,6 @@ void BasicQGraphicsView::wheelEvent(QWheelEvent* event) {
         // Zooming out
         scale(1.0 / scaleFactor, 1.0 / scaleFactor);
     }
-
     // Don't call superclass handler here
     // as wheel is normally used for moving scrollbars
 }
