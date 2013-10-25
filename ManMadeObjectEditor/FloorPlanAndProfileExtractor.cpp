@@ -164,7 +164,8 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
             bool same = true;
             OMMesh::Normal normal = inputMesh->normal((*vertex->getFaces())[0]);
             for (unsigned int i=0 ; i < vertex->getFaces()->size(); i++){
-                if(inputMesh->normal((*vertex->getFaces())[i]) != normal){//normal??????
+                OMMesh::Normal comparedNormal = inputMesh->normal((*vertex->getFaces())[i]);
+                if(std::abs(comparedNormal[0] - normal[0]) + std::abs(comparedNormal[1] - normal[1]) + std::abs(comparedNormal[2] - normal[2]) > 0.001f){
                    same = false;
                    break;
                 }
@@ -180,6 +181,19 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
     }
 
 
+
+
+
+
+
+
+
+
+
+
+    /// TEST
+    /////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
     std::vector<Vertex*> level = plans[0];
     Profile* pp = new Profile(false);
     ProfileDestructorManager::putProfile(pp);
@@ -198,10 +212,6 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
     }
     currentProfile = pp;
 
-    /*for(unsigned int i(0); i < levels; ++i ) {
-        std::vector<Vertex*> level = plans[i];
-        std::cout << level.size() << std::endl;
-    }*/
 
 
     std::cerr << "-------------------- " << floorPlanSize << std::endl;
@@ -209,4 +219,6 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
         std::cerr << floorPlan->getNeighbor1() << ", " << floorPlan << ", " << floorPlan->getNeighbor2() << std::endl;
         floorPlan = floorPlan->getNeighbor2();
     }
+    /////////////////////////////////////////////////
+    /////////////////////////////////////////////////
 }
