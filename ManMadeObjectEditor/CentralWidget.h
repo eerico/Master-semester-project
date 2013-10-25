@@ -5,6 +5,9 @@
 #include <QWidget>
 #include <QGridLayout>
 #include <QGraphicsScene>
+#include <QLabel>
+#include <QPalette>
+#include <QFont>
 #include "ProfileScene.h"
 #include "FloorScene.h"
 #include "Mesh.h"
@@ -22,6 +25,13 @@ public:
     BasicQGraphicsView *floorView;
     ProfileScene *profileScene;
     BasicQGraphicsView *profileView;
+    QLabel* profileSelectedLabel;
+
+public slots:
+    void changeProfileColorIndication();
+
+private:
+    Mesh* mesh;
 
 };
 

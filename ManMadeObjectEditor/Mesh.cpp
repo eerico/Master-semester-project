@@ -130,14 +130,13 @@ void Mesh::loadMesh(QString fileName)
     //load the mesh
     //http://openmesh.org/Documentation/OpenMesh-Doc-Latest/tutorial_05.html
     inputMesh->request_vertex_normals();
+    inputMesh->request_face_normals();
     OpenMesh::IO::Options option;
     if (OpenMesh::IO::read_mesh(*inputMesh, fileName.toLocal8Bit().constData(), option)){
 
 		// compute the vertex normals if the mesh doesnt provide them
 		if (!option.check(OpenMesh::IO::Options::VertexNormal )) {
-			inputMesh->request_face_normals();
 			inputMesh->update_normals();
-			inputMesh->release_face_normals();
 		}
 	} else {
 		std::cerr << "Error while reading the mesh" << std::endl;

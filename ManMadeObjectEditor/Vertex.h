@@ -15,7 +15,7 @@ class Vertex
     typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
 
 public:
-    Vertex(float x, float y, bool addFaces=false);
+    Vertex(float x, float y, bool addFaces=false, bool valid = true);
     virtual ~Vertex();
 
     float getX();
@@ -40,6 +40,9 @@ public:
     std::vector<OMMesh::FaceHandle>* getFaces();
     void addFace(OMMesh::FaceHandle face);
 
+    bool isValid();
+    void invalid();
+
     Edge* removeVertex();
 
 
@@ -52,6 +55,7 @@ private:
     Vertex *neighbor2;
     Edge* edge2;
     bool bFaces;
+    bool valid;
     std::vector<OMMesh::FaceHandle>* faces;
 
     QPen vertexPen;

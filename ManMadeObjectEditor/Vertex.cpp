@@ -1,8 +1,8 @@
 #include "Vertex.h"
 
 
-Vertex::Vertex(float x, float y, bool addFaces)
-    : x(x), y(y), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0)
+Vertex::Vertex(float x, float y, bool addFaces, bool valid)
+    : x(x), y(y), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0), valid(valid)
 {
     vertexPen.setWidth(5);
     vertexPen.setColor(Qt::white);
@@ -136,5 +136,11 @@ std::vector<OpenMesh::PolyMesh_ArrayKernelT<>::FaceHandle >* Vertex::getFaces(){
     return faces;
 }
 
+bool Vertex::isValid() {
+    return valid;
+}
 
+void Vertex::invalid() {
+    valid = false;
+}
 

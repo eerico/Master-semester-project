@@ -15,6 +15,9 @@ public:
 protected:
     virtual void wheelEvent(QWheelEvent* event);
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void enterEvent(QEvent *event);
 };
 
 #endif // BASICQGRAPHICSVIEW_H

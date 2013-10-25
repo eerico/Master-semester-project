@@ -164,6 +164,12 @@ void ProfileScene::moveVertex()
         while(currentVertex != 0) {
             QGraphicsEllipseItem* ellipse = currentVertex->getEllipse();
             if (ellipse->isUnderMouse()) {
+
+                // cannot move the first vertex
+                if (currentVertex->getNeighbor1() == 0) {
+                    return;
+                }
+
                 isVertexMoving = true;
                 currentlyMovingVertex = currentVertex;
 
@@ -237,18 +243,28 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         float x = mousePos.x();
         float y = mousePos.y();
 
+        Vertex* neighbor1 = currentlyMovingVertex->getNeighbor1();
+        if (neighbor1 != 0){
+            if (neighbor1->getEllipse()->rect().center().ry() < y) {
+                return;
+            }
+        }
+        Vertex* neighbor2 = currentlyMovingVertex->getNeighbor2();
+        if (neighbor2 != 0){
+            if (neighbor2->getEllipse()->rect().center().ry() > y) {
+                return;
+            }
+        }
 
         QGraphicsEllipseItem* ellipse = currentlyMovingVertex->getEllipse();
         ellipse->setRect(x - vertexRadius, y - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f);
 
-        Vertex* neighbor1 = currentlyMovingVertex->getNeighbor1();
         if (neighbor1 != 0){
             Edge* edge1 = currentlyMovingVertex->getEdge1();
             edge1->getLineItem()->setLine(ellipse->rect().center().rx(), ellipse->rect().center().ry(),
                        neighbor1->getEllipse()->rect().center().rx(), neighbor1->getEllipse()->rect().center().ry());
         }
 
-        Vertex* neighbor2 = currentlyMovingVertex->getNeighbor2();
         if (neighbor2 != 0) {
             Edge* edge2 = currentlyMovingVertex->getEdge2();
             edge2->getLineItem()->setLine(ellipse->rect().center().rx(), ellipse->rect().center().ry(),
@@ -274,7 +290,6 @@ void ProfileScene::loadProfile()
     if (currentProfile != 0) {
 
         Vertex* currentVertex = currentProfile->getProfileVertex();
-
         while(currentVertex != 0){
             this->removeItem(currentVertex->getEllipse());
             if (currentVertex->getNeighbor2() != 0) {
@@ -285,13 +300,17 @@ void ProfileScene::loadProfile()
         }
     }
 
-
     currentProfile = mesh->getCurrentProfile();
+
+    if (currentProfile == 0) {
+        return;
+    }
 
     Vertex* currentVertex = currentProfile->getProfileVertex();
 
     float x(0.0f);
     float y(0.0f);
+
     while(currentVertex != 0)
     {
         if(currentVertex->getEllipse() == 0){

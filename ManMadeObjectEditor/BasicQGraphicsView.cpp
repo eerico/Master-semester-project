@@ -24,3 +24,18 @@ void BasicQGraphicsView::wheelEvent(QWheelEvent* event) {
     // Don't call superclass handler here
     // as wheel is normally used for moving scrollbars
 }
+
+void BasicQGraphicsView::mousePressEvent(QMouseEvent *event) {
+    QGraphicsView::mousePressEvent(event);
+    viewport()->setCursor(Qt::ArrowCursor);
+}
+
+void BasicQGraphicsView::mouseReleaseEvent(QMouseEvent *event) {
+    QGraphicsView::mouseReleaseEvent(event);
+    viewport()->setCursor(Qt::ArrowCursor);
+}
+
+void BasicQGraphicsView::enterEvent(QEvent *event) {
+    QGraphicsView::enterEvent(event);
+    viewport()->setCursor(Qt::ArrowCursor);
+}

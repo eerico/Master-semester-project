@@ -4,6 +4,7 @@
 
 #include "Vertex.h"
 #include "Profile.h"
+#include "ProfileDestructorManager.h"
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 
 
