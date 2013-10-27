@@ -28,6 +28,7 @@ CentralWidget::CentralWidget(Mesh* mesh) :
     QObject::connect(mesh, SIGNAL(newFloorPlan()), floorScene, SLOT(loadFloorPlan()));
     QObject::connect(mesh, SIGNAL(newFloorPlan()), profileScene, SLOT(newProfileSelected()));
     QObject::connect(floorScene, SIGNAL(newProfileSelected()), this, SLOT(changeProfileColorIndication()));
+    QObject::connect(mesh, SIGNAL(newFloorPlan()), this, SLOT(changeProfileColorIndication()));
 
     this->setLayout(layout);
     this->setMinimumSize(QSize(300, 170));

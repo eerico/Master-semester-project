@@ -3,6 +3,7 @@
 
 #include <QGraphicsLineItem>
 #include "Utils.h"
+#include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <QPen>
 #include <QBrush>
 
@@ -11,6 +12,7 @@ class Profile;
 
 class Edge
 {
+	typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
 public:
     Edge(Vertex* vertex1, Vertex* vertex2, Profile* p = 0);
     ~Edge();
@@ -29,12 +31,18 @@ public:
     QGraphicsLineItem* computeLineItem();
 
     bool isParallel(Edge* edge);
+	float distance(Edge* edge);
+    float distance(Vertex* vertex);
+
+    void setNormal(OMMesh::Normal *n);
+    OMMesh::Normal* getNormal();
 
 private:
     Vertex* vertex1;
     Vertex* vertex2;
     Profile* profile;
     QGraphicsLineItem* lineItem;
+    OMMesh::Normal *normal;
 
     QPen edgePen;
 };

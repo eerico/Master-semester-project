@@ -5,11 +5,12 @@
 
 Profile::Profile(bool empty): pVertex(0)
 {
+	pVertex = new Vertex(0,0);
     if (!empty) {
-        pVertex = new Vertex(0,0);
         initProfileSkewedLine(4);
         //initProfileBezier(10);
     }
+	
 
     profileColorIdentification = new QColor;
     profileColorIdentification->setRgb(std::rand()%256, std::rand()%256, std::rand()%256);

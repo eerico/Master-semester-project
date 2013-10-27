@@ -3,14 +3,16 @@
 #include "Profile.h"
 
 Edge::Edge(Vertex* vertex1, Vertex* vertex2, Profile* p)
-    :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0)
+    :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0)
 {
     edgePen.setWidth(3);
 }
 
 Edge::~Edge()
 {
-
+	if (normal != 0) {
+		delete normal;
+	}
 }
 
 Profile* Edge::getProfile()
@@ -95,11 +97,39 @@ bool Edge::isParallel(Edge* edge)
 
     float comparedEdgeDirectionX = toX - fromX;
     float comparedEdgeDirectionY = toY - fromY;
-    Utils::normalize(thisEdgeDirectionX, thisEdgeDirectionY);
+    Utils::normalize(comparedEdgeDirectionX, comparedEdgeDirectionY);
 
     float dotProduct = Utils::dotProduct(thisEdgeDirectionX, thisEdgeDirectionY, comparedEdgeDirectionX, comparedEdgeDirectionY);
 
     //use 0.001f for precision, what error can we consider maximal
     //before considering the two edge not parallel ?
-    return (std::abs(1.0f - dotProduct) < 0.001f) || (std::abs(-1.0f - dotProduct) < 0.001f);
+    return (std::abs(1.0f - dotProduct) < 0.01f) || (std::abs(-1.0f - dotProduct) < 0.01f);
+}
+
+// the two edges must be parallel to use this method
+float Edge::distance(Edge* edge)
+{
+	return std::min(Utils::distance(this->vertex1->getX(), this->vertex1->getY(),
+									edge->getVertex1()->getX(), edge->getVertex1()->getY()) ,
+					Utils::distance(this->vertex1->getX(), this->vertex1->getY(),
+									edge->getVertex2()->getX(), edge->getVertex2()->getY()));
+}
+
+float Edge::distance(Vertex* vertex)
+{
+    return std::min(Utils::distance(this->vertex1->getX(), this->vertex1->getY(),
+                                    vertex->getX(), vertex->getY()) ,
+                    Utils::distance(this->vertex2->getX(), this->vertex2->getY(),
+                                    vertex->getX(),vertex->getY()));
+}
+
+
+void Edge::setNormal(OMMesh::Normal *n)
+{
+    normal = n;
+}
+
+OpenMesh::PolyMesh_ArrayKernelT<>::Normal* Edge::getNormal()
+{
+    return normal;
 }

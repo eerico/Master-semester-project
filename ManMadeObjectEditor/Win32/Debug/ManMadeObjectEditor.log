@@ -1,0 +1,42 @@
+﻿Build started 27.10.2013 16:14:41.
+     1>Project "C:\Users\Nicolas\Desktop\Master semester project\GitHub2\Master-semester-project\ManMadeObjectEditor\ManMadeObjectEditor.vcxproj" on node 2 (build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(298,5): warning MSB8004: Intermediate Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Intermediate Directory.
+     1>InitializeBuildStatus:
+         Creating "Win32\Debug\ManMadeObjectEditor.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       CustomBuild:
+         All outputs are up-to-date.
+       ClCompile:
+         All outputs are up-to-date.
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"debug\\ManMadeObjectEditor.exe" /NOLOGO /LIBPATH:C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib /LIBPATH:"C:\Program Files (x86)\libQGLViewer-2.4.0\QGLViewer" /LIBPATH:"C:\Program Files (x86)\OpenMesh\lib" /LIBPATH:C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\lib glu32.lib opengl32.lib gdi32.lib user32.lib qtmaind.lib "C:\Program Files (x86)\libQGLViewer-2.4.0\QGLViewer\QGLViewer2.lib" "C:\Program Files (x86)\OpenMesh\lib\OpenMeshCored.lib" "C:\Program Files (x86)\OpenMesh\lib\OpenMeshToolsd.lib" C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib\Qt5OpenGLd.lib C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib\Qt5Widgetsd.lib C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib\Qt5Xmld.lib C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib\Qt5Guid.lib C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib\Qt5Cored.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Win32\Debug\ManMadeObjectEditor.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Nicolas\Desktop\Master semester project\GitHub2\Master-semester-project\ManMadeObjectEditor\debug\ManMadeObjectEditor.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 Win32\Debug\BasicQGraphicsView.obj
+         Win32\Debug\CentralWidget.obj
+         Win32\Debug\moc_CentralWidget.obj
+         Win32\Debug\moc_FloorAndProfileViewer.obj
+         Win32\Debug\moc_FloorScene.obj
+         Win32\Debug\moc_Mesh.obj
+         Win32\Debug\moc_ObjectViewer.obj
+         Win32\Debug\moc_ProfileScene.obj
+         Win32\Debug\Edge.obj
+         Win32\Debug\FloorAndProfileViewer.obj
+         Win32\Debug\FloorPlanAndProfileExtractor.obj
+         Win32\Debug\FloorScene.obj
+         Win32\Debug\Main.obj
+         Win32\Debug\Mesh.obj
+         Win32\Debug\ObjectViewer.obj
+         Win32\Debug\Profile.obj
+         Win32\Debug\ProfileDestructorManager.obj
+         Win32\Debug\ProfileScene.obj
+         Win32\Debug\Utils.obj
+         Win32\Debug\Vertex.obj "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" 
+         LINK : debug\\ManMadeObjectEditor.exe not found or not built by the last incremental link; performing full link
+         ManMadeObjectEditor.vcxproj -> C:\Users\Nicolas\Desktop\Master semester project\GitHub2\Master-semester-project\ManMadeObjectEditor\debug\ManMadeObjectEditor.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"debug\\ManMadeObjectEditor.exe;#1" /manifest Win32\Debug\ManMadeObjectEditor.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Win32\Debug\ManMadeObjectEditor.unsuccessfulbuild".
+         Touching "Win32\Debug\ManMadeObjectEditor.lastbuildstate".
+     1>Done Building Project "C:\Users\Nicolas\Desktop\Master semester project\GitHub2\Master-semester-project\ManMadeObjectEditor\ManMadeObjectEditor.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.85

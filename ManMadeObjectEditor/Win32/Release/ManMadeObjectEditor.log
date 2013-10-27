@@ -1,0 +1,44 @@
+﻿Build started 27.10.2013 16:56:04.
+     1>Project "C:\Users\Nicolas\Desktop\Master semester project\GitHub2\Master-semester-project\ManMadeObjectEditor\ManMadeObjectEditor.vcxproj" on node 2 (build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(298,5): warning MSB8004: Intermediate Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Intermediate Directory.
+     1>InitializeBuildStatus:
+         Touching "Win32\Release\ManMadeObjectEditor.unsuccessfulbuild".
+       CustomBuild:
+         All outputs are up-to-date.
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" /I"..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" /I..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include /I..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL /I..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets /I..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml /I..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui /I..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore /Irelease /I"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010" /Zi /nologo /W3 /WX- /O2 /Oy- /D _WINDOWS /D UNICODE /D WIN32 /D _USE_MATH_DEFINES /D QT_NO_DEBUG /D QT_OPENGL_LIB /D QT_WIDGETS_LIB /D QT_XML_LIB /D QT_GUI_LIB /D QT_CORE_LIB /D NDEBUG /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"Win32\Release\\" /Fd"Win32\Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt FloorPlanAndProfileExtractor.cpp -Zm200 -w34100 -w34189 
+         FloorPlanAndProfileExtractor.cpp
+     1>FloorPlanAndProfileExtractor.cpp(16): warning C4018: '<' : signed/unsigned mismatch
+     1>FloorPlanAndProfileExtractor.cpp(289): warning C4018: '<' : signed/unsigned mismatch
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"release\\ManMadeObjectEditor.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib /LIBPATH:"C:\Program Files (x86)\libQGLViewer-2.4.0\QGLViewer" /LIBPATH:"C:\Program Files (x86)\OpenMesh\lib" /LIBPATH:C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\lib glu32.lib opengl32.lib gdi32.lib user32.lib qtmain.lib "C:\Program Files (x86)\libQGLViewer-2.4.0\QGLViewer\QGLViewer2.lib" "C:\Program Files (x86)\OpenMesh\lib\OpenMeshCore.lib" "C:\Program Files (x86)\OpenMesh\lib\OpenMeshTools.lib" C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib\Qt5OpenGL.lib C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib\Qt5Widgets.lib C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib\Qt5Xml.lib C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib\Qt5Gui.lib C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\\lib\Qt5Core.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Win32\Release\ManMadeObjectEditor.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:"C:\Users\Nicolas\Desktop\Master semester project\GitHub2\Master-semester-project\ManMadeObjectEditor\release\ManMadeObjectEditor.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 Win32\Release\BasicQGraphicsView.obj
+         Win32\Release\CentralWidget.obj
+         Win32\Release\Edge.obj
+         Win32\Release\FloorAndProfileViewer.obj
+         Win32\Release\FloorPlanAndProfileExtractor.obj
+         Win32\Release\FloorScene.obj
+         Win32\Release\Main.obj
+         Win32\Release\Mesh.obj
+         Win32\Release\ObjectViewer.obj
+         Win32\Release\Profile.obj
+         Win32\Release\ProfileDestructorManager.obj
+         Win32\Release\ProfileScene.obj
+         Win32\Release\moc_CentralWidget.obj
+         Win32\Release\moc_FloorAndProfileViewer.obj
+         Win32\Release\moc_FloorScene.obj
+         Win32\Release\moc_Mesh.obj
+         Win32\Release\moc_ObjectViewer.obj
+         Win32\Release\moc_ProfileScene.obj
+         Win32\Release\Utils.obj
+         Win32\Release\Vertex.obj "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" 
+         ManMadeObjectEditor.vcxproj -> C:\Users\Nicolas\Desktop\Master semester project\GitHub2\Master-semester-project\ManMadeObjectEditor\release\ManMadeObjectEditor.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"release\\ManMadeObjectEditor.exe;#1" /manifest Win32\Release\ManMadeObjectEditor.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Win32\Release\ManMadeObjectEditor.unsuccessfulbuild".
+         Touching "Win32\Release\ManMadeObjectEditor.lastbuildstate".
+     1>Done Building Project "C:\Users\Nicolas\Desktop\Master semester project\GitHub2\Master-semester-project\ManMadeObjectEditor\ManMadeObjectEditor.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.59
