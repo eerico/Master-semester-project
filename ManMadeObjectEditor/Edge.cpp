@@ -101,7 +101,7 @@ bool Edge::isParallel(Edge* edge)
 
     float dotProduct = Utils::dotProduct(thisEdgeDirectionX, thisEdgeDirectionY, comparedEdgeDirectionX, comparedEdgeDirectionY);
 
-    //use 0.001f for precision, what error can we consider maximal
+    // what error can we consider maximal
     //before considering the two edge not parallel ?
     return (std::abs(1.0f - dotProduct) < 0.01f) || (std::abs(-1.0f - dotProduct) < 0.01f);
 }

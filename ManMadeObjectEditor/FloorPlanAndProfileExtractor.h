@@ -19,11 +19,11 @@ private:
     void profileConstruction(const OMMesh* inputMesh, std::vector< std::vector< Vertex* > >& plans);
     void recenter(std::vector< std::vector< Vertex* > >& plans);
     void rescale(std::vector< std::vector< Vertex* > >& plans);
-    void findMinMaxZValueMesh(const OMMesh* inputMesh, float &minZ, float &maxZ);
+    void findMinMaxYValueMesh(const OMMesh* inputMesh, float &minY, float &maxY);
     void extractAllPlans(std::vector< std::vector<Vertex*> > &plans, const OMMesh* inputMesh);
     void upsideDownCorrection(std::vector< std::vector<Vertex*> > &plans);
-    float dz;
-    float baseZ;
+    float dy;
+    float baseY;
     int levels;
 };
 
