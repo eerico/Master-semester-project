@@ -303,23 +303,29 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         if (level.size() < 3) {
             continue;
         }
-        foreach (Vertex* vertex, level) {
-            if (vertex != vertex->getNeighbor2()->getNeighbor1() && vertex == vertex->getNeighbor2()->getNeighbor2()){
-                Vertex* otherNeighbour = vertex->getNeighbor2()->getNeighbor1();
-                vertex->getNeighbor2()->setNeighbor1(vertex);
-                vertex->getNeighbor2()->setNeighbor2(otherNeighbour);
-            } else if (vertex != vertex->getNeighbor2()->getNeighbor1() && vertex == vertex->getNeighbor2()->getNeighbor2()) {
+        Vertex* firstVertex = level[0];
+        Vertex* currentVertex = level[0];
+        Vertex* nextVertex;
+
+        for(int i(1); i < level.size(); i++) {
+            nextVertex = currentVertex->getNeighbor2();
+            if(nextVertex->getNeighbor2() == currentVertex){
+                Vertex* tempV = nextVertex->getNeighbor1();
+                nextVertex->setNeighbor1(nextVertex->getNeighbor2());
+                nextVertex->setNeighbor2(tempV);
+            }
+            if(nextVertex->getNeighbor1() != currentVertex){
                 std::cerr << "Error chain construction" << std::endl;
+            } else {
+                currentVertex = nextVertex;
             }
 
-            if (vertex != vertex->getNeighbor1()->getNeighbor2() && vertex == vertex->getNeighbor1()->getNeighbor1()){
-                Vertex* otherNeighbour = vertex->getNeighbor1()->getNeighbor2();
-                vertex->getNeighbor1()->setNeighbor2(vertex);
-                vertex->getNeighbor1()->setNeighbor1(otherNeighbour);
-            } else if (vertex != vertex->getNeighbor2()->getNeighbor1() && vertex == vertex->getNeighbor2()->getNeighbor2()) {
-                std::cerr << "Error chain construction" << std::endl;
-            }
         }
+        if(currentVertex->getNeighbor2() != firstVertex){
+            std::cerr << "Error chain construction!!!!!!" << std::endl;
+
+        }
+
     }
 
 
