@@ -14,8 +14,9 @@ class FloorPlanAndProfileExtractor
 public:
     FloorPlanAndProfileExtractor();
     void extract(const OMMesh* inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize);
-
+    
 private:
+    void profileDecimation(std::vector<Vertex*>& firstFloorPlanlevel);
     void profileConstruction(const OMMesh* inputMesh, std::vector< std::vector< Vertex* > >& plans);
     void recenter(std::vector< std::vector< Vertex* > >& plans);
     void rescale(std::vector< std::vector< Vertex* > >& plans);

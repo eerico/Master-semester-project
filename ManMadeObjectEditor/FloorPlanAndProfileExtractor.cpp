@@ -4,10 +4,10 @@
 
 
 FloorPlanAndProfileExtractor::FloorPlanAndProfileExtractor()
-    :dy(0.1f), baseY(0.0f), levels(11)
+:dy(0.1f), baseY(0.0f), levels(11)
 {
-
-
+    
+    
 }
 
 void FloorPlanAndProfileExtractor::recenter(std::vector< std::vector< Vertex* > >& plans)
@@ -16,19 +16,19 @@ void FloorPlanAndProfileExtractor::recenter(std::vector< std::vector< Vertex* > 
     std::vector< Vertex* > firstLevel = plans[0];
     float centerX(0.0f);
     float centerY(0.0f);
-
+    
     unsigned int firstLevelSize = firstLevel.size();
-
+    
     for(unsigned int i(0); i < firstLevelSize; ++i)
     {
         Vertex* currentVertex = firstLevel[i];
         centerX += currentVertex->getX();
         centerY += currentVertex->getY();
     }
-
+    
     centerX /= firstLevelSize;
     centerY /= firstLevelSize;
-
+    
     //Now move each vertices
     for(unsigned int i(0); i < plans.size(); ++i) {
         std::vector< Vertex* > currentLevel = plans[i];
@@ -46,24 +46,24 @@ void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >
     std::vector< Vertex* > firstLevel = plans[0];
     float minX(FLT_MAX);
     float minY(FLT_MAX);
-
+    
     float maxX(FLT_MIN);
     float maxY(FLT_MIN);
-
+    
     unsigned int firstLevelSize = firstLevel.size();
-
+    
     for(unsigned int i(0); i < firstLevelSize; ++i)
     {
         Vertex* currentVertex = firstLevel[i];
         minX = std::min(currentVertex->getX(), minX);
         minY = std::min(currentVertex->getY(), minY);
-
+        
         maxX = std::max(currentVertex->getX(), maxX);
         maxY = std::max(currentVertex->getY(), maxY);
     }
-
+    
     float rescalFactor = std::max(std::max(std::max(maxX, maxY), -minX), -minY);
-
+    
     //Now scale the mesh
     for(unsigned int i(0); i < plans.size(); ++i) {
         std::vector< Vertex* > currentLevel = plans[i];
@@ -73,7 +73,7 @@ void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >
             currentVertex->setY(currentVertex->getY() / rescalFactor);
         }
     }
-
+    
     dy = dy / rescalFactor;
 }
 
@@ -92,20 +92,20 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
                     std::vector< OMMesh::FaceHandle>* currentFaces = current->getFaces();
                     std::vector< OMMesh::FaceHandle>* neighborFaces = neighbor->getFaces();
                     OMMesh::Normal* normal = new OMMesh::Normal(0.0f, 0.0f, 0.0f);
-
+                    
                     for(unsigned int k(0); k < currentFaces->size(); ++k) {
                         OMMesh::FaceHandle currentFace = (*currentFaces)[k];
                         for(unsigned int m(0); m < neighborFaces->size(); ++m) {
-
+                            
                             OMMesh::FaceHandle neighborFace = (*neighborFaces)[m];
                             if (currentFace.idx() == neighborFace.idx()) {
                                 (*normal) = (*normal) + inputMesh->normal(currentFace);
-
+                                
                             }
                         }
                     }
                     normal->normalize();
-
+                    
                     Edge* edge = new Edge(current, current->getNeighbor2());
                     edge->setNormal(normal);
                     current->setEdge2(edge);
@@ -117,61 +117,61 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
             }
         }
     }
-
-
+    
+    
     //Construct the profile
     std::vector<Vertex*> firstLevel = plans[0];
     for(unsigned int i(0); i < firstLevel.size(); ++i) {
         Edge* currentFirstFloorEdge = firstLevel[i]->getEdge2();
         OMMesh::Normal* currentFirstFloorEdgeNormal = currentFirstFloorEdge->getNormal();
-
+        
         Profile* currentProfile = new Profile(true);
         currentFirstFloorEdge->setProfile(currentProfile);
         ProfileDestructorManager::putProfile(currentProfile);
         for(unsigned int j(1); j < plans.size(); ++j){
             std::vector<Vertex*> level = plans[j];
-
+            
             unsigned int numberertexAtLevel = level.size();
             if (numberertexAtLevel == 1) {
                 /*Vertex* aloneVertex = level[0];
-                std::vector< OMMesh::FaceHandle>* faces = aloneVertex->getFaces();
-                OMMesh::Normal aloneVertexNormal(0.0f, 0.0f, 0.0f);
-                foreach(OMMesh::FaceHandle face, (*faces)) {
-                    aloneVertexNormal += inputMesh->normal(face);
-                }
-                aloneVertexNormal.normalize();
-
-                //check dot product between normals
-                float dotProduct = (*currentFirstFloorEdgeNormal) | aloneVertexNormal;
-
-                //if the dot product is negativ, then the two normals doesnt face toward the same direction
-                if (dotProduct >= 0.0f) {
-                    currentProfile->addVertexEnd(new Vertex(currentFirstFloorEdge->distance(level[0]), dy * j));
-                }*/
-
-
+                 std::vector< OMMesh::FaceHandle>* faces = aloneVertex->getFaces();
+                 OMMesh::Normal aloneVertexNormal(0.0f, 0.0f, 0.0f);
+                 foreach(OMMesh::FaceHandle face, (*faces)) {
+                 aloneVertexNormal += inputMesh->normal(face);
+                 }
+                 aloneVertexNormal.normalize();
+                 
+                 //check dot product between normals
+                 float dotProduct = (*currentFirstFloorEdgeNormal) | aloneVertexNormal;
+                 
+                 //if the dot product is negativ, then the two normals doesnt face toward the same direction
+                 if (dotProduct >= 0.0f) {
+                 currentProfile->addVertexEnd(new Vertex(currentFirstFloorEdge->distance(level[0]), dy * j));
+                 }*/
+                
+                
                 // Maybe we should just do nothing
             } else {
                 for(unsigned int k(0); k < numberertexAtLevel; ++k) {
                     Edge* currentFloorEdge = level[k]->getEdge2();
                     OMMesh::Normal* currentFloorEdgeNormal = currentFloorEdge->getNormal();
-
+                    
                     if(currentFirstFloorEdge->isParallel(currentFloorEdge)) {
                         //check also dot product between normals
                         float dotProduct = (*currentFirstFloorEdgeNormal) | (*currentFloorEdgeNormal);
-
+                        
                         //if the dot product is negativ, then the two edges normals doesnt face toward the same direction
                         if (dotProduct >= 0.0f) {
                             float x = currentFloorEdge->getVertex1()->getX() - currentFirstFloorEdge->getVertex1()->getX();
                             float y = currentFloorEdge->getVertex1()->getY() - currentFirstFloorEdge->getVertex1()->getY();
-
+                            
                             dotProduct = Utils::dotProduct(x, y, (*currentFirstFloorEdgeNormal)[0], (*currentFirstFloorEdgeNormal)[2]);
-
+                            
                             if(dotProduct > 0){
                                 currentProfile->addVertexEnd(new Vertex(-currentFirstFloorEdge->distance(currentFloorEdge), dy * j));
                             }else {
                                 currentProfile->addVertexEnd(new Vertex(currentFirstFloorEdge->distance(currentFloorEdge), dy * j));
-
+                                
                             }
                         }
                     }
@@ -181,7 +181,7 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
         //we can decimate the profile
         currentProfile->vertexDecimation();
     }
-
+    
 }
 
 void FloorPlanAndProfileExtractor::findMinMaxYValueMesh(const OMMesh *inputMesh, float &minY, float &maxY)
@@ -189,7 +189,7 @@ void FloorPlanAndProfileExtractor::findMinMaxYValueMesh(const OMMesh *inputMesh,
     OMMesh::VertexIter v_it, v_end(inputMesh->vertices_end());
     minY = FLT_MAX;
     maxY = FLT_MIN;
-
+    
     for (v_it = inputMesh->vertices_begin(); v_it != v_end; ++v_it) {
         minY = std::min((inputMesh->point(v_it))[1], minY);
         maxY = std::max((inputMesh->point(v_it))[1], maxY);
@@ -200,19 +200,19 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
 {
     OpenMesh::Vec3f p(0,0,0);
     OpenMesh::Vec3f n(0,1,0);
-
+    
     for (OMMesh::EdgeIter e_it=inputMesh->edges_begin(); e_it!=inputMesh->edges_end(); ++e_it) {
-
+        
         //get the 2 halfedge of this edge:
         OMMesh::HalfedgeHandle halfedge1 = inputMesh->halfedge_handle( e_it, 0);
         OMMesh::HalfedgeHandle halfedge2 = inputMesh->halfedge_handle( e_it, 1);
-
+        
         OMMesh::FaceHandle face1 = inputMesh->face_handle(halfedge1);
         OMMesh::FaceHandle face2 = inputMesh->face_handle(halfedge2);
-
+        
         OpenMesh::Vec3f startPoint = inputMesh->point( inputMesh->from_vertex_handle( halfedge1 ) );
         OpenMesh::Vec3f endPoint = inputMesh->point( inputMesh->to_vertex_handle( halfedge1 ) );
-
+        
         float minY;
         float maxY;
         if(startPoint[1] <= endPoint[1]){
@@ -222,11 +222,11 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             minY = endPoint[1];
             maxY = startPoint[1];
         }
-
+        
         // ray - plan intersection, to find the intersection
         // notation: ray: o + t*d, plan equation: (x - p) dot (n) = 0
         OpenMesh::Vec3f d = (endPoint - startPoint).normalized();
-
+        
         for (int i = 0; i < levels; i++) {
             float actualY = dy * i + baseY;
             //check that our edge is at the current height and is not parallel to our plan
@@ -234,42 +234,42 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
                 p[1] = actualY;
                 //find intersection point: //det o je ne sait pas quoi
                 float t = -OpenMesh::dot(startPoint - p,n)/OpenMesh::dot(d,n);
-
+                
                 OpenMesh::Vec3f intersectionPoint = startPoint + t*d;
-
+                
                 //if the intersection is not on our edge, we go to the next iteration
                 if ((intersectionPoint[1] > maxY + 0.001f) || (intersectionPoint[1] < minY - 0.001f)) { // how to choose this two variables (0.001f)?
                     continue;
                 }
-
+                
                 if(std::abs(intersectionPoint[1] - actualY) > 0.001f){
                     std::cerr << "intersection found at "<< intersectionPoint[1] <<  " but Y we want is: " << actualY << std::endl;
                 }
-
+                
                 bool found = false;
                 foreach (Vertex* vertex, plans[i]) {
                     if(std::abs( vertex->getX() - intersectionPoint[0]) < 0.001f
-                            && std::abs( vertex->getY() - intersectionPoint[2]) < 0.001f ){
+                       && std::abs( vertex->getY() - intersectionPoint[2]) < 0.001f ){
                         vertex->addFace(face1);
                         vertex->addFace(face2);
-
+                        
                         found = true;
                         break;
                     }
                 }
-
+                
                 if (!found){
                     Vertex* vertex   =  new Vertex(intersectionPoint[0], intersectionPoint[2], true);
                     vertex->addFace(face1);
                     vertex->addFace(face2);
                     plans[i].push_back(vertex);
                 }
-
+                
             }
-
+            
         }
     }
-
+    
     //find all neighbour in a certain floor
     foreach (std::vector<Vertex*> level, plans) {
         foreach (Vertex* vertex, level) {
@@ -278,7 +278,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
                 if(vertex == neighbour) {
                     continue;
                 }
-
+                
                 foreach (OMMesh::FaceHandle faceVertex, *vertex->getFaces()) {
                     foreach (OMMesh::FaceHandle faceNeighbour, *neighbour->getFaces()) {
                         if( faceVertex.idx() == faceNeighbour.idx() ){//check id if the face is the same it must be a neighbour
@@ -309,7 +309,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             }
         }
     }
-
+    
     //build chain at every level
     foreach (std::vector<Vertex*> level, plans) {
         if (level.size() < 3) {
@@ -318,7 +318,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         Vertex* firstVertex = level[0];
         Vertex* currentVertex = level[0];
         Vertex* nextVertex;
-
+        
         for(unsigned int i(1); i < level.size(); i++) {
             nextVertex = currentVertex->getNeighbor2();
             if(nextVertex->getNeighbor2() == currentVertex){
@@ -331,33 +331,33 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             } else {
                 currentVertex = nextVertex;
             }
-
+            
         }
         if(currentVertex->getNeighbor2() != firstVertex){
             std::cerr << "Error chain construction!!!!!!" << std::endl;
-
+            
         }
-
+        
     }
-
-
+    
+    
     ///////DEBUT TEST
     /*std::cerr <<"--------------------------" << std::endl << "avec les invalid" << std::endl;
-    int po=0;
-    foreach (std::vector<Vertex*> level, plans) {
-        std::cerr << "chain " << po << std::endl;
-        if (level.size() > 2 ) {
-        foreach (Vertex* vertex, level) {
-            std::cerr << vertex->getNeighbor1()->getX() << ", " << vertex->getNeighbor1()->getY();
-            std::cerr << " || " << vertex->getX() << ", " << vertex->getY() << " || ";
-            std::cerr << vertex->getNeighbor2()->getX() << ", " << vertex->getNeighbor2()->getY() << std::endl;
-        }
-        }
-        po++;
-    }*/
+     int po=0;
+     foreach (std::vector<Vertex*> level, plans) {
+     std::cerr << "chain " << po << std::endl;
+     if (level.size() > 2 ) {
+     foreach (Vertex* vertex, level) {
+     std::cerr << vertex->getNeighbor1()->getX() << ", " << vertex->getNeighbor1()->getY();
+     std::cerr << " || " << vertex->getX() << ", " << vertex->getY() << " || ";
+     std::cerr << vertex->getNeighbor2()->getX() << ", " << vertex->getNeighbor2()->getY() << std::endl;
+     }
+     }
+     po++;
+     }*/
     ///////FIN TEST
-
-
+    
+    
     //find vertex of v that have the same face normal delete it and replace with neigbour
     for(unsigned int j(0); j < plans.size(); ++j) {
         std::vector<Vertex*> level = plans[j];
@@ -374,34 +374,34 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             if(same){
                 vertex->getNeighbor1()->setNeighbor2(vertex->getNeighbor2());
                 vertex->getNeighbor2()->setNeighbor1(vertex->getNeighbor1());
-
+                
                 vertex->getNeighbor1()->addFace((*vertex->getFaces())[0]);
                 vertex->getNeighbor2()->addFace((*vertex->getFaces())[0]);
-
+                
                 vertex->invalid();
             }
         }
     }
-
-
+    
+    
     ///////DEBUT TEST
     /*std::cerr <<"--------------------------" << std::endl << "sans les invalid" << std::endl;
-    po=0;
-    foreach (std::vector<Vertex*> level, plans) {
-        std::cerr << "chain " << po << std::endl;
-        if (level.size() > 2 ) {
-        foreach (Vertex* vertex, level) {
-            if (vertex->isValid()) {
-            std::cerr << vertex->getNeighbor1()->getX() << ", " << vertex->getNeighbor1()->getY();
-            std::cerr << " || " << vertex->getX() << ", " << vertex->getY() << " || ";
-            std::cerr << vertex->getNeighbor2()->getX() << ", " << vertex->getNeighbor2()->getY() << std::endl;
-            }
-        }
-        }
-        po++;
-    }*/
+     po=0;
+     foreach (std::vector<Vertex*> level, plans) {
+     std::cerr << "chain " << po << std::endl;
+     if (level.size() > 2 ) {
+     foreach (Vertex* vertex, level) {
+     if (vertex->isValid()) {
+     std::cerr << vertex->getNeighbor1()->getX() << ", " << vertex->getNeighbor1()->getY();
+     std::cerr << " || " << vertex->getX() << ", " << vertex->getY() << " || ";
+     std::cerr << vertex->getNeighbor2()->getX() << ", " << vertex->getNeighbor2()->getY() << std::endl;
+     }
+     }
+     }
+     po++;
+     }*/
     ///////FIN TEST
-
+    
     //remove invalid vertex
     for(unsigned int i(0); i < plans.size(); ++i){
         std::vector<Vertex*> level = plans[i];
@@ -435,14 +435,14 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
     float minYValue(0.0f);
     float maxYValue(0.0f);
     findMinMaxYValueMesh(inputMesh, minYValue, maxYValue);
-
+    
     dy = (maxYValue - minYValue) / (levels - 1);
     baseY = minYValue;
-
+    
     std::vector< std::vector<Vertex*> > plans(levels, std::vector<Vertex*>());
-
+    
     extractAllPlans(plans, inputMesh);
-
+    
     //check that the first floor plan has at least 3 vertices
     if (plans[0].size() < 3) {
         //Maybe the mesh is upside down, we try to correct it
@@ -452,43 +452,60 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
             exit(EXIT_FAILURE);
         }
     }
-
-
+    
+    
     recenter(plans);
     rescale(plans);
-
-
-
-
-
+    
+    
+    
+    
+    
     ///////DEBUT TEST
     /*std::cerr << "-----------------------------" << std::endl;
-    int ii = 1;
-    foreach (std::vector<Vertex*> level, plans) {
-        std::cerr << "level " << ii << std::endl;
-        if(level.size() < 3) {
-            continue;
-        }
-        foreach (Vertex* vertex, level) {
-            std::cerr << vertex->getNeighbor1()->getX() << ", " << vertex->getNeighbor1()->getY() << " || " << vertex->getX() << ", " << vertex->getY() << " || " << vertex->getNeighbor2()->getX() << ", " << vertex->getNeighbor2()->getY() << std::endl;
-            std::cerr << "Valid ?" << std::endl;
-            std::cerr << vertex->getNeighbor1()->isValid() << ", " << vertex->isValid() << ", " << vertex->getNeighbor2()->isValid() << std::endl;
-        }
-        std::cerr <<std:: endl;
-        ii++;
-    }
-    std::cerr << "-----------------------------" << std::endl;*/
+     int ii = 1;
+     foreach (std::vector<Vertex*> level, plans) {
+     std::cerr << "level " << ii << std::endl;
+     if(level.size() < 3) {
+     continue;
+     }
+     foreach (Vertex* vertex, level) {
+     std::cerr << vertex->getNeighbor1()->getX() << ", " << vertex->getNeighbor1()->getY() << " || " << vertex->getX() << ", " << vertex->getY() << " || " << vertex->getNeighbor2()->getX() << ", " << vertex->getNeighbor2()->getY() << std::endl;
+     std::cerr << "Valid ?" << std::endl;
+     std::cerr << vertex->getNeighbor1()->isValid() << ", " << vertex->isValid() << ", " << vertex->getNeighbor2()->isValid() << std::endl;
+     }
+     std::cerr <<std:: endl;
+     ii++;
+     }
+     std::cerr << "-----------------------------" << std::endl;*/
     ////////FIN TEST
-
-
-
-
-
+    
+    
+    
+    
+    
     profileConstruction(inputMesh, plans);
-
+    
     std::vector<Vertex*> firstFloorPlanlevel = plans[0];
+    profileDecimation(firstFloorPlanlevel);
+    
     floorPlanSize = firstFloorPlanlevel.size();
     floorPlan = firstFloorPlanlevel[0];
     currentProfile = floorPlan->getEdge2()->getProfile();
+    
+}
 
+
+void FloorPlanAndProfileExtractor::profileDecimation(std::vector<Vertex*>& firstFloorPlanlevel){
+    foreach (Vertex* vertexP, firstFloorPlanlevel) {
+        foreach (Vertex* vertexC, firstFloorPlanlevel) {
+            if(vertexC != vertexP && vertexC->getEdge2()->getProfile()!= vertexP->getEdge2()->getProfile()){
+                if(vertexC->getEdge2()->getProfile()->isEqual(vertexP->getEdge2()->getProfile())){
+                    vertexC->getEdge2()->setProfile(vertexP->getEdge2()->getProfile());
+                }
+                
+            }
+            
+        }
+    }
 }

@@ -19,20 +19,19 @@ class CentralWidget : public QWidget
 public:
     CentralWidget(Mesh* mesh);
     ~CentralWidget();
-
+    
     QGridLayout *layout;
     FloorScene *floorScene;
     BasicQGraphicsView *floorView;
     ProfileScene *profileScene;
     BasicQGraphicsView *profileView;
-    QLabel* profileSelectedLabel;
-
-public slots:
+    
+    public slots:
     void changeProfileColorIndication();
-
+    
 private:
     Mesh* mesh;
-
+    
 };
 
 #endif // CENTRALWIDGET_H

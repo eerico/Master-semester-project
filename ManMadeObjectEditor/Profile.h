@@ -17,8 +17,10 @@ public:
     void addProfileVertex(float w, float z);
     void addVertexEnd(Vertex * v);
     void vertexDecimation();
+    bool isEqual(Profile* compareProfile);
+    
     QColor* getProfileColorIdentification();
-
+    
 private:
     Vertex* pVertex;
     void initProfileSkewedLine(int numSample);
