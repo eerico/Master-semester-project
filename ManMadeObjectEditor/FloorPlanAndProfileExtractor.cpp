@@ -168,6 +168,8 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
                 }
             }
         }
+        //we can decimate the profile
+        currentProfile->vertexDecimation();
     }
 
 }
@@ -307,7 +309,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         Vertex* currentVertex = level[0];
         Vertex* nextVertex;
 
-        for(int i(1); i < level.size(); i++) {
+        for(unsigned int i(1); i < level.size(); i++) {
             nextVertex = currentVertex->getNeighbor2();
             if(nextVertex->getNeighbor2() == currentVertex){
                 Vertex* tempV = nextVertex->getNeighbor1();
@@ -330,7 +332,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
 
 
     ///////DEBUT TEST
-    std::cerr <<"--------------------------" << std::endl << "avec les invalid" << std::endl;
+    /*std::cerr <<"--------------------------" << std::endl << "avec les invalid" << std::endl;
     int po=0;
     foreach (std::vector<Vertex*> level, plans) {
         std::cerr << "chain " << po << std::endl;
@@ -342,7 +344,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         }
         }
         po++;
-    }
+    }*/
     ///////FIN TEST
 
 
@@ -373,7 +375,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
 
 
     ///////DEBUT TEST
-    std::cerr <<"--------------------------" << std::endl << "sans les invalid" << std::endl;
+    /*std::cerr <<"--------------------------" << std::endl << "sans les invalid" << std::endl;
     po=0;
     foreach (std::vector<Vertex*> level, plans) {
         std::cerr << "chain " << po << std::endl;
@@ -387,7 +389,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         }
         }
         po++;
-    }
+    }*/
     ///////FIN TEST
 
     //remove invalid vertex
@@ -450,7 +452,7 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
 
 
     ///////DEBUT TEST
-    std::cerr << "-----------------------------" << std::endl;
+    /*std::cerr << "-----------------------------" << std::endl;
     int ii = 1;
     foreach (std::vector<Vertex*> level, plans) {
         std::cerr << "level " << ii << std::endl;
@@ -465,7 +467,7 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
         std::cerr <<std:: endl;
         ii++;
     }
-    std::cerr << "-----------------------------" << std::endl;
+    std::cerr << "-----------------------------" << std::endl;*/
     ////////FIN TEST
 
 

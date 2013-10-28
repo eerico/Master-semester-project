@@ -4,6 +4,7 @@
 #include <cmath>
 #include <QColor>
 #include "Vertex.h"
+#include "Utils.h"
 
 class Edge;
 
@@ -15,6 +16,7 @@ public:
     Vertex* getProfileVertex();
     void addProfileVertex(float w, float z);
     void addVertexEnd(Vertex * v);
+    void vertexDecimation();
     QColor* getProfileColorIdentification();
 
 private:

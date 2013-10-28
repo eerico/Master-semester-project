@@ -6,6 +6,7 @@
 Profile::Profile(bool empty): pVertex(0)
 {
 	pVertex = new Vertex(0,0);
+    pVertex->setNeighbor2(0);
     if (!empty) {
         initProfileSkewedLine(4);
         //initProfileBezier(10);
@@ -177,4 +178,39 @@ void Profile::addProfileVertex(float w, float z)
         pVertex->setNeighbor1(0);
         pVertex->setNeighbor2(0);
     }
+}
+
+void Profile::vertexDecimation()
+{
+    Vertex* next;
+    Vertex* previous;
+    Vertex* current = pVertex;
+    while(current != 0)
+    {
+        next = current->getNeighbor2();
+        previous = current->getNeighbor1();
+        std::cerr << "P : " << previous << ", " << current << ", " << next << std::endl;
+        if (next != 0 && previous != 0) {
+            float fromPreviousToCurrentX = current->getX() - previous->getX();
+            float fromPreviousToCurrentY = current->getY() - previous->getY();
+            Utils::normalize(fromPreviousToCurrentX, fromPreviousToCurrentY);
+
+            float fromCurrentToNextX = next->getX() - current->getX();
+            float fromCurrentToNextY = next->getY() - current->getY();
+            Utils::normalize(fromCurrentToNextX, fromCurrentToNextY);
+
+            float dotProduct = Utils::dotProduct(fromPreviousToCurrentX, fromPreviousToCurrentY, fromCurrentToNextX, fromCurrentToNextY);
+
+            if (std::abs(1.0 - dotProduct) < 0.001f) {
+                //we can remove this vertex, because it is on a line
+                previous->setNeighbor2(next);
+                next->setNeighbor1(previous);
+                std::cerr << "delete : " << previous << ", " << current << ", " << next << std::endl;
+                delete current;
+            }
+        }
+
+        current = next;
+    }
+
 }
