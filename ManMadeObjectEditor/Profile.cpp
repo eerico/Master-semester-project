@@ -189,7 +189,6 @@ void Profile::vertexDecimation()
     {
         next = current->getNeighbor2();
         previous = current->getNeighbor1();
-        std::cerr << "P : " << previous << ", " << current << ", " << next << std::endl;
         if (next != 0 && previous != 0) {
             float fromPreviousToCurrentX = current->getX() - previous->getX();
             float fromPreviousToCurrentY = current->getY() - previous->getY();
@@ -203,9 +202,13 @@ void Profile::vertexDecimation()
 
             if (std::abs(1.0 - dotProduct) < 0.001f) {
                 //we can remove this vertex, because it is on a line
-                previous->setNeighbor2(next);
+
+                next->setEdge1(previous->replaceNeighbour(current, next) );
                 next->setNeighbor1(previous);
-                std::cerr << "delete : " << previous << ", " << current << ", " << next << std::endl;
+                previous->setEdge2(next->getEdge1());
+
+                delete current->getEdge1();
+                delete current->getEdge2();
                 delete current;
             }
         }

@@ -162,7 +162,17 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
 
                         //if the dot product is negativ, then the two edges normals doesnt face toward the same direction
                         if (dotProduct >= 0.0f) {
-                            currentProfile->addVertexEnd(new Vertex(currentFirstFloorEdge->distance(currentFloorEdge), dy * j));
+                            float x = currentFloorEdge->getVertex1()->getX() - currentFirstFloorEdge->getVertex1()->getX();
+                            float y = currentFloorEdge->getVertex1()->getY() - currentFirstFloorEdge->getVertex1()->getY();
+
+                            dotProduct = Utils::dotProduct(x, y, (*currentFirstFloorEdgeNormal)[0], (*currentFirstFloorEdgeNormal)[2]);
+
+                            if(dotProduct > 0){
+                                currentProfile->addVertexEnd(new Vertex(-currentFirstFloorEdge->distance(currentFloorEdge), dy * j));
+                            }else {
+                                currentProfile->addVertexEnd(new Vertex(currentFirstFloorEdge->distance(currentFloorEdge), dy * j));
+
+                            }
                         }
                     }
                 }
