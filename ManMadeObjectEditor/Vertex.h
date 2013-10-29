@@ -15,7 +15,7 @@ class Vertex
     typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
 
 public:
-    Vertex(float x, float y, bool addFaces=false, bool valid = true);
+    Vertex(float x, float y, bool addFaces=false, bool valid = false);
     virtual ~Vertex();
 
     float getX();
@@ -41,6 +41,7 @@ public:
     void addFace(OMMesh::FaceHandle face);
 
     bool isValid();
+    void setValid(bool valid);
     void invalid();
 
     Edge* removeVertex();

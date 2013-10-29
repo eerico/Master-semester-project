@@ -144,3 +144,7 @@ void Vertex::invalid() {
     valid = false;
 }
 
+void Vertex::setValid(bool valid) {
+    this->valid = valid;
+}
+

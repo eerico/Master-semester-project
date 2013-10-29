@@ -26,7 +26,8 @@ SOURCES +=\
     BasicQGraphicsView.cpp \
     ProfileDestructorManager.cpp \
     Utils.cpp \
-    Edge.cpp
+    Edge.cpp \
+    AllPlanScene.cpp
 
 HEADERS  += \
     Mesh.h \
@@ -41,7 +42,8 @@ HEADERS  += \
     BasicQGraphicsView.h \
     ProfileDestructorManager.h \
     Utils.h \
-    Edge.h
+    Edge.h \
+    AllPlanScene.h
 
 #QT *= xml opengl
 

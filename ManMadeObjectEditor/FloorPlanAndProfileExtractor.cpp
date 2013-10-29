@@ -310,34 +310,62 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         }
     }
     
-    //build chain at every level
+
+    //build chain at every level  //////what if a vertex has only a neighbour???
     foreach (std::vector<Vertex*> level, plans) {
         if (level.size() < 3) {
+            foreach (Vertex* v, level) {
+                v->setValid(true);
+            }
             continue;
         }
-        Vertex* firstVertex = level[0];
-        Vertex* currentVertex = level[0];
-        Vertex* nextVertex;
-        
-        for(unsigned int i(1); i < level.size(); i++) {
+
+        while (level.size()!=0){
+            Vertex* firstVertex = level[0];
+            Vertex* currentVertex = level[0];
+            Vertex* nextVertex;
+        for(unsigned int i(0); i < level.size(); i++) {
             nextVertex = currentVertex->getNeighbor2();
+            if(nextVertex == 0){
+                std::cerr << "neigbour = 0 ; " << i << std::endl;
+                break;
+
+            }
             if(nextVertex->getNeighbor2() == currentVertex){
                 Vertex* tempV = nextVertex->getNeighbor1();
                 nextVertex->setNeighbor1(nextVertex->getNeighbor2());
                 nextVertex->setNeighbor2(tempV);
             }
-            if(nextVertex->getNeighbor1() != currentVertex){
+            if(nextVertex!= 0 && nextVertex->getNeighbor1() != currentVertex){
                 std::cerr << "Error chain construction" << std::endl;
             } else {
+                currentVertex->setValid(true);
+                if(nextVertex->isValid()){
+                    break;
+                }
+                nextVertex->setValid(true);
                 currentVertex = nextVertex;
+
             }
-            
+
         }
         if(currentVertex->getNeighbor2() != firstVertex){
-            std::cerr << "Error chain construction!!!!!!" << std::endl;
-            
+            std::cerr << level.size()<< "Error chain construction!!!!!!" << std::endl;
+
         }
-        
+
+        std::vector<Vertex*> tempLevel;
+        for (unsigned int i(0); i < level.size(); i++){
+            if(!level[i]->isValid() && level[i]->getNeighbor2()!=0){
+                tempLevel.push_back(level[i]);
+            } else if(!level[i]->isValid()) {
+                level[i]->setValid(true);
+                std::cerr << "top found!" << std::endl;
+            }
+        }
+        level = tempLevel;
+        }
+
     }
     
     
@@ -430,7 +458,8 @@ void FloorPlanAndProfileExtractor::upsideDownCorrection(std::vector<std::vector<
 }
 
 void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& floorPlan,
-                                           Profile*& currentProfile, unsigned int& floorPlanSize)
+                                           Profile*& currentProfile, unsigned int& floorPlanSize,
+                                           std::vector< std::vector< Vertex* > >& plansAbove)
 {
     float minYValue(0.0f);
     float maxYValue(0.0f);
@@ -493,6 +522,9 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
     floorPlan = firstFloorPlanlevel[0];
     currentProfile = floorPlan->getEdge2()->getProfile();
     
+    for(unsigned int i(1); i < plans.size(); ++i) {
+        plansAbove.push_back(plans[i]);
+    }
 }
 
 

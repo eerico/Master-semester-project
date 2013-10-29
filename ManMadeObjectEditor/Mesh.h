@@ -42,6 +42,7 @@ public:
     void setFloorPlan(Vertex* vertex);
     void setUpdateOnMesh();
     void setLongUpdateOnMesh(bool b);
+    std::vector< std::vector< Vertex* > >& getPlans();
 
 signals:
     void newFloorPlan();
@@ -60,6 +61,7 @@ private:
     void computeNormals();
 
     std::vector<qglviewer::Vec*>* points;
+    std::vector< std::vector< Vertex* > > plans;
 };
 
 #endif // MESH_H

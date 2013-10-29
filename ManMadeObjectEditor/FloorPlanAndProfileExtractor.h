@@ -13,7 +13,8 @@ class FloorPlanAndProfileExtractor
     typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
 public:
     FloorPlanAndProfileExtractor();
-    void extract(const OMMesh* inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize);
+    void extract(const OMMesh* inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize,
+                 std::vector< std::vector< Vertex* > >& plansAbove);
     
 private:
     void profileDecimation(std::vector<Vertex*>& firstFloorPlanlevel);

@@ -147,9 +147,9 @@ void Mesh::loadMesh(QString fileName)
 		return;
     }
 
+    plans.clear();
     FloorPlanAndProfileExtractor extractor;
-
-    extractor.extract(inputMesh, floorPlan, currentProfile, floorPlanSize);
+    extractor.extract(inputMesh, floorPlan, currentProfile, floorPlanSize, plans);
 
     emit newFloorPlan();
 
@@ -171,4 +171,8 @@ void Mesh::setLongUpdateOnMesh(bool b) {
     longUpdateOnMesh = b;
 }
 
+std::vector< std::vector< Vertex* > >& Mesh::getPlans()
+{
+    return plans;
+}
 

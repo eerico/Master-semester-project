@@ -118,6 +118,8 @@ void FloorAndProfileViewer::openFile()
     if (file.isEmpty()) {
         return;
     }
+    centralWidget->hideAllPlans();
+    centralWidget->uncheckShowPlans();
     mesh->loadMesh(file);
 }
 

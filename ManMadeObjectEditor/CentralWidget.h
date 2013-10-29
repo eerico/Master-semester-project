@@ -8,10 +8,13 @@
 #include <QLabel>
 #include <QPalette>
 #include <QFont>
+#include <QCheckBox>
+#include <QSlider>
 #include "ProfileScene.h"
 #include "FloorScene.h"
 #include "Mesh.h"
 #include "BasicQGraphicsView.h"
+#include "AllPlanScene.h"
 
 class CentralWidget : public QWidget
 {
@@ -25,13 +28,21 @@ public:
     BasicQGraphicsView *floorView;
     ProfileScene *profileScene;
     BasicQGraphicsView *profileView;
+    QCheckBox* showPlans;
+    BasicQGraphicsView *allPlanView;
+    AllPlanScene *allPlanScene;
+    QSlider *levelSelector;
     
     public slots:
     void changeProfileColorIndication();
+    void allPlans();
+    void valueSliderChanged(int level);
+    void hideAllPlans();
+    void uncheckShowPlans();
     
 private:
     Mesh* mesh;
-    
+    void showAllPlans();
 };
 
 #endif // CENTRALWIDGET_H
