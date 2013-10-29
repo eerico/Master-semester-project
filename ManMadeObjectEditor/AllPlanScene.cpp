@@ -35,10 +35,7 @@ void AllPlanScene::loadPlan(int level) {
         QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(x - vertexRadius, y - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f);
         QPen pen;
         pen.setWidth(2);
-        QBrush brush;
-        brush.setColor(QColor(1.0f, 0.0f, 0.0f));
         ellipse->setPen(pen);
-        ellipse->setBrush(brush);
         this->addItem(ellipse);
 
         Vertex* neighbor = currentVertex->getNeighbor2();
@@ -50,8 +47,7 @@ void AllPlanScene::loadPlan(int level) {
         float yn = neighbor->getY();
         Utils::adjustCoordinates3DToScene(xn, yn, thisSize.width(), thisSize.height());
 
-        QGraphicsLineItem* lineItem = new QGraphicsLineItem(x - vertexRadius, y - vertexRadius,
-                                         xn - vertexRadius, yn - vertexRadius);
+        QGraphicsLineItem* lineItem = new QGraphicsLineItem(x, y, xn, yn);
         pen.setColor(QColor(0.0f));
         lineItem->setPen(pen);
         this->addItem(lineItem);
