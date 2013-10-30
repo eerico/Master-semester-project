@@ -101,6 +101,11 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
                             if (currentFace.idx() == neighborFace.idx()) {
                                 (*normal) = (*normal) + inputMesh->normal(currentFace);
                                 
+
+
+
+                                break;
+
                             }
                         }
                     }
