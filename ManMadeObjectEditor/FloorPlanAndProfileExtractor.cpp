@@ -4,7 +4,7 @@
 
 
 FloorPlanAndProfileExtractor::FloorPlanAndProfileExtractor()
-:dy(0.1f), baseY(0.0f), levels(11)
+    :dy(0.1f), baseY(0.0f), levels(11), border(0.2f)
 {
     
     
@@ -63,6 +63,7 @@ void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >
     }
     
     float rescalFactor = std::max(std::max(std::max(maxX, maxY), -minX), -minY);
+    rescalFactor += border;
     
     //Now scale the mesh
     for(unsigned int i(0); i < plans.size(); ++i) {
@@ -127,11 +128,12 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
         Profile* currentProfile = new Profile(true);
         currentFirstFloorEdge->setProfile(currentProfile);
         ProfileDestructorManager::putProfile(currentProfile);
+
         for(unsigned int j(1); j < plans.size(); ++j){
             std::vector<Vertex*> level = plans[j];
-            
-            unsigned int numberertexAtLevel = level.size();
-            if (numberertexAtLevel == 1) {
+
+            unsigned int numberVertexAtLevel = level.size();
+            if (numberVertexAtLevel == 1) {
                 /*Vertex* aloneVertex = level[0];
                  std::vector< OMMesh::FaceHandle>* faces = aloneVertex->getFaces();
                  OMMesh::Normal aloneVertexNormal(0.0f, 0.0f, 0.0f);
@@ -151,26 +153,23 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
                 
                 // Maybe we should just do nothing
             } else {
-                for(unsigned int k(0); k < numberertexAtLevel; ++k) {
+                for(unsigned int k(0); k < numberVertexAtLevel; ++k) {
                     Edge* currentFloorEdge = level[k]->getEdge2();
                     OMMesh::Normal* currentFloorEdgeNormal = currentFloorEdge->getNormal();
-                    
+
                     if(currentFirstFloorEdge->isParallel(currentFloorEdge)) {
                         //check also dot product between normals
                         float dotProduct = (*currentFirstFloorEdgeNormal) | (*currentFloorEdgeNormal);
-                        
                         //if the dot product is negativ, then the two edges normals doesnt face toward the same direction
                         if (dotProduct >= 0.0f) {
                             float x = currentFloorEdge->getVertex1()->getX() - currentFirstFloorEdge->getVertex1()->getX();
                             float y = currentFloorEdge->getVertex1()->getY() - currentFirstFloorEdge->getVertex1()->getY();
                             
                             dotProduct = Utils::dotProduct(x, y, (*currentFirstFloorEdgeNormal)[0], (*currentFirstFloorEdgeNormal)[2]);
-                            
                             if(dotProduct > 0){
                                 currentProfile->addVertexEnd(new Vertex(-currentFirstFloorEdge->distance(currentFloorEdge), dy * j));
                             }else {
                                 currentProfile->addVertexEnd(new Vertex(currentFirstFloorEdge->distance(currentFloorEdge), dy * j));
-                                
                             }
                         }
                     }
@@ -262,10 +261,8 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
                     vertex->addFace(face1);
                     vertex->addFace(face2);
                     plans[i].push_back(vertex);
-                }
-                
-            }
-            
+                }                
+            }           
         }
     }
     
@@ -393,7 +390,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             OMMesh::Normal normal = inputMesh->normal((*vertex->getFaces())[0]);
             for (unsigned int i=0 ; i < vertex->getFaces()->size(); i++){
                 OMMesh::Normal comparedNormal = inputMesh->normal((*vertex->getFaces())[i]);
-                if(std::abs(comparedNormal[0] - normal[0]) + std::abs(comparedNormal[1] - normal[1]) + std::abs(comparedNormal[2] - normal[2]) > 0.001f){
+                if(std::abs(comparedNormal[0] - normal[0]) + std::abs(comparedNormal[1] - normal[1]) + std::abs(comparedNormal[2] - normal[2]) > 0.005f){
                     same = false;
                     break;
                 }

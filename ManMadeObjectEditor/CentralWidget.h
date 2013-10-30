@@ -20,7 +20,7 @@ class CentralWidget : public QWidget
 {
     Q_OBJECT
 public:
-    CentralWidget(Mesh* mesh);
+    CentralWidget(QWidget* parent, Mesh* mesh);
     ~CentralWidget();
     
     QGridLayout *layout;
