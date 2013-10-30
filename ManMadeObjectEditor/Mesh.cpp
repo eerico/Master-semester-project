@@ -46,6 +46,30 @@ Mesh::~Mesh()
         currentVertex = next;
     }
 
+    for(unsigned int i(0); i < plans.size(); ++i) {
+        std::vector< Vertex* > level = plans[i];
+
+        for(unsigned int j(0); j < level.size(); ++j) {
+            Vertex* vertex = level[j];
+            QGraphicsEllipseItem* ellipse = vertex->getEllipse();
+            QGraphicsLineItem* lineItem = 0;
+
+            if (vertex->getEdge2() != 0) {
+                lineItem = vertex->getEdge2()->getLineItem();
+            }
+            if(ellipse != 0) {
+                delete ellipse;
+            }
+            if(lineItem != 0) {
+                delete lineItem;
+            }
+
+            delete vertex;
+        }
+        level.clear();
+    }
+    plans.clear();
+
     delete points;
 }
 
@@ -65,7 +89,6 @@ std::vector<qglviewer::Vec*>* Mesh::getPoints()
     if (!updateOnMesh && !longUpdateOnMesh) {
         return points;
     }
-
 
     return points;
 }
@@ -105,6 +128,7 @@ void Mesh::setCurrentProfile(Profile* p)
 
 void Mesh::loadMesh(QString fileName)
 {
+    //delete old data
     if(inputMesh != 0)
     {
         delete inputMesh;
@@ -123,6 +147,30 @@ void Mesh::loadMesh(QString fileName)
     }
     floorPlanSize = 0;
     currentProfile = 0;
+
+    for(unsigned int i(0); i < plans.size(); ++i) {
+        std::vector< Vertex* > level = plans[i];
+
+        for(unsigned int j(0); j < level.size(); ++j) {
+            Vertex* vertex = level[j];
+            QGraphicsEllipseItem* ellipse = vertex->getEllipse();
+            QGraphicsLineItem* lineItem = 0;
+
+            if (vertex->getEdge2() != 0) {
+                lineItem = vertex->getEdge2()->getLineItem();
+            }
+            if(ellipse != 0) {
+                delete ellipse;
+            }
+            if(lineItem != 0) {
+                delete lineItem;
+            }
+
+            delete vertex;
+        }
+        level.clear();
+    }
+    plans.clear();
 
     // we will delete the previous profiles after having loaded the new profiles
     ProfileDestructorManager::swap();
@@ -147,7 +195,7 @@ void Mesh::loadMesh(QString fileName)
 		return;
     }
 
-    plans.clear();
+
     FloorPlanAndProfileExtractor extractor;
     extractor.extract(inputMesh, floorPlan, currentProfile, floorPlanSize, plans);
 

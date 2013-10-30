@@ -9,7 +9,7 @@ FloorAndProfileViewer::FloorAndProfileViewer()
     objViewer->setWindowTitle("Object Viewer");
     objViewer->show();
 
-    centralWidget = new CentralWidget(mesh);
+    centralWidget = new CentralWidget(this, mesh);
     this->setCentralWidget(centralWidget);
 
     createMenuBar();
@@ -133,7 +133,7 @@ void FloorAndProfileViewer::clearFile(){
     objViewer = new ObjectViewer(mesh2);
     objViewer->setWindowTitle("Object Viewer");
     objViewer->show();
-    CentralWidget* newCentralWidget = new CentralWidget(mesh2);
+    CentralWidget* newCentralWidget = new CentralWidget(this, mesh2);
     this->setCentralWidget(newCentralWidget);
 
     ProfileDestructorManager::deleteProfiles();

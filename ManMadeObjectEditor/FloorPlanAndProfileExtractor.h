@@ -27,6 +27,7 @@ private:
     float dy;
     float baseY;
     int levels;
+    float border;
 };
 
 #endif // FLOORPLANANDPROFILEEXTRACTOR_H

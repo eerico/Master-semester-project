@@ -109,18 +109,42 @@ bool Edge::isParallel(Edge* edge)
 // the two edges must be parallel to use this method
 float Edge::distance(Edge* edge)
 {
-	return std::min(Utils::distance(this->vertex1->getX(), this->vertex1->getY(),
-									edge->getVertex1()->getX(), edge->getVertex1()->getY()) ,
-					Utils::distance(this->vertex1->getX(), this->vertex1->getY(),
-									edge->getVertex2()->getX(), edge->getVertex2()->getY()));
+    return distance(edge->getVertex2());
 }
 
 float Edge::distance(Vertex* vertex)
 {
-    return std::min(Utils::distance(this->vertex1->getX(), this->vertex1->getY(),
-                                    vertex->getX(), vertex->getY()) ,
-                    Utils::distance(this->vertex2->getX(), this->vertex2->getY(),
-                                    vertex->getX(),vertex->getY()));
+    float fromX = this->getVertex1()->getX();
+    float fromY = this->getVertex1()->getY();
+    float toX = this->getVertex2()->getX();
+    float toY = this->getVertex2()->getY();
+
+    float vectorEdgeX = toX - fromX;
+    float vectorEdgeY = toY - fromY;
+
+    Utils::normalize(vectorEdgeX, vectorEdgeY);
+
+    float toXVertex = vertex->getX();
+    float toYVertex = vertex->getY();
+
+    float vectorVertexEdgeX = toXVertex - fromX;
+    float vectorVertexEdgeY = toYVertex - fromY;
+
+    Utils::normalize(vectorVertexEdgeX, vectorVertexEdgeY);
+
+    //if the two vectors are identical, the distance is 0
+    if ((std::abs(vectorEdgeX - vectorVertexEdgeX) < 0.001f) && (std::abs(vectorEdgeY - vectorVertexEdgeY) < 0.001f)) {
+        return 0.0f;
+    }
+
+    // ||a||*||b||*cos, a = b = 1 because we normalized each vector before
+    float dotProduct = Utils::dotProduct(vectorEdgeX, vectorEdgeY, vectorVertexEdgeX, vectorVertexEdgeY);
+
+    float angle = std::acosf(dotProduct);
+    float hypotenuse = Utils::distance(fromX, fromY, toXVertex, toYVertex);
+    float sinTimesHypotenuse = std::sinf(angle) * hypotenuse;
+
+    return sinTimesHypotenuse;
 }
 
 

@@ -1,7 +1,7 @@
 #include "CentralWidget.h"
 
-CentralWidget::CentralWidget(Mesh* mesh) :
-    QWidget(), mesh(mesh), allPlanView(0), allPlanScene(0), levelSelector(0)
+CentralWidget::CentralWidget(QWidget* parent, Mesh* mesh) :
+    QWidget(parent), mesh(mesh), allPlanView(0), allPlanScene(0), levelSelector(0)
 {
     layout = new QGridLayout();
     
@@ -16,7 +16,13 @@ CentralWidget::CentralWidget(Mesh* mesh) :
 
     showPlans = new QCheckBox("Show all plans");
     layout->addWidget(showPlans, 1, 0);
-    
+
+    allPlanScene = new AllPlanScene(mesh);
+    allPlanView = new BasicQGraphicsView(allPlanScene);
+    layout->addWidget(allPlanView, 0, 2);
+
+    allPlanView->hide();
+
     QObject::connect(floorScene, SIGNAL(newProfileSelected()), profileScene, SLOT(newProfileSelected()));
     QObject::connect(mesh, SIGNAL(newFloorPlan()), floorScene, SLOT(loadFloorPlan()));
     QObject::connect(mesh, SIGNAL(newFloorPlan()), profileScene, SLOT(newProfileSelected()));
@@ -26,6 +32,7 @@ CentralWidget::CentralWidget(Mesh* mesh) :
 
     this->setLayout(layout);
     this->setMinimumSize(QSize(300, 170));
+
 }
 
 void CentralWidget::changeProfileColorIndication()
@@ -34,7 +41,7 @@ void CentralWidget::changeProfileColorIndication()
     QPalette palette(this->palette());
     palette.setColor(QPalette::Window, *mesh->getCurrentProfile()->getProfileColorIdentification());
     this->setPalette(palette);
-    
+
 }
 
 void CentralWidget::valueSliderChanged(int level)
@@ -49,6 +56,9 @@ void CentralWidget::allPlans()
     } else {
         hideAllPlans();
     }
+    this->adjustSize();
+    this->parentWidget()->adjustSize();
+    this->repaint();
 }
 
 void CentralWidget::showAllPlans()
@@ -57,34 +67,26 @@ void CentralWidget::showAllPlans()
         return;
     }
 
-    allPlanScene = new AllPlanScene(mesh);
-    allPlanView = new BasicQGraphicsView(allPlanScene);
-    layout->addWidget(allPlanView, 0, 2);
     levelSelector = new QSlider(Qt::Horizontal);
 
     levelSelector->setMinimum(0);
     levelSelector->setMaximum(mesh->getPlans().size() - 1);
     layout->addWidget(levelSelector, 1, 2);
 
+    allPlanView->show();
+    levelSelector->show();
+
     allPlanScene->loadPlan(levelSelector->value());
 
     QObject::connect(levelSelector, SIGNAL(valueChanged(int)), this, SLOT(valueSliderChanged(int)));
-
 }
 
 void CentralWidget::hideAllPlans()
 {
-    if(allPlanScene != 0)  {
-        delete allPlanScene;
-        allPlanScene = 0;
-    }
-
-    if(allPlanView != 0) {
-        delete allPlanView;
-        allPlanView = 0;
-    }
+    allPlanView->hide();
 
     if(levelSelector != 0) {
+        levelSelector->hide();
         QObject::disconnect(levelSelector, SIGNAL(valueChanged(int)), this, SLOT(valueSliderChanged(int)));
 
         delete levelSelector;
