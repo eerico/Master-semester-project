@@ -47,6 +47,7 @@ void Reconstruction3D::computeIntersection()
             edgeDirectionEvent.y = profileVertex->getNeighbor2()->getY();
             priorityQueue.push(edgeDirectionEvent);
             profileVertex->invalid();// REMETTRE A VALID UNE FOIS, par exemple quand l event fais qu on passe au prochaine pVertex
+            // ou bien faire sa une seul fois dans reconstruct, pis voila, plus simple...
         }
     }
 }
@@ -95,7 +96,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float M = -J * n1 - n3 + J * n1_pp + n3_pp;
     float N = H + L * I;
     float Q = M * I + J;
-    float R = N * n1_p - p1_p * n1_p + L * n2_p - p2_p * n2_p - p3_p * n3_p - N * n1_pp + p1_pp * n1_pp - L * n2_pp + p2_pp * n2_pp - p3_pp * n3_pp;
+    float R = N * n1_p - p1_p * n1_p + L * n2_p - p2_p * n2_p - p3_p * n3_p - N * n1_pp + p1_pp * n1_pp - L * n2_pp + p2_pp * n2_pp + p3_pp * n3_pp;
     float S = Q * n1_p + M * n2_p + n3_p - Q * n1_pp - M * n2_pp - n3_pp;
 
     float x3 = -R / S;
