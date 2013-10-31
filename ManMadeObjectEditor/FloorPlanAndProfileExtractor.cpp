@@ -63,7 +63,6 @@ void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >
     }
     
     float rescalFactor = std::max(std::max(std::max(maxX, maxY), -minX), -minY);
-    std::cerr << minX << ", " << maxX << "; " << minY << ", " << maxY << " -> " << rescalFactor <<  std::endl;
     rescalFactor += border * rescalFactor;
     
     //Now scale the mesh
