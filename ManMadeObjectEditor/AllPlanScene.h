@@ -1,19 +1,19 @@
 #ifndef ALLPLANSCENE_H
 #define ALLPLANSCENE_H
 
-#include "Mesh.h"
+#include "MeshManager.h"
 #include "QGraphicsScene"
 
 class AllPlanScene : public QGraphicsScene
 {
 
 public:
-    AllPlanScene(Mesh* mesh);
+    AllPlanScene(MeshManager* meshManager);
     ~AllPlanScene();
     void loadPlan(int level);
 
 private:
-    Mesh* mesh;
+    MeshManager* meshManager;
     static const int vertexRadius;
 };
 

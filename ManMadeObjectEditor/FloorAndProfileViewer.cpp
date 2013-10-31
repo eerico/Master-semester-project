@@ -3,13 +3,13 @@
 FloorAndProfileViewer::FloorAndProfileViewer()
     : QMainWindow()
 {
-    mesh = new Mesh();
+    meshManager = new MeshManager();
 
-    objViewer = new ObjectViewer(mesh);
+    objViewer = new ObjectViewer(meshManager);
     objViewer->setWindowTitle("Object Viewer");
     objViewer->show();
 
-    centralWidget = new CentralWidget(this, mesh);
+    centralWidget = new CentralWidget(this, meshManager);
     this->setCentralWidget(centralWidget);
 
     createMenuBar();
@@ -29,7 +29,7 @@ FloorAndProfileViewer::~FloorAndProfileViewer()
     delete flatAction;
     delete smoothAction;
     delete pointAction;
-    delete mesh;
+    delete meshManager;
     delete objViewer;
 }
 
@@ -120,7 +120,7 @@ void FloorAndProfileViewer::openFile()
     }
     centralWidget->hideAllPlans();
     centralWidget->uncheckShowPlans();
-    mesh->loadMesh(file);
+    meshManager->loadMesh(file);
 }
 
 void FloorAndProfileViewer::clearFile(){
@@ -129,11 +129,11 @@ void FloorAndProfileViewer::clearFile(){
     emit closeSignal();
     QObject::disconnect(this, SIGNAL(closeSignal()), objViewer, SLOT(close()));
 
-    Mesh* mesh2 = new Mesh();
-    objViewer = new ObjectViewer(mesh2);
+    MeshManager* meshManager2 = new MeshManager();
+    objViewer = new ObjectViewer(meshManager2);
     objViewer->setWindowTitle("Object Viewer");
     objViewer->show();
-    CentralWidget* newCentralWidget = new CentralWidget(this, mesh2);
+    CentralWidget* newCentralWidget = new CentralWidget(this, meshManager2);
     this->setCentralWidget(newCentralWidget);
 
     ProfileDestructorManager::deleteProfiles();
@@ -150,9 +150,9 @@ void FloorAndProfileViewer::clearFile(){
     createMenuBar();
 
     delete centralWidget;
-    delete mesh;
+    delete meshManager;
     centralWidget = newCentralWidget;
-    mesh = mesh2;
+    meshManager = meshManager2;
 
 
     this->show();

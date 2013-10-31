@@ -1,12 +1,10 @@
 #include "ProfileScene.h"
 //#include <iostream>
 
-// Tres similaire a floorScene pour le moment mais je garde 2 classe au cas ou faut tout changer..
 const int ProfileScene::vertexRadius(6);
 
-// il va prendre de mesh le profile courant a modifier
-ProfileScene::ProfileScene(Mesh* mesh)
-    : QGraphicsScene(), mesh(mesh), isProfileSelected(false), currentProfile(0)
+ProfileScene::ProfileScene(MeshManager* meshManager)
+    : QGraphicsScene(), meshManager(meshManager), isProfileSelected(false), currentProfile(0)
     , currentlyMovingVertex(0), isVertexMoving(false)
 {
     this->setSceneRect(QRectF(0, 0, 400, 600));
@@ -87,8 +85,8 @@ void ProfileScene::addVertex(QPoint mousePos)
         this->removeItem(currentEdge->getLineItem());
         delete currentEdge;
 
-        // tell the mesh to generate new point/triangle
-        mesh->setUpdateOnMesh();
+        // tell the meshManager to generate new point/triangle
+        meshManager->setUpdateOnMesh();
     } else {
         // we don't have clicked on an edge, we will put the point at the current position
 
@@ -106,8 +104,8 @@ void ProfileScene::addVertex(QPoint mousePos)
         this->addItem(newVertex->getEllipse());
         this->addItem(newVertex->getEdge1()->computeLineItem());
 
-        // tell the mesh to generate new point/triangle
-        mesh->setUpdateOnMesh();
+        // tell the meshManager to generate new point/triangle
+        meshManager->setUpdateOnMesh();
     }
 }
 
@@ -150,8 +148,8 @@ void ProfileScene::removeVertex()
         delete ellipse;
         delete currentVertex;
 
-        // tell the mesh to generate new point/triangle
-        mesh->setUpdateOnMesh();
+        // tell the meshManager to generate new point/triangle
+        meshManager->setUpdateOnMesh();
     }
 }
 
@@ -173,8 +171,8 @@ void ProfileScene::moveVertex()
                 isVertexMoving = true;
                 currentlyMovingVertex = currentVertex;
 
-                // tell the mesh to generate new point/triangle
-                mesh->setLongUpdateOnMesh(true);
+                // tell the meshManager to generate new point/triangle
+                meshManager->setLongUpdateOnMesh(true);
                 return;
             }
             currentVertex = currentVertex->getNeighbor2();
@@ -227,7 +225,7 @@ void ProfileScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         if (isVertexMoving) {
             isVertexMoving = false;
             currentlyMovingVertex = 0;
-            mesh->setLongUpdateOnMesh(false);
+            meshManager->setLongUpdateOnMesh(false);
         }
     }
 }
@@ -300,7 +298,7 @@ void ProfileScene::loadProfile()
         }
     }
 
-    currentProfile = mesh->getCurrentProfile();
+    currentProfile = meshManager->getCurrentProfile();
 
     if (currentProfile == 0) {
         return;
@@ -342,7 +340,7 @@ void ProfileScene::loadProfile()
         currentVertex = currentVertex->getNeighbor2();
     }
 
-    // now we can delete the old profiles from the previous mesh
+    // now we can delete the old profiles from the previous meshManager
     // take the old profiles
     ProfileDestructorManager::swap();
     // destroy them

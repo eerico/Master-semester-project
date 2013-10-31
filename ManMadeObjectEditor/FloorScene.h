@@ -11,7 +11,7 @@
 #include <QGraphicsEllipseItem>
 #include <QColor>
 #include "Vertex.h"
-#include "Mesh.h"
+#include "MeshManager.h"
 #include "ProfileDestructorManager.h"
 #include "Utils.h"
 #include "Edge.h"
@@ -20,7 +20,7 @@ class FloorScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    FloorScene(Mesh* mesh);
+    FloorScene(MeshManager* meshManager);
     ~FloorScene();
 
 signals:
@@ -45,7 +45,7 @@ private:
     bool shift_pressed;
     bool isVertexMoving;
 
-    Mesh* mesh;
+    MeshManager* meshManager;
     Vertex* currentlyMovingVertex;
 
     void basicCircle(QPoint* mousePos, int numSample);

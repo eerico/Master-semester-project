@@ -1,33 +1,33 @@
 #include "CentralWidget.h"
 
-CentralWidget::CentralWidget(QWidget* parent, Mesh* mesh) :
-    QWidget(parent), mesh(mesh), allPlanView(0), allPlanScene(0), levelSelector(0)
+CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
+    QWidget(parent), meshManager(meshManager), allPlanView(0), allPlanScene(0), levelSelector(0)
 {
     layout = new QGridLayout();
     
-    floorScene = new FloorScene(mesh);
+    floorScene = new FloorScene(meshManager);
     floorView = new BasicQGraphicsView(floorScene);
     
     layout->addWidget(floorView, 0, 0);
     
-    profileScene = new ProfileScene(mesh);
+    profileScene = new ProfileScene(meshManager);
     profileView = new BasicQGraphicsView(profileScene);
     layout->addWidget(profileView, 0, 1);
 
     showPlans = new QCheckBox("Show all plans");
     layout->addWidget(showPlans, 1, 0);
 
-    allPlanScene = new AllPlanScene(mesh);
+    allPlanScene = new AllPlanScene(meshManager);
     allPlanView = new BasicQGraphicsView(allPlanScene);
     layout->addWidget(allPlanView, 0, 2);
 
     allPlanView->hide();
 
     QObject::connect(floorScene, SIGNAL(newProfileSelected()), profileScene, SLOT(newProfileSelected()));
-    QObject::connect(mesh, SIGNAL(newFloorPlan()), floorScene, SLOT(loadFloorPlan()));
-    QObject::connect(mesh, SIGNAL(newFloorPlan()), profileScene, SLOT(newProfileSelected()));
+    QObject::connect(meshManager, SIGNAL(newFloorPlan()), floorScene, SLOT(loadFloorPlan()));
+    QObject::connect(meshManager, SIGNAL(newFloorPlan()), profileScene, SLOT(newProfileSelected()));
     QObject::connect(floorScene, SIGNAL(newProfileSelected()), this, SLOT(changeProfileColorIndication()));
-    QObject::connect(mesh, SIGNAL(newFloorPlan()), this, SLOT(changeProfileColorIndication()));
+    QObject::connect(meshManager, SIGNAL(newFloorPlan()), this, SLOT(changeProfileColorIndication()));
     QObject::connect(showPlans, SIGNAL(clicked()), this, SLOT(allPlans()));
 
     this->setLayout(layout);
@@ -39,7 +39,7 @@ void CentralWidget::changeProfileColorIndication()
 {
     this->setAutoFillBackground(true);
     QPalette palette(this->palette());
-    palette.setColor(QPalette::Window, *mesh->getCurrentProfile()->getProfileColorIdentification());
+    palette.setColor(QPalette::Window, *meshManager->getCurrentProfile()->getProfileColorIdentification());
     this->setPalette(palette);
 
 }
@@ -63,14 +63,14 @@ void CentralWidget::allPlans()
 
 void CentralWidget::showAllPlans()
 {
-    if (mesh->getPlans().size() == 0) {
+    if (meshManager->getPlans().size() == 0) {
         return;
     }
 
     levelSelector = new QSlider(Qt::Horizontal);
 
     levelSelector->setMinimum(0);
-    levelSelector->setMaximum(mesh->getPlans().size() - 1);
+    levelSelector->setMaximum(meshManager->getPlans().size() - 1);
     layout->addWidget(levelSelector, 1, 2);
 
     allPlanView->show();

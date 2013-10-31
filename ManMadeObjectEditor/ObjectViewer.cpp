@@ -3,8 +3,8 @@
 const qglviewer::Vec ObjectViewer::defaultColor(0.5f, 0.5f, 0.5f);
 const float ObjectViewer::distanceBetweenSampleForRendering(0.01f);
 
-ObjectViewer::ObjectViewer(Mesh* const mesh)
-    :mesh(mesh), vMode(point), color(defaultColor)
+ObjectViewer::ObjectViewer(MeshManager* const meshManager)
+    :meshManager(meshManager), vMode(point), color(defaultColor)
 {
 
 }
@@ -77,7 +77,7 @@ void ObjectViewer::init()
  {
      glBegin(GL_TRIANGLES);
 
-     const std::vector<qglviewer::Vec *> triangles = mesh->getTriangles();
+     const std::vector<qglviewer::Vec *> triangles = meshManager->getTriangles();
      unsigned int size = triangles.size();
      for( unsigned int i(0); i < size; ++i)
      {
@@ -94,7 +94,7 @@ void ObjectViewer::init()
      glBegin(GL_POINTS);
 
      std::vector<qglviewer::Vec *>* points;
-     points = mesh->getPoints();
+     points = meshManager->getPoints();
 
      unsigned int size = points->size();
      for( unsigned int i(0); i < size; ++i)
@@ -121,16 +121,16 @@ void ObjectViewer::init()
  {
      vMode = wireframe;
 
-     // tell the mesh to generate new point/triangle
-     mesh->setUpdateOnMesh();
+     // tell the meshManager to generate new point/triangle
+     meshManager->setUpdateOnMesh();
  }
 
  void ObjectViewer::flatMode()
  {
     vMode = flat;
 
-    // tell the mesh to generate new point/triangle
-    mesh->setUpdateOnMesh();
+    // tell the meshManager to generate new point/triangle
+    meshManager->setUpdateOnMesh();
  }
 
 
@@ -138,15 +138,15 @@ void ObjectViewer::init()
  {
      vMode = smooth;
 
-     // tell the mesh to generate new point/triangle
-     mesh->setUpdateOnMesh();
+     // tell the meshManager to generate new point/triangle
+     meshManager->setUpdateOnMesh();
  }
 
  void ObjectViewer::pointMode()
  {
      vMode = point;
 
-     // tell the mesh to generate new point/triangle
-     mesh->setUpdateOnMesh();
+     // tell the meshManager to generate new point/triangle
+     meshManager->setUpdateOnMesh();
  }
 

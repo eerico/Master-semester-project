@@ -2,8 +2,8 @@
 
 const int AllPlanScene::vertexRadius(2);
 
-AllPlanScene::AllPlanScene(Mesh* mesh)
-: QGraphicsScene(), mesh(mesh)
+AllPlanScene::AllPlanScene(MeshManager* meshManager)
+: QGraphicsScene(), meshManager(meshManager)
 {
     this->setSceneRect(QRectF(0, 0, 400, 600));
 }
@@ -16,7 +16,7 @@ AllPlanScene::~AllPlanScene()
 void AllPlanScene::loadPlan(int level) {
     this->clear();
 
-    std::vector< std::vector< Vertex* > > plans = mesh->getPlans();
+    std::vector< std::vector< Vertex* > > plans = meshManager->getPlans();
 
 
     std::vector< Vertex* > plan = plans[level];

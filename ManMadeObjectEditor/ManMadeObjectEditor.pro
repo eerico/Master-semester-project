@@ -15,7 +15,6 @@ TEMPLATE = app
 SOURCES +=\
         ObjectViewer.cpp \
     Main.cpp \
-    Mesh.cpp \
     Profile.cpp \
     FloorAndProfileViewer.cpp \
     CentralWidget.cpp \
@@ -27,10 +26,11 @@ SOURCES +=\
     ProfileDestructorManager.cpp \
     Utils.cpp \
     Edge.cpp \
-    AllPlanScene.cpp
+    AllPlanScene.cpp \
+    Reconstruction3D.cpp \
+    MeshManager.cpp
 
 HEADERS  += \
-    Mesh.h \
     ObjectViewer.h \
     Profile.h \
     FloorAndProfileViewer.h \
@@ -43,7 +43,9 @@ HEADERS  += \
     ProfileDestructorManager.h \
     Utils.h \
     Edge.h \
-    AllPlanScene.h
+    AllPlanScene.h \
+    Reconstruction3D.h \
+    MeshManager.h
 
 #QT *= xml opengl
 

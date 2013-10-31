@@ -12,7 +12,7 @@
 #include <QString>
 #include <QMessageBox>
 #include "ObjectViewer.h"
-#include "Mesh.h"
+#include "MeshManager.h"
 #include "ObjectViewer.h"
 
 class FloorAndProfileViewer : public QMainWindow
@@ -41,7 +41,7 @@ signals:
 private:
     CentralWidget* centralWidget;
     ObjectViewer* objViewer;
-    Mesh* mesh;
+    MeshManager* meshManager;
     QMenu* fileMenu;
     QAction* openAction;
     QAction* clearAction;

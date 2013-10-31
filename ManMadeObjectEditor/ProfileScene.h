@@ -11,7 +11,7 @@
 #include <QGraphicsEllipseItem>
 #include <QList>
 #include "Profile.h"
-#include "Mesh.h"
+#include "MeshManager.h"
 #include "Utils.h"
 #include "Edge.h"
 #include "ProfileDestructorManager.h"
@@ -20,7 +20,7 @@ class ProfileScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    ProfileScene(Mesh* mesh);
+    ProfileScene(MeshManager* meshManager);
     ~ProfileScene();
 
 public slots:
@@ -44,7 +44,7 @@ private:
     bool isVertexMoving;
 
     static const int vertexRadius;
-    Mesh* mesh;
+    MeshManager* meshManager;
     Profile* currentProfile;
 
     void basicBezier(QPoint* mousePos, int numSample);

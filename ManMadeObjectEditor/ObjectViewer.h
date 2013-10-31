@@ -1,7 +1,7 @@
 #ifndef OBJECTVIEWER_H
 #define OBJECTVIEWER_H
 
-#include "Mesh.h"
+#include "MeshManager.h"
 #include <vector>
 #include <QGLViewer/qglviewer.h>
 #include <QCloseEvent>
@@ -21,7 +21,7 @@ class ObjectViewer : public QGLViewer
 {
     Q_OBJECT
 public:
-    ObjectViewer(Mesh* const mesh);
+    ObjectViewer(MeshManager* const meshManager);
     void init();
     void draw();
     void closeEvent(QCloseEvent *event);
@@ -37,7 +37,7 @@ signals:
     void closeSignal();
 
 private:
-    Mesh* mesh;
+    MeshManager* meshManager;
     static const qglviewer::Vec defaultColor;
     static const float distanceBetweenSampleForRendering;
     qglviewer::Vec color;

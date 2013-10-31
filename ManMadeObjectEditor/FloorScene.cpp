@@ -3,8 +3,8 @@
 
 const int FloorScene::vertexRadius(6);
 
-FloorScene::FloorScene(Mesh* mesh)
-: QGraphicsScene(), ctrl_pressed(false), shift_pressed(false), mesh(mesh)
+FloorScene::FloorScene(MeshManager* meshManager)
+: QGraphicsScene(), ctrl_pressed(false), shift_pressed(false), meshManager(meshManager)
 , currentlyMovingVertex(0), isVertexMoving(false)
 {
     this->setSceneRect(QRectF(0, 0, 400, 600));
@@ -23,7 +23,7 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
         } else if (shift_pressed) {
             removeVertex();
         } else {
-            unsigned int floorPlanSize = mesh->getFloorPlanSize();
+            unsigned int floorPlanSize = meshManager->getFloorPlanSize();
             
             // we have have at least one vertex on the floor plan, if we click on it, we can move it
             // or if we do not have clicked on a vertex, but on an edge, we load his profile
@@ -41,23 +41,23 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 
 void FloorScene::moveVertexOrLoadProfile()
 {
-    unsigned int floorPlanSize = mesh->getFloorPlanSize();
+    unsigned int floorPlanSize = meshManager->getFloorPlanSize();
     // find which vertex we have selected
-    Vertex* currentVertex = mesh->getFloorPlan();
+    Vertex* currentVertex = meshManager->getFloorPlan();
     for (unsigned int i(0); i < floorPlanSize; ++i) {
         QGraphicsEllipseItem* ellipse = currentVertex->getEllipse();
         if (ellipse->isUnderMouse()) {
             isVertexMoving = true;
             currentlyMovingVertex = currentVertex;
-            // tell the mesh to generate new point/triangle
-            mesh->setLongUpdateOnMesh(true);
+            // tell the meshManager to generate new point/triangle
+            meshManager->setLongUpdateOnMesh(true);
             return;
         }
         currentVertex = currentVertex->getNeighbor2();
     }
     
     // or which edge
-    currentVertex = mesh->getFloorPlan();
+    currentVertex = meshManager->getFloorPlan();
     Edge* currentEdge = currentVertex->getEdge2();
     for (unsigned int i(0); i < floorPlanSize; ++i) {
         if (currentEdge->getLineItem()->isUnderMouse()) {
@@ -72,8 +72,8 @@ void FloorScene::moveVertexOrLoadProfile()
 void FloorScene::removeVertex()
 {
     //remove point if clicked on a point
-    Vertex* floorplan = mesh->getFloorPlan();
-    unsigned int floorPlanSize = mesh->getFloorPlanSize();
+    Vertex* floorplan = meshManager->getFloorPlan();
+    unsigned int floorPlanSize = meshManager->getFloorPlanSize();
     
     if (floorPlanSize <= 3) {
         return;
@@ -86,10 +86,10 @@ void FloorScene::removeVertex()
         QGraphicsEllipseItem* ellipse = currentVertex->getEllipse();
         
         if (ellipse->isUnderMouse()) {
-            // first set the floorplan pointer in mesh to be the neighbor of the
+            // first set the floorplan pointer in meshManager to be the neighbor of the
             // currently deleted vertex. Because it can be the one pointed in
-            // the mesh class used to iterate over the floorplan
-            mesh->setFloorPlan(currentVertex->getNeighbor2());
+            // the meshManager class used to iterate over the floorplan
+            meshManager->setFloorPlan(currentVertex->getNeighbor2());
             
             // we find one vertex to remove under the mouse, we remove it
             Edge* newEdge = currentVertex->removeVertex();
@@ -113,10 +113,10 @@ void FloorScene::removeVertex()
             delete currentVertex;
             
             
-            mesh->decrementFloorPlanSize();
+            meshManager->decrementFloorPlanSize();
             
-            // tell the mesh to generate new point/triangle
-            mesh->setUpdateOnMesh();
+            // tell the meshManager to generate new point/triangle
+            meshManager->setUpdateOnMesh();
             
             break;
         }
@@ -127,8 +127,8 @@ void FloorScene::removeVertex()
 void FloorScene::addVertex(QPoint mousePos)
 {
     //add point if clicked on an edge
-    Vertex* floorplan = mesh->getFloorPlan();
-    unsigned int floorPlanSize = mesh->getFloorPlanSize();
+    Vertex* floorplan = meshManager->getFloorPlan();
+    unsigned int floorPlanSize = meshManager->getFloorPlanSize();
     
     Vertex* previousVertex = floorplan;
     Vertex* nextVertex;
@@ -171,15 +171,15 @@ void FloorScene::addVertex(QPoint mousePos)
         newVertex->setNeighbor2(nextVertex); //addNeighbor
         newVertex->setEdge2(edge2);
         
-        //finally add the new vertex to the mesh, show the ellipse and delete the old edge
-        mesh->incrementFloorPlanSize();
+        //finally add the new vertex to the meshManager, show the ellipse and delete the old edge
+        meshManager->incrementFloorPlanSize();
         this->addItem(ellipse);
         this->addItem(edge1->computeLineItem());
         this->addItem(edge2->computeLineItem());
         this->removeItem(currentEdge->getLineItem());
         delete currentEdge;
-        // tell the mesh to generate new point/triangle
-        mesh->setUpdateOnMesh();
+        // tell the meshManager to generate new point/triangle
+        meshManager->setUpdateOnMesh();
     }
 }
 
@@ -216,8 +216,8 @@ void FloorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         if (isVertexMoving) {
             isVertexMoving = false;
             currentlyMovingVertex = 0;
-            // tell the mesh to generate new point/triangle
-            mesh->setLongUpdateOnMesh(false);
+            // tell the meshManager to generate new point/triangle
+            meshManager->setLongUpdateOnMesh(false);
         }
     }
 }
@@ -280,12 +280,12 @@ void FloorScene::basicCircle(QPoint *mousePos, int numSample)
         
         if (i == 0) {
             firstVertex = new Vertex(x, y);
-            mesh->setFloorPlan(firstVertex);
-            mesh->incrementFloorPlanSize();
+            meshManager->setFloorPlan(firstVertex);
+            meshManager->incrementFloorPlanSize();
             previousVertex = firstVertex;
         } else {
             currentVertex = new Vertex(x, y);
-            mesh->incrementFloorPlanSize();
+            meshManager->incrementFloorPlanSize();
             previousVertex->setNeighbor2(currentVertex);//addNeighbor
             currentVertex->setNeighbor1(previousVertex);//addNeighbor
             
@@ -307,21 +307,21 @@ void FloorScene::basicCircle(QPoint *mousePos, int numSample)
     newProfileSelected(commonProfile);
     loadFloorPlan();
     
-    // tell the mesh to generate new point/triangle
-    mesh->setUpdateOnMesh();
+    // tell the meshManager to generate new point/triangle
+    meshManager->setUpdateOnMesh();
 }
 
 void FloorScene::newProfileSelected(Profile* p)
 {
-    mesh->setCurrentProfile(p);
+    meshManager->setCurrentProfile(p);
     emit newProfileSelected();
 }
 
 void FloorScene::loadFloorPlan() {
     this->clear();
     
-    Vertex* floorplan = mesh->getFloorPlan();
-    unsigned int floorPlanSize = mesh->getFloorPlanSize();
+    Vertex* floorplan = meshManager->getFloorPlan();
+    unsigned int floorPlanSize = meshManager->getFloorPlanSize();
     float x(0.0f);
     float y(0.0f);
     Vertex* currentVertex = floorplan;
@@ -353,8 +353,8 @@ void FloorScene::loadFloorPlan() {
         currentVertex = currentVertex->getNeighbor2();
     }
     
-    // tell the mesh to generate new point/triangle
-    mesh->setUpdateOnMesh();
+    // tell the meshManager to generate new point/triangle
+    meshManager->setUpdateOnMesh();
 }
 
 

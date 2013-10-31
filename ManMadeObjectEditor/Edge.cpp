@@ -140,9 +140,9 @@ float Edge::distance(Vertex* vertex)
     // ||a||*||b||*cos, a = b = 1 because we normalized each vector before
     float dotProduct = Utils::dotProduct(vectorEdgeX, vectorEdgeY, vectorVertexEdgeX, vectorVertexEdgeY);
 
-    float angle = std::acosf(dotProduct);
+    float angle = std::acos(dotProduct);
     float hypotenuse = Utils::distance(fromX, fromY, toXVertex, toYVertex);
-    float sinTimesHypotenuse = std::sinf(angle) * hypotenuse;
+    float sinTimesHypotenuse = std::sin(angle) * hypotenuse;
 
     return sinTimesHypotenuse;
 }

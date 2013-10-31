@@ -12,7 +12,7 @@
 #include <QSlider>
 #include "ProfileScene.h"
 #include "FloorScene.h"
-#include "Mesh.h"
+#include "MeshManager.h"
 #include "BasicQGraphicsView.h"
 #include "AllPlanScene.h"
 
@@ -20,7 +20,7 @@ class CentralWidget : public QWidget
 {
     Q_OBJECT
 public:
-    CentralWidget(QWidget* parent, Mesh* mesh);
+    CentralWidget(QWidget* parent, MeshManager* meshManager);
     ~CentralWidget();
     
     QGridLayout *layout;
@@ -41,7 +41,7 @@ public:
     void uncheckShowPlans();
     
 private:
-    Mesh* mesh;
+    MeshManager* meshManager;
     void showAllPlans();
 };
 
