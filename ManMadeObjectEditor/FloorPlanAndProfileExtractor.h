@@ -13,7 +13,7 @@ class FloorPlanAndProfileExtractor
     typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
 public:
     FloorPlanAndProfileExtractor();
-    void extract(const OMMesh* inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize,
+    bool extract(const OMMesh* inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize,
                  std::vector< std::vector< Vertex* > >& plansAbove);
     
 private:
@@ -22,7 +22,7 @@ private:
     void recenter(std::vector< std::vector< Vertex* > >& plans);
     void rescale(std::vector< std::vector< Vertex* > >& plans);
     void findMinMaxYValueMesh(const OMMesh* inputMesh, float &minY, float &maxY);
-    void extractAllPlans(std::vector< std::vector<Vertex*> > &plans, const OMMesh* inputMesh);
+    bool extractAllPlans(std::vector< std::vector<Vertex*> > &plans, const OMMesh* inputMesh);
     void upsideDownCorrection(std::vector< std::vector<Vertex*> > &plans);
     float dy;
     float baseY;

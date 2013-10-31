@@ -1,4 +1,6 @@
 #include "MeshManager.h"
+#include <QMessageBox>
+
 
 MeshManager::MeshManager(): inputMesh(0), floorPlan(0), updateOnMesh(false), longUpdateOnMesh(false), floorPlanSize(0)
 {
@@ -190,7 +192,7 @@ void MeshManager::loadMesh(QString fileName)
 		// compute the vertex normals if the mesh doesnt provide them
 		if (!option.check(OpenMesh::IO::Options::VertexNormal )) {
 			inputMesh->update_normals();
-		}
+        }
 	} else {
 		std::cerr << "Error while reading the mesh" << std::endl;
 
@@ -202,9 +204,13 @@ void MeshManager::loadMesh(QString fileName)
 
 
     FloorPlanAndProfileExtractor extractor;
-    extractor.extract(inputMesh, floorPlan, currentProfile, floorPlanSize, plans);
-
-    emit newFloorPlan();
+    if(extractor.extract(inputMesh, floorPlan, currentProfile, floorPlanSize, plans))
+    {
+         emit newFloorPlan();
+    } else {
+        QMessageBox messageBox;
+        messageBox.critical(0,"Error","Impossible to import this mesh!");
+    }
 
     delete inputMesh;
     inputMesh = 0;

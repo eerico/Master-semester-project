@@ -194,7 +194,7 @@ void FloorPlanAndProfileExtractor::findMinMaxYValueMesh(const OMMesh *inputMesh,
     }
 }
 
-void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Vertex *> > &plans, const OMMesh *inputMesh)
+bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Vertex *> > &plans, const OMMesh *inputMesh)
 {
     OpenMesh::Vec3f p(0,0,0);
     OpenMesh::Vec3f n(0,1,0);
@@ -334,6 +334,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             }
             if(nextVertex!= 0 && nextVertex->getNeighbor1() != currentVertex){
                 std::cerr << "Error chain construction" << std::endl;
+                return false;
             } else {
                 currentVertex->setValid(true);
                 if(nextVertex->isValid()){
@@ -347,7 +348,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         }
         if(currentVertex->getNeighbor2() != firstVertex){
             std::cerr << level.size()<< "Error chain construction!!!!!!" << std::endl;
-
+            return false;
         }
 
         std::vector<Vertex*> tempLevel;
@@ -389,7 +390,11 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             bool same = true;
             OMMesh::Normal normal = inputMesh->normal((*vertex->getFaces())[0]);
             for (unsigned int i=0 ; i < vertex->getFaces()->size(); i++){
-                OMMesh::Normal comparedNormal = inputMesh->normal((*vertex->getFaces())[i]);
+                OMMesh::FaceHandle face = (*vertex->getFaces())[i];
+                if (face.idx() < 0){
+                    return false;
+                }
+                OMMesh::Normal comparedNormal = inputMesh->normal(face);
                 if(std::abs(comparedNormal[0] - normal[0]) + std::abs(comparedNormal[1] - normal[1]) + std::abs(comparedNormal[2] - normal[2]) > 0.005f){
                     same = false;
                     break;
@@ -438,6 +443,7 @@ void FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         }
         plans[i] = newLevel;
     }
+    return true;
 }
 
 void FloorPlanAndProfileExtractor::upsideDownCorrection(std::vector<std::vector<Vertex *> > &plans)
@@ -453,7 +459,7 @@ void FloorPlanAndProfileExtractor::upsideDownCorrection(std::vector<std::vector<
     }
 }
 
-void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& floorPlan,
+bool FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& floorPlan,
                                            Profile*& currentProfile, unsigned int& floorPlanSize,
                                            std::vector< std::vector< Vertex* > >& plansAbove)
 {
@@ -466,7 +472,9 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
     
     std::vector< std::vector<Vertex*> > plans(levels, std::vector<Vertex*>());
     
-    extractAllPlans(plans, inputMesh);
+    if(!extractAllPlans(plans, inputMesh)){
+        return false;
+    }
     
     //check that the first floor plan has at least 3 vertices
     if (plans[0].size() < 3) {
@@ -474,7 +482,7 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
         upsideDownCorrection(plans);
         if (plans[0].size() < 3) {
             std::cerr << "First floor plans has less than 3 vertices!" << std::endl;
-            exit(EXIT_FAILURE);
+            return false;
         }
     }
     
@@ -521,6 +529,7 @@ void FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
     for(unsigned int i(1); i < plans.size(); ++i) {
         plansAbove.push_back(plans[i]);
     }
+    return true;
 }
 
 
