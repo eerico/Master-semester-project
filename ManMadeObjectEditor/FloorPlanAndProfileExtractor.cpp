@@ -153,6 +153,8 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
                 
                 // Maybe we should just do nothing
             } else {
+                float minDistance = FLT_MAX;
+                float sign = 1.0f;
                 for(unsigned int k(0); k < numberVertexAtLevel; ++k) {
                     Edge* currentFloorEdge = level[k]->getEdge2();
                     OMMesh::Normal* currentFloorEdgeNormal = currentFloorEdge->getNormal();
@@ -165,14 +167,23 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
                             float x = currentFloorEdge->getVertex1()->getX() - currentFirstFloorEdge->getVertex1()->getX();
                             float y = currentFloorEdge->getVertex1()->getY() - currentFirstFloorEdge->getVertex1()->getY();
                             
-                            dotProduct = Utils::dotProduct(x, y, (*currentFirstFloorEdgeNormal)[0], (*currentFirstFloorEdgeNormal)[2]);
-                            if(dotProduct > 0){
-                                currentProfile->addVertexEnd(new Vertex(-currentFirstFloorEdge->distance(currentFloorEdge), dy * j));
-                            }else {
-                                currentProfile->addVertexEnd(new Vertex(currentFirstFloorEdge->distance(currentFloorEdge), dy * j));
+                            float distance = currentFirstFloorEdge->distance(currentFloorEdge);
+                            // if two edge are parallel but should be connected with a profile, we can
+                            // first check if there is not a better candidate (that is closer)
+                            if(distance < minDistance) {
+                                dotProduct = Utils::dotProduct(x, y, (*currentFirstFloorEdgeNormal)[0], (*currentFirstFloorEdgeNormal)[2]);
+                                minDistance = distance;
+                                if(dotProduct > 0){
+                                    sign = -1.0f;
+                                } else {
+                                    sign = 1.0f;
+                                }
                             }
                         }
                     }
+                }
+                if (minDistance < FLT_MAX) {
+                    currentProfile->addVertexEnd(new Vertex(sign * minDistance, dy * j));
                 }
             }
         }

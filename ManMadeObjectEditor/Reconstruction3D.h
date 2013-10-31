@@ -19,6 +19,7 @@ private:
     unsigned int floorPlanSize;
     std::vector<qglviewer::Vec *>* triangles;
     std::vector<Vertex*> activePlan;
+    float currentHeight;
 
     enum EventType {
         Undefined,
@@ -50,8 +51,9 @@ private:
     std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison> priorityQueue;
 
     void computeIntersection();
-    Intersection intersect(Edge* edge1, Edge* edge2, Edge* edge3);
-    void handleEvent(Intersection intersection);
+    Intersection intersect(Edge* edge1, Edge* edge2, Edge* edge3, float currentHeight);
+    void handleEvent(Intersection& intersection);
+    void sphericalToCartesian(Vertex* vertex1, Vertex* vertex2, float& nx, float& ny, float& nz);
 };
 
 #endif // RECONSTRUCTION3D_H
