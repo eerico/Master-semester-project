@@ -46,7 +46,6 @@ public:
 
     Edge* removeVertex();
 
-
 private:
     float x;
     float y;

@@ -331,47 +331,47 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             Vertex* firstVertex = level[0];
             Vertex* currentVertex = level[0];
             Vertex* nextVertex;
-        for(unsigned int i(0); i < level.size(); i++) {
-            nextVertex = currentVertex->getNeighbor2();
-            if(nextVertex == 0){
-                std::cerr << "neigbour = 0 ; " << i << std::endl;
-                break;
-
-            }
-            if(nextVertex->getNeighbor2() == currentVertex){
-                Vertex* tempV = nextVertex->getNeighbor1();
-                nextVertex->setNeighbor1(nextVertex->getNeighbor2());
-                nextVertex->setNeighbor2(tempV);
-            }
-            if(nextVertex!= 0 && nextVertex->getNeighbor1() != currentVertex){
-                std::cerr << "Error chain construction" << std::endl;
-                return false;
-            } else {
-                currentVertex->setValid(true);
-                if(nextVertex->isValid()){
+            for(unsigned int i(0); i < level.size(); i++) {
+                nextVertex = currentVertex->getNeighbor2();
+                if(nextVertex == 0){
+                    std::cerr << "neigbour = 0 ; " << i << std::endl;
                     break;
+
                 }
-                nextVertex->setValid(true);
-                currentVertex = nextVertex;
+                if(nextVertex->getNeighbor2() == currentVertex){
+                    Vertex* tempV = nextVertex->getNeighbor1();
+                    nextVertex->setNeighbor1(nextVertex->getNeighbor2());
+                    nextVertex->setNeighbor2(tempV);
+                }
+                if(nextVertex!= 0 && nextVertex->getNeighbor1() != currentVertex){
+                    std::cerr << "Error chain construction" << std::endl;
+                    return false;
+                } else {
+                    currentVertex->setValid(true);
+                    if(nextVertex->isValid()){
+                        break;
+                    }
+                    nextVertex->setValid(true);
+                    currentVertex = nextVertex;
+
+                }
 
             }
-
-        }
-        if(currentVertex->getNeighbor2() != firstVertex){
-            std::cerr << level.size()<< "Error chain construction!!!!!!" << std::endl;
-            return false;
-        }
-
-        std::vector<Vertex*> tempLevel;
-        for (unsigned int i(0); i < level.size(); i++){
-            if(!level[i]->isValid() && level[i]->getNeighbor2()!=0){
-                tempLevel.push_back(level[i]);
-            } else if(!level[i]->isValid()) {
-                level[i]->setValid(true);
-                std::cerr << "top found!" << std::endl;
+            if(currentVertex->getNeighbor2() != firstVertex){
+                std::cerr << level.size()<< "Error chain construction!!!!!!" << std::endl;
+                return false;
             }
-        }
-        level = tempLevel;
+
+            std::vector<Vertex*> tempLevel;
+            for (unsigned int i(0); i < level.size(); i++){
+                if(!level[i]->isValid() && level[i]->getNeighbor2()!=0){
+                    tempLevel.push_back(level[i]);
+                } else if(!level[i]->isValid()) {
+                    level[i]->setValid(true);
+                    std::cerr << "top found!" << std::endl;
+                }
+            }
+            level = tempLevel;
         }
 
     }

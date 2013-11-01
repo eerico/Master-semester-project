@@ -13,12 +13,14 @@ class Reconstruction3D
 {
 public:
     Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *>* triangles);
+    ~Reconstruction3D();
     void reconstruct();
 private:
     Vertex* floorPlan;
     unsigned int floorPlanSize;
     std::vector<qglviewer::Vec *>* triangles;
-    std::vector<Vertex*> activePlan;
+    std::vector< Vertex* >* activePlan;
+    std::vector< std::vector< Vertex* >* >* allActivePlan;
     float currentHeight;
 
     enum EventType {
@@ -54,6 +56,10 @@ private:
     void handleEvent(Intersection& intersection);
     void sphericalToCartesian(Vertex* vertex1, Vertex* vertex2, float& nx, float& ny, float& nz);
     void eventClustering(Intersection& intersection);
+    void chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* > >& chains);
+    void intraChainHandling(std::vector< std::vector< Edge* > >& chains);
+    void interChainHandling(std::vector< std::vector< Edge* > >& chains);
+    std::vector< Vertex* >* clonePlan(std::vector< Vertex* >* activePlan);
 };
 
 #endif // RECONSTRUCTION3D_H
