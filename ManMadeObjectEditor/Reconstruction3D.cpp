@@ -50,6 +50,8 @@ void Reconstruction3D::reconstruct()
 // appeler si edge direction event
 void Reconstruction3D::computeIntersection()
 {
+    // LA meilleur idée est de faire la copy du active plan ici, avant les 2 foreach
+
     foreach(Vertex* vertex, *activePlan) {
         foreach(Vertex* vertex2, *activePlan) {
             Edge* edge1 = vertex2->getEdge2();
@@ -186,6 +188,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
         case General:
         {
             // on va toucher au edge donc faire une copy!!! a la fin on devrai alors avoir un noveau active plan
+            // voir intersect pour copy
             eventClustering(intersection);
             std::vector< std::vector< Edge* > > chains;
             chainConstruction(intersection, chains);
