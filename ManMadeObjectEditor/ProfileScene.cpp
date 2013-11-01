@@ -240,6 +240,7 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         QPoint mousePos = event->lastScenePos().toPoint();
         float x = mousePos.x();
         float y = mousePos.y();
+        //std::cerr << "Mouse Pos: " << x << ", " << y << std::endl;
 
         Vertex* neighbor1 = currentlyMovingVertex->getNeighbor1();
         if (neighbor1 != 0){

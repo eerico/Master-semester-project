@@ -18,6 +18,8 @@ public:
     void addVertexEnd(Vertex * v);
     void vertexDecimation();
     bool isEqual(Profile* compareProfile);
+    void nextDirectionPlan();
+    void resetDirectionPlan();
     
     QColor* getProfileColorIdentification();
     

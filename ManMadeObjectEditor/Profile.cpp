@@ -237,3 +237,15 @@ bool Profile::isEqual( Profile* compareProfile)
     return false;
     
 }
+
+void Profile::nextDirectionPlan()
+{
+    pVertex = pVertex->getNeighbor2();
+}
+
+void Profile::resetDirectionPlan()
+{
+    while(pVertex->getNeighbor1() != 0) {
+        pVertex = pVertex->getNeighbor1();
+    }
+}

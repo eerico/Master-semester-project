@@ -28,9 +28,7 @@ private:
     };
 
     struct Intersection {
-        Edge* edge1;
-        Edge* edge2;
-        Edge* edge3;
+        std::vector<Edge*> edgeVector;
 
         //intersection point
         float x;
@@ -48,12 +46,14 @@ private:
         }
     };
 
-    std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison> priorityQueue;
+    std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>* priorityQueue;
 
     void computeIntersection();
+    void removeInvalidIntersection(Edge* edge, float height);
     Intersection intersect(Edge* edge1, Edge* edge2, Edge* edge3, float currentHeight);
     void handleEvent(Intersection& intersection);
     void sphericalToCartesian(Vertex* vertex1, Vertex* vertex2, float& nx, float& ny, float& nz);
+    void eventClustering(Intersection& intersection);
 };
 
 #endif // RECONSTRUCTION3D_H

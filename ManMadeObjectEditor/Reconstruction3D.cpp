@@ -3,7 +3,7 @@
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *>* triangles)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles), currentHeight(0)
 {
-
+    priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>;
 }
 
 void Reconstruction3D::reconstruct()
@@ -16,10 +16,16 @@ void Reconstruction3D::reconstruct()
 
 
     computeIntersection();
-    while(priorityQueue.size() > 0) {
-        Intersection event = priorityQueue.top();
-        priorityQueue.pop();
+    while(priorityQueue->size() > 0) {
+        Intersection event = priorityQueue->top();
+        priorityQueue->pop();
         handleEvent(event);
+    }
+
+    currentVertex = floorPlan;
+    for(unsigned int i(0); i < floorPlanSize ; ++i) {
+        currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
+        currentVertex = floorPlan->getNeighbor2();
     }
 }
 
@@ -35,17 +41,17 @@ void Reconstruction3D::computeIntersection()
             Edge* edge3 = vertex->getEdge2();
 
             Intersection intersection = intersect(edge1, edge2, edge3, currentHeight);
-            priorityQueue.push(intersection);
+            priorityQueue->push(intersection);
         }
 
 
         Intersection edgeDirectionEvent;
         Vertex* profileVertex = vertex->getEdge2()->getProfile()->getProfileVertex();
         if (profileVertex->isValid()) {
-            edgeDirectionEvent.edge1 = vertex->getEdge2();
+            edgeDirectionEvent.edgeVector.push_back(vertex->getEdge2());
             edgeDirectionEvent.eventType = EdgeDirection;
             edgeDirectionEvent.y = profileVertex->getNeighbor2()->getY();
-            priorityQueue.push(edgeDirectionEvent);
+            priorityQueue->push(edgeDirectionEvent);
             profileVertex->invalid();// REMETTRE A VALID UNE FOIS, par exemple quand l event fais qu on passe au prochaine pVertex
             // ou bien faire sa une seul fois dans reconstruct, pis voila, plus simple...
         }
@@ -104,9 +110,9 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float x1 = N + x3 * Q;
 
     Intersection intersection;
-    intersection.edge1 = edge1;
-    intersection.edge2 = edge2;
-    intersection.edge3 = edge3;
+    intersection.edgeVector.push_back(edge1);
+    intersection.edgeVector.push_back(edge2);
+    intersection.edgeVector.push_back(edge3);
     intersection.eventType = General;
     intersection.x = x1;
     intersection.y = x2;
@@ -149,4 +155,71 @@ void ::Reconstruction3D::sphericalToCartesian(Vertex *vertex1, Vertex *vertex2, 
 void Reconstruction3D::handleEvent(Intersection& intersection)
 {
 
+    switch(intersection.eventType){
+        case EdgeDirection:
+        {
+            Edge* edge = intersection.edgeVector[0];
+            Profile* profile = edge->getProfile();
+            profile->nextDirectionPlan();
+            currentHeight = intersection.y;
+            removeInvalidIntersection(edge, intersection.y);
+            computeIntersection();
+
+            break;
+        }
+        case General:
+        {
+            eventClustering(intersection);
+
+            break;
+        }
+    }
+}
+
+void Reconstruction3D::removeInvalidIntersection(Edge *edge, float height)
+{
+    std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>* priorityQueue2 =
+            new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>;
+
+    while(priorityQueue->size() > 0) {
+        Intersection event = priorityQueue->top();
+        priorityQueue->pop();
+        std::vector<Edge*> edges = event.edgeVector;
+        Edge* edge1 = edges[0];
+        Edge* edge2 = edges[1];
+        Edge* edge3 = edges[2];
+
+        if ((edge1 == edge) || (edge2 == edge) || (edge3 == edge)) {
+            if (event.y < height) {
+                priorityQueue2->push(event);
+            }
+        } else {
+            priorityQueue2->push(event);
+        }
+    }
+
+    delete priorityQueue;
+    priorityQueue = priorityQueue2;
+}
+
+void Reconstruction3D::eventClustering(Intersection& intersection)
+{
+    float y(intersection.y);
+    float delta1(0.001f);
+    float delta2(0.00001f);
+    bool stop(false);
+    std::vector<Edge*> edges = intersection.edgeVector;
+    do {
+        Intersection event = priorityQueue->top();
+        if ((std::abs(event.y - y) < delta1) && (Utils::distance(event.x, event.z, intersection.x, intersection.z) < delta2)) {
+            priorityQueue->pop();
+            std::vector<Edge*> eventEdges = event.edgeVector;
+            for(unsigned int i(0); i < eventEdges.size(); ++i) {
+                edges.push_back(eventEdges[i]);
+            }
+        } else {
+            stop = true;
+        }
+
+    } while (!stop);
 }
