@@ -248,7 +248,7 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
     } while (!stop);
 }
 
-//Inutile je crois
+
 std::vector< Vertex* >* Reconstruction3D::clonePlan(std::vector<Vertex *> *activePlan)
 {
     /*unsigned int size = activePlan->size();
@@ -331,6 +331,6 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* > >& c
 
 void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* > >& chains)
 {
-
+    //mettre un boolean dans Edge pour valid/invalid et ensuite effacer tous ceux qui sont invalid après qu on a traiter les intraChain
 }
 
