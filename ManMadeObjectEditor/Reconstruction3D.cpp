@@ -262,11 +262,14 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
 
 std::vector< Vertex* >* Reconstruction3D::clonePlan(std::vector<Vertex *> *activePlan)
 {
-    /*unsigned int size = activePlan->size();
-    for(unsigned int i(0); i < size; ++i) {
-        Vertex* currentVertex = (*activePlan)[i];
-         ????????????????????????????
-    }*/
+///////////////TODO
+   std::vector<Vertex *>* clone = new std::vector< Vertex* >;
+   unsigned int size = activePlan->size();
+       for(unsigned int i(0); i < size; ++i) {
+           Vertex* currentVertex = (*activePlan)[i];
+           Vertex* neighbor = currentVertex->getNeighbor2();
+
+       }
     return 0;
 }
 
