@@ -24,7 +24,7 @@ private:
     float currentHeight;
 
     enum EventType {
-        Undefined,
+        NoIntersection,
         General,
         EdgeDirection
     };

@@ -1,5 +1,18 @@
 #include "Reconstruction3D.h"
 
+/***
+ *
+ * je crois que triangle faut les faire pendant que algo fonctionne c est plus simple
+ *
+ * reste a check si juste: tous ahah
+ * reste a implemente: inter et intra chain handling.
+ * pas implementer: near horizontal edge detection, profile offset event, filtering invalid event, post inter chain intersection
+ *
+ *
+ **/
+
+
+
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *>* triangles)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles), currentHeight(0)
 {
@@ -48,9 +61,6 @@ void Reconstruction3D::reconstruct()
     }
 }
 
-// voir fig. 8, calcul intersection pour l active plan
-// et met dans la priority queue. Doit etre
-// appeler si edge direction event
 void Reconstruction3D::computeIntersection()
 {
     activePlan = cloneActivePlan();
@@ -98,6 +108,8 @@ void Reconstruction3D::addEdgeDirectionEvent()
 
 Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3, float currentHeight)
 {
+    Intersection intersection;
+
     Vertex* vertex1 = edge1->getVertex1();
     float p1 = vertex1->getX();
     float p2 = currentHeight;
@@ -126,6 +138,12 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     computePlanNormal(vertex3, edge3->getVertex2(), edge3->getProfile(), n1_pp, n2_pp, n3_pp);
 
     float A = n1 - n1_p;
+
+    if(A == 0.0f) {
+        intersection.eventType = NoIntersection;
+        return intersection;
+    }
+
     float B = p1 * n1 / A;
     float C = p2 * n2 / A;
     float D = p3 * n3 / A;
@@ -136,6 +154,12 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float I = (n2_p - n2) / A;
     float J = (n3_p - n3) / A;
     float K = I * n1 + n2 - I * n1_pp - n2_pp;
+
+    if(K == 0.0f) {
+        intersection.eventType = NoIntersection;
+        return intersection;
+    }
+
     float L = (-H * n1 + p1 * n1 + p2 * n2 + p3 * n3 + H * n1_pp - p1_pp * n1_pp - p2_pp * n2_pp - p3_pp * n3_pp) / K;
     float M = -J * n1 - n3 + J * n1_pp + n3_pp;
     float N = H + L * I;
@@ -143,11 +167,15 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float R = N * n1_p - p1_p * n1_p + L * n2_p - p2_p * n2_p - p3_p * n3_p - N * n1_pp + p1_pp * n1_pp - L * n2_pp + p2_pp * n2_pp + p3_pp * n3_pp;
     float S = Q * n1_p + M * n2_p + n3_p - Q * n1_pp - M * n2_pp - n3_pp;
 
+    if(S == 0.0f) {
+        intersection.eventType = NoIntersection;
+        return intersection;
+    }
+
     float x3 = -R / S;
     float x2 = L + x3 * M;
     float x1 = N + x3 * Q;
 
-    Intersection intersection;
     intersection.edgeVector.push_back(edge1);
     intersection.edgeVector.push_back(edge2);
     intersection.edgeVector.push_back(edge3);
@@ -353,6 +381,5 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* > >& c
 
 void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* > >& chains)
 {
-    //mettre un boolean dans Edge pour valid/invalid et ensuite effacer tous ceux qui sont invalid après qu on a traiter les intraChain
 }
 
