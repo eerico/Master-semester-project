@@ -22,12 +22,19 @@ public:
     void resetDirectionPlan();
     
     QColor* getProfileColorIdentification();
+
+    //the orientation angle (spherical coordinate) theta
+    void setSphericalCoordinatesTheta(float newTheta);
+    float getSphericalCoordinatesTheta();
     
 private:
     Vertex* pVertex;
     void initProfileSkewedLine(int numSample);
     void initProfileBezier(int numSample);
     QColor* profileColorIdentification;
+
+    //the orientation angle (spherical coordinate) theta
+    float theta;
 };
 
 #endif // PROFILE_H

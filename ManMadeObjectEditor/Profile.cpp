@@ -3,15 +3,14 @@
 #include <iostream>
 
 
-Profile::Profile(bool empty): pVertex(0)
+Profile::Profile(bool empty): pVertex(0), theta(0.0f)
 {
 	pVertex = new Vertex(0,0);
     pVertex->setNeighbor2(0);
     if (!empty) {
         initProfileSkewedLine(4);
         //initProfileBezier(10);
-    }
-	
+    }	
     
     profileColorIdentification = new QColor;
     profileColorIdentification->setRgb(std::rand()%256, std::rand()%256, std::rand()%256);
@@ -248,4 +247,14 @@ void Profile::resetDirectionPlan()
     while(pVertex->getNeighbor1() != 0) {
         pVertex = pVertex->getNeighbor1();
     }
+}
+
+float Profile::getSphericalCoordinatesTheta()
+{
+    return theta;
+}
+
+void Profile::setSphericalCoordinatesTheta(float newTheta)
+{
+    theta = newTheta;
 }

@@ -23,14 +23,20 @@ Reconstruction3D::~Reconstruction3D()
 
 void Reconstruction3D::reconstruct()
 {
+    //compute the theta angle of the spherical coordinates for each profile
+    //and store the result in the profile, thus we can after easily compute the plan
+    //orientation defined by each profile
+    computeProfileOrientationTheta();
+
+    //set the active plan
     Vertex* currentVertex = floorPlan;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
         activePlan->push_back(currentVertex);
         currentVertex = floorPlan->getNeighbor2();
     }
-
     allActivePlan->push_back(activePlan);
 
+    //main loop
     computeIntersection();
     while(priorityQueue->size() > 0) {
         Intersection event = priorityQueue->top();
@@ -38,9 +44,22 @@ void Reconstruction3D::reconstruct()
         handleEvent(event);
     }
 
+    //reset to inital state
     currentVertex = floorPlan;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
         currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
+        currentVertex = floorPlan->getNeighbor2();
+    }
+}
+
+void Reconstruction3D::computeProfileOrientationTheta()
+{
+    Vertex* currentVertex = floorPlan;
+    for(unsigned int i(0); i < floorPlanSize ; ++i) {
+        Edge* currentEdge = currentVertex->getEdge2();
+        float theta = sphericalToCartesianTheta(currentEdge->getVertex1(), currentEdge->getVertex2());
+        currentEdge->getProfile()->setSphericalCoordinatesTheta(theta);
+
         currentVertex = floorPlan->getNeighbor2();
     }
 }
@@ -85,7 +104,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float n1(0.0f);
     float n2(0.0f);
     float n3(0.0f);
-    sphericalToCartesian(vertex1, edge1->getVertex2(), n1, n2, n3);
+    sphericalToCartesian(edge1->getProfile(), n1, n2, n3);
 
     Vertex* vertex2 = edge2->getVertex1();
     float p1_p = vertex2->getX();
@@ -94,7 +113,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float n1_p(0.0f);
     float n2_p(0.0f);
     float n3_p(0.0f);
-    sphericalToCartesian(vertex1, edge1->getVertex2(), n1_p, n2_p, n3_p);
+    sphericalToCartesian(edge2->getProfile(), n1_p, n2_p, n3_p);
 
     Vertex* vertex3 = edge3->getVertex1();
     float p1_pp = vertex3->getX();
@@ -103,7 +122,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float n1_pp(0.0f);
     float n2_pp(0.0f);
     float n3_pp(0.0f);
-    sphericalToCartesian(vertex1, edge1->getVertex2(), n1_pp, n2_pp, n3_pp);
+    sphericalToCartesian(edge3->getProfile(), n1_pp, n2_pp, n3_pp);
 
     float A = n1 - n1_p;
     float B = p1 * n1 / A;
@@ -139,7 +158,8 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     return intersection;
 }
 
-void ::Reconstruction3D::sphericalToCartesian(Vertex *vertex1, Vertex *vertex2, float &nx, float &ny, float &nz)
+// compute theta only at the begining. Because, only phi will change when we have an edge direction event
+float Reconstruction3D::sphericalToCartesianTheta(Vertex *vertex1, Vertex *vertex2)
 {
     float x1 = vertex1->getX();
     float y1 = vertex1->getY();
@@ -149,19 +169,25 @@ void ::Reconstruction3D::sphericalToCartesian(Vertex *vertex1, Vertex *vertex2, 
 
 
     float tangent = (y2 - y1) / (x2 - x1);
-    float theta = std::atan(tangent);
+    return std::atan(tangent);
 
-    Vertex* profileVertex = vertex1->getEdge2()->getProfile()->getProfileVertex();
+}
+
+//we must first have theta computed in the profile to call this method
+void Reconstruction3D::sphericalToCartesian(Profile *profile, float& nx, float& ny, float& nz)
+{
+    Vertex* profileVertex = profile->getProfileVertex();
     Vertex* nextProfileVertex = profileVertex->getNeighbor2();
+    float theta = profile->getSphericalCoordinatesTheta();
 
-    x1 = profileVertex->getX();
-    y1 = profileVertex->getY();
+    float x1 = profileVertex->getX();
+    float y1 = profileVertex->getY();
 
-    x2 = nextProfileVertex->getX();
-    y2 = nextProfileVertex->getY();
+    float x2 = nextProfileVertex->getX();
+    float y2 = nextProfileVertex->getY();
 
-    tangent = (y2 - y1) / (x2 - x1);
-    float phi = std::atan(tangent);
+    float tangent = (y2 - y1) / (x2 - x1);
+    float phi = std::atan(tangent); //TODO est ce bien le bon angle, et non pas pi/2 - std::atan(tangent)  ??
 
     nx = std::cos(theta) * std::sin(phi);
     nz = std::sin(theta) * std::sin(phi);
