@@ -19,8 +19,8 @@ private:
     Vertex* floorPlan;
     unsigned int floorPlanSize;
     std::vector<qglviewer::Vec *>* triangles;
-    std::vector< Vertex* >* activePlan;
-    std::vector< std::vector< Vertex* >* >* allActivePlan;
+    std::vector< Edge* >* activePlan;
+    std::vector< std::vector< Edge* >* >* allActivePlan;
     float currentHeight;
 
     enum EventType {
@@ -60,7 +60,7 @@ private:
     void chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* > >& chains);
     void intraChainHandling(std::vector< std::vector< Edge* > >& chains);
     void interChainHandling(std::vector< std::vector< Edge* > >& chains);
-    std::vector< Vertex* >* clonePlan(std::vector< Vertex* >* activePlan);
+    std::vector< Edge* >* cloneActivePlan();
 };
 
 #endif // RECONSTRUCTION3D_H

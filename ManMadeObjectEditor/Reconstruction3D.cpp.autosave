@@ -353,6 +353,5 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* > >& c
 
 void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* > >& chains)
 {
-    //mettre un boolean dans Edge pour valid/invalid et ensuite effacer tous ceux qui sont invalid après qu on a traiter les intraChain
 }
 
