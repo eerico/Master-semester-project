@@ -32,9 +32,6 @@ private:
     void initProfileSkewedLine(int numSample);
     void initProfileBezier(int numSample);
     QColor* profileColorIdentification;
-
-    //the orientation angle (spherical coordinate) theta
-    float theta;
 };
 
 #endif // PROFILE_H

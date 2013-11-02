@@ -23,11 +23,6 @@ Reconstruction3D::~Reconstruction3D()
 
 void Reconstruction3D::reconstruct()
 {
-    //compute the theta angle of the spherical coordinates for each profile
-    //and store the result in the profile, thus we can after easily compute the plan
-    //orientation defined by each profile
-    computeProfileOrientationTheta();
-
     //set the active plan
     Vertex* currentVertex = floorPlan;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
@@ -37,6 +32,7 @@ void Reconstruction3D::reconstruct()
     allActivePlan->push_back(activePlan);
 
     //main loop
+    addEdgeDirectionEvent();
     computeIntersection();
     while(priorityQueue->size() > 0) {
         Intersection event = priorityQueue->top();
@@ -48,18 +44,6 @@ void Reconstruction3D::reconstruct()
     currentVertex = floorPlan;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
         currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
-        currentVertex = floorPlan->getNeighbor2();
-    }
-}
-
-void Reconstruction3D::computeProfileOrientationTheta()
-{
-    Vertex* currentVertex = floorPlan;
-    for(unsigned int i(0); i < floorPlanSize ; ++i) {
-        Edge* currentEdge = currentVertex->getEdge2();
-        float theta = sphericalToCartesianTheta(currentEdge->getVertex1(), currentEdge->getVertex2());
-        currentEdge->getProfile()->setSphericalCoordinatesTheta(theta);
-
         currentVertex = floorPlan->getNeighbor2();
     }
 }
@@ -80,18 +64,26 @@ void Reconstruction3D::computeIntersection()
             Intersection intersection = intersect(edge1, edge2, edge3, currentHeight);
             priorityQueue->push(intersection);
         }
+    }
+}
 
+void Reconstruction3D::addEdgeDirectionEvent()
+{
+    Vertex* currentVertex = floorPlan;
+    for(unsigned int i(0); i < floorPlanSize ; ++i) {
+        Edge* currentEdge = currentVertex->getEdge2();
+        Vertex* currentProfileVertex = currentEdge->getProfile()->getProfileVertex();
+        currentProfileVertex = currentProfileVertex->getNeighbor2();
 
-        Intersection edgeDirectionEvent;
-        Vertex* profileVertex = vertex->getEdge2()->getProfile()->getProfileVertex();
-        if (profileVertex->isValid()) {
-            edgeDirectionEvent.edgeVector.push_back(vertex->getEdge2());
+        while(currentProfileVertex != 0 && currentProfileVertex->getNeighbor2() != 0) {
+            Intersection edgeDirectionEvent;
+
+            edgeDirectionEvent.edgeVector.push_back(currentEdge);
             edgeDirectionEvent.eventType = EdgeDirection;
-            edgeDirectionEvent.y = profileVertex->getNeighbor2()->getY();
+            edgeDirectionEvent.y = currentProfileVertex->getY();
             priorityQueue->push(edgeDirectionEvent);
-            profileVertex->invalid();// REMETTRE A VALID UNE FOIS, par exemple quand l event fais qu on passe au prochaine pVertex
-            // ou bien faire sa une seul fois dans reconstruct, pis voila, plus simple...
         }
+        currentVertex = floorPlan->getNeighbor2();
     }
 }
 
@@ -104,7 +96,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float n1(0.0f);
     float n2(0.0f);
     float n3(0.0f);
-    sphericalToCartesian(edge1->getProfile(), n1, n2, n3);
+    computePlanNormal(vertex1, edge1->getVertex2(), edge1->getProfile(), n1, n2, n3);
 
     Vertex* vertex2 = edge2->getVertex1();
     float p1_p = vertex2->getX();
@@ -113,7 +105,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float n1_p(0.0f);
     float n2_p(0.0f);
     float n3_p(0.0f);
-    sphericalToCartesian(edge2->getProfile(), n1_p, n2_p, n3_p);
+    computePlanNormal(vertex2, edge2->getVertex2(), edge2->getProfile(), n1_p, n2_p, n3_p);
 
     Vertex* vertex3 = edge3->getVertex1();
     float p1_pp = vertex3->getX();
@@ -122,7 +114,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float n1_pp(0.0f);
     float n2_pp(0.0f);
     float n3_pp(0.0f);
-    sphericalToCartesian(edge3->getProfile(), n1_pp, n2_pp, n3_pp);
+    computePlanNormal(vertex3, edge3->getVertex2(), edge3->getProfile(), n1_pp, n2_pp, n3_pp);
 
     float A = n1 - n1_p;
     float B = p1 * n1 / A;
@@ -158,47 +150,37 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     return intersection;
 }
 
-// compute theta only at the begining. Because, only phi will change when we have an edge direction event
-float Reconstruction3D::sphericalToCartesianTheta(Vertex *vertex1, Vertex *vertex2)
+
+void Reconstruction3D::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile, float& nx, float& ny, float& nz)
 {
-    float x1 = vertex1->getX();
-    float y1 = vertex1->getY();
+    float a = vertex2->getX() - vertex1->getX();
+    float b = 0.0f;
+    float c = vertex2->getY() - vertex1->getY();
 
-    float x2 = vertex2->getX();
-    float y2 = vertex2->getY();
+    Utils::normalize(a, c);
 
-
-    float tangent = (y2 - y1) / (x2 - x1);
-    return std::atan(tangent);
-
-}
-
-//we must first have theta computed in the profile to call this method
-void Reconstruction3D::sphericalToCartesian(Profile *profile, float& nx, float& ny, float& nz)
-{
     Vertex* profileVertex = profile->getProfileVertex();
     Vertex* nextProfileVertex = profileVertex->getNeighbor2();
-    float theta = profile->getSphericalCoordinatesTheta();
 
-    float x1 = profileVertex->getX();
-    float y1 = profileVertex->getY();
+    float w = nextProfileVertex->getX() - profileVertex->getX();
+    float y = nextProfileVertex->getY() - profileVertex->getY();
 
-    float x2 = nextProfileVertex->getX();
-    float y2 = nextProfileVertex->getY();
+    //est ce correct ou bien sa joue pas avec orientation des edges ?
+    float wx = c;
+    float wz = -a;
 
-    float tangent = (y2 - y1) / (x2 - x1);
-    float phi = std::atan(tangent); //TODO est ce bien le bon angle, et non pas pi/2 - std::atan(tangent)  ??
+    float d = w * wx;
+    float e = y;
+    float f = w * wz;
 
-    nx = std::cos(theta) * std::sin(phi);
-    nz = std::sin(theta) * std::sin(phi);
-    ny = std::cos(phi);
+    Utils::crossProduct(d, e, f, a, b, c, nx, ny, nz);
+    Utils::normalize(nx, ny, nz);
 }
 
 // faire les truc magique. Pas oublier de update le active plan, et de set les profiles
 // (pVertex) a la bonne hauteur
 void Reconstruction3D::handleEvent(Intersection& intersection)
 {
-
     switch(intersection.eventType){
         case EdgeDirection:
         {

@@ -50,13 +50,12 @@ private:
 
     std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>* priorityQueue;
 
-    void computeProfileOrientationTheta();
     void computeIntersection();
+    void addEdgeDirectionEvent();
     void removeInvalidIntersection(Edge* edge, float height);
     Intersection intersect(Edge* edge1, Edge* edge2, Edge* edge3, float currentHeight);
     void handleEvent(Intersection& intersection);
-    float sphericalToCartesianTheta(Vertex *vertex1, Vertex *vertex2);
-    void sphericalToCartesian(Profile *profile, float& nx, float& ny, float& nz);
+    void computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile, float& nx, float& ny, float& nz);
     void eventClustering(Intersection& intersection);
     void chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* > >& chains);
     void intraChainHandling(std::vector< std::vector< Edge* > >& chains);

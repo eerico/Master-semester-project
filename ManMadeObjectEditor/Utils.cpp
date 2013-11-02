@@ -47,6 +47,17 @@ void Utils::normalize(float &n_x, float &n_y)
     }
 }
 
+void Utils::normalize(float &n_x, float &n_y, float &n_z)
+{
+    float distTmp = n_x * n_x + n_y * n_y + n_z * n_z;
+    if (distTmp != 0.0f) {
+        distTmp = sqrt(distTmp);
+        n_x = n_x / distTmp;
+        n_y = n_y / distTmp;
+        n_z = n_z / distTmp;
+    }
+}
+
 float Utils::dotProduct(float x1, float y1, float x2, float y2)
 {
     return x1 * x2 + y1 * y2;
@@ -60,4 +71,11 @@ float Utils::getZValueForeground()
 float Utils::getZValueBackground()
 {
     return 0.0f;
+}
+
+void Utils::crossProduct(float x1, float y1, float z1, float x2, float y2, float z2, float &x, float &y, float& z)
+{
+    x = y1 * z2 - z1 * y2;
+    y = z1 * x2 - x1 * z2;
+    z = x1 * y2 - y1 * x2;
 }

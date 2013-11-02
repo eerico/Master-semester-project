@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-Profile::Profile(bool empty): pVertex(0), theta(0.0f)
+Profile::Profile(bool empty): pVertex(0)
 {
 	pVertex = new Vertex(0,0);
     pVertex->setNeighbor2(0);
@@ -247,14 +247,4 @@ void Profile::resetDirectionPlan()
     while(pVertex->getNeighbor1() != 0) {
         pVertex = pVertex->getNeighbor1();
     }
-}
-
-float Profile::getSphericalCoordinatesTheta()
-{
-    return theta;
-}
-
-void Profile::setSphericalCoordinatesTheta(float newTheta)
-{
-    theta = newTheta;
 }
