@@ -45,6 +45,11 @@ private:
     OMMesh::Normal *normal;
 
     QPen edgePen;
+
+    bool valid;
+    bool isValid();
+    void setValid(bool valid);
+    void invalid();
 };
 
 #endif // EDGE_H

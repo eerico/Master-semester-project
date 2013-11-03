@@ -9,6 +9,7 @@
  * pas implementer: near horizontal edge detection, profile offset event, filtering invalid event, post inter chain intersection
  *
  *
+ *
  **/
 
 
@@ -235,7 +236,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             // on va toucher au edge donc faire une copy!!! a la fin on devrai alors avoir un noveau active plan
             // voir intersect pour copy
             eventClustering(intersection);
-            std::vector< std::vector< Edge* > > chains;
+            std::vector< std::vector< Edge* >* > chains;
             chainConstruction(intersection, chains);
             intraChainHandling(chains);
             interChainHandling(chains);
@@ -309,7 +310,7 @@ std::vector< Edge* >* Reconstruction3D::cloneActivePlan()
     return cloneActivePlan;
 }
 
-void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* > >& chains)
+void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* >* >& chains)
 {
     std::vector< Edge* > edges = intersection.edgeVector;
     //first remove duplicate
@@ -331,11 +332,11 @@ void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector
     Vertex* last = 0;
 
     for(unsigned int i(0); i < size; ++i) {
-        std::vector< Edge* > currentChain;
+        std::vector< Edge* >* currentChain = new std::vector< Edge* >;
         Edge* currentEdge = edges[i];
         first = currentEdge->getVertex1();
         last = currentEdge->getVertex2();
-        currentChain.push_back(currentEdge);
+        currentChain->push_back(currentEdge);
 
         for(unsigned int j(i+1); j < size; ++j) {
             Edge* comparedEdge = edges[i];
@@ -344,25 +345,25 @@ void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector
             Vertex* vertex2 = comparedEdge->getVertex2();
 
             if(vertex1 == first) {
-                currentChain.insert(currentChain.begin(), comparedEdge);
+                currentChain->insert(currentChain->begin(), comparedEdge);
                 edges.erase(edges.begin() + j);
                 size--;
                 j = i + 1;
                 first = vertex1;
             } else if(vertex2 == first) {
-                currentChain.insert(currentChain.begin(), comparedEdge);
+                currentChain->insert(currentChain->begin(), comparedEdge);
                 edges.erase(edges.begin() + j);
                 size--;
                 j = i + 1;
                 first = vertex2;
             } else if(vertex1 == last) {
-                currentChain.push_back(comparedEdge);
+                currentChain->push_back(comparedEdge);
                 edges.erase(edges.begin() + j);
                 size--;
                 j = i + 1;
                 last = vertex1;
             } else if(vertex2 == last) {
-                currentChain.push_back(comparedEdge);
+                currentChain->push_back(comparedEdge);
                 edges.erase(edges.begin() + j);
                 size--;
                 j = i + 1;
@@ -374,12 +375,20 @@ void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector
     }
 }
 
-void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* > >& chains)
+void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& chains)
 {
 
 }
 
-void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* > >& chains)
+void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& chains)
 {
+    foreach(std::vector< Edge* >* currentChain, chains) {
+        unsigned int currentChainSize = currentChain->size();
+        if (currentChainSize > 2) {
+
+            //TODO
+
+        }
+    }
 }
 

@@ -3,7 +3,7 @@
 #include "Profile.h"
 
 Edge::Edge(Vertex* vertex1, Vertex* vertex2, Profile* p)
-    :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0)
+    :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
 {
     edgePen.setWidth(3);
 }
@@ -153,7 +153,22 @@ void Edge::setNormal(OMMesh::Normal *n)
     normal = n;
 }
 
-OpenMesh::PolyMesh_ArrayKernelT<>::Normal* Edge::getNormal()
+Edge::OMMesh::Normal* Edge::getNormal()
 {
     return normal;
+}
+
+bool Edge::isValid()
+{
+    return valid;
+}
+
+void Edge::setValid(bool valid)
+{
+    this->valid = valid;
+}
+
+void Edge::invalid()
+{
+    valid = false;
 }
