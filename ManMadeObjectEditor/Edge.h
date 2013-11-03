@@ -37,6 +37,10 @@ public:
     void setNormal(OMMesh::Normal *n);
     OMMesh::Normal* getNormal();
 
+    bool isValid();
+    void setValid(bool valid);
+    void invalid();
+
 private:
     Vertex* vertex1;
     Vertex* vertex2;
@@ -47,9 +51,6 @@ private:
     QPen edgePen;
 
     bool valid;
-    bool isValid();
-    void setValid(bool valid);
-    void invalid();
 };
 
 #endif // EDGE_H

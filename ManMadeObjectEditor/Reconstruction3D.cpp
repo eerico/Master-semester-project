@@ -5,7 +5,7 @@
  * je crois que triangle faut les faire pendant que algo fonctionne c est plus simple
  *
  * reste a check si juste: tous ahah
- * reste a implemente: inter et intra chain handling.
+ * reste a implemente: inter chain handling.
  * pas implementer: near horizontal edge detection, profile offset event, filtering invalid event, post inter chain intersection
  *
  *
@@ -238,7 +238,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             eventClustering(intersection);
             std::vector< std::vector< Edge* >* > chains;
             chainConstruction(intersection, chains);
-            intraChainHandling(chains);
+            intraChainHandling(chains, intersection);
             interChainHandling(chains);
 
 
@@ -380,14 +380,79 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& 
 
 }
 
-void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& chains)
+void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection)
 {
     foreach(std::vector< Edge* >* currentChain, chains) {
         unsigned int currentChainSize = currentChain->size();
-        if (currentChainSize > 2) {
+        if (currentChainSize > 2) {            
+            // the new vertex defined by the intersection
+            Vertex* newVertex = new Vertex(intersection.x, intersection.z);
 
-            //TODO
+            Edge* firstEdge = (*currentChain)[0];
+            Edge* firstNeighbor = (*currentChain)[1];
 
+            //find which vertex will be reassigned and reassigned it
+            Vertex* vertex1 = firstEdge->getVertex1();
+            if ((vertex1 != firstNeighbor->getVertex1()) && (vertex1 != firstNeighbor->getVertex2())) {
+                firstEdge->setVertex2(newVertex);
+            } else {
+                firstEdge->setVertex1(newVertex);
+            }
+
+            Edge* lastEdge = (*currentChain)[currentChainSize - 1];
+            Edge* lastNeighbor = (*currentChain)[currentChainSize - 2];
+
+
+            //find which vertex will be reassigned and reassigned it
+            Vertex* vertex2 = lastEdge->getVertex1();
+            if ((vertex2 != lastNeighbor->getVertex1()) && (vertex2 != lastNeighbor->getVertex2())) {
+                lastEdge->setVertex2(newVertex);
+            } else {
+                lastEdge->setVertex1(newVertex);
+            }
+
+            //invalid all interior edges
+            for(unsigned int i(1); i < currentChainSize - 2; ++i) {
+                Edge* edgeInvalid = (*currentChain)[i];
+                currentChain->erase(currentChain->begin() + i);
+                i--;
+                currentChainSize--;
+                edgeInvalid->invalid();
+            }
+        } else if (currentChainSize == 2) {
+            // the new vertex defined by the intersection
+            Vertex* newVertex = new Vertex(intersection.x, intersection.z);
+
+            Edge* firstEdge = (*currentChain)[0];
+            Edge* lastEdge = (*currentChain)[1];
+
+            //find which vertex will be reassigned and reassigned it
+            Vertex* vertex1 = firstEdge->getVertex1();
+            if ((vertex1 != lastEdge->getVertex1()) && (vertex1 != lastEdge->getVertex2())) {
+                firstEdge->setVertex2(newVertex);
+            } else {
+                firstEdge->setVertex1(newVertex);
+            }
+
+            vertex1 = lastEdge->getVertex1();
+            if ((vertex1 != firstEdge->getVertex1()) && (vertex1 != firstEdge->getVertex2())) {
+                lastEdge->setVertex2(newVertex);
+            } else {
+                lastEdge->setVertex1(newVertex);
+            }
+        }
+    }
+
+
+    //Finally, remove invalid edge from the active plan
+    unsigned int activePlanSize = activePlan->size();
+    for(unsigned int i(0); i < activePlanSize; ++i) {
+        Edge* currentEdge = (*activePlan)[i];
+        if(!currentEdge->isValid()) {
+            activePlan->erase(activePlan->begin() + i);
+            delete currentEdge;
+            i--;
+            activePlanSize--;
         }
     }
 }
