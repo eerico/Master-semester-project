@@ -8,7 +8,7 @@ Profile::Profile(bool empty): pVertex(0)
 	pVertex = new Vertex(0,0);
     pVertex->setNeighbor2(0);
     if (!empty) {
-        initProfileSkewedLine(2);
+        initProfileSkewedLine(3);
         //initProfileBezier(10);
     }	
     

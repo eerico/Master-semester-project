@@ -4,7 +4,7 @@
  *
  * je crois que triangle faut les faire pendant que algo fonctionne c est plus simple
  *
- * reste a check si juste: tous ahah
+ * reste a check si juste: voir se qui est pas ok dans le .h (juste tester avec cas très simple)
  * reste a implemente: un moyen de stock tout les edge/vertex que je creer pour les delete a la fin..
  *                      creer triangle et mettre dans le vector correpsondant
  * pas implementer: near horizontal edge detection, profile offset event, filtering invalid event, post inter chain intersection
@@ -69,9 +69,6 @@ void Reconstruction3D::reconstruct()
 
 void Reconstruction3D::computeIntersection()
 {
-    activePlan = cloneActivePlan();
-    allActivePlan->push_back(activePlan);
-
     unsigned int activePlanSize = activePlan->size();
     for(unsigned int i(0); i < activePlanSize; ++i) {
         Edge* edge2 = (*activePlan)[i];
@@ -84,6 +81,9 @@ void Reconstruction3D::computeIntersection()
             }
         }
     }
+
+    activePlan = cloneActivePlan();
+    allActivePlan->push_back(activePlan);
 }
 
 void Reconstruction3D::addEdgeDirectionEvent()
@@ -276,12 +276,23 @@ void Reconstruction3D::removeInvalidIntersection(Edge *edge, float height)
         Edge* edge2 = (*edges)[1];
         Edge* edge3 = (*edges)[2];
 
-        if ((edge1 == edge) || (edge2 == edge) || (edge3 == edge)) {
-            if (event.y < height) {
+        std::cout << "event: " << event.eventType << ", " << event.y << std::endl;
+        std::cout << "edges: " << edge1 << ", " << edge2 << ", " << edge3 << "::" << edge << std::endl;
+
+        if(event.eventType == EdgeDirection) {
+            priorityQueue2->push(event);
+        }else{
+
+            if ((edge1 == edge) || (edge2 == edge) || (edge3 == edge)) {
+                std::cout << "edge = " << std::endl;
+                if (event.y < height) {
+                    std::cout << "add priority 2" << std::endl;
+                    priorityQueue2->push(event);
+                }
+            } else {
+                std::cout << "pas = add priority 2" << std::endl;
                 priorityQueue2->push(event);
             }
-        } else {
-            priorityQueue2->push(event);
         }
     }
 

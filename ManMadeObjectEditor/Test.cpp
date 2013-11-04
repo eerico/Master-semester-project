@@ -9,6 +9,8 @@ Test::Test()
 
 void Test::Reconstruction3DTest()
 {
+    //must make all elements of reconsutrcion3D public !!
+    //set a simple model
     Vertex* a = new Vertex(-1.0f, 1.0f);
     Vertex* b = new Vertex(1.0f, 1.0f);
     Vertex* c = new Vertex(1.0f, -1.0f);
@@ -41,6 +43,15 @@ void Test::Reconstruction3DTest()
     int size = 4;
 
     Reconstruction3D test = Reconstruction3D(a, size, NULL);
+
+
+
+
+
+
+    //test copy, commentermain loop et reset to initial state
+
+
     test.reconstruct();
     cout << (test.allActivePlan)->size() << endl;
 
@@ -53,6 +64,12 @@ void Test::Reconstruction3DTest()
         cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")    " << e << endl;
     }
 
+
+
+
+
+    //test normal
+
     cout << "plan normal: " << endl;
     float nx, ny, nz;
     test.computePlanNormal(ab->getVertex1(), ab->getVertex2(), ab->getProfile(), nx, ny, nz);
@@ -64,6 +81,12 @@ void Test::Reconstruction3DTest()
     test.computePlanNormal(da->getVertex1(), da->getVertex2(), da->getProfile(), nx, ny, nz);
     cout << "normal: " << nx << ", " << ny << ", " << nz << endl;
 
+
+
+
+
+    //test simple intersection
+
     cout << "Intersection type: 0 No intersection, 1 General, 2 Edge dircetion" << endl;
     Reconstruction3D::Intersection i = test.intersect(ab, bc, cd, 0.0f);
     cout << "TMP intersection type: " << i.eventType << ", x = " << i.x << ", y = " << i.y << " , z = " << i.z << endl;
@@ -72,9 +95,7 @@ void Test::Reconstruction3DTest()
 
 
 
-
-
-
+    //test all intersection
 
     std::cout << "compute intersection" << std::endl;
     //test.addEdgeDirectionEvent(); //remetre profile a 2 sample!!
@@ -82,7 +103,8 @@ void Test::Reconstruction3DTest()
     std::priority_queue<Reconstruction3D::Intersection, std::vector<Reconstruction3D::Intersection>, Reconstruction3D::IntersectionComparison>* Q = test.priorityQueue;
 
     std::cout << "nombre d intersection : " << Q->size() << std::endl;
-    while(!Q->empty()) {
+
+    /*while(!Q->empty()) {
         Reconstruction3D::Intersection ci = Q->top();
         Q->pop();
         cout << "intersection type: " << ci.eventType << ", x = " << ci.x << ", y = " << ci.y << " , z = " << ci.z << endl;
@@ -92,18 +114,77 @@ void Test::Reconstruction3DTest()
             std::cout << (*ee)[i] << std::endl;
         }
         std::cout<< std::endl;
-    }
-/*
+    }*/
 
-    cout << "clustering event" << endl;
+
+
+
+
+    //test remove invalid, must take an intersection of type edgeDirection
+
+    /*Reconstruction3D::Intersection ci = Q->top();
+    Q->pop();
+    cout << "intersection type: " << ci.eventType << ", x = " << ci.x << ", y = " << ci.y << " , z = " << ci.z << endl;
+    std::priority_queue<Reconstruction3D::Intersection, std::vector<Reconstruction3D::Intersection>, Reconstruction3D::IntersectionComparison>* Q2 = new std::priority_queue<Reconstruction3D::Intersection, std::vector<Reconstruction3D::Intersection>, Reconstruction3D::IntersectionComparison>;
+
+    //show the intersections
+    while(!Q->empty()) {
+        Reconstruction3D::Intersection ci = Q->top();
+        Q->pop();
+        Q2->push(ci);
+    }
+    while(!Q2->empty()) {
+        Reconstruction3D::Intersection ci = Q2->top();
+        Q2->pop();
+        cout << "intersection type: " << ci.eventType << ", x = " << ci.x << ", y = " << ci.y << " , z = " << ci.z << endl;
+        Q->push(ci);
+    }
+    std::cout << "before remove invalid " << Q->size()<< std::endl;
+
+    test.removeInvalidIntersection((*ci.edgeVector)[0], ci.y);
+    //must retake it each time we call removeInvalidIntersection
+    Q = test.priorityQueue;
+    //show result
+    while(!Q->empty()) {
+        Reconstruction3D::Intersection ci = Q->top();
+        Q->pop();
+        Q2->push(ci);
+    }
+    while(!Q2->empty()) {
+        Reconstruction3D::Intersection ci = Q2->top();
+        Q2->pop();
+        cout << "intersection type: " << ci.eventType << ", x = " << ci.x << ", y = " << ci.y << " , z = " << ci.z << endl;
+        Q->push(ci);
+    }
+    //just to be sure, to it one more time
+    ci = Q->top();
+    Q->pop();
+    test.removeInvalidIntersection((*ci.edgeVector)[0], ci.y);
+
+    Q = test.priorityQueue;
+    std::cout << "after remove invalid " << Q->size()<< std::endl;
+    while(!Q->empty()) {
+        Reconstruction3D::Intersection ci = Q->top();
+        Q->pop();
+        cout << "intersection type: " << ci.eventType << ", x = " << ci.x << ", y = " << ci.y << " , z = " << ci.z << endl;
+    }
+    std::cout<< std::endl;*/
+
+
+
+
+
+
+
+    // test clustering
+    /*cout << "clustering event" << endl;
     Reconstruction3D::Intersection in = Q->top();
     Q->pop();
 
-    cout << in.edgeVector->size() << ", " << Q->size() << endl;
+    cout << in.edgeVector->size() << " = edge in intersection, Q size = " << Q->size() << endl;
     test.eventClustering(in);
-    cout << in.edgeVector->size() << ", " << Q->size()<< endl;
-
     cout << "after clustering" << endl;
+    cout << in.edgeVector->size() << " = edge in intersection, Q size = " << Q->size()<< endl;
     std::vector< std::vector< Edge* >* > chains;
     test.chainConstruction(in, chains);
     for(int i(0); i < chains.size(); ++i) {
