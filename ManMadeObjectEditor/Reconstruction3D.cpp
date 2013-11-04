@@ -10,7 +10,8 @@
  * pas implementer: near horizontal edge detection, profile offset event, filtering invalid event, post inter chain intersection
  *
  *
- *
+ * On doit changer les vertex a la fin des edges et leur mettre une hauteur pour quand on va construire les triangles
+ * et ainsi toujours avoir une edge de reference auquel on ajoute un point pour alors former un triangle
  *
  *
  *Attention: floor plan DOIT etre circulaire, donc si sa se divise en deux, faudra faire un vecteur de vecteur circulaire
@@ -244,6 +245,9 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             currentHeight = intersection.y;
             removeInvalidIntersection(edge, intersection.y);
             computeIntersection();
+
+            // a se moment la on peu construire un triangle, non ?
+
 
             break;
         }
