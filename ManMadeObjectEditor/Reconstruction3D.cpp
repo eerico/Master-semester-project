@@ -11,6 +11,10 @@
  *
  *
  *
+ *
+ *
+ *Attention: floor plan DOIT etre circulaire, donc si sa se divise en deux, faudra faire un vecteur de vecteur circulaire
+ *
  **/
 
 
@@ -68,20 +72,12 @@ void Reconstruction3D::computeIntersection()
     activePlan = cloneActivePlan();
     allActivePlan->push_back(activePlan);
 
-    foreach(Edge* edge, *activePlan) {
+    unsigned int activePlanSize = activePlan->size();
+    for(unsigned int i(0); i < activePlanSize; ++i) {
+        Edge* edge2 = (*activePlan)[i];
+        Edge* edge3 = (*activePlan)[(i+1) % activePlanSize];
+
         foreach(Edge* edge1, *activePlan) {
-            Edge* edge2 = edge;
-            Edge* edge3(0);
-
-            // the third edge is a neighbor edge, thus we have to find it
-            Vertex* vertex = edge1->getVertex1();
-            Edge* edgeTmp = vertex->getEdge1();
-            if (edgeTmp != edge) { // it should always be true i think
-                edge3 = edgeTmp;
-            } else {
-                edge3 = vertex->getEdge2();
-            }
-
             Intersection intersection = intersect(edge1, edge2, edge3, currentHeight);
             if(intersection.eventType != NoIntersection) {
                 priorityQueue->push(intersection);
@@ -100,11 +96,12 @@ void Reconstruction3D::addEdgeDirectionEvent()
 
         while(currentProfileVertex != 0 && currentProfileVertex->getNeighbor2() != 0) {
             Intersection edgeDirectionEvent;
-
-            edgeDirectionEvent.edgeVector.push_back(currentEdge);
+            edgeDirectionEvent.edgeVector = new std::vector< Edge* >;
+            edgeDirectionEvent.edgeVector->push_back(currentEdge);
             edgeDirectionEvent.eventType = EdgeDirection;
             edgeDirectionEvent.y = currentProfileVertex->getY();
             priorityQueue->push(edgeDirectionEvent);
+            currentProfileVertex = currentProfileVertex->getNeighbor2();
         }
         currentVertex = floorPlan->getNeighbor2();
     }
@@ -197,9 +194,10 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float x2 = invDet * (c21 * pn1 + c22 * pn2 + c23 * pn3);
     float x3 = invDet * (c31 * pn1 + c32 * pn2 + c33 * pn3);
 
-    intersection.edgeVector.push_back(edge1);
-    intersection.edgeVector.push_back(edge2);
-    intersection.edgeVector.push_back(edge3);
+    intersection.edgeVector = new std::vector< Edge* >;
+    intersection.edgeVector->push_back(edge1);
+    intersection.edgeVector->push_back(edge2);
+    intersection.edgeVector->push_back(edge3);
     intersection.eventType = General;
     intersection.x = x1;
     intersection.y = x2;
@@ -239,7 +237,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
     switch(intersection.eventType){
         case EdgeDirection:
         {
-            Edge* edge = intersection.edgeVector[0];
+            Edge* edge = (*intersection.edgeVector)[0];
             Profile* profile = edge->getProfile();
             profile->nextDirectionPlan();
             currentHeight = intersection.y;
@@ -273,10 +271,10 @@ void Reconstruction3D::removeInvalidIntersection(Edge *edge, float height)
     while(priorityQueue->size() > 0) {
         Intersection event = priorityQueue->top();
         priorityQueue->pop();
-        std::vector<Edge*> edges = event.edgeVector;
-        Edge* edge1 = edges[0];
-        Edge* edge2 = edges[1];
-        Edge* edge3 = edges[2];
+        std::vector<Edge*>* edges = event.edgeVector;
+        Edge* edge1 = (*edges)[0];
+        Edge* edge2 = (*edges)[1];
+        Edge* edge3 = (*edges)[2];
 
         if ((edge1 == edge) || (edge2 == edge) || (edge3 == edge)) {
             if (event.y < height) {
@@ -297,19 +295,22 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
     float delta1(0.001f);
     float delta2(0.00001f);
     bool stop(false);
-    std::vector<Edge*> edges = intersection.edgeVector;
+
+    std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
+
     while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
+
         if ((std::abs(event.y - y) < delta1) && (Utils::distance(event.x, event.z, intersection.x, intersection.z) < delta2)) {
             priorityQueue->pop();
-            std::vector<Edge*> eventEdges = event.edgeVector;
-            for(unsigned int i(0); i < eventEdges.size(); ++i) {
-                edges.push_back(eventEdges[i]);
+            std::vector<Edge*>* eventEdges = event.edgeVector;
+
+            for(unsigned int i(0); i < eventEdges->size(); ++i) {
+                intersectionEdges->push_back((*eventEdges)[i]);
             }
         } else {
             stop = true;
         }
-
     }
 }
 
@@ -329,15 +330,16 @@ std::vector< Edge* >* Reconstruction3D::cloneActivePlan()
 // hum les chaines devrait etre consecutive d apres comment on fait mais s adepend de plein de truc...
 void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* >* >& chains)
 {
-    std::vector< Edge* > edges = intersection.edgeVector;
+    std::vector< Edge* >* edges = intersection.edgeVector;
+
     //first remove duplicate
-    unsigned int size = edges.size();
+    unsigned int size = edges->size();
     for(unsigned int i(0); i < size; ++i) {
-        Edge* currentEdge = edges[i];
+        Edge* currentEdge = (*edges)[i];
         for(unsigned int j(i+1); j < size; ++j) {
-            Edge* comparedEdge = edges[i];
+            Edge* comparedEdge = (*edges)[j];
             if (currentEdge == comparedEdge) {
-                edges.erase(edges.begin() + j);
+                edges->erase(edges->begin() + j);
                 j--;
                 size--;
             }
@@ -350,41 +352,42 @@ void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector
 
     for(unsigned int i(0); i < size; ++i) {
         std::vector< Edge* >* currentChain = new std::vector< Edge* >;
-        Edge* currentEdge = edges[i];
+        Edge* currentEdge = (*edges)[i];
+
         first = currentEdge->getVertex1();
         last = currentEdge->getVertex2();
         currentChain->push_back(currentEdge);
 
         for(unsigned int j(i+1); j < size; ++j) {
-            Edge* comparedEdge = edges[i];
+            Edge* comparedEdge = (*edges)[j];
 
             Vertex* vertex1 = comparedEdge->getVertex1();
             Vertex* vertex2 = comparedEdge->getVertex2();
 
             if(vertex1 == first) {
                 currentChain->insert(currentChain->begin(), comparedEdge);
-                edges.erase(edges.begin() + j);
+                edges->erase(edges->begin() + j);
                 size--;
-                j = i + 1;
-                first = vertex1;
+                j = i;
+                first = vertex2;
             } else if(vertex2 == first) {
                 currentChain->insert(currentChain->begin(), comparedEdge);
-                edges.erase(edges.begin() + j);
+                edges->erase(edges->begin() + j);
                 size--;
-                j = i + 1;
-                first = vertex2;
+                j = i;
+                first = vertex1;
             } else if(vertex1 == last) {
                 currentChain->push_back(comparedEdge);
-                edges.erase(edges.begin() + j);
+                edges->erase(edges->begin() + j);
                 size--;
-                j = i + 1;
-                last = vertex1;
+                j = i;
+                last = vertex2;
             } else if(vertex2 == last) {
                 currentChain->push_back(comparedEdge);
-                edges.erase(edges.begin() + j);
+                edges->erase(edges->begin() + j);
                 size--;
-                j = i + 1;
-                last = vertex2;
+                j = i;
+                last = vertex1;
             }
         }
 

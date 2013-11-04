@@ -30,7 +30,7 @@ public:
     };
 
     struct Intersection {
-        std::vector<Edge*> edgeVector;
+        std::vector<Edge*>* edgeVector;
 
         //intersection point
         float x;
@@ -50,8 +50,10 @@ public:
 
     std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>* priorityQueue;
 
+    // ok mais foreach pourrait etre changer non ?
     void computeIntersection();
 
+    // ok
     void addEdgeDirectionEvent();
 
     void removeInvalidIntersection(Edge* edge, float height);
@@ -64,8 +66,10 @@ public:
     //ok
     void computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile, float& nx, float& ny, float& nz);
 
+    //ok
     void eventClustering(Intersection& intersection);
 
+    //ok
     void chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* >* >& chains);
 
     void intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
