@@ -5,10 +5,13 @@ using namespace std;
 
 Test::Test()
 {
+    //activer test dans la main
 }
 
 void Test::Reconstruction3DTest()
 {
+    std::cout << std::endl;
+
     //must make all elements of reconsutrcion3D public !!
     //set a simple model
     Vertex* a = new Vertex(-1.0f, 1.0f);
@@ -49,10 +52,9 @@ void Test::Reconstruction3DTest()
 
 
 
-    //test copy, commentermain loop et reset to initial state
+    //test copy, commenter main loop et reset to initial state
 
-
-    test.reconstruct();
+    /*test.reconstruct();
     cout << (test.allActivePlan)->size() << endl;
 
     vector< Edge* >* plan = (*test.allActivePlan)[0];
@@ -62,7 +64,7 @@ void Test::Reconstruction3DTest()
         Vertex* v2 = e->getVertex2();
 
         cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")    " << e << endl;
-    }
+    }*/
 
 
 
@@ -70,7 +72,7 @@ void Test::Reconstruction3DTest()
 
     //test normal
 
-    cout << "plan normal: " << endl;
+    /*cout << "plan normal: " << endl;
     float nx, ny, nz;
     test.computePlanNormal(ab->getVertex1(), ab->getVertex2(), ab->getProfile(), nx, ny, nz);
     cout << "normal: " << nx << ", " << ny << ", " << nz << endl;
@@ -79,7 +81,7 @@ void Test::Reconstruction3DTest()
     test.computePlanNormal(cd->getVertex1(), cd->getVertex2(), cd->getProfile(), nx, ny, nz);
     cout << "normal: " << nx << ", " << ny << ", " << nz << endl;
     test.computePlanNormal(da->getVertex1(), da->getVertex2(), da->getProfile(), nx, ny, nz);
-    cout << "normal: " << nx << ", " << ny << ", " << nz << endl;
+    cout << "normal: " << nx << ", " << ny << ", " << nz << endl;*/
 
 
 
@@ -87,7 +89,7 @@ void Test::Reconstruction3DTest()
 
     //test simple intersection
 
-    cout << "Intersection type: 0 No intersection, 1 General, 2 Edge dircetion" << endl;
+    /*cout << "Intersection type: 0 No intersection, 1 General, 2 Edge dircetion" << endl;
     Reconstruction3D::Intersection i = test.intersect(ab, bc, cd, 0.0f);
     cout << "TMP intersection type: " << i.eventType << ", x = " << i.x << ", y = " << i.y << " , z = " << i.z << endl;
 
@@ -102,7 +104,7 @@ void Test::Reconstruction3DTest()
     test.computeIntersection();
     std::priority_queue<Reconstruction3D::Intersection, std::vector<Reconstruction3D::Intersection>, Reconstruction3D::IntersectionComparison>* Q = test.priorityQueue;
 
-    std::cout << "nombre d intersection : " << Q->size() << std::endl;
+    std::cout << "nombre d intersection : " << Q->size() << std::endl;*/
 
     /*while(!Q->empty()) {
         Reconstruction3D::Intersection ci = Q->top();
@@ -197,5 +199,14 @@ void Test::Reconstruction3DTest()
             cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << endl;
         }
     }*/
+
+
+
+
+
+
+
+    //test general simple
+    test.reconstruct();
 
 }

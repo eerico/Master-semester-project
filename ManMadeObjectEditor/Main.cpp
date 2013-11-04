@@ -7,10 +7,10 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    /*FloorAndProfileViewer fpViewer;
-    fpViewer.show();*/
+    FloorAndProfileViewer fpViewer;
+    fpViewer.show();
 
-    Test::Reconstruction3DTest();
+    //Test::Reconstruction3DTest();
 
     return app.exec();
 }

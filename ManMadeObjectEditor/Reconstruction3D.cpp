@@ -51,7 +51,7 @@ void Reconstruction3D::reconstruct()
     allActivePlan->push_back(activePlan);
 
     //main loop
-    /*addEdgeDirectionEvent();
+    addEdgeDirectionEvent();
     computeIntersection();
     while(priorityQueue->size() > 0) {
         Intersection event = priorityQueue->top();
@@ -64,7 +64,7 @@ void Reconstruction3D::reconstruct()
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
         currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
         currentVertex = floorPlan->getNeighbor2();
-    }*/
+    }
 }
 
 void Reconstruction3D::computeIntersection()
@@ -237,6 +237,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
     switch(intersection.eventType){
         case EdgeDirection:
         {
+            std::cout << "intersection: type: " << intersection.eventType << ", y = " << intersection.y << std::endl;
             Edge* edge = (*intersection.edgeVector)[0];
             Profile* profile = edge->getProfile();
             profile->nextDirectionPlan();
@@ -251,8 +252,14 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             // on va toucher au edge donc faire une copy!!! a la fin on devrai alors avoir un noveau active plan
             // voir intersect pour copy
             eventClustering(intersection);
+
+            std::cout << "intersection: type: " << intersection.eventType << ", coord: (" << intersection.x << ", " << intersection.y << ", " << intersection.z << "), nb edge: " << intersection.edgeVector->size() << std::endl;
+
             std::vector< std::vector< Edge* >* > chains;
             chainConstruction(intersection, chains);
+
+            // a se moment la on peu construire un triangle, non ?
+            std::cout << "chains size: " << chains.size() << " first chains size: " << (chains[0])->size() << std::endl;
 
             intraChainHandling(chains, intersection);
             interChainHandling(chains, intersection);
