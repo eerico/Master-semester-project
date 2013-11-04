@@ -15,7 +15,7 @@ public:
     Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *>* triangles);
     ~Reconstruction3D();
     void reconstruct();
-//private:
+private:
     Vertex* floorPlan;
     unsigned int floorPlanSize;
     std::vector<qglviewer::Vec *>* triangles;
