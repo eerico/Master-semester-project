@@ -58,8 +58,9 @@ private:
     void computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile, float& nx, float& ny, float& nz);
     void eventClustering(Intersection& intersection);
     void chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* >* >& chains);
-    void intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection &intersection);
-    void interChainHandling(std::vector< std::vector< Edge* >* >& chains);
+    void intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
+    void interChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
+    void splitEdgeAtCorner(Edge* edgeToSplit, Intersection& cornerIntersection, Edge* newEdge1, Edge* newEdge2);
     std::vector< Edge* >* cloneActivePlan();
 };
 

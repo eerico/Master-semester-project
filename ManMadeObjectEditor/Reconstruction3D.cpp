@@ -5,7 +5,8 @@
  * je crois que triangle faut les faire pendant que algo fonctionne c est plus simple
  *
  * reste a check si juste: tous ahah
- * reste a implemente: inter chain handling.
+ * reste a implemente: un moyen de stock tout les edge/vertex que je creer pour les delete a la fin..
+ *                      creer triangle et mettre dans le vector correpsondant
  * pas implementer: near horizontal edge detection, profile offset event, filtering invalid event, post inter chain intersection
  *
  *
@@ -72,7 +73,7 @@ void Reconstruction3D::computeIntersection()
             Edge* edge2 = edge;
             Edge* edge3(0);
 
-            // the third edge a neighbor edge, thus we have to find it
+            // the third edge is a neighbor edge, thus we have to find it
             Vertex* vertex = edge1->getVertex1();
             Edge* edgeTmp = vertex->getEdge1();
             if (edgeTmp != edge) { // it should always be true i think
@@ -215,8 +216,6 @@ void Reconstruction3D::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profi
     Utils::normalize(nx, ny, nz);
 }
 
-// faire les truc magique. Pas oublier de update le active plan, et de set les profiles
-// (pVertex) a la bonne hauteur
 void Reconstruction3D::handleEvent(Intersection& intersection)
 {
     switch(intersection.eventType){
@@ -238,12 +237,11 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             eventClustering(intersection);
             std::vector< std::vector< Edge* >* > chains;
             chainConstruction(intersection, chains);
+
             intraChainHandling(chains, intersection);
-            interChainHandling(chains);
+            interChainHandling(chains, intersection);
 
-
-            // maintenant en theorie il doit y avoir moyen d avoir un nouveau active plan et de le push
-            // dans all active plan
+            // maintenant en theorie on a un active plan modifier
             break;
         }
     }
@@ -282,7 +280,7 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
     float delta2(0.00001f);
     bool stop(false);
     std::vector<Edge*> edges = intersection.edgeVector;
-    do {
+    while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
         if ((std::abs(event.y - y) < delta1) && (Utils::distance(event.x, event.z, intersection.x, intersection.z) < delta2)) {
             priorityQueue->pop();
@@ -294,10 +292,10 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
             stop = true;
         }
 
-    } while (!stop);
+    }
 }
 
-// this will allow us to manipulate edges will working on the activePlan
+// this will allow us to manipulate edges while working on the activePlan
 std::vector< Edge* >* Reconstruction3D::cloneActivePlan()
 {
     std::vector<Edge* >* cloneActivePlan = new std::vector< Edge* >;
@@ -310,6 +308,7 @@ std::vector< Edge* >* Reconstruction3D::cloneActivePlan()
     return cloneActivePlan;
 }
 
+// hum les chaines devrait etre consecutive d apres comment on fait mais s adepend de plein de truc...
 void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* >* >& chains)
 {
     std::vector< Edge* > edges = intersection.edgeVector;
@@ -375,18 +374,89 @@ void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector
     }
 }
 
-void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& chains)
+void Reconstruction3D::splitEdgeAtCorner(Edge *edgeToSplit, Intersection& cornerIntersection, Edge* newEdge1, Edge* newEdge2)
 {
+    Vertex* cornerVertex = new Vertex(cornerIntersection.x, cornerIntersection.y);
+    edgeToSplit->invalid();
 
+    newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
+    newEdge2 = new Edge(cornerVertex, edgeToSplit->getVertex2(), edgeToSplit->getProfile());
+
+    cornerVertex->setEdge1(newEdge1);
+    cornerVertex->setEdge2(newEdge2);
+
+    //remove invalid edge from the active plan and add the two new edges
+    unsigned int activePlanSize = activePlan->size();
+    bool found(false);
+    for(unsigned int i(0); (i < activePlanSize) && !found; ++i) {
+        Edge* currentEdge = (*activePlan)[i];
+        if(!currentEdge->isValid()) {
+            activePlan->erase(activePlan->begin() + i);
+            delete currentEdge;
+
+            activePlan->insert(activePlan->begin() + i, newEdge1);
+            activePlan->insert(activePlan->begin() + i + 1, newEdge2);
+        }
+    }
+}
+
+void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection)
+{
+    // on suppose que les chaines sont bien successive...
+    unsigned int chainsSize = chains.size() - 1;
+    for(unsigned int i(0); i < chainsSize; i++) {
+        std::vector< Edge* >* chain1 = chains[i];
+        std::vector< Edge* >* chain2 = chains[i+1];
+
+        Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y);
+
+        Edge* lastEdgeChain1(0);
+        Edge* firstEdgeChain2(0);
+
+        if(chain1->size() == 1) {
+            Edge* newEdge1(0);
+            Edge* newEdge2(0);
+
+            Edge* chainEdge = (*chain1)[0];
+            splitEdgeAtCorner(chainEdge, intersection, newEdge1, newEdge2);
+
+            chain1->pop_back();
+            chain1->push_back(newEdge1);
+            chain1->push_back(newEdge2);
+            lastEdgeChain1 = newEdge2;
+        } else {
+            lastEdgeChain1 = (*chain1)[1];
+        }
+
+        if(chain2->size() == 1) {
+            Edge* newEdge1(0);
+            Edge* newEdge2(0);
+
+            Edge* chainEdge = (*chain2)[0];
+            splitEdgeAtCorner(chainEdge, intersection, newEdge1, newEdge2);
+
+            chain2->pop_back();
+            chain2->push_back(newEdge1);
+            chain2->push_back(newEdge2);
+            firstEdgeChain2 = newEdge1;
+        } else {
+            firstEdgeChain2 = (*chain2)[0];
+        }
+
+        lastEdgeChain1->setVertex1(intersectionVertex);
+        firstEdgeChain2->setVertex2(intersectionVertex);
+
+        intersectionVertex->setEdge1(firstEdgeChain2);
+        intersectionVertex->setEdge2(lastEdgeChain1);
+    }
 }
 
 void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection)
 {
     foreach(std::vector< Edge* >* currentChain, chains) {
         unsigned int currentChainSize = currentChain->size();
-        if (currentChainSize > 2) {            
-            // the new vertex defined by the intersection
-            Vertex* newVertex = new Vertex(intersection.x, intersection.z);
+        if (currentChainSize > 2) {
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y);
 
             Edge* firstEdge = (*currentChain)[0];
             Edge* firstNeighbor = (*currentChain)[1];
@@ -394,9 +464,11 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex1 = firstEdge->getVertex1();
             if ((vertex1 != firstNeighbor->getVertex1()) && (vertex1 != firstNeighbor->getVertex2())) {
-                firstEdge->setVertex2(newVertex);
+                firstEdge->setVertex2(intersectionVertex);
+                intersectionVertex->setEdge1(firstEdge);
             } else {
-                firstEdge->setVertex1(newVertex);
+                firstEdge->setVertex1(intersectionVertex);
+                intersectionVertex->setEdge2(firstEdge);
             }
 
             Edge* lastEdge = (*currentChain)[currentChainSize - 1];
@@ -406,9 +478,11 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex2 = lastEdge->getVertex1();
             if ((vertex2 != lastNeighbor->getVertex1()) && (vertex2 != lastNeighbor->getVertex2())) {
-                lastEdge->setVertex2(newVertex);
+                lastEdge->setVertex2(intersectionVertex);
+                intersectionVertex->setEdge1(lastEdge);
             } else {
-                lastEdge->setVertex1(newVertex);
+                lastEdge->setVertex1(intersectionVertex);
+                intersectionVertex->setEdge2(lastEdge);
             }
 
             //invalid all interior edges
@@ -420,8 +494,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 edgeInvalid->invalid();
             }
         } else if (currentChainSize == 2) {
-            // the new vertex defined by the intersection
-            Vertex* newVertex = new Vertex(intersection.x, intersection.z);
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y);
 
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[1];
@@ -429,16 +502,20 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex1 = firstEdge->getVertex1();
             if ((vertex1 != lastEdge->getVertex1()) && (vertex1 != lastEdge->getVertex2())) {
-                firstEdge->setVertex2(newVertex);
+                firstEdge->setVertex2(intersectionVertex);
+                intersectionVertex->setEdge1(firstEdge);
             } else {
-                firstEdge->setVertex1(newVertex);
+                firstEdge->setVertex1(intersectionVertex);
+                intersectionVertex->setEdge2(firstEdge);
             }
 
             vertex1 = lastEdge->getVertex1();
             if ((vertex1 != firstEdge->getVertex1()) && (vertex1 != firstEdge->getVertex2())) {
-                lastEdge->setVertex2(newVertex);
+                lastEdge->setVertex2(intersectionVertex);
+                intersectionVertex->setEdge1(lastEdge);
             } else {
-                lastEdge->setVertex1(newVertex);
+                lastEdge->setVertex1(intersectionVertex);
+                intersectionVertex->setEdge2(lastEdge);
             }
         }
     }
