@@ -28,7 +28,8 @@ SOURCES +=\
     Edge.cpp \
     AllPlanScene.cpp \
     Reconstruction3D.cpp \
-    MeshManager.cpp
+    MeshManager.cpp \
+    Test.cpp
 
 HEADERS  += \
     ObjectViewer.h \
@@ -45,7 +46,8 @@ HEADERS  += \
     Edge.h \
     AllPlanScene.h \
     Reconstruction3D.h \
-    MeshManager.h
+    MeshManager.h \
+    Test.h
 
 #QT *= xml opengl
 
