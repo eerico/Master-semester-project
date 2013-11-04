@@ -66,5 +66,14 @@ void Test::Reconstruction3DTest()
 
     cout << "Intersection type: 0 No intersection, 1 General, 2 Edge dircetion" << endl;
     Reconstruction3D::Intersection i = test.intersect(ab, bc, cd, 0.0f);
-    cout << "intersection type: " << i.eventType << ", x = " << i.x << ", y = " << i.y << " , z = " << i.z << endl;
+    cout << "TMP intersection type: " << i.eventType << ", x = " << i.x << ", y = " << i.y << " , z = " << i.z << endl;
+
+    test.computeIntersection();
+    std::priority_queue<Reconstruction3D::Intersection, std::vector<Reconstruction3D::Intersection>, Reconstruction3D::IntersectionComparison>* Q = test.priorityQueue;
+
+    while(!Q->empty()) {
+        Reconstruction3D::Intersection ci = Q->top();
+        Q->pop();
+        cout << "intersection type: " << ci.eventType << ", x = " << ci.x << ", y = " << ci.y << " , z = " << ci.z << endl;
+    }
 }

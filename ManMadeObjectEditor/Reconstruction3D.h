@@ -44,23 +44,36 @@ public:
     {
     public:
         bool operator()(Intersection& intersection1, Intersection& intersection2){
-            return intersection1.y < intersection2.y;
+            return intersection1.y > intersection2.y;
         }
     };
 
     std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>* priorityQueue;
 
     void computeIntersection();
+
     void addEdgeDirectionEvent();
+
     void removeInvalidIntersection(Edge* edge, float height);
+
+    //ok
     Intersection intersect(Edge* edge1, Edge* edge2, Edge* edge3, float currentHeight);
+
     void handleEvent(Intersection& intersection);
+
+    //ok
     void computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile, float& nx, float& ny, float& nz);
+
     void eventClustering(Intersection& intersection);
+
     void chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* >* >& chains);
+
     void intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
+
     void interChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
+
     void splitEdgeAtCorner(Edge* edgeToSplit, Intersection& cornerIntersection, Edge* newEdge1, Edge* newEdge2);
+
     std::vector< Edge* >* cloneActivePlan();
 };
 

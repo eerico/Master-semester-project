@@ -83,7 +83,9 @@ void Reconstruction3D::computeIntersection()
             }
 
             Intersection intersection = intersect(edge1, edge2, edge3, currentHeight);
-            priorityQueue->push(intersection);
+            if(intersection.eventType != NoIntersection) {
+                priorityQueue->push(intersection);
+            }
         }
     }
 }
@@ -107,88 +109,6 @@ void Reconstruction3D::addEdgeDirectionEvent()
         currentVertex = floorPlan->getNeighbor2();
     }
 }
-
-/*
-Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3, float currentHeight)
-{
-    Intersection intersection;
-
-    Vertex* vertex1 = edge1->getVertex1();
-    float p1 = vertex1->getX();
-    float p2 = currentHeight;
-    float p3 = vertex1->getY();
-    float n1(0.0f);
-    float n2(0.0f);
-    float n3(0.0f);
-    computePlanNormal(vertex1, edge1->getVertex2(), edge1->getProfile(), n1, n2, n3);
-
-    Vertex* vertex2 = edge2->getVertex1();
-    float p1_p = vertex2->getX();
-    float p2_p = currentHeight;
-    float p3_p = vertex2->getY();
-    float n1_p(0.0f);
-    float n2_p(0.0f);
-    float n3_p(0.0f);
-    computePlanNormal(vertex2, edge2->getVertex2(), edge2->getProfile(), n1_p, n2_p, n3_p);
-
-    Vertex* vertex3 = edge3->getVertex1();
-    float p1_pp = vertex3->getX();
-    float p2_pp = currentHeight;
-    float p3_pp = vertex3->getY();
-    float n1_pp(0.0f);
-    float n2_pp(0.0f);
-    float n3_pp(0.0f);
-    computePlanNormal(vertex3, edge3->getVertex2(), edge3->getProfile(), n1_pp, n2_pp, n3_pp);
-
-    float A = n1 - n1_p;
-
-    if(A == 0.0f) {
-        intersection.eventType = NoIntersection;
-        return intersection;
-    }
-
-    float B = p1 * n1 / A;
-    float C = p2 * n2 / A;
-    float D = p3 * n3 / A;
-    float E = p1_p * n1_p / A;
-    float F = p2_p * n2_p / A;
-    float G = p3_p * n3_p / A;
-    float H = B + C + D - E - F - G;
-    float I = (n2_p - n2) / A;
-    float J = (n3_p - n3) / A;
-    float K = I * n1 + n2 - I * n1_pp - n2_pp;
-
-    if(K == 0.0f) {
-        intersection.eventType = NoIntersection;
-        return intersection;
-    }
-
-    float L = (-H * n1 + p1 * n1 + p2 * n2 + p3 * n3 + H * n1_pp - p1_pp * n1_pp - p2_pp * n2_pp - p3_pp * n3_pp) / K;
-    float M = -J * n1 - n3 + J * n1_pp + n3_pp;
-    float N = H + L * I;
-    float Q = M * I + J;
-    float R = N * n1_p - p1_p * n1_p + L * n2_p - p2_p * n2_p - p3_p * n3_p - N * n1_pp + p1_pp * n1_pp - L * n2_pp + p2_pp * n2_pp + p3_pp * n3_pp;
-    float S = Q * n1_p + M * n2_p + n3_p - Q * n1_pp - M * n2_pp - n3_pp;
-
-    if(S == 0.0f) {
-        intersection.eventType = NoIntersection;
-        return intersection;
-    }
-
-    float x3 = -R / S;
-    float x2 = L + x3 * M;
-    float x1 = N + x3 * Q;
-
-    intersection.edgeVector.push_back(edge1);
-    intersection.edgeVector.push_back(edge2);
-    intersection.edgeVector.push_back(edge3);
-    intersection.eventType = General;
-    intersection.x = x1;
-    intersection.y = x2;
-    intersection.z = x3;
-
-    return intersection;
-}*/
 
 Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3, float currentHeight)
 {
