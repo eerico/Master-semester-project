@@ -35,11 +35,6 @@ private:
     void removeVertex();
     void moveVertex();
 
-    void keyPressEvent(QKeyEvent* keyEvent);
-    void keyReleaseEvent(QKeyEvent *event);
-
-    bool ctrl_pressed;
-    bool shift_pressed;
     bool isProfileSelected;
     bool isVertexMoving;
 

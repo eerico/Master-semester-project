@@ -4,8 +4,7 @@
 const int FloorScene::vertexRadius(6);
 
 FloorScene::FloorScene(MeshManager* meshManager)
-: QGraphicsScene(), ctrl_pressed(false), shift_pressed(false), meshManager(meshManager)
-, currentlyMovingVertex(0), isVertexMoving(false)
+: QGraphicsScene(), meshManager(meshManager), currentlyMovingVertex(0), isVertexMoving(false)
 {
     this->setSceneRect(QRectF(0, 0, 400, 600));
 }
@@ -18,9 +17,9 @@ FloorScene::~FloorScene()
 void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
     if (mouseEvent->button() ==  Qt::RightButton){
-        if(ctrl_pressed){
+        if(mouseEvent->modifiers() == Qt::ControlModifier){
             addVertex(mouseEvent->lastScenePos().toPoint());
-        } else if (shift_pressed) {
+        } else if (mouseEvent->modifiers() == Qt::ShiftModifier) {
             removeVertex();
         } else {
             unsigned int floorPlanSize = meshManager->getFloorPlanSize();
@@ -180,32 +179,6 @@ void FloorScene::addVertex(QPoint mousePos)
         delete currentEdge;
         // tell the meshManager to generate new point/triangle
         meshManager->setUpdateOnMesh();
-    }
-}
-
-void FloorScene::keyPressEvent(QKeyEvent* keyEvent)
-{
-    switch(keyEvent->key())
-    {
-        case Qt::Key_Control:
-            ctrl_pressed = true;
-            break;
-        case Qt::Key_Shift:
-            shift_pressed = true;
-            break;
-    }
-}
-
-void FloorScene::keyReleaseEvent(QKeyEvent *event)
-{
-    switch(event->key())
-    {
-        case Qt::Key_Control:
-            ctrl_pressed = false;
-            break;
-        case Qt::Key_Shift:
-            shift_pressed = false;
-            break;
     }
 }
 

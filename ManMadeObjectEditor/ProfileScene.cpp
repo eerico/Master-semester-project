@@ -23,9 +23,9 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
     }
 
     if (mouseEvent->button() ==  Qt::RightButton){
-        if(ctrl_pressed){
+        if(mouseEvent->modifiers() == Qt::ControlModifier){
             addVertex(mouseEvent->lastScenePos().toPoint());
-        } else if (shift_pressed) {
+        } else if (mouseEvent->modifiers() == Qt::ShiftModifier) {
             //remove point if clicked on a point
             removeVertex();
         } else {
@@ -181,40 +181,6 @@ void ProfileScene::moveVertex()
     }
 }
 
-void ProfileScene::keyPressEvent(QKeyEvent* keyEvent)
-{
-    if (!isProfileSelected) {
-        return;
-    }
-
-    switch(keyEvent->key())
-    {
-        case Qt::Key_Control:
-            ctrl_pressed = true;
-            break;
-        case Qt::Key_Shift:
-            shift_pressed = true;
-            break;
-    }
-}
-
-void ProfileScene::keyReleaseEvent(QKeyEvent *event)
-{
-    if (!isProfileSelected) {
-        return;
-    }
-
-    switch(event->key())
-    {
-        case Qt::Key_Control:
-            ctrl_pressed = false;
-            break;
-        case Qt::Key_Shift:
-            shift_pressed = false;
-            break;
-    }
-}
-
 void ProfileScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!isProfileSelected) {
@@ -240,7 +206,6 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         QPoint mousePos = event->lastScenePos().toPoint();
         float x = mousePos.x();
         float y = mousePos.y();
-        //std::cerr << "Mouse Pos: " << x << ", " << y << std::endl;
 
         Vertex* neighbor1 = currentlyMovingVertex->getNeighbor1();
         if (neighbor1 != 0){
