@@ -52,7 +52,7 @@ void Reconstruction3D::reconstruct()
     allActivePlan->push_back(activePlan);
 
     //main loop
-    /*addEdgeDirectionEvent();
+    addEdgeDirectionEvent();
     computeIntersection();
     while(priorityQueue->size() > 0) {
         Intersection event = priorityQueue->top();
@@ -65,7 +65,7 @@ void Reconstruction3D::reconstruct()
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
         currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
         currentVertex = floorPlan->getNeighbor2();
-    }*/
+    }
 }
 
 void Reconstruction3D::computeIntersection()
