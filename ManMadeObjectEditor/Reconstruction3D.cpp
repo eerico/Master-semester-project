@@ -247,6 +247,8 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             computeIntersection();
 
             // a se moment la on peu construire un triangle, non ?
+            // on peut utiliser intersection entre 3 plan pour trouver les 3 point creer par le edge direction event
+            // donc un des trois plan est le plan parallele a xz
 
 
             break;
@@ -263,6 +265,8 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             chainConstruction(intersection, chains);
 
             // a se moment la on peu construire un triangle, non ?
+            // => le faire dans intra(/inter?) chain handling (voir note papier)
+
             std::cout << "chains size: " << chains.size() << " first chains size: " << (chains[0])->size() << std::endl;
 
             intraChainHandling(chains, intersection);
@@ -287,21 +291,14 @@ void Reconstruction3D::removeInvalidIntersection(Edge *edge, float height)
         Edge* edge2 = (*edges)[1];
         Edge* edge3 = (*edges)[2];
 
-        std::cout << "event: " << event.eventType << ", " << event.y << std::endl;
-        std::cout << "edges: " << edge1 << ", " << edge2 << ", " << edge3 << "::" << edge << std::endl;
-
         if(event.eventType == EdgeDirection) {
             priorityQueue2->push(event);
         }else{
-
             if ((edge1 == edge) || (edge2 == edge) || (edge3 == edge)) {
-                std::cout << "edge = " << std::endl;
                 if (event.y < height) {
-                    std::cout << "add priority 2" << std::endl;
                     priorityQueue2->push(event);
                 }
             } else {
-                std::cout << "pas = add priority 2" << std::endl;
                 priorityQueue2->push(event);
             }
         }
