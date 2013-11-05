@@ -577,6 +577,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
     }
 
 
+
     //Finally, remove invalid edge from the active plan
     unsigned int activePlanSize = activePlan->size();
     for(unsigned int i(0); i < activePlanSize; ++i) {
