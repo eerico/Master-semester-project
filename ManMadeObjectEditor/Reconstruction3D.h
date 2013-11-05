@@ -72,6 +72,7 @@ private:
     //ok
     void chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* >* >& chains);
 
+    //ok
     void intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
 
     void interChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);

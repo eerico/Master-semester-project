@@ -52,7 +52,7 @@ void Reconstruction3D::reconstruct()
     allActivePlan->push_back(activePlan);
 
     //main loop
-    addEdgeDirectionEvent();
+    /*addEdgeDirectionEvent();
     computeIntersection();
     while(priorityQueue->size() > 0) {
         Intersection event = priorityQueue->top();
@@ -65,7 +65,7 @@ void Reconstruction3D::reconstruct()
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
         currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
         currentVertex = floorPlan->getNeighbor2();
-    }
+    }*/
 }
 
 void Reconstruction3D::computeIntersection()
@@ -495,10 +495,26 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
 {
     foreach(std::vector< Edge* >* currentChain, chains) {
         unsigned int currentChainSize = currentChain->size();
+
         if (currentChainSize > 2) {
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y);
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z);
 
             Edge* firstEdge = (*currentChain)[0];
+            Edge* lastEdge = (*currentChain)[currentChainSize - 1];
+
+            // first check if the chain is circular. If it is the case, all edges are interior edges that will shrink to 0
+            if (firstEdge->getVertex1() == lastEdge->getVertex2()) {
+                //invalid all interior edges
+                unsigned int i(0);
+                while(!currentChain->empty()){
+                    Edge* edgeInvalid = (*currentChain)[currentChain->size()-1];
+                    currentChain->pop_back();
+                    edgeInvalid->invalid();
+                }
+                break;
+            }
+
+
             Edge* firstNeighbor = (*currentChain)[1];
 
             //find which vertex will be reassigned and reassigned it
@@ -511,9 +527,8 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 intersectionVertex->setEdge2(firstEdge);
             }
 
-            Edge* lastEdge = (*currentChain)[currentChainSize - 1];
-            Edge* lastNeighbor = (*currentChain)[currentChainSize - 2];
 
+            Edge* lastNeighbor = (*currentChain)[currentChainSize - 2];
 
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex2 = lastEdge->getVertex1();
@@ -526,7 +541,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             }
 
             //invalid all interior edges
-            for(unsigned int i(1); i < currentChainSize - 2; ++i) {
+            for(unsigned int i(1); i < currentChainSize - 1; ++i) {
                 Edge* edgeInvalid = (*currentChain)[i];
                 currentChain->erase(currentChain->begin() + i);
                 i--;
@@ -534,13 +549,14 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 edgeInvalid->invalid();
             }
         } else if (currentChainSize == 2) {
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y);
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z);
 
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[1];
 
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex1 = firstEdge->getVertex1();
+            Vertex* vertex2 = firstEdge->getVertex2();
             if ((vertex1 != lastEdge->getVertex1()) && (vertex1 != lastEdge->getVertex2())) {
                 firstEdge->setVertex2(intersectionVertex);
                 intersectionVertex->setEdge1(firstEdge);
@@ -549,8 +565,8 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 intersectionVertex->setEdge2(firstEdge);
             }
 
-            vertex1 = lastEdge->getVertex1();
-            if ((vertex1 != firstEdge->getVertex1()) && (vertex1 != firstEdge->getVertex2())) {
+            Vertex* lastEdgeVertex = lastEdge->getVertex1();
+            if ((vertex1 != lastEdgeVertex) && (vertex2 != lastEdgeVertex)) {
                 lastEdge->setVertex2(intersectionVertex);
                 intersectionVertex->setEdge1(lastEdge);
             } else {
