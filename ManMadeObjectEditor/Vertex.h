@@ -16,12 +16,15 @@ class Vertex
 
 public:
     Vertex(float x, float y, bool addFaces=false, bool valid = false);
+    Vertex(float x, float y, float z);
     virtual ~Vertex();
 
     float getX();
     float getY();
+    float getZ();
     void setX(float i);
     void setY(float i);
+    void setZ(float i);
 
     Vertex* getNeighbor1();
     Vertex* getNeighbor2();
@@ -49,6 +52,8 @@ public:
 private:
     float x;
     float y;
+    float z;
+
     QGraphicsEllipseItem* ellipse;
     Vertex *neighbor1;
     Edge* edge1;

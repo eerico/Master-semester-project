@@ -2,9 +2,9 @@
 
 /***
  *
- * je crois que triangle faut les faire pendant que algo fonctionne c est plus simple
  *
- * reste a check si juste: voir se qui est pas ok dans le .h (juste tester avec cas très simple)
+ *
+ *
  * reste a implemente: un moyen de stock tout les edge/vertex que je creer pour les delete a la fin..
  *                      creer triangle et mettre dans le vector correpsondant
  * pas implementer: near horizontal edge detection, profile offset event, filtering invalid event, post inter chain intersection
@@ -16,12 +16,13 @@
  *
  *Attention: floor plan DOIT etre circulaire, donc si sa se divise en deux, faudra faire un vecteur de vecteur circulaire
  *
+ *
  **/
 
 
 
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *>* triangles)
-    :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles), currentHeight(0)
+    :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
 {
     priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>;
     activePlan = new std::vector< Edge* >;
@@ -70,21 +71,21 @@ void Reconstruction3D::reconstruct()
 
 void Reconstruction3D::computeIntersection()
 {
+    activePlan = cloneActivePlan();
+    allActivePlan->push_back(activePlan);
+
     unsigned int activePlanSize = activePlan->size();
     for(unsigned int i(0); i < activePlanSize; ++i) {
         Edge* edge2 = (*activePlan)[i];
         Edge* edge3 = (*activePlan)[(i+1) % activePlanSize];
 
         foreach(Edge* edge1, *activePlan) {
-            Intersection intersection = intersect(edge1, edge2, edge3, currentHeight);
+            Intersection intersection = intersect(edge1, edge2, edge3);
             if(intersection.eventType != NoIntersection) {
                 priorityQueue->push(intersection);
             }
         }
     }
-
-    activePlan = cloneActivePlan();
-    allActivePlan->push_back(activePlan);
 }
 
 void Reconstruction3D::addEdgeDirectionEvent()
@@ -108,13 +109,13 @@ void Reconstruction3D::addEdgeDirectionEvent()
     }
 }
 
-Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3, float currentHeight)
+Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3)
 {
     Intersection intersection;
 
     Vertex* vertex1 = edge1->getVertex1();
     float p1 = vertex1->getX();
-    float p2 = currentHeight;
+    float p2 = vertex1->getZ();
     float p3 = vertex1->getY();
     float n1(0.0f);
     float n2(0.0f);
@@ -123,7 +124,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
 
     Vertex* vertex2 = edge2->getVertex1();
     float p1_p = vertex2->getX();
-    float p2_p = currentHeight;
+    float p2_p = vertex2->getZ();
     float p3_p = vertex2->getY();
     float n1_p(0.0f);
     float n2_p(0.0f);
@@ -132,7 +133,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
 
     Vertex* vertex3 = edge3->getVertex1();
     float p1_pp = vertex3->getX();
-    float p2_pp = currentHeight;
+    float p2_pp = vertex3->getZ();
     float p3_pp = vertex3->getY();
     float n1_pp(0.0f);
     float n2_pp(0.0f);
@@ -238,11 +239,9 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
     switch(intersection.eventType){
         case EdgeDirection:
         {
-            std::cout << "intersection: type: " << intersection.eventType << ", y = " << intersection.y << std::endl;
             Edge* edge = (*intersection.edgeVector)[0];
             Profile* profile = edge->getProfile();
             profile->nextDirectionPlan();
-            currentHeight = intersection.y;
             removeInvalidIntersection(edge, intersection.y);
             computeIntersection();
 
@@ -259,15 +258,11 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             // voir intersect pour copy
             eventClustering(intersection);
 
-            std::cout << "intersection: type: " << intersection.eventType << ", coord: (" << intersection.x << ", " << intersection.y << ", " << intersection.z << "), nb edge: " << intersection.edgeVector->size() << std::endl;
-
             std::vector< std::vector< Edge* >* > chains;
             chainConstruction(intersection, chains);
 
             // a se moment la on peu construire un triangle, non ?
             // => le faire dans intra(/inter?) chain handling (voir note papier)
-
-            std::cout << "chains size: " << chains.size() << " first chains size: " << (chains[0])->size() << std::endl;
 
             intraChainHandling(chains, intersection);
             interChainHandling(chains, intersection);
@@ -414,9 +409,9 @@ void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector
     }
 }
 
-void Reconstruction3D::splitEdgeAtCorner(Edge *edgeToSplit, Intersection& cornerIntersection, Edge* newEdge1, Edge* newEdge2)
+void Reconstruction3D::splitEdgeAtCorner(Edge *edgeToSplit, Intersection& cornerIntersection, Edge*& newEdge1, Edge*& newEdge2)
 {
-    Vertex* cornerVertex = new Vertex(cornerIntersection.x, cornerIntersection.y);
+    Vertex* cornerVertex = new Vertex(cornerIntersection.x, cornerIntersection.z, cornerIntersection.y);
     edgeToSplit->invalid();
 
     newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
@@ -436,6 +431,7 @@ void Reconstruction3D::splitEdgeAtCorner(Edge *edgeToSplit, Intersection& corner
 
             activePlan->insert(activePlan->begin() + i, newEdge1);
             activePlan->insert(activePlan->begin() + i + 1, newEdge2);
+            found = true;
         }
     }
 }
@@ -443,12 +439,12 @@ void Reconstruction3D::splitEdgeAtCorner(Edge *edgeToSplit, Intersection& corner
 void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection)
 {
     // on suppose que les chaines sont bien successive...
-    unsigned int chainsSize = chains.size() - 1;
+    unsigned int chainsSize = chains.size();
     for(unsigned int i(0); i < chainsSize; i++) {
         std::vector< Edge* >* chain1 = chains[i];
-        std::vector< Edge* >* chain2 = chains[i+1];
+        std::vector< Edge* >* chain2 = chains[(i+1) % chainsSize];
 
-        Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y);
+        Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z, intersection.y);
 
         Edge* lastEdgeChain1(0);
         Edge* firstEdgeChain2(0);
@@ -482,7 +478,6 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& 
         } else {
             firstEdgeChain2 = (*chain2)[0];
         }
-
         lastEdgeChain1->setVertex1(intersectionVertex);
         firstEdgeChain2->setVertex2(intersectionVertex);
 
@@ -497,7 +492,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
         unsigned int currentChainSize = currentChain->size();
 
         if (currentChainSize > 2) {
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z);
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z, intersection.y);
 
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[currentChainSize - 1];
@@ -505,11 +500,12 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             // first check if the chain is circular. If it is the case, all edges are interior edges that will shrink to 0
             if (firstEdge->getVertex1() == lastEdge->getVertex2()) {
                 //invalid all interior edges
-                unsigned int i(0);
                 while(!currentChain->empty()){
                     Edge* edgeInvalid = (*currentChain)[currentChain->size()-1];
                     currentChain->pop_back();
                     edgeInvalid->invalid();
+
+                    addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
                 }
                 break;
             }
@@ -547,9 +543,11 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 i--;
                 currentChainSize--;
                 edgeInvalid->invalid();
+
+                addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
             }
         } else if (currentChainSize == 2) {
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z);
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z, intersection.y);
 
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[1];
@@ -576,8 +574,6 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
         }
     }
 
-
-
     //Finally, remove invalid edge from the active plan
     unsigned int activePlanSize = activePlan->size();
     for(unsigned int i(0); i < activePlanSize; ++i) {
@@ -589,5 +585,16 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             activePlanSize--;
         }
     }
+}
+
+void Reconstruction3D::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3)
+{
+    qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
+    qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());
+    qglviewer::Vec* triangleVertex3 = new qglviewer::Vec(vertex3->getX(), vertex3->getY(), vertex3->getZ());
+
+    triangles->push_back(triangleVertex1);
+    triangles->push_back(triangleVertex2);
+    triangles->push_back(triangleVertex3);
 }
 

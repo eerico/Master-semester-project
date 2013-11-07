@@ -21,7 +21,6 @@ private:
     std::vector<qglviewer::Vec *>* triangles;
     std::vector< Edge* >* activePlan;
     std::vector< std::vector< Edge* >* >* allActivePlan;
-    float currentHeight;
 
     enum EventType {
         NoIntersection,
@@ -50,16 +49,17 @@ private:
 
     std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>* priorityQueue;
 
-    // ok mais foreach pourrait etre changer non ?
+    // ok
     void computeIntersection();
 
     // ok
     void addEdgeDirectionEvent();
 
+    // ok
     void removeInvalidIntersection(Edge* edge, float height);
 
     //ok
-    Intersection intersect(Edge* edge1, Edge* edge2, Edge* edge3, float currentHeight);
+    Intersection intersect(Edge* edge1, Edge* edge2, Edge* edge3);
 
     void handleEvent(Intersection& intersection);
 
@@ -75,11 +75,16 @@ private:
     //ok
     void intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
 
+    //ok
     void interChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
 
-    void splitEdgeAtCorner(Edge* edgeToSplit, Intersection& cornerIntersection, Edge* newEdge1, Edge* newEdge2);
+    //ok
+    void splitEdgeAtCorner(Edge* edgeToSplit, Intersection& cornerIntersection, Edge*& newEdge1, Edge*& newEdge2);
 
+    // ok
     std::vector< Edge* >* cloneActivePlan();
+
+    void addNewTriangle(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3);
 };
 
 #endif // RECONSTRUCTION3D_H

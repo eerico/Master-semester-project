@@ -11,6 +11,7 @@
 #include "FloorPlanAndProfileExtractor.h"
 #include "Utils.h"
 #include "ProfileDestructorManager.h"
+#include "Reconstruction3D.h"
 
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>

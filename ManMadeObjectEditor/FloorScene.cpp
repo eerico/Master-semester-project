@@ -32,7 +32,7 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
             } else {
                 QPoint mousePos = mouseEvent->lastScenePos().toPoint();
                 // no point defined thus we add an initial geometric structure
-                basicCircle(&mousePos, 10);
+                basicCircle(&mousePos, 4);
             }
         }
     }
@@ -279,9 +279,6 @@ void FloorScene::basicCircle(QPoint *mousePos, int numSample)
     
     newProfileSelected(commonProfile);
     loadFloorPlan();
-    
-    // tell the meshManager to generate new point/triangle
-    meshManager->setUpdateOnMesh();
 }
 
 void FloorScene::newProfileSelected(Profile* p)

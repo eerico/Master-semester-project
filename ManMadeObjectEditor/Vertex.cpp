@@ -2,7 +2,7 @@
 
 
 Vertex::Vertex(float x, float y, bool addFaces, bool valid)
-    : x(x), y(y), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0), valid(valid)
+    : x(x), y(y), z(0.0f), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0), valid(valid)
 {
     vertexPen.setWidth(5);
     vertexPen.setColor(Qt::white);
@@ -15,6 +15,11 @@ Vertex::Vertex(float x, float y, bool addFaces, bool valid)
 
 }
 
+Vertex::Vertex(float x, float y, float z)
+    : x(x), y(y), z(z)
+{
+
+}
 
 Vertex::~Vertex()
 {
@@ -87,6 +92,11 @@ float Vertex::getY()
     return y;
 }
 
+float Vertex::getZ()
+{
+    return z;
+}
+
 Vertex* Vertex::getNeighbor1()
 {
     return neighbor1;
@@ -126,6 +136,11 @@ void Vertex::setY(float i){
 
 void Vertex::setX(float i){
     x = i;
+}
+
+void Vertex::setZ(float i)
+{
+    z = i;
 }
 
 void Vertex::addFace(OMMesh::FaceHandle face){

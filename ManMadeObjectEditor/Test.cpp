@@ -45,7 +45,8 @@ void Test::Reconstruction3DTest()
 
     int size = 4;
 
-    Reconstruction3D test = Reconstruction3D(a, size, NULL);
+    std::vector<qglviewer::Vec *>* triangles = new std::vector<qglviewer::Vec *>;
+    Reconstruction3D test = Reconstruction3D(a, size, triangles);
 
 
 
@@ -54,7 +55,7 @@ void Test::Reconstruction3DTest()
 
     //test copy, commenter main loop et reset to initial state
 
-    test.reconstruct();
+    /*test.reconstruct();
     cout << (test.allActivePlan)->size() << endl;
 
     vector< Edge* >* plan = (*test.allActivePlan)[0];
@@ -64,7 +65,7 @@ void Test::Reconstruction3DTest()
         Vertex* v2 = e->getVertex2();
 
         cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")    " << e << endl;
-    }
+    }*/
 
 
 
@@ -72,7 +73,7 @@ void Test::Reconstruction3DTest()
 
     //test normal
 
-    cout << "plan normal: " << endl;
+    /*cout << "plan normal: " << endl;
     float nx, ny, nz;
     test.computePlanNormal(ab->getVertex1(), ab->getVertex2(), ab->getProfile(), nx, ny, nz);
     cout << "normal: " << nx << ", " << ny << ", " << nz << endl;
@@ -81,7 +82,7 @@ void Test::Reconstruction3DTest()
     test.computePlanNormal(cd->getVertex1(), cd->getVertex2(), cd->getProfile(), nx, ny, nz);
     cout << "normal: " << nx << ", " << ny << ", " << nz << endl;
     test.computePlanNormal(da->getVertex1(), da->getVertex2(), da->getProfile(), nx, ny, nz);
-    cout << "normal: " << nx << ", " << ny << ", " << nz << endl;
+    cout << "normal: " << nx << ", " << ny << ", " << nz << endl;*/
 
 
 
@@ -89,8 +90,8 @@ void Test::Reconstruction3DTest()
 
     //test simple intersection
 
-    cout << "Intersection type: 0 No intersection, 1 General, 2 Edge dircetion" << endl;
-    Reconstruction3D::Intersection i = test.intersect(ab, bc, cd, 0.0f);
+    /*cout << "Intersection type: 0 No intersection, 1 General, 2 Edge dircetion" << endl;
+    Reconstruction3D::Intersection i = test.intersect(ab, bc, cd);
     cout << "TMP intersection type: " << i.eventType << ", x = " << i.x << ", y = " << i.y << " , z = " << i.z << endl;
 
 
@@ -106,7 +107,7 @@ void Test::Reconstruction3DTest()
 
     std::cout << "nombre d intersection : " << Q->size() << std::endl;
 
-    /*while(!Q->empty()) {
+    while(!Q->empty()) {
         Reconstruction3D::Intersection ci = Q->top();
         Q->pop();
         cout << "intersection type: " << ci.eventType << ", x = " << ci.x << ", y = " << ci.y << " , z = " << ci.z << endl;
@@ -179,7 +180,7 @@ void Test::Reconstruction3DTest()
 
 
     // test clustering
-    cout << "clustering event" << endl;
+    /*cout << "clustering event" << endl;
     Reconstruction3D::Intersection in = Q->top();
     Q->pop();
 
@@ -198,16 +199,12 @@ void Test::Reconstruction3DTest()
             Vertex* v2 = e->getVertex2();
             cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << endl;
         }
-    }
-
-
-
-
+    }*/
 
     // test intra chains handling
 
     //delete pour mettre comme cas std, commenter si cas chain complete
-    //(*chains[0]).pop_back();
+    /*(*chains[0]).pop_back();
 
     std::cout << std::endl << "test intra chain" << std::endl;
     std::cout << "avant:" << std::endl;
@@ -221,10 +218,78 @@ void Test::Reconstruction3DTest()
             cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << endl;
         }
     }
+    cout << "active plan before" << endl;
+    std::vector< Edge* >* activePlan = test.activePlan;
+    foreach(Edge* e, *activePlan) {
+        Vertex* v1 = e->getVertex1();
+        Vertex* v2 = e->getVertex2();
+        cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << endl;
+    }
 
     std::cout << "intersection: " << in.eventType << ": " << in.x << ", " << in.y << ", " << in.z << std::endl;
     test.intraChainHandling(chains, in);
+
     std::cout << "apres" << std::endl;
+
+    cout << "active plan after" << endl;
+    activePlan = test.activePlan;
+    foreach(Edge* e, *activePlan) {
+        Vertex* v1 = e->getVertex1();
+        Vertex* v2 = e->getVertex2();
+        cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << endl;
+    }
+    for(int i(0); i < chains.size(); ++i) {
+        std::vector< Edge* >* c = chains[i];
+        cout << "new chain" << endl;
+        for(int j(0); j < c->size(); ++j) {
+            Edge* e = (*c)[j];
+            Vertex* v1 = e->getVertex1();
+            Vertex* v2 = e->getVertex2();
+            cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << endl;
+        }
+    }*/
+
+
+
+
+
+
+    //test Edge split:
+    /*cout << "test edge split" << endl;
+    cout << "active plan before" << endl;
+    activePlan = test.activePlan;
+    foreach(Edge* e, *activePlan) {
+        Vertex* v1 = e->getVertex1();
+        Vertex* v2 = e->getVertex2();
+        cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << endl;
+    }
+
+    Edge* edgeToSplit = (*activePlan)[1];
+    Edge* e1;
+    Edge* e2;
+    test.splitEdgeAtCorner(edgeToSplit, in, e1, e2);
+
+    cout << "active plan after" << endl;
+    // also test clone activePlan
+    activePlan = test.cloneActivePlan();//test.activePlan;
+    foreach(Edge* e, *activePlan) {
+        Vertex* v1 = e->getVertex1();
+        Vertex* v2 = e->getVertex2();
+        cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << endl;
+    }*/
+
+
+
+    // test inter chain handling
+    // marche pas dans le cas si il y a un seul edge dans la chaine <------------------------------------------------------
+    /*std::vector< Edge* >* tt = new std::vector< Edge* >;
+    std::vector< Edge* >* aaa = chains[0];
+    //tt->push_back((*aaa)[2]);
+    tt->push_back((*aaa)[3]);
+    aaa->pop_back();
+    //aaa->pop_back();
+    chains.push_back(tt);
+    cout << "before inter test: chain modified: " << std::endl;
     for(int i(0); i < chains.size(); ++i) {
         std::vector< Edge* >* c = chains[i];
         cout << "new chain" << endl;
@@ -235,9 +300,31 @@ void Test::Reconstruction3DTest()
             cout << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << endl;
         }
     }
-
+    cout << "after inter chain" << endl;
+    test.interChainHandling(chains, in);
+    cout << "before inter test: chain modified: " << std::endl;
+    for(int i(0); i < chains.size(); ++i) {
+        std::vector< Edge* >* c = chains[i];
+        cout << "new chain" << endl;
+        for(int j(0); j < c->size(); ++j) {
+            Edge* e = (*c)[j];
+            Vertex* v1 = e->getVertex1();
+            Vertex* v2 = e->getVertex2();
+            cout << e << "  (" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << "): "
+                 << v1->getEdge1() << ", " << v1->getEdge2() << " :: " << v2->getEdge1() << ", " << v2->getEdge2() << endl;
+        }
+    }*/
 
     //test general simple
-    //test.reconstruct();
+    test.reconstruct();
 
+    for(unsigned int i(0); i < triangles->size(); i = i + 3) {
+        qglviewer::Vec pt1 = *((*triangles)[i]);
+        qglviewer::Vec pt2 = *((*triangles)[i+1]);
+        qglviewer::Vec pt3 = *((*triangles)[i+2]);
+
+        std::cout << "(" << pt1[0] << ", " << pt1[1] << ", " << pt1[2] << ") - ( " << pt2[0] << ", " << pt2[1] << ", " << pt2[2] << ") - ( " << pt3[0] << ", " << pt3[1] << ", " << pt3[2] << ")" << std::endl;
+    }
+
+    exit(EXIT_SUCCESS);
 }

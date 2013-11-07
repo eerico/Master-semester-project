@@ -8,13 +8,13 @@ MeshManager::MeshManager(): inputMesh(0), floorPlan(0), updateOnMesh(false), lon
 
 
     // simple test
-    triangles.push_back(new qglviewer::Vec(-1.0f, 0.0f, 0.5f));
+    /*triangles.push_back(new qglviewer::Vec(-1.0f, 0.0f, 0.5f));
     triangles.push_back(new qglviewer::Vec(-1.0f, 1.0f, 0.5f));
     triangles.push_back(new qglviewer::Vec(1.0f, 0.0f, 0.5f));
 
     triangles.push_back(new qglviewer::Vec(1.0f, 0.0f, 0.5f));
     triangles.push_back(new qglviewer::Vec(-1.0f, 1.0f, 0.5f));
-    triangles.push_back(new qglviewer::Vec(1.0f, 1.0f, 0.5f));
+    triangles.push_back(new qglviewer::Vec(1.0f, 1.0f, 0.5f));*/
 
 }
 
@@ -84,8 +84,18 @@ const std::vector<qglviewer::Vec *>& MeshManager::getTriangles()
     if (!updateOnMesh && !longUpdateOnMesh) {
         return triangles;
     }
+    std::cerr << "update Triangle" << std::endl;
 
+    unsigned int trianglesSize = triangles.size();
+    for(unsigned int i(0); i < trianglesSize; ++i) {
+        delete triangles[i];
+    }
+    triangles.clear();
 
+    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, &triangles);
+    reconstruction3D.reconstruct();
+
+    updateOnMesh = false;
 
     return triangles;
 }
@@ -96,6 +106,8 @@ std::vector<qglviewer::Vec*>* MeshManager::getPoints()
     if (!updateOnMesh && !longUpdateOnMesh) {
         return points;
     }
+
+    updateOnMesh = false;
 
     return points;
 }
