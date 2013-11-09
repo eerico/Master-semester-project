@@ -213,6 +213,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
 
     std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
 
+
     return intersection;
 }
 
@@ -298,51 +299,24 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             // voir intersect pour copy
             eventClustering(intersection);
 
-
-
-            std::cerr << "int: " << intersection.x << ", " << intersection.y << ", " << intersection.z << " :: ";
-            std::vector< Edge* > ee = *intersection.edgeVector;
-            for(int i = 0; i < ee.size() ; ++i) {
-                std::cerr << ee[i] << ", ";
-            }
-            std::cerr << std::endl;
-
-
-
-
-
-
             std::vector< std::vector< Edge* >* > chains;
             chainConstruction(intersection, chains);
 
 
-
-
-            /*std::cerr << "print chain" << std::endl;
-            for(int i(0); i < chains.size(); ++i) {
-                std::vector< Edge* >* c = chains[i];
-                std::cerr << "new chain" << std::endl;
-                for(int j(0); j < c->size(); ++j) {
-                    Edge* e = (*c)[j];
+            //////////////////////////////////////////////////////////////////////////
+            std::cerr << "Chain:" << std::endl;
+            foreach(std::vector< Edge* >* c, chains) {
+                std::cerr << "  new chaine" << std::endl;
+                std::cerr << "      ";
+                foreach(Edge* e, *c) {
                     Vertex* v1 = e->getVertex1();
                     Vertex* v2 = e->getVertex2();
-                    std::cerr << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << std::endl;
-                }
-            }*/
-            /*std::cerr << "print chain" << std::endl;
-            for(int i(0); i < chains.size(); ++i) {
-                std::vector< Edge* >* c = chains[i];
-                std::cerr << "new chain" << std::endl;
-                for(int j(0); j < c->size(); ++j) {
-                    Edge* e = (*c)[j];
-
-                    std::cerr << e << ", ";
+                    std::cerr << "(" << v1->getX() << ", " << v1->getY() << ", " << v1->getZ() << ") - ("
+                              << v2->getX() << ", " << v2->getY() << ", " << v2->getZ() << ") - ";
                 }
                 std::cerr << std::endl;
-            }*/
-
-
-
+            }
+            /////////////////////////////////////////////////////////////////////////
 
             // a se moment la on peu construire un triangle, non ?
             // => le faire dans intra(/inter?) chain handling (voir note papier)
@@ -390,6 +364,8 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
 {
     float y(intersection.y);
 
+    //float delta1(0.01f);
+    //float delta2(0.01f);
     float delta1(0.01f);
     float delta2(0.01f);
 
@@ -578,10 +554,18 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
         unsigned int currentChainSize = currentChain->size();
 
         if (currentChainSize > 2) {
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[currentChainSize - 1];
+
+            Edge* firstNeighbor = (*currentChain)[1];
+            Edge* lastNeighbor = (*currentChain)[currentChainSize - 2];
+
+            if(!firstEdge->isValid() || !lastEdge->isValid() || !firstNeighbor->isValid() || !lastNeighbor->isValid()) {
+                break;
+            }
+
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
             // first check if the chain is circular. If it is the case, all edges are interior edges that will shrink to 0
             if (firstEdge->getVertex1() == lastEdge->getVertex2()) {
@@ -596,8 +580,6 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 break;
             }
 
-            Edge* firstNeighbor = (*currentChain)[1];
-
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex1 = firstEdge->getVertex1();
             if ((vertex1 != firstNeighbor->getVertex1()) && (vertex1 != firstNeighbor->getVertex2())) {
@@ -607,9 +589,6 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 firstEdge->setVertex1(intersectionVertex);
                 intersectionVertex->setEdge2(firstEdge);
             }
-
-
-            Edge* lastNeighbor = (*currentChain)[currentChainSize - 2];
 
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex2 = lastEdge->getVertex1();
@@ -632,10 +611,16 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
             }
         } else if (currentChainSize == 2) {
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[1];
+
+            if(!firstEdge->isValid() || !lastEdge->isValid()) {
+                break;
+            }
+
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
+
 
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex1 = firstEdge->getVertex1();
@@ -690,9 +675,9 @@ void Reconstruction3D::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *
     triangles->push_back(triangleVertex2);
     triangles->push_back(triangleVertex3);
 
-    std::cerr << "triangles: (" << (*triangleVertex1)[0] << ", " << (*triangleVertex1)[1] << ", " << (*triangleVertex1)[2] << ") - ("
+    /*std::cerr << "triangles: (" << (*triangleVertex1)[0] << ", " << (*triangleVertex1)[1] << ", " << (*triangleVertex1)[2] << ") - ("
                  << (*triangleVertex2)[0] << ", " << (*triangleVertex2)[1] << ", " << (*triangleVertex2)[2] << ") - ("
-                    << (*triangleVertex3)[0] << ", " << (*triangleVertex3)[1] << ", " << (*triangleVertex3)[2] << ")" << std::endl;
+                    << (*triangleVertex3)[0] << ", " << (*triangleVertex3)[1] << ", " << (*triangleVertex3)[2] << ")" << std::endl;*/
 
 }
 

@@ -43,7 +43,7 @@ private:
     {
     public:
         bool operator()(Intersection& intersection1, Intersection& intersection2){
-            return intersection1.y > intersection2.y;
+            return intersection1.z > intersection2.z;
         }
     };
 

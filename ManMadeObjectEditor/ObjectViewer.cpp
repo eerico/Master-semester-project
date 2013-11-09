@@ -79,10 +79,42 @@ void ObjectViewer::init()
 
      const std::vector<qglviewer::Vec *> triangles = meshManager->getTriangles();
      unsigned int size = triangles.size();
-     for( unsigned int i(0); i < size; ++i)
+     /*for( unsigned int i(0); i < size; ++i)
      {
          glColor3fv(color);
          glVertex3fv(*triangles[i]);
+     }*/
+
+     float normalX(0.0f);
+     float normalY(0.0f);
+     float normalZ(0.0f);
+
+     for( unsigned int i(0); i < size; i = i + 3)
+     {
+         qglviewer::Vec vertex1 = *triangles[i];
+         qglviewer::Vec vertex2 = *triangles[i+1];
+         qglviewer::Vec vertex3 = *triangles[i+2];
+         qglviewer::Vec vector1 = vertex3 - vertex1;
+         qglviewer::Vec vector2 = vertex2 - vertex1;
+
+         Utils::crossProduct(vector1[0], vector1[1], vector1[2],
+                            vector2[0], vector2[1], vector2[2],
+                            normalX, normalY, normalZ);
+
+         qglviewer::Vec normal(normalX, normalY, normalZ);
+         normal.normalize();
+
+         glNormal3fv(normal);
+         glColor3fv(color);
+         glVertex3fv(vertex1);
+
+         glNormal3fv(normal);
+         glColor3fv(color);
+         glVertex3fv(vertex2);
+
+         glNormal3fv(normal);
+         glColor3fv(color);
+         glVertex3fv(vertex3);
      }
 
      glEnd();
