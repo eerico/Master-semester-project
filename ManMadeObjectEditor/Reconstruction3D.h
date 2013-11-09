@@ -75,15 +75,17 @@ private:
     //ok
     void intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
 
-    //ok
+    // marche pas correctement cas simple
+    // appel commenter dans le code
     void interChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
 
-    //ok
+    // marche pas correctement cas simple
     void splitEdgeAtCorner(Edge* edgeToSplit, Intersection& cornerIntersection, Edge*& newEdge1, Edge*& newEdge2);
 
     // ok
     std::vector< Edge* >* cloneActivePlan();
 
+    //ok
     void addNewTriangle(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3);
 };
 

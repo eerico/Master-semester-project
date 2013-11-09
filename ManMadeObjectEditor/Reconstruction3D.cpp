@@ -80,6 +80,11 @@ void Reconstruction3D::computeIntersection()
         Edge* edge3 = (*activePlan)[(i+1) % activePlanSize];
 
         foreach(Edge* edge1, *activePlan) {
+            if(edge1 == edge2 || edge1 == edge3) {
+                continue;
+            }
+
+
             Intersection intersection = intersect(edge1, edge2, edge3);
             if(intersection.eventType != NoIntersection) {
                 priorityQueue->push(intersection);
@@ -101,7 +106,7 @@ void Reconstruction3D::addEdgeDirectionEvent()
             edgeDirectionEvent.edgeVector = new std::vector< Edge* >;
             edgeDirectionEvent.edgeVector->push_back(currentEdge);
             edgeDirectionEvent.eventType = EdgeDirection;
-            edgeDirectionEvent.y = currentProfileVertex->getY();
+            edgeDirectionEvent.z = currentProfileVertex->getY();
             priorityQueue->push(edgeDirectionEvent);
             currentProfileVertex = currentProfileVertex->getNeighbor2();
         }
@@ -121,6 +126,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float n2(0.0f);
     float n3(0.0f);
     computePlanNormal(vertex1, edge1->getVertex2(), edge1->getProfile(), n1, n2, n3);
+    //std::cerr << "plan normal: " << n1 << ", " << n2 << ", " << n3 << std::endl;
 
     Vertex* vertex2 = edge2->getVertex1();
     float p1_p = vertex2->getX();
@@ -158,7 +164,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
 
     float det = n1 * c11 + n2 * c21 + n3 * c31;
 
-    if(det == 0.0f) {
+    if(std::abs(det) < 0.0001f) {
         intersection.eventType = NoIntersection;
         return intersection;
     }
@@ -202,8 +208,10 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     intersection.edgeVector->push_back(edge3);
     intersection.eventType = General;
     intersection.x = x1;
-    intersection.y = x2;
-    intersection.z = x3;
+    intersection.y = x3;
+    intersection.z = x2;
+
+    std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
 
     return intersection;
 }
@@ -232,6 +240,35 @@ void Reconstruction3D::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profi
 
     Utils::crossProduct(d, e, f, a, b, c, nx, ny, nz);
     Utils::normalize(nx, ny, nz);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // show the profile orientation
+    //////////////////////////////////////////////////////////////////////////////////////
+    /*
+    float aa = vertex2->getX() + vertex1->getX();
+    float bb = 0.0f;
+    float cc = vertex2->getY() + vertex1->getY();
+
+    Vertex* v3  = new Vertex(d+ 0.5f*aa, f + 0.5f*cc);
+    v3->setZ(e + 0.5f*bb);
+    Vertex* v  = new Vertex(0.5f*aa, 0.5f*cc);
+    v->setZ(bb);
+    addNewTriangle(v, v3, v);
+    */
+    //////////////////////////////////////////////////////////////////////////////////////
 }
 
 void Reconstruction3D::handleEvent(Intersection& intersection)
@@ -254,18 +291,64 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
         }
         case General:
         {
+            std::cerr << "handle intersection:" << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+
+
             // on va toucher au edge donc faire une copy!!! a la fin on devrai alors avoir un noveau active plan
             // voir intersect pour copy
             eventClustering(intersection);
 
+
+
+            std::cerr << "int: " << intersection.x << ", " << intersection.y << ", " << intersection.z << " :: ";
+            std::vector< Edge* > ee = *intersection.edgeVector;
+            for(int i = 0; i < ee.size() ; ++i) {
+                std::cerr << ee[i] << ", ";
+            }
+            std::cerr << std::endl;
+
+
+
+
+
+
             std::vector< std::vector< Edge* >* > chains;
             chainConstruction(intersection, chains);
+
+
+
+
+            /*std::cerr << "print chain" << std::endl;
+            for(int i(0); i < chains.size(); ++i) {
+                std::vector< Edge* >* c = chains[i];
+                std::cerr << "new chain" << std::endl;
+                for(int j(0); j < c->size(); ++j) {
+                    Edge* e = (*c)[j];
+                    Vertex* v1 = e->getVertex1();
+                    Vertex* v2 = e->getVertex2();
+                    std::cerr << "(" << v1->getX() << ", " << v1->getY() << ") - (" << v2->getX() << ", " << v2->getY() << ")" << std::endl;
+                }
+            }*/
+            /*std::cerr << "print chain" << std::endl;
+            for(int i(0); i < chains.size(); ++i) {
+                std::vector< Edge* >* c = chains[i];
+                std::cerr << "new chain" << std::endl;
+                for(int j(0); j < c->size(); ++j) {
+                    Edge* e = (*c)[j];
+
+                    std::cerr << e << ", ";
+                }
+                std::cerr << std::endl;
+            }*/
+
+
+
 
             // a se moment la on peu construire un triangle, non ?
             // => le faire dans intra(/inter?) chain handling (voir note papier)
 
             intraChainHandling(chains, intersection);
-            interChainHandling(chains, intersection);
+            //interChainHandling(chains, intersection); TODO sa plante !!!!!
 
             // maintenant en theorie on a un active plan modifier
             break;
@@ -290,7 +373,7 @@ void Reconstruction3D::removeInvalidIntersection(Edge *edge, float height)
             priorityQueue2->push(event);
         }else{
             if ((edge1 == edge) || (edge2 == edge) || (edge3 == edge)) {
-                if (event.y < height) {
+                if (event.z < height) {
                     priorityQueue2->push(event);
                 }
             } else {
@@ -306,8 +389,10 @@ void Reconstruction3D::removeInvalidIntersection(Edge *edge, float height)
 void Reconstruction3D::eventClustering(Intersection& intersection)
 {
     float y(intersection.y);
-    float delta1(0.001f);
-    float delta2(0.00001f);
+
+    float delta1(0.01f);
+    float delta2(0.01f);
+
     bool stop(false);
 
     std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
@@ -315,6 +400,7 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
     while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
 
+        //std::cerr << "      MM: " << std::abs(event.y - y) << ", " << Utils::distance(event.x, event.z, intersection.x, intersection.z) << std::endl;
         if ((std::abs(event.y - y) < delta1) && (Utils::distance(event.x, event.z, intersection.x, intersection.z) < delta2)) {
             priorityQueue->pop();
             std::vector<Edge*>* eventEdges = event.edgeVector;
@@ -411,7 +497,7 @@ void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector
 
 void Reconstruction3D::splitEdgeAtCorner(Edge *edgeToSplit, Intersection& cornerIntersection, Edge*& newEdge1, Edge*& newEdge2)
 {
-    Vertex* cornerVertex = new Vertex(cornerIntersection.x, cornerIntersection.z, cornerIntersection.y);
+    Vertex* cornerVertex = new Vertex(cornerIntersection.x, cornerIntersection.y, cornerIntersection.z);
     edgeToSplit->invalid();
 
     newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
@@ -444,7 +530,7 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& 
         std::vector< Edge* >* chain1 = chains[i];
         std::vector< Edge* >* chain2 = chains[(i+1) % chainsSize];
 
-        Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z, intersection.y);
+        Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
         Edge* lastEdgeChain1(0);
         Edge* firstEdgeChain2(0);
@@ -492,7 +578,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
         unsigned int currentChainSize = currentChain->size();
 
         if (currentChainSize > 2) {
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z, intersection.y);
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[currentChainSize - 1];
@@ -509,7 +595,6 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 }
                 break;
             }
-
 
             Edge* firstNeighbor = (*currentChain)[1];
 
@@ -547,7 +632,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
             }
         } else if (currentChainSize == 2) {
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z, intersection.y);
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[1];
@@ -571,6 +656,14 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 lastEdge->setVertex1(intersectionVertex);
                 intersectionVertex->setEdge2(lastEdge);
             }
+        } else {
+            //que faire ici ?
+            /*Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z, intersection.y);
+
+            Edge* edge = (*currentChain)[0];
+            std::cerr << edge << ",," << edge->getVertex1()->getX() << ", " << edge->getVertex1()->getY() << " :: " <<
+                         edge->getVertex2()->getX() << ", " << edge->getVertex2()->getY() << std::endl;
+            addNewTriangle(edge->getVertex1(), edge->getVertex2(), intersectionVertex);*/
         }
     }
 
@@ -596,5 +689,10 @@ void Reconstruction3D::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *
     triangles->push_back(triangleVertex1);
     triangles->push_back(triangleVertex2);
     triangles->push_back(triangleVertex3);
+
+    std::cerr << "triangles: (" << (*triangleVertex1)[0] << ", " << (*triangleVertex1)[1] << ", " << (*triangleVertex1)[2] << ") - ("
+                 << (*triangleVertex2)[0] << ", " << (*triangleVertex2)[1] << ", " << (*triangleVertex2)[2] << ") - ("
+                    << (*triangleVertex3)[0] << ", " << (*triangleVertex3)[1] << ", " << (*triangleVertex3)[2] << ")" << std::endl;
+
 }
 

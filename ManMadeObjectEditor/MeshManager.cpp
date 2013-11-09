@@ -92,10 +92,60 @@ const std::vector<qglviewer::Vec *>& MeshManager::getTriangles()
     }
     triangles.clear();
 
+
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*Vertex* current = floorPlan;
+    for(unsigned int i(0); i < floorPlanSize; ++i) {
+        std::cerr << "(" << current->getX() << ", " << current->getY() << ", " << current->getZ() << ") - " << std::endl;
+        Vertex* p = current->getEdge2()->getProfile()->getProfileVertex();
+        while(p != 0) {
+            std::cerr << "(" << p->getX() << ", " << p->getY() << ", " << p->getZ() << ") - ";
+            p = p->getNeighbor2();
+        }
+        std::cerr << std::endl;
+
+        current = current->getNeighbor2();
+    }
+    std::cerr << std::endl;*/
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
     Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, &triangles);
     reconstruction3D.reconstruct();
 
+
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*current = floorPlan;
+    for(unsigned int i(0); i < floorPlanSize; ++i) {
+        std::cerr << "(" << current->getX() << ", " << current->getY() << ", " << current->getZ() << ") - " << std::endl;
+        Vertex* p = current->getEdge2()->getProfile()->getProfileVertex();
+        while(p != 0) {
+            std::cerr << "(" << p->getX() << ", " << p->getY() << ", " << p->getZ() << ") - ";
+            p = p->getNeighbor2();
+        }
+        std::cerr << std::endl;
+
+        current = current->getNeighbor2();
+    }
+    std::cerr << std::endl;*/
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
     updateOnMesh = false;
+    std::cerr << "apres reconstruction, nombre de triangles: " << (triangles.size() / 3.0f) << std::endl;
 
     return triangles;
 }

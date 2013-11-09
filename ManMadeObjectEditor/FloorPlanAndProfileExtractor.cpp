@@ -321,6 +321,12 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
     //build chain at every level  //////what if a vertex has only a neighbour???
     foreach (std::vector<Vertex*> level, plans) {
         if (level.size() < 3) {
+            if(level.size() > 1){
+                level[0]->setNeighbor2(level[1]);
+                level[0]->setNeighbor1(level[1]);
+                level[1]->setNeighbor2(level[0]);
+                level[1]->setNeighbor1(level[0]);
+            }
             foreach (Vertex* v, level) {
                 v->setValid(true);
             }

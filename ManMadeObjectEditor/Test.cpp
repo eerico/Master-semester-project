@@ -14,10 +14,16 @@ void Test::Reconstruction3DTest()
 
     //must make all elements of reconsutrcion3D public !!
     //set a simple model
-    Vertex* a = new Vertex(-1.0f, 1.0f);
+    /*Vertex* a = new Vertex(-1.0f, 1.0f);
     Vertex* b = new Vertex(1.0f, 1.0f);
     Vertex* c = new Vertex(1.0f, -1.0f);
-    Vertex* d = new Vertex(-1.0f, -1.0f);
+    Vertex* d = new Vertex(-1.0f, -1.0f);*/
+
+    Vertex* a = new Vertex(-0.735, 0.395);
+    Vertex* b = new Vertex(-0.235, 0.895);
+    Vertex* c = new Vertex(0.265, 0.395);
+    Vertex* d = new Vertex(-0.235, -0.105);
+
 
     a->setNeighbor1(d);
     a->setNeighbor2(b);
@@ -316,7 +322,38 @@ void Test::Reconstruction3DTest()
     }*/
 
     //test general simple
+    cout << "debut" << endl;
+    Vertex* current = a;
+    for(unsigned int i(0); i < size; ++i) {
+        cout << "(" << current->getX() << ", " << current->getY() << ", " << current->getZ() << ") - " << endl;
+        Vertex* p = current->getEdge2()->getProfile()->getProfileVertex();
+        while(p != 0) {
+            cout << "(" << p->getX() << ", " << p->getY() << ", " << p->getZ() << ") - ";
+            p = p->getNeighbor2();
+        }
+        cout << endl;
+
+        current = current->getNeighbor2();
+    }
+    cout << endl;
+
+
     test.reconstruct();
+
+    cout << "fin" << endl;
+    current = a;
+    for(unsigned int i(0); i < size; ++i) {
+        cout << "(" << current->getX() << ", " << current->getY() << ", " << current->getZ() << ") - " << endl;
+        Vertex* p = current->getEdge2()->getProfile()->getProfileVertex();
+        while(p != 0) {
+            cout << "(" << p->getX() << ", " << p->getY() << ", " << p->getZ() << ") - ";
+            p = p->getNeighbor2();
+        }
+        cout << endl;
+
+        current = current->getNeighbor2();
+    }
+    cout << endl;cout << endl;
 
     for(unsigned int i(0); i < triangles->size(); i = i + 3) {
         qglviewer::Vec pt1 = *((*triangles)[i]);
