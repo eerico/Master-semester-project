@@ -580,6 +580,11 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 break;
             }
 
+
+            // aucune idée de pourquoi c est juste
+            addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
+            addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
+
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex1 = firstEdge->getVertex1();
             if ((vertex1 != firstNeighbor->getVertex1()) && (vertex1 != firstNeighbor->getVertex2())) {
