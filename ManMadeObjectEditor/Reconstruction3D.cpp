@@ -561,9 +561,9 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             Edge* firstNeighbor = (*currentChain)[1];
             Edge* lastNeighbor = (*currentChain)[currentChainSize - 2];
 
-            if(!firstEdge->isValid() || !lastEdge->isValid() || !firstNeighbor->isValid() || !lastNeighbor->isValid()) {
+            /*if(!firstEdge->isValid() || !lastEdge->isValid() || !firstNeighbor->isValid() || !lastNeighbor->isValid()) {
                 break;
-            }
+            }*/
 
             Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
@@ -615,9 +615,9 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[1];
 
-            if(!firstEdge->isValid() || !lastEdge->isValid()) {
+            /*if(!firstEdge->isValid() || !lastEdge->isValid()) {
                 break;
-            }
+            }*/
 
             Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
@@ -643,12 +643,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             }
         } else {
             //que faire ici ?
-            /*Vertex* intersectionVertex = new Vertex(intersection.x, intersection.z, intersection.y);
-
-            Edge* edge = (*currentChain)[0];
-            std::cerr << edge << ",," << edge->getVertex1()->getX() << ", " << edge->getVertex1()->getY() << " :: " <<
-                         edge->getVertex2()->getX() << ", " << edge->getVertex2()->getY() << std::endl;
-            addNewTriangle(edge->getVertex1(), edge->getVertex2(), intersectionVertex);*/
+            //je crois que il en parle dans paper, relire
         }
     }
 
