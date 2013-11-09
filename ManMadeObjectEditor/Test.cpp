@@ -19,10 +19,10 @@ void Test::Reconstruction3DTest()
     Vertex* c = new Vertex(1.0f, -1.0f);
     Vertex* d = new Vertex(-1.0f, -1.0f);*/
 
-    Vertex* a = new Vertex(-0.735, 0.395);
-    Vertex* b = new Vertex(-0.235, 0.895);
-    Vertex* c = new Vertex(0.265, 0.395);
-    Vertex* d = new Vertex(-0.235, -0.105);
+    Vertex* a = new Vertex(-0.5, 1.0);
+    Vertex* b = new Vertex(0.5, 1.0);
+    Vertex* c = new Vertex(0.5, -1.0);
+    Vertex* d = new Vertex(-0.5, -1.0);
 
 
     a->setNeighbor1(d);
@@ -321,8 +321,15 @@ void Test::Reconstruction3DTest()
         }
     }*/
 
+
+
+
+
+
+
+
     //test general simple
-    cout << "debut" << endl;
+    /*cout << "debut" << endl;
     Vertex* current = a;
     for(unsigned int i(0); i < size; ++i) {
         cout << "(" << current->getX() << ", " << current->getY() << ", " << current->getZ() << ") - " << endl;
@@ -335,12 +342,12 @@ void Test::Reconstruction3DTest()
 
         current = current->getNeighbor2();
     }
-    cout << endl;
+    cout << endl;*/
 
 
     test.reconstruct();
 
-    cout << "fin" << endl;
+    /*cout << "fin" << endl;
     current = a;
     for(unsigned int i(0); i < size; ++i) {
         cout << "(" << current->getX() << ", " << current->getY() << ", " << current->getZ() << ") - " << endl;
@@ -352,15 +359,15 @@ void Test::Reconstruction3DTest()
         cout << endl;
 
         current = current->getNeighbor2();
-    }
-    cout << endl;cout << endl;
+    }*/
+    cerr << endl;cerr << "Triangles: " << endl;
 
     for(unsigned int i(0); i < triangles->size(); i = i + 3) {
         qglviewer::Vec pt1 = *((*triangles)[i]);
         qglviewer::Vec pt2 = *((*triangles)[i+1]);
         qglviewer::Vec pt3 = *((*triangles)[i+2]);
 
-        std::cout << "(" << pt1[0] << ", " << pt1[1] << ", " << pt1[2] << ") - ( " << pt2[0] << ", " << pt2[1] << ", " << pt2[2] << ") - ( " << pt3[0] << ", " << pt3[1] << ", " << pt3[2] << ")" << std::endl;
+        std::cerr << "(" << pt1[0] << ", " << pt1[1] << ", " << pt1[2] << ") - ( " << pt2[0] << ", " << pt2[1] << ", " << pt2[2] << ") - ( " << pt3[0] << ", " << pt3[1] << ", " << pt3[2] << ")" << std::endl;
     }
 
     exit(EXIT_SUCCESS);

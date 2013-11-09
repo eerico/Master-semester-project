@@ -53,6 +53,7 @@ private:
     QAction* flatAction;
     QAction* smoothAction;
     QAction* pointAction;
+    QAction* noViewAction;
 };
 
 #endif // FLOORANDPROFILEVIEWER_H

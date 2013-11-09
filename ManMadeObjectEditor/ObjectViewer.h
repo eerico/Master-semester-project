@@ -15,6 +15,7 @@ enum ViewMode {
     flat,
     smooth,
     point,
+    noView
 };
 
 class ObjectViewer : public QGLViewer
@@ -32,6 +33,7 @@ public slots:
     void flatMode();
     void smoothMode();
     void pointMode();
+    void noViewMode();
 
 signals:
     void closeSignal();

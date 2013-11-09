@@ -29,6 +29,7 @@ FloorAndProfileViewer::~FloorAndProfileViewer()
     delete flatAction;
     delete smoothAction;
     delete pointAction;
+    delete noViewAction;
     delete meshManager;
     delete objViewer;
 }
@@ -103,6 +104,9 @@ void FloorAndProfileViewer::createViewMenu()
     viewMenu->addAction(pointAction);
     QObject::connect(pointAction, SIGNAL(triggered()), objViewer, SLOT(pointMode()));
 
+    noViewAction = new QAction(tr("&No View"), this);
+    viewMenu->addAction(noViewAction);
+    QObject::connect(noViewAction, SIGNAL(triggered()), objViewer, SLOT(noViewMode()));
 }
 
 void FloorAndProfileViewer::aboutQtMessageBox()
@@ -147,6 +151,7 @@ void FloorAndProfileViewer::clearFile(){
     delete flatAction;
     delete smoothAction;
     delete pointAction;
+    delete noViewAction;
     createMenuBar();
 
     delete centralWidget;

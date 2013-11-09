@@ -24,11 +24,10 @@ class MeshManager : public QObject
 public:
     MeshManager();
     ~MeshManager();
-    const std::vector<qglviewer::Vec *>& getTriangles();
+    const std::vector<qglviewer::Vec *>* getTriangles();
 
     std::vector<qglviewer::Vec*>* getPoints();
 
-    void update();
     unsigned int getFloorPlanSize();
     void incrementFloorPlanSize();
     void decrementFloorPlanSize();
@@ -42,21 +41,20 @@ public:
     void setLongUpdateOnMesh(bool b);
     std::vector< std::vector< Vertex* > >& getPlans();
 
+    void clearTriangles();
+    void clearPoints();
+
 signals:
     void newFloorPlan();
 
 private:
-    std::vector<qglviewer::Vec *> triangles;
+    std::vector<qglviewer::Vec *>* triangles;
     Vertex* floorPlan; // linked list, can iterate on it using the neighbor
     Profile* currentProfile;
     OMMesh* inputMesh;
     bool updateOnMesh;
     bool longUpdateOnMesh;
     unsigned int floorPlanSize;
-
-    void getPointBasic(std::vector<qglviewer::Vec*>* points);
-    void getPointWithAdditionnalSampledPoint(std::vector<qglviewer::Vec*>* points, float spaceBetweenSample);
-    void computeNormals();
 
     std::vector<qglviewer::Vec*>* points;
     std::vector< std::vector< Vertex* > > plans;

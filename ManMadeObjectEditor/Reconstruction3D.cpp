@@ -10,8 +10,6 @@
  * pas implementer: near horizontal edge detection, profile offset event, filtering invalid event, post inter chain intersection
  *
  *
- * On doit changer les vertex a la fin des edges et leur mettre une hauteur pour quand on va construire les triangles
- * et ainsi toujours avoir une edge de reference auquel on ajoute un point pour alors former un triangle
  *
  *
  *Attention: floor plan DOIT etre circulaire, donc si sa se divise en deux, faudra faire un vecteur de vecteur circulaire
@@ -53,7 +51,7 @@ void Reconstruction3D::reconstruct()
     allActivePlan->push_back(activePlan);
 
     //main loop
-    addEdgeDirectionEvent();
+    //addEdgeDirectionEvent();
     computeIntersection();
     while(priorityQueue->size() > 0) {
         Intersection event = priorityQueue->top();
@@ -211,6 +209,11 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     intersection.y = x3;
     intersection.z = x2;
 
+    // the height must not be below the floor
+    if (x2 < 0.0f) {
+        intersection.eventType = NoIntersection;
+    }
+
     std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
 
 
@@ -364,8 +367,6 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
 {
     float y(intersection.y);
 
-    //float delta1(0.01f);
-    //float delta2(0.01f);
     float delta1(0.01f);
     float delta2(0.01f);
 
@@ -625,6 +626,8 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
 
             Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
+            addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
+            addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
 
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex1 = firstEdge->getVertex1();
@@ -666,6 +669,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
 
 void Reconstruction3D::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3)
 {
+
     qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
     qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());
     qglviewer::Vec* triangleVertex3 = new qglviewer::Vec(vertex3->getX(), vertex3->getY(), vertex3->getZ());

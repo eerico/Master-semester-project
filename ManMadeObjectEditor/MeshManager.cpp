@@ -5,6 +5,7 @@
 MeshManager::MeshManager(): inputMesh(0), floorPlan(0), updateOnMesh(false), longUpdateOnMesh(false), floorPlanSize(0)
 {
     points = new std::vector<qglviewer::Vec*>;
+    triangles = new std::vector<qglviewer::Vec*>;
 
 
     // simple test
@@ -20,12 +21,23 @@ MeshManager::MeshManager(): inputMesh(0), floorPlan(0), updateOnMesh(false), lon
 
 MeshManager::~MeshManager()
 {
-    unsigned int size = triangles.size();
+    unsigned int size = triangles->size();
     for( unsigned int i(0); i < size; ++i)
     {
-        qglviewer::Vec* tmp = triangles[i];
+        qglviewer::Vec* tmp = (*triangles)[i];
         delete tmp;
     }
+    delete triangles;
+
+
+    size = points->size();
+    for( unsigned int i(0); i < size; ++i)
+    {
+        qglviewer::Vec* tmp = (*points)[i];
+        delete tmp;
+    }
+    delete points;
+
 
     Vertex* currentVertex = floorPlan;
     for( unsigned int i(0); i < floorPlanSize; ++i)
@@ -72,25 +84,44 @@ MeshManager::~MeshManager()
     }
     plans.clear();
 
-    delete points;
+}
+
+void MeshManager::clearPoints() {
+    unsigned int size = points->size();
+    for( unsigned int i(0); i < size; ++i)
+    {
+        qglviewer::Vec* tmp = (*points)[i];
+        delete tmp;
+    }
+    points->clear();
+}
+
+void MeshManager::clearTriangles() {
+    unsigned int size = triangles->size();
+    for( unsigned int i(0); i < size; ++i)
+    {
+        qglviewer::Vec* tmp = (*triangles)[i];
+        delete tmp;
+    }
+    triangles->clear();
 }
 
 void MeshManager::setFloorPlan(Vertex* vertex) {
    floorPlan = vertex;
 }
 
-const std::vector<qglviewer::Vec *>& MeshManager::getTriangles()
+const std::vector<qglviewer::Vec *>* MeshManager::getTriangles()
 {
     if (!updateOnMesh && !longUpdateOnMesh) {
         return triangles;
     }
     std::cerr << "update Triangle" << std::endl;
 
-    unsigned int trianglesSize = triangles.size();
+    unsigned int trianglesSize = triangles->size();
     for(unsigned int i(0); i < trianglesSize; ++i) {
-        delete triangles[i];
+        delete (*triangles)[i];
     }
-    triangles.clear();
+    triangles->clear();
 
 
 
@@ -116,7 +147,7 @@ const std::vector<qglviewer::Vec *>& MeshManager::getTriangles()
 
 
 
-    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, &triangles);
+    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, triangles);
     reconstruction3D.reconstruct();
 
 
@@ -145,7 +176,7 @@ const std::vector<qglviewer::Vec *>& MeshManager::getTriangles()
 
 
     updateOnMesh = false;
-    std::cerr << "apres reconstruction, nombre de triangles: " << (triangles.size() / 3.0f) << std::endl;
+    std::cerr << "apres reconstruction, nombre de triangles: " << (triangles->size() / 3.0f) << std::endl;
 
     return triangles;
 }
@@ -174,13 +205,6 @@ std::vector<qglviewer::Vec*>* MeshManager::getPoints()
     return points;
 }
 
-
-void MeshManager::update()
-{
-    // hum surement que va reconstruire la liste de triangle en fonction du nouvelle input de point/profile donnée
-    qglviewer::Vec* tmp = triangles[0];
-    tmp->x -= 0.0001f;
-}
 
 unsigned int MeshManager::getFloorPlanSize()
 {
