@@ -122,7 +122,7 @@ void ObjectViewer::init()
 
  void ObjectViewer::drawPoints()
  {
-     glPointSize(1.0f);
+     glPointSize(2.0f);
      glBegin(GL_POINTS);
 
      std::vector<qglviewer::Vec *>* points;

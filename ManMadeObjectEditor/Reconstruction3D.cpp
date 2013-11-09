@@ -258,8 +258,8 @@ void Reconstruction3D::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profi
 
     // show the profile orientation
     //////////////////////////////////////////////////////////////////////////////////////
-    /*
-    float aa = vertex2->getX() + vertex1->getX();
+
+    /*float aa = vertex2->getX() + vertex1->getX();
     float bb = 0.0f;
     float cc = vertex2->getY() + vertex1->getY();
 
@@ -267,8 +267,8 @@ void Reconstruction3D::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profi
     v3->setZ(e + 0.5f*bb);
     Vertex* v  = new Vertex(0.5f*aa, 0.5f*cc);
     v->setZ(bb);
-    addNewTriangle(v, v3, v);
-    */
+    addNewTriangle(v, v3, v);*/
+
     //////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -581,7 +581,6 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             }
 
 
-            // aucune idée de pourquoi c est juste
             addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
             addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
 

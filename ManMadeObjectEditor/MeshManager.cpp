@@ -157,6 +157,18 @@ std::vector<qglviewer::Vec*>* MeshManager::getPoints()
         return points;
     }
 
+
+    unsigned int pointsSize = points->size();
+    for(unsigned int i(0); i < pointsSize; ++i) {
+        delete (*points)[i];
+    }
+    points->clear();
+
+
+    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, points);
+    reconstruction3D.reconstruct();
+
+
     updateOnMesh = false;
 
     return points;
