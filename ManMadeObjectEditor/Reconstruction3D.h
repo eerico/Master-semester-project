@@ -89,6 +89,8 @@ private:
     void addNewTriangle(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3);
 
     void removeInvalidEdge(std::vector< Edge* >* edges);
+
+    //bool isIntersectionExternToEdges(Intersection& intersection);
 };
 
 #endif // RECONSTRUCTION3D_H

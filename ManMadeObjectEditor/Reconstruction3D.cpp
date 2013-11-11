@@ -302,6 +302,11 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             // voir intersect pour copy
             eventClustering(intersection);
 
+            // filtering invalid event
+            if(intersection.edgeVector->size() < 3) {
+                return;
+            }
+
             std::vector< std::vector< Edge* >* > chains;
             chainConstruction(intersection, chains);
 
@@ -363,6 +368,57 @@ void Reconstruction3D::removeInvalidIntersection(Edge *edge, float height)
     priorityQueue = priorityQueue2;
 }
 
+/*
+bool Reconstruction3D::isIntersectionExternToEdges(Intersection &intersection)
+{
+    std::vector< Edge* >* edges = intersection.edgeVector;
+    foreach(Edge* edge, (*edges)){
+        Vertex* vertex1 = edge->getVertex1();
+        Vertex* vertex2 = edge->getVertex2();
+
+        float x1 = vertex1->getX();
+        float y1 = vertex1->getY();
+
+        float x2 = vertex2->getX();
+        float y2 = vertex2->getY();
+
+        float x = intersection.x;
+        float y = intersection.y;
+
+        float distance1 = Utils::distance(x1, y1, x, y);
+        float distance2 = Utils::distance(x2, y2, x, y);
+
+        float vx(0.0f);
+        float vy(0.0f);
+        float vertexToIntersectionX(0.0f);
+        float vertexToIntersectionY(0.0f);
+
+        if (distance2 > distance1) {
+            vx = x1 - x2;
+            vy = y1 - y2;
+
+            vertexToIntersectionX = x - x2;
+            vertexToIntersectionY = y - y2;
+        } else {
+            vx = x2 - x1;
+            vy = y2 - y1;
+
+            vertexToIntersectionX = x - x1;
+            vertexToIntersectionY = y - y1;
+        }
+
+        Utils::normalize(vx, vy);
+
+        float projectedIntersectionDistance = Utils::dotProduct(vx, vy, vertexToIntersectionX, vertexToIntersectionY);
+
+        if(projectedIntersectionDistance > Utils::distance(x2, y2, x1, y1)){
+            return true;
+        }
+    }
+
+    return false;
+}*/
+
 void Reconstruction3D::eventClustering(Intersection& intersection)
 {
     float y(intersection.y);
@@ -373,7 +429,6 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
     bool stop(false);
 
     std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
-
     removeInvalidEdge(intersectionEdges);
 
     while(!stop && (priorityQueue->size() > 0)){
@@ -401,7 +456,6 @@ void Reconstruction3D::removeInvalidEdge(std::vector<Edge *> *edges){
         Edge* currentEdge = (*edges)[i];
         if(!currentEdge->isValid()) {
             edges->erase(edges->begin() + i);
-            delete currentEdge;
             i--;
             size--;
         }
@@ -668,7 +722,16 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
         } else {
             //que faire ici ?
             //je crois que il en parle dans paper, relire
+            /*Edge* firstEdge = (*currentChain)[0];
 
+            if(!firstEdge->isValid()) {
+                break;
+            }
+
+            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
+
+            addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
+            firstEdge->invalid();*/
         }
     }
 
