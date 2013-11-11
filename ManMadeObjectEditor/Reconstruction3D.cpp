@@ -10,11 +10,6 @@
  * pas implementer: near horizontal edge detection, profile offset event, filtering invalid event, post inter chain intersection
  *
  *
- *
- *
- *Attention: floor plan DOIT etre circulaire, donc si sa se divise en deux, faudra faire un vecteur de vecteur circulaire
- *
- *
  **/
 
 /*
@@ -28,7 +23,7 @@ Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize
 {
     priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>;
     activePlan = new std::vector< Edge* >;
-    allActivePlan = new std::vector< std::vector< Edge* >* >;
+    allActivePlan = new std::vector< std::vector< Edge* >* >; // vraiment utile ?
 }
 
 Reconstruction3D::~Reconstruction3D()
@@ -73,7 +68,7 @@ void Reconstruction3D::reconstruct()
 
 void Reconstruction3D::computeIntersection()
 {
-    activePlan = cloneActivePlan();
+    activePlan = cloneActivePlan(); // vraiment utile de le faire a chaque fois ?
     allActivePlan->push_back(activePlan);
 
     unsigned int activePlanSize = activePlan->size();
