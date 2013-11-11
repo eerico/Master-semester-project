@@ -295,7 +295,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
         }
         case General:
         {
-            std::cerr << "handle intersection:" << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            //std::cerr << "handle intersection:" << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
 
 
             // on va toucher au edge donc faire une copy!!! a la fin on devrai alors avoir un noveau active plan
@@ -649,7 +649,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
 
                     addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
                 }
-                break;
+                continue;
             }
 
 
@@ -727,6 +727,9 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             if(!firstEdge->isValid()) {
                 break;
             }
+
+            std::cerr << currentChainSize  << ": " << firstEdge->getVertex1()->getX() << ", " << firstEdge->getVertex1()->getY() << ", " << firstEdge->getVertex1()->getZ()
+                      << " - " << firstEdge->getVertex2()->getX() << ", " << firstEdge->getVertex2()->getY() << ", " << firstEdge->getVertex2()->getZ() << std::endl;
 
             Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
