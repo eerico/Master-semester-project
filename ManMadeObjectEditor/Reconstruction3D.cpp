@@ -311,21 +311,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             chainConstruction(intersection, chains);
 
 
-            //////////////////////////////////////////////////////////////////////////
-            /*std::cerr << "Chain:" << std::endl;
-            foreach(std::vector< Edge* >* c, chains) {
-                std::cerr << "  new chaine" << std::endl;
-                std::cerr << "      ";
-                foreach(Edge* e, *c) {
-                    Vertex* v1 = e->getVertex1();
-                    Vertex* v2 = e->getVertex2();
-                    std::cerr << "(" << v1->getX() << ", " << v1->getY() << ", " << v1->getZ() << ") - ("
-                              << v2->getX() << ", " << v2->getY() << ", " << v2->getZ() << ") - ";
-                }
-                std::cerr << std::endl;
-            }*/
-            /////////////////////////////////////////////////////////////////////////
-
             // a se moment la on peu construire un triangle, non ?
             // => le faire dans intra(/inter?) chain handling (voir note papier)
 
@@ -622,7 +607,9 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& 
 
 void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection)
 {
-    foreach(std::vector< Edge* >* currentChain, chains) {
+    unsigned int chainsSize = chains.size();
+    for(unsigned int j(0); j < chainsSize; ++j) {
+        std::vector< Edge* >* currentChain = chains[j];
         unsigned int currentChainSize = currentChain->size();
 
         if (currentChainSize > 2) {
@@ -649,6 +636,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
 
                     addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
                 }
+                chains.erase(chains.begin() + j);
                 continue;
             }
 
@@ -685,6 +673,9 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
                 edgeInvalid->invalid();
 
                 addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
+            }
+            if(currentChain->size() == 0) {
+                chains.erase(chains.begin() + j);
             }
         } else if (currentChainSize == 2) {
 
