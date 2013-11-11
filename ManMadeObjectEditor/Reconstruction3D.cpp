@@ -303,27 +303,30 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
     switch(intersection.eventType){
         case EdgeDirection:
         {
+
+            /*
+             * TODO: Le probleme ici c est que un profil peut etre le meme sur different edge
+             * et donc on doit pas faire le nextDirectionPlan pour chaque edge qui on le meme profile
+             * mais pour que ceux qui ont des profiles differents. Une idée serait de prendre tous les edges
+             * qui on le meme profiles et d appliquer les changement une seul fois et des creer pour chacun de ses edges
+             * les triangles
+             */
             Edge* edge = (*intersection.edgeVector)[0];
+
             edgeDirectionHandling(intersection);
+
             Profile* profile = edge->getProfile();
             profile->nextDirectionPlan();
+
             removeInvalidIntersection(edge, intersection.y);
+
             computeIntersection();
-
-            // a se moment la on peu construire un triangle, non ?
-            // on peut utiliser intersection entre 3 plan pour trouver les 3 point creer par le edge direction event
-            // donc un des trois plan est le plan parallele a xz
-
 
             break;
         }
         case General:
         {
-            //std::cerr << "handle intersection:" << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
 
-
-            // on va toucher au edge donc faire une copy!!! a la fin on devrai alors avoir un noveau active plan
-            // voir intersect pour copy
             eventClustering(intersection);
 
             // filtering invalid event
@@ -334,14 +337,9 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             std::vector< std::vector< Edge* >* > chains;
             chainConstruction(intersection, chains);
 
-
-            // a se moment la on peu construire un triangle, non ?
-            // => le faire dans intra(/inter?) chain handling (voir note papier)
-
             intraChainHandling(chains, intersection);
-            interChainHandling(chains, intersection); //TODO sa plante !!!!!
+            interChainHandling(chains, intersection);
 
-            // maintenant en theorie on a un active plan modifier
             break;
         }
     }
@@ -349,7 +347,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
 
 void Reconstruction3D::edgeDirectionHandling(Intersection &intersection)
 {
-    //we first compute the intersections with the two neighbor profiles
+    // we first compute the intersections with the two neighbor profiles
     // and then create the triangles
 
     Edge* edge = (*intersection.edgeVector)[0];
@@ -834,6 +832,5 @@ void Reconstruction3D::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *
     /*std::cerr << "triangles: (" << (*triangleVertex1)[0] << ", " << (*triangleVertex1)[1] << ", " << (*triangleVertex1)[2] << ") - ("
                  << (*triangleVertex2)[0] << ", " << (*triangleVertex2)[1] << ", " << (*triangleVertex2)[2] << ") - ("
                     << (*triangleVertex3)[0] << ", " << (*triangleVertex3)[1] << ", " << (*triangleVertex3)[2] << ")" << std::endl;*/
-
 }
 
