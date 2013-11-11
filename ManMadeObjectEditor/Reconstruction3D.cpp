@@ -307,7 +307,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
 
 
             //////////////////////////////////////////////////////////////////////////
-            std::cerr << "Chain:" << std::endl;
+            /*std::cerr << "Chain:" << std::endl;
             foreach(std::vector< Edge* >* c, chains) {
                 std::cerr << "  new chaine" << std::endl;
                 std::cerr << "      ";
@@ -318,7 +318,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
                               << v2->getX() << ", " << v2->getY() << ", " << v2->getZ() << ") - ";
                 }
                 std::cerr << std::endl;
-            }
+            }*/
             /////////////////////////////////////////////////////////////////////////
 
             // a se moment la on peu construire un triangle, non ?
@@ -374,6 +374,8 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
 
     std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
 
+    removeInvalidEdge(intersectionEdges);
+
     while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
 
@@ -382,11 +384,26 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
             priorityQueue->pop();
             std::vector<Edge*>* eventEdges = event.edgeVector;
 
+            removeInvalidEdge(eventEdges);
+
             for(unsigned int i(0); i < eventEdges->size(); ++i) {
                 intersectionEdges->push_back((*eventEdges)[i]);
             }
         } else {
             stop = true;
+        }
+    }
+}
+
+void Reconstruction3D::removeInvalidEdge(std::vector<Edge *> *edges){
+    unsigned int size = edges->size();
+    for(unsigned int i(0); i < size; ++i) {
+        Edge* currentEdge = (*edges)[i];
+        if(!currentEdge->isValid()) {
+            edges->erase(edges->begin() + i);
+            delete currentEdge;
+            i--;
+            size--;
         }
     }
 }
@@ -562,9 +579,9 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             Edge* firstNeighbor = (*currentChain)[1];
             Edge* lastNeighbor = (*currentChain)[currentChainSize - 2];
 
-            /*if(!firstEdge->isValid() || !lastEdge->isValid() || !firstNeighbor->isValid() || !lastNeighbor->isValid()) {
+            if(!firstEdge->isValid() || !lastEdge->isValid() || !firstNeighbor->isValid() || !lastNeighbor->isValid()) {
                 break;
-            }*/
+            }
 
             Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
@@ -620,9 +637,9 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[1];
 
-            /*if(!firstEdge->isValid() || !lastEdge->isValid()) {
+            if(!firstEdge->isValid() || !lastEdge->isValid()) {
                 break;
-            }*/
+            }
 
             Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
@@ -651,20 +668,12 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
         } else {
             //que faire ici ?
             //je crois que il en parle dans paper, relire
+
         }
     }
 
     //Finally, remove invalid edge from the active plan
-    unsigned int activePlanSize = activePlan->size();
-    for(unsigned int i(0); i < activePlanSize; ++i) {
-        Edge* currentEdge = (*activePlan)[i];
-        if(!currentEdge->isValid()) {
-            activePlan->erase(activePlan->begin() + i);
-            delete currentEdge;
-            i--;
-            activePlanSize--;
-        }
-    }
+    removeInvalidEdge(activePlan);
 }
 
 void Reconstruction3D::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3)

@@ -87,6 +87,8 @@ private:
 
     //ok
     void addNewTriangle(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3);
+
+    void removeInvalidEdge(std::vector< Edge* >* edges);
 };
 
 #endif // RECONSTRUCTION3D_H
