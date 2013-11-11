@@ -330,7 +330,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             // => le faire dans intra(/inter?) chain handling (voir note papier)
 
             intraChainHandling(chains, intersection);
-            //interChainHandling(chains, intersection); TODO sa plante !!!!!
+            interChainHandling(chains, intersection); //TODO sa plante !!!!!
 
             // maintenant en theorie on a un active plan modifier
             break;
