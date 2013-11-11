@@ -103,6 +103,8 @@ private:
 
     Intersection intersect3Plans(Plan& plan1, Plan& plan2, Plan& plan3);
 
+    void edgeDirectionHandling(Intersection& intersection);
+
     //bool isIntersectionExternToEdges(Intersection& intersection);
 };
 

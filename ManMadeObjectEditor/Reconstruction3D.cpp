@@ -17,6 +17,10 @@
  *
  **/
 
+/*
+ * Here, the z value is the up vector (in order to match the 3D representation used with QGLViewer)
+ *
+ */
 
 
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *>* triangles)
@@ -82,7 +86,6 @@ void Reconstruction3D::computeIntersection()
                 continue;
             }
 
-
             Intersection intersection = intersect(edge1, edge2, edge3);
             if(intersection.eventType != NoIntersection) {
                 priorityQueue->push(intersection);
@@ -143,7 +146,6 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     intersection.edgeVector->push_back(edge1);
     intersection.edgeVector->push_back(edge2);
     intersection.edgeVector->push_back(edge3);
-    intersection.eventType = General;
 
     return intersection;
 }
@@ -151,6 +153,7 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
 Reconstruction3D::Intersection Reconstruction3D::intersect3Plans(Plan& plan1, Plan& plan2, Plan& plan3)
 {
     Intersection intersection;
+    intersection.eventType = General;
 
     float p1 = plan1.pointX;
     float p2 = plan1.pointY;
@@ -301,6 +304,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
         case EdgeDirection:
         {
             Edge* edge = (*intersection.edgeVector)[0];
+            edgeDirectionHandling(intersection);
             Profile* profile = edge->getProfile();
             profile->nextDirectionPlan();
             removeInvalidIntersection(edge, intersection.y);
@@ -341,6 +345,69 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             break;
         }
     }
+}
+
+void Reconstruction3D::edgeDirectionHandling(Intersection &intersection)
+{
+    //we first compute the intersections with the two neighbor profiles
+    // and then create the triangles
+
+    Edge* edge = (*intersection.edgeVector)[0];
+
+    // we compute the intersection using the plan defined with the edge+profile associated with the edge direction event,
+    // the neighbor edge+profile and an horizontal plan
+
+    // the edge+profile associated with the edge direction event
+    Vertex* vertex1 = edge->getVertex1();
+    Vertex* vertex2 = edge->getVertex2();
+    Plan plan1;
+    plan1.pointX = vertex1->getX();
+    plan1.pointY = vertex1->getY();
+    plan1.pointZ = vertex1->getZ();
+    computePlanNormal(vertex1, vertex2, edge->getProfile(), plan1.normalX, plan1.normalY, plan1.normalZ);
+
+    // the neighbor edge+profile
+    Edge* neighborEdge = edge->getVertex1()->getEdge1();
+    Vertex* neighborVertex = neighborEdge->getVertex1();
+    Plan plan2;
+    plan2.pointX = neighborVertex ->getX();
+    plan2.pointY = neighborVertex ->getY();
+    plan2.pointZ = neighborVertex ->getZ();
+    computePlanNormal(neighborVertex , neighborEdge->getVertex2(), neighborEdge->getProfile(), plan2.normalX, plan2.normalY, plan2.normalZ);
+
+    // the horizontal plan
+    Plan plan3;
+    plan2.pointX = 0.0f;
+    plan2.pointY = 0.0f;
+    plan2.pointZ = intersection.z;
+    plan2.normalX = 0.0f;
+    plan2.normalY = 0.0f;
+    plan2.normalZ = 1.0f;
+
+    //compute the intersection and add the triangle
+    Intersection newIntersection = intersect3Plans(plan1, plan2, plan3);
+    Vertex* intersectionVertex = new Vertex(newIntersection.x, newIntersection.y, newIntersection.z);
+
+    addNewTriangle(vertex1, vertex2, intersectionVertex);
+
+
+    //Now do the same but for the other neighbor
+    // the neighbor edge+profile
+    neighborEdge = edge->getVertex2()->getEdge2();
+    neighborVertex = neighborEdge->getVertex1();
+    plan2.pointX = neighborVertex ->getX();
+    plan2.pointY = neighborVertex ->getY();
+    plan2.pointZ = neighborVertex ->getZ();
+    computePlanNormal(neighborVertex , neighborEdge->getVertex2(), neighborEdge->getProfile(), plan2.normalX, plan2.normalY, plan2.normalZ);
+
+    //compute the intersection and add the triangle
+    newIntersection = intersect3Plans(plan1, plan2, plan3);
+    Vertex* intersectionVertex2 = new Vertex(newIntersection.x, newIntersection.y, newIntersection.z);
+
+    addNewTriangle(vertex2, intersectionVertex, intersectionVertex2);
+
+    edge->setVertex1(intersectionVertex);
+    edge->setVertex2(intersectionVertex2);
 }
 
 void Reconstruction3D::removeInvalidIntersection(Edge *edge, float height)
