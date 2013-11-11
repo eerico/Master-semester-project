@@ -51,7 +51,7 @@ void Reconstruction3D::reconstruct()
     allActivePlan->push_back(activePlan);
 
     //main loop
-    //addEdgeDirectionEvent();
+    addEdgeDirectionEvent();
     computeIntersection();
     while(priorityQueue->size() > 0) {
         Intersection event = priorityQueue->top();
@@ -114,36 +114,64 @@ void Reconstruction3D::addEdgeDirectionEvent()
 
 Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3)
 {
-    Intersection intersection;
-
     Vertex* vertex1 = edge1->getVertex1();
-    float p1 = vertex1->getX();
-    float p2 = vertex1->getZ();
-    float p3 = vertex1->getY();
-    float n1(0.0f);
-    float n2(0.0f);
-    float n3(0.0f);
-    computePlanNormal(vertex1, edge1->getVertex2(), edge1->getProfile(), n1, n2, n3);
-    //std::cerr << "plan normal: " << n1 << ", " << n2 << ", " << n3 << std::endl;
+    Plan plan1;
+    plan1.pointX = vertex1->getX();
+    plan1.pointY = vertex1->getY();
+    plan1.pointZ = vertex1->getZ();
+    computePlanNormal(vertex1, edge1->getVertex2(), edge1->getProfile(), plan1.normalX, plan1.normalY, plan1.normalZ);
 
     Vertex* vertex2 = edge2->getVertex1();
-    float p1_p = vertex2->getX();
-    float p2_p = vertex2->getZ();
-    float p3_p = vertex2->getY();
-    float n1_p(0.0f);
-    float n2_p(0.0f);
-    float n3_p(0.0f);
-    computePlanNormal(vertex2, edge2->getVertex2(), edge2->getProfile(), n1_p, n2_p, n3_p);
+    Plan plan2;
+    plan2.pointX = vertex2->getX();
+    plan2.pointY = vertex2->getY();
+    plan2.pointZ = vertex2->getZ();
+    computePlanNormal(vertex2, edge2->getVertex2(), edge2->getProfile(), plan2.normalX, plan2.normalY, plan2.normalZ);
 
     Vertex* vertex3 = edge3->getVertex1();
-    float p1_pp = vertex3->getX();
-    float p2_pp = vertex3->getZ();
-    float p3_pp = vertex3->getY();
-    float n1_pp(0.0f);
-    float n2_pp(0.0f);
-    float n3_pp(0.0f);
-    computePlanNormal(vertex3, edge3->getVertex2(), edge3->getProfile(), n1_pp, n2_pp, n3_pp);
+    Plan plan3;
+    plan3.pointX = vertex3->getX();
+    plan3.pointZ = vertex3->getZ();
+    plan3.pointY = vertex3->getY();
+    computePlanNormal(vertex3, edge3->getVertex2(), edge3->getProfile(), plan3.normalX, plan3.normalY, plan3.normalZ);
 
+
+
+    Intersection intersection = intersect3Plans(plan1, plan2, plan3);
+
+    intersection.edgeVector = new std::vector< Edge* >;
+    intersection.edgeVector->push_back(edge1);
+    intersection.edgeVector->push_back(edge2);
+    intersection.edgeVector->push_back(edge3);
+    intersection.eventType = General;
+
+    return intersection;
+}
+
+Reconstruction3D::Intersection Reconstruction3D::intersect3Plans(Plan& plan1, Plan& plan2, Plan& plan3)
+{
+    Intersection intersection;
+
+    float p1 = plan1.pointX;
+    float p2 = plan1.pointY;
+    float p3 = plan1.pointZ;
+    float n1 = plan1.normalX;
+    float n2 = plan1.normalY;
+    float n3 = plan1.normalZ;
+
+    float p1_p = plan2.pointX;
+    float p2_p = plan2.pointY;
+    float p3_p = plan2.pointZ;
+    float n1_p = plan2.normalX;
+    float n2_p = plan2.normalY;
+    float n3_p = plan2.normalZ;
+
+    float p1_pp = plan3.pointX;
+    float p2_pp = plan3.pointY;
+    float p3_pp = plan3.pointZ;
+    float n1_pp = plan3.normalX;
+    float n2_pp = plan3.normalY;
+    float n3_pp = plan3.normalZ;
 
     // we can write the plan equation like (xVector - pVector) * nVector = 0,
     // but we can also write it: x * nx + y * ny + z * nz = px * nx + py * ny + pz * nz = pn
@@ -200,22 +228,14 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
     float x2 = invDet * (c21 * pn1 + c22 * pn2 + c23 * pn3);
     float x3 = invDet * (c31 * pn1 + c32 * pn2 + c33 * pn3);
 
-    intersection.edgeVector = new std::vector< Edge* >;
-    intersection.edgeVector->push_back(edge1);
-    intersection.edgeVector->push_back(edge2);
-    intersection.edgeVector->push_back(edge3);
-    intersection.eventType = General;
     intersection.x = x1;
-    intersection.y = x3;
-    intersection.z = x2;
+    intersection.y = x2;
+    intersection.z = x3;
 
     // the height must not be below the floor
-    if (x2 < 0.0f) {
+    if (x3 < 0.0f) {
         intersection.eventType = NoIntersection;
     }
-
-    std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
-
 
     return intersection;
 }
@@ -223,24 +243,24 @@ Reconstruction3D::Intersection Reconstruction3D::intersect(Edge *edge1, Edge *ed
 void Reconstruction3D::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile, float& nx, float& ny, float& nz)
 {
     float a = vertex2->getX() - vertex1->getX();
-    float b = 0.0f;
-    float c = vertex2->getY() - vertex1->getY();
+    float b = vertex2->getY() - vertex1->getY();
+    float c = 0.0f;
 
-    Utils::normalize(a, c);
+    Utils::normalize(a, b);
 
     Vertex* profileVertex = profile->getProfileVertex();
     Vertex* nextProfileVertex = profileVertex->getNeighbor2();
 
     float w = nextProfileVertex->getX() - profileVertex->getX();
-    float y = nextProfileVertex->getY() - profileVertex->getY();
+    float z = nextProfileVertex->getY() - profileVertex->getY();
 
     //est ce correct ou bien sa joue pas avec orientation des edges ?
-    float wx = c;
-    float wz = -a;
+    float wx = b;
+    float wy = -a;
 
     float d = w * wx;
-    float e = y;
-    float f = w * wz;
+    float e = w * wy;
+    float f = z;
 
     Utils::crossProduct(d, e, f, a, b, c, nx, ny, nz);
     Utils::normalize(nx, ny, nz);
@@ -263,13 +283,13 @@ void Reconstruction3D::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profi
     //////////////////////////////////////////////////////////////////////////////////////
 
     /*float aa = vertex2->getX() + vertex1->getX();
-    float bb = 0.0f;
-    float cc = vertex2->getY() + vertex1->getY();
+    float bb = vertex2->getY() + vertex1->getY();
+    float cc = 0.0f;
 
-    Vertex* v3  = new Vertex(d+ 0.5f*aa, f + 0.5f*cc);
-    v3->setZ(e + 0.5f*bb);
-    Vertex* v  = new Vertex(0.5f*aa, 0.5f*cc);
-    v->setZ(bb);
+    Vertex* v3  = new Vertex(d+ 0.5f*aa, e + 0.5f*bb);
+    v3->setZ(f + 0.5f*cc);
+    Vertex* v  = new Vertex(0.5f*aa, 0.5f*bb);
+    v->setZ(cc);
     addNewTriangle(v, v3, v);*/
 
     //////////////////////////////////////////////////////////////////////////////////////

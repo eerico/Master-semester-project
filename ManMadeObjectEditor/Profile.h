@@ -19,13 +19,8 @@ public:
     void vertexDecimation();
     bool isEqual(Profile* compareProfile);
     void nextDirectionPlan();
-    void resetDirectionPlan();
-    
+    void resetDirectionPlan(); 
     QColor* getProfileColorIdentification();
-
-    //the orientation angle (spherical coordinate) theta
-    void setSphericalCoordinatesTheta(float newTheta);
-    float getSphericalCoordinatesTheta();
     
 private:
     Vertex* pVertex;

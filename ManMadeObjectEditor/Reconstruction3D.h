@@ -47,6 +47,17 @@ private:
         }
     };
 
+    struct Plan {
+        // a plan is defined by a point and a normal
+        float pointX;
+        float pointY;
+        float pointZ;
+
+        float normalX;
+        float normalY;
+        float normalZ;
+    };
+
     std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>* priorityQueue;
 
     // ok
@@ -89,6 +100,8 @@ private:
     void addNewTriangle(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3);
 
     void removeInvalidEdge(std::vector< Edge* >* edges);
+
+    Intersection intersect3Plans(Plan& plan1, Plan& plan2, Plan& plan3);
 
     //bool isIntersectionExternToEdges(Intersection& intersection);
 };
