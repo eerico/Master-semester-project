@@ -333,7 +333,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             chainConstruction(intersection, chains);
 
             intraChainHandling(chains, intersection);
-            //interChainHandling(chains, intersection); TODO decommenter
+            //interChainHandling(chains, intersection);
 
             break;
         }
@@ -559,6 +559,16 @@ void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector
         }
     }
 
+    ///////////////////////////////////////////////////////
+    std::cerr << "avant chain" << std::endl;
+    size = edges->size();
+    for(unsigned int i(0); i < size; ++i) {
+        Edge* currentEdge = (*edges)[i];
+        std::cerr << currentEdge << " - ";
+    }
+    std::cerr << std::endl;
+    ///////////////////////////////////////////////////////
+
     //create the chains
     Vertex* first = 0;
     Vertex* last = 0;
@@ -606,6 +616,18 @@ void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector
 
         chains.push_back(currentChain);
     }
+
+
+    ///////////////////////////////////////////////////////
+    std::cerr << "apres chain" << std::endl;
+    foreach(std::vector< Edge* >* c, chains) {
+        foreach(Edge* e, *c) {
+            std::cerr << e << " - ";
+        }
+        std::cerr << std::endl;
+    }
+    std::cerr << std::endl;
+    ///////////////////////////////////////////////////////
 }
 
 void Reconstruction3D::splitEdgeAtCorner(Edge *edgeToSplit, Intersection& cornerIntersection, Edge*& newEdge1, Edge*& newEdge2)
@@ -687,6 +709,7 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& 
 
 void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection)
 {
+
     unsigned int chainsSize = chains.size();
     for(unsigned int j(0); j < chainsSize; ++j) {
         std::vector< Edge* >* currentChain = chains[j];
