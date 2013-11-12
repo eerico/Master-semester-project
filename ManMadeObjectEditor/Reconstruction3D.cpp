@@ -333,7 +333,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             chainConstruction(intersection, chains);
 
             intraChainHandling(chains, intersection);
-            interChainHandling(chains, intersection);
+            //interChainHandling(chains, intersection); TODO decommenter
 
             break;
         }
