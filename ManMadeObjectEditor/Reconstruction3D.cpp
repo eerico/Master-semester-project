@@ -336,7 +336,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             chainConstruction(intersection, chains);
 
             intraChainHandling(chains, intersection);
-            //interChainHandling(chains, intersection);
+            interChainHandling(chains, intersection);
 
             break;
         }
@@ -675,6 +675,9 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& 
 
     // on suppose que les chaines sont bien successive...
     unsigned int chainsSize = chains.size();
+    if (chainsSize < 2) {
+        return;
+    }
     for(unsigned int i(0); i < chainsSize; i++) {
         std::vector< Edge* >* chain1 = chains[i];
         std::vector< Edge* >* chain2 = chains[(i+1) % chainsSize];
