@@ -13,41 +13,41 @@ TEMPLATE = app
 
 
 SOURCES +=\
-        ObjectViewer.cpp \
     Main.cpp \
-    Profile.cpp \
-    FloorAndProfileViewer.cpp \
-    CentralWidget.cpp \
-    FloorScene.cpp \
-    ProfileScene.cpp \
-    Vertex.cpp \
     FloorPlanAndProfileExtractor.cpp \
-    BasicQGraphicsView.cpp \
     ProfileDestructorManager.cpp \
     Utils.cpp \
-    Edge.cpp \
-    AllPlanScene.cpp \
     Reconstruction3D.cpp \
     MeshManager.cpp \
-    Test.cpp
+    Test.cpp \
+    GUI/ObjectViewer.cpp \
+    GUI/FloorScene.cpp \
+    GUI/FloorAndProfileViewer.cpp \
+    GUI/CentralWidget.cpp \
+    GUI/BasicQGraphicsView.cpp \
+    GUI/AllPlanScene.cpp \
+    Geometry/Vertex.cpp \
+    Geometry/Profile.cpp \
+    Geometry/Edge.cpp \
+    GUI/ProfileScene.cpp
 
 HEADERS  += \
-    ObjectViewer.h \
-    Profile.h \
-    FloorAndProfileViewer.h \
-    CentralWidget.h \
-    FloorScene.h \
-    ProfileScene.h \
-    Vertex.h \
     FloorPlanAndProfileExtractor.h \
-    BasicQGraphicsView.h \
     ProfileDestructorManager.h \
     Utils.h \
-    Edge.h \
-    AllPlanScene.h \
     Reconstruction3D.h \
     MeshManager.h \
-    Test.h
+    Test.h \
+    GUI/ObjectViewer.h \
+    GUI/FloorScene.h \
+    GUI/FloorAndProfileViewer.h \
+    GUI/CentralWidget.h \
+    GUI/BasicQGraphicsView.h \
+    GUI/AllPlanScene.h \
+    Geometry/Vertex.h \
+    Geometry/Profile.h \
+    Geometry/Edge.h \
+    GUI/ProfileScene.h
 
 #QT *= xml opengl
 

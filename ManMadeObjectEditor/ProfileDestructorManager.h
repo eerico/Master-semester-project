@@ -2,7 +2,7 @@
 #define PROFILEDESTRUCTORMANAGER_H
 
 #include <vector>
-#include "Profile.h"
+#include "Geometry/Profile.h"
 
 /**
  * @brief The ProfileDestructorManager class

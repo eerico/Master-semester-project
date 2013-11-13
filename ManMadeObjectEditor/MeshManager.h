@@ -7,7 +7,7 @@
 #include <QObject>
 #include <cmath>
 
-#include "Vertex.h"
+#include "Geometry/Vertex.h"
 #include "FloorPlanAndProfileExtractor.h"
 #include "Utils.h"
 #include "ProfileDestructorManager.h"

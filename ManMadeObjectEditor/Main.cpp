@@ -1,4 +1,4 @@
-#include "FloorAndProfileViewer.h"
+#include "GUI/FloorAndProfileViewer.h"
 #include <QApplication>
 
 #include "Test.h"

@@ -1,9 +1,9 @@
 #ifndef RECONSTRUCTION3D_H
 #define RECONSTRUCTION3D_H
 
-#include "Vertex.h"
-#include "Edge.h"
-#include "Profile.h"
+#include "Geometry/Vertex.h"
+#include "Geometry/Edge.h"
+#include "Geometry/Profile.h"
 #include <vector>
 #include <QGLViewer/qglviewer.h>
 #include <queue>
