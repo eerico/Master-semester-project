@@ -72,7 +72,7 @@ void ObjectViewer::draw() {
 void ObjectViewer::drawTriangles() {
      glBegin(GL_TRIANGLES);
 
-     const std::vector<qglviewer::Vec * const>* triangles = meshManager->getTriangles();
+     const std::vector<const qglviewer::Vec * const>* triangles = meshManager->getTriangles();
      unsigned int size = triangles->size();
 
      float normalX(0.0f);
@@ -118,7 +118,7 @@ void ObjectViewer::drawPoints() {
      glPointSize(2.0f);
      glBegin(GL_POINTS);
 
-     const std::vector<qglviewer::Vec * const>* points = meshManager->getPoints();
+     const std::vector<const qglviewer::Vec * const>* points = meshManager->getPoints();
 
      unsigned int size = points->size();
      for( unsigned int i(0); i < size; ++i) {

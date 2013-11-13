@@ -18,7 +18,7 @@
  */
 
 
-Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * const>* triangles)
+Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<const qglviewer::Vec * const> *triangles)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
 {
     priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>;
