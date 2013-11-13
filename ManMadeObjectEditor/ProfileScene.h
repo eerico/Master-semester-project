@@ -42,7 +42,6 @@ private:
     MeshManager* meshManager;
     Profile* currentProfile;
 
-    void basicBezier(QPoint* mousePos, int numSample);
     void loadProfile();
     Vertex* currentlyMovingVertex;
 };
