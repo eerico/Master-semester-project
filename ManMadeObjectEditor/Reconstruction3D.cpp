@@ -321,8 +321,10 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
         }
         case General:
         {
-
+        std::cerr << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             eventClustering(intersection);
+
+            removeDuplicateEdges(intersection);
 
             // filtering invalid event
             if(intersection.edgeVector->size() < 3) {
@@ -540,12 +542,10 @@ std::vector< Edge* >* Reconstruction3D::cloneActivePlan()
     return cloneActivePlan;
 }
 
-// hum les chaines devrait etre consecutive d apres comment on fait mais s adepend de plein de truc...
-void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* >* >& chains)
+void Reconstruction3D::removeDuplicateEdges(Intersection& intersection)
 {
     std::vector< Edge* >* edges = intersection.edgeVector;
-
-    //first remove duplicate
+    //remove duplicate
     unsigned int size = edges->size();
     for(unsigned int i(0); i < size; ++i) {
         Edge* currentEdge = (*edges)[i];
@@ -558,6 +558,13 @@ void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector
             }
         }
     }
+}
+
+// hum les chaines devrait etre consecutive d apres comment on fait mais s adepend de plein de truc...
+void Reconstruction3D::chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* >* >& chains)
+{
+    std::vector< Edge* >* edges = intersection.edgeVector;
+    unsigned int size = edges->size();
 
     ///////////////////////////////////////////////////////
     std::cerr << "avant chain" << std::endl;

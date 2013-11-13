@@ -83,6 +83,8 @@ private:
     //ok
     void chainConstruction(Intersection& intersection, std::vector< std::vector< Edge* >* >& chains);
 
+    void removeDuplicateEdges(Intersection& intersection);
+
     //ok
     void intraChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection);
 

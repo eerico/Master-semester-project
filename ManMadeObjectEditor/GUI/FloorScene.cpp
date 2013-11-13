@@ -226,7 +226,7 @@ void FloorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
 void FloorScene::basicCircle(QPoint *mousePos, int numSample) {
     
-    Profile* commonProfile = new Profile(false);
+    /*Profile* commonProfile = new Profile(false);
     ProfileDestructorManager::putProfile(commonProfile);
     
     QRectF thisSize = this->sceneRect();
@@ -276,6 +276,68 @@ void FloorScene::basicCircle(QPoint *mousePos, int numSample) {
     firstVertex->setEdge1(edge);
     
     newProfileSelected(commonProfile);
+    loadFloorPlan();*/
+
+
+
+    ///////////////////////
+    // test
+
+    QRectF thisSize = this->sceneRect();
+
+
+    meshManager->incrementFloorPlanSize();
+    meshManager->incrementFloorPlanSize();
+    meshManager->incrementFloorPlanSize();
+    meshManager->incrementFloorPlanSize();
+    meshManager->incrementFloorPlanSize();
+
+
+    Vertex* a = new Vertex(-1.0, 1.0);
+    Vertex* b = new Vertex(1.0, 1.0);
+    Vertex* c = new Vertex(1.0, -1.0);
+    Vertex* d = new Vertex(-1.0, -1.0);
+    Vertex* e = new Vertex(0.0, 0.0);
+
+
+
+    meshManager->setFloorPlan(a);
+
+
+    a->setNeighbor1(d);
+    a->setNeighbor2(b);
+    b->setNeighbor1(a);
+    b->setNeighbor2(c);
+    c->setNeighbor1(b);
+    c->setNeighbor2(d);
+    d->setNeighbor1(c);
+    d->setNeighbor2(e);
+    e->setNeighbor1(d);
+
+    e->setNeighbor2(a);
+
+    Profile* p = new Profile(false);
+    Edge* ab = new Edge(a, b, p);
+    Edge* bc = new Edge(b, c, p);
+    Edge* cd = new Edge(c, d, p);
+    Edge* de = new Edge(d, e, p);
+
+    Edge* ea = new Edge(e, a, p);
+
+    a->setEdge1(ea);
+    a->setEdge2(ab);
+    b->setEdge1(ab);
+    b->setEdge2(bc);
+    c->setEdge1(bc);
+    c->setEdge2(cd);
+    d->setEdge1(cd);
+    d->setEdge2(de);
+    e->setEdge1(de);
+    e->setEdge2(ea);
+
+
+
+    newProfileSelected(p);
     loadFloorPlan();
 }
 
