@@ -34,17 +34,15 @@ QGraphicsEllipseItem* Vertex::getEllipse(){
     return ellipse;
 }
 
-void Vertex::setNeighbor1(Vertex *vx)
-{
+void Vertex::setNeighbor1(Vertex *vx) {
     neighbor1 = vx;
 }
 
-void Vertex::setNeighbor2(Vertex *vx)
-{
+void Vertex::setNeighbor2(Vertex *vx) {
     neighbor2 = vx;
 }
 
-Edge* Vertex::replaceNeighbour(Vertex* oldVx, Vertex* newVx){
+Edge* Vertex::replaceNeighbour(Vertex* oldVx, Vertex* newVx) {
     Edge* newEdge(0);
 
     if(oldVx == neighbor1){
@@ -65,6 +63,8 @@ Edge* Vertex::removeVertex() {
     Edge* edge = 0;
 
     if (neighbor1 != 0 && neighbor2 != 0) {
+        // the vertex has two neighbors. Thus an edge is created between these two neighbors
+        // and they are informed about their neighboring relationship
         neighbor1->setNeighbor2(neighbor2);
         neighbor2->setNeighbor1(neighbor1);
 
@@ -73,81 +73,77 @@ Edge* Vertex::removeVertex() {
         neighbor1->setEdge2(edge);
         neighbor2->setEdge1(edge);
     } else if (neighbor1 != 0 && neighbor2 == 0) {
+        // the vertex has only neighbor 1
         neighbor1->setNeighbor2(neighbor2);
         neighbor1->setEdge2(edge);
     } else if (neighbor2 != 0 && neighbor1 == 0){
+        // the vertex has only neighbor 1
         neighbor2->setNeighbor1(neighbor1);
         neighbor2->setEdge1(edge);
     }
     return edge;
 }
 
-float Vertex::getX()
-{
+float Vertex::getX() {
     return x;
 }
 
-float Vertex::getY()
-{
+float Vertex::getY() {
     return y;
 }
 
-float Vertex::getZ()
-{
+float Vertex::getZ() {
     return z;
 }
 
-Vertex* Vertex::getNeighbor1()
-{
+void Vertex::setY(float i) {
+    y = i;
+}
+
+void Vertex::setX(float i) {
+    x = i;
+}
+
+void Vertex::setZ(float i) {
+    z = i;
+}
+
+Vertex* Vertex::getNeighbor1() {
     return neighbor1;
 }
 
-Vertex* Vertex::getNeighbor2()
-{
+Vertex* Vertex::getNeighbor2() {
     return neighbor2;
 }
 
-Edge* Vertex::getEdge1(){
+Edge* Vertex::getEdge1() {
     return edge1;
 }
 
-Edge* Vertex::getEdge2(){
+Edge* Vertex::getEdge2() {
     return edge2;
 }
 
-void Vertex::setEdge1(Edge* e){
+void Vertex::setEdge1(Edge* e) {
     edge1 = e;
 }
 
-void Vertex::setEdge2(Edge* e){
+void Vertex::setEdge2(Edge* e) {
     edge2 = e;
 }
 
-void Vertex::setEllipse(QGraphicsEllipseItem* e){
+void Vertex::setEllipse(QGraphicsEllipseItem* e) {
     ellipse = e;
     ellipse->setPen(vertexPen);
     ellipse->setBrush(vertexBrush);
     ellipse->setZValue(Utils::getZValueForeground());
 }
 
-void Vertex::setY(float i){
-    y = i;
-}
-
-void Vertex::setX(float i){
-    x = i;
-}
-
-void Vertex::setZ(float i)
-{
-    z = i;
-}
-
-void Vertex::addFace(OMMesh::FaceHandle face){
+void Vertex::addFace(OMMesh::FaceHandle face) {
     faces->push_back(face);
 }
 
-std::vector<OpenMesh::PolyMesh_ArrayKernelT<>::FaceHandle >* Vertex::getFaces(){
+std::vector<OpenMesh::PolyMesh_ArrayKernelT<>::FaceHandle >* Vertex::getFaces() {
     return faces;
 }
 

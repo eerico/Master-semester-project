@@ -4,15 +4,13 @@ Utils::Utils()
 {
 }
 
-float Utils::distance(float x1, float y1, float x2, float y2)
-{
+float Utils::distance(float x1, float y1, float x2, float y2) {
     float diffX = x1 - x2;
     float diffY = y1 - y2;
     return std::sqrt(diffX * diffX + diffY * diffY);
 }
 
-void Utils::adjustCoordinates3DToScene(float& x, float& y, float width, float height)
-{
+void Utils::adjustCoordinates3DToScene(float& x, float& y, float width, float height) {
     // from 3D to Scene coord
     float width_2 = width/ 2.0f;
     float height_2 = height / 2.0f;
@@ -24,8 +22,7 @@ void Utils::adjustCoordinates3DToScene(float& x, float& y, float width, float he
     x = x + width_2;
 }
 
-void Utils::adjustCoordinatesSceneTo3D(float& x, float& y, float width, float height)
-{
+void Utils::adjustCoordinatesSceneTo3D(float& x, float& y, float width, float height) {
     // from scene coord to 3D
     float width_2 = width/ 2.0f;
     float height_2 = height / 2.0f;
@@ -37,8 +34,7 @@ void Utils::adjustCoordinatesSceneTo3D(float& x, float& y, float width, float he
     y = y/width_2;
 }
 
-void Utils::normalize(float &n_x, float &n_y)
-{
+void Utils::normalize(float &n_x, float &n_y) {
     float distTmp = n_x * n_x + n_y * n_y;
     if (distTmp != 0.0f) {
         distTmp = sqrt(distTmp);
@@ -47,8 +43,7 @@ void Utils::normalize(float &n_x, float &n_y)
     }
 }
 
-void Utils::normalize(float &n_x, float &n_y, float &n_z)
-{
+void Utils::normalize(float &n_x, float &n_y, float &n_z) {
     float distTmp = n_x * n_x + n_y * n_y + n_z * n_z;
     if (distTmp != 0.0f) {
         distTmp = sqrt(distTmp);
@@ -58,23 +53,19 @@ void Utils::normalize(float &n_x, float &n_y, float &n_z)
     }
 }
 
-float Utils::dotProduct(float x1, float y1, float x2, float y2)
-{
+float Utils::dotProduct(float x1, float y1, float x2, float y2) {
     return x1 * x2 + y1 * y2;
 }
 
-float Utils::getZValueForeground()
-{
+float Utils::getZValueForeground() {
     return 1.0f;
 }
 
-float Utils::getZValueBackground()
-{
+float Utils::getZValueBackground() {
     return 0.0f;
 }
 
-void Utils::crossProduct(float x1, float y1, float z1, float x2, float y2, float z2, float &x, float &y, float& z)
-{
+void Utils::crossProduct(float x1, float y1, float z1, float x2, float y2, float z2, float &x, float &y, float& z) {
     x = y1 * z2 - z1 * y2;
     y = z1 * x2 - x1 * z2;
     z = x1 * y2 - y1 * x2;

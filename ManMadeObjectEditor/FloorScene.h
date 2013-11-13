@@ -73,8 +73,7 @@ private:
 
     /**
      * @brief removeVertex
-     * Remove the vertex that is under the mouse. This action will lead to the deletion
-     * of one vertex, two edges and the creation of a new edge and profile
+     * Remove the vertex that is under the mouse.
      */
     void removeVertex();
 

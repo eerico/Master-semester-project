@@ -7,6 +7,7 @@ ProfileScene::ProfileScene(MeshManager* meshManager)
     : QGraphicsScene(), meshManager(meshManager), isProfileSelected(false), currentProfile(0)
     , currentlyMovingVertex(0), isVertexMoving(false)
 {
+    // set the scene size
     this->setSceneRect(QRectF(0, 0, 400, 600));
 }
 
@@ -15,16 +16,16 @@ ProfileScene::~ProfileScene()
 
 }
 
-void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
-{
-
+void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
     if (!isProfileSelected) {
         return;
     }
 
     if (mouseEvent->button() ==  Qt::RightButton){
+        // if user use right click + ctrl
         if(mouseEvent->modifiers() == Qt::ControlModifier){
             addVertex(mouseEvent->lastScenePos().toPoint());
+        // if user use right click + shift
         } else if (mouseEvent->modifiers() == Qt::ShiftModifier) {
             //remove point if clicked on a point
             removeVertex();
@@ -34,9 +35,8 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
     }
 }
 
-void ProfileScene::addVertex(QPoint mousePos)
-{
-    //if clicked on an edge, add point on this edge
+void ProfileScene::addVertex(QPoint mousePos) {
+    //test if the user has clicked on an edge
     Edge* currentEdge(0);
     bool foundEdge(false);
     Profile* profile = currentProfile;
@@ -54,7 +54,7 @@ void ProfileScene::addVertex(QPoint mousePos)
     float w = mousePos.x();
     float z = mousePos.y();
 
-
+    //if clicked on an edge, add point on this edge
     if (foundEdge) {
         QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(w - vertexRadius, z - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f);
         QRectF thisSize = this->sceneRect();
@@ -88,8 +88,8 @@ void ProfileScene::addVertex(QPoint mousePos)
         // tell the meshManager to generate new point/triangle
         meshManager->setUpdateOnMesh();
     } else {
-        // we don't have clicked on an edge, we will put the point at the current position
 
+        // we don't have clicked on an edge, we will put the point at the current position at the end of the profile
         Vertex * newVertex = new Vertex(0,0);
 
         QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(w - vertexRadius, z - vertexRadius, vertexRadius * 2.0f, vertexRadius*2.0f);
@@ -113,9 +113,9 @@ void ProfileScene::addVertex(QPoint mousePos)
     }
 }
 
-//remove point if clicked on a point
-void ProfileScene::removeVertex()
-{
+
+void ProfileScene::removeVertex() {
+    //remove point if clicked on a point
     Vertex* currentVertex = currentProfile->getProfileVertex();
 
     bool foundVertex(false);
@@ -157,8 +157,7 @@ void ProfileScene::removeVertex()
     }
 }
 
-void ProfileScene::moveVertex()
-{
+void ProfileScene::moveVertex() {
     // we have have at least one vertex on the profile plan, if we click on it, we can move it
     if (isProfileSelected){
         Vertex* currentVertex = currentProfile->getProfileVertex();
@@ -180,19 +179,18 @@ void ProfileScene::moveVertex()
                 return;
             }
             currentVertex = currentVertex->getNeighbor2();
-
         }
     }
 }
 
-void ProfileScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
+void ProfileScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     if (!isProfileSelected) {
         return;
     }
 
     if (event->button() ==  Qt::RightButton) {
         if (isVertexMoving) {
+            // then the vertex will not move anymore when we move the mouse
             isVertexMoving = false;
             currentlyMovingVertex = 0;
             meshManager->setLongUpdateOnMesh(false);
@@ -200,8 +198,7 @@ void ProfileScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
+void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     if (!isProfileSelected) {
         return;
     }
@@ -211,12 +208,15 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         float x = mousePos.x();
         float y = mousePos.y();
 
+        // enforce the monotonicity constraints
         Vertex* neighbor1 = currentlyMovingVertex->getNeighbor1();
         if (neighbor1 != 0){
             if (neighbor1->getEllipse()->rect().center().ry() < y) {
                 return;
             }
         }
+
+        // enforce the monotonicity constraints
         Vertex* neighbor2 = currentlyMovingVertex->getNeighbor2();
         if (neighbor2 != 0){
             if (neighbor2->getEllipse()->rect().center().ry() > y) {
@@ -224,9 +224,11 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             }
         }
 
+        //update the ellipse coordinate of the currently moving vertex
         QGraphicsEllipseItem* ellipse = currentlyMovingVertex->getEllipse();
         ellipse->setRect(x - vertexRadius, y - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f);
 
+        //update the coordinate of the two edges of the currently moving vertex
         if (neighbor1 != 0){
             Edge* edge1 = currentlyMovingVertex->getEdge1();
             edge1->getLineItem()->setLine(ellipse->rect().center().rx(), ellipse->rect().center().ry(),
@@ -239,6 +241,7 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                        neighbor2->getEllipse()->rect().center().rx(), neighbor2->getEllipse()->rect().center().ry());
         }
 
+        //update the coordinate of the currently moving vertex
         QRectF thisSize = this->sceneRect();
         Utils::adjustCoordinatesSceneTo3D(x, y, thisSize.width(), thisSize.height());
         currentlyMovingVertex->setX(x);
@@ -246,17 +249,14 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-// en faire un slot pour que la floorScene puisse l appeler
-void ProfileScene::newProfileSelected()
-{
+void ProfileScene::newProfileSelected() {
     isProfileSelected = true;
     loadProfile();
 }
 
-void ProfileScene::loadProfile()
-{
+void ProfileScene::loadProfile() {
+    // remove the old loaded profile
     if (currentProfile != 0) {
-
         Vertex* currentVertex = currentProfile->getProfileVertex();
         while(currentVertex != 0){
             this->removeItem(currentVertex->getEllipse());
@@ -268,19 +268,21 @@ void ProfileScene::loadProfile()
         }
     }
 
+    // get the new selected profile
     currentProfile = meshManager->getCurrentProfile();
 
     if (currentProfile == 0) {
         return;
     }
 
+    // draw the new selected profile
     Vertex* currentVertex = currentProfile->getProfileVertex();
 
     float x(0.0f);
     float y(0.0f);
 
-    while(currentVertex != 0)
-    {
+    // draw the ellipse of each vertex
+    while(currentVertex != 0) {
         if(currentVertex->getEllipse() == 0){
             x = currentVertex->getX();
             y = currentVertex->getY();
@@ -318,4 +320,3 @@ void ProfileScene::loadProfile()
     // take again the current profiles
     ProfileDestructorManager::swap();
 }
-
