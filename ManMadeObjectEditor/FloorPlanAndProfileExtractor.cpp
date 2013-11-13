@@ -1,31 +1,27 @@
 #include "FloorPlanAndProfileExtractor.h"
 
 
-
-
 FloorPlanAndProfileExtractor::FloorPlanAndProfileExtractor()
     :dy(0.1f), baseY(0.0f), levels(11), border(0.2f)
 {
-    
-    
+
 }
 
-void FloorPlanAndProfileExtractor::recenter(std::vector< std::vector< Vertex* > >& plans)
-{
+void FloorPlanAndProfileExtractor::recenter(std::vector< std::vector< Vertex* > >& plans) {
     //move the mesh such that (0, 0) is at the center of the first floor plan
     std::vector< Vertex* > firstLevel = plans[0];
+
+    // compute the center
     float centerX(0.0f);
     float centerY(0.0f);
     
-    unsigned int firstLevelSize = firstLevel.size();
-    
+    unsigned int firstLevelSize = firstLevel.size();    
     for(unsigned int i(0); i < firstLevelSize; ++i)
     {
         Vertex* currentVertex = firstLevel[i];
         centerX += currentVertex->getX();
         centerY += currentVertex->getY();
-    }
-    
+    }    
     centerX /= firstLevelSize;
     centerY /= firstLevelSize;
     
@@ -40,20 +36,19 @@ void FloorPlanAndProfileExtractor::recenter(std::vector< std::vector< Vertex* > 
     }
 }
 
-void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >& plans)
-{
+void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >& plans) {
     //scale the mesh such that the first floor plan is between [-1, 1]x[-1, 1]
     std::vector< Vertex* > firstLevel = plans[0];
+
+    // compute the minimum and maximum X and Y
     float minX(FLT_MAX);
     float minY(FLT_MAX);
     
     float maxX(FLT_MIN);
     float maxY(FLT_MIN);
     
-    unsigned int firstLevelSize = firstLevel.size();
-    
-    for(unsigned int i(0); i < firstLevelSize; ++i)
-    {
+    unsigned int firstLevelSize = firstLevel.size();    
+    for(unsigned int i(0); i < firstLevelSize; ++i) {
         Vertex* currentVertex = firstLevel[i];
         minX = std::min(currentVertex->getX(), minX);
         minY = std::min(currentVertex->getY(), minY);
@@ -61,11 +56,13 @@ void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >
         maxX = std::max(currentVertex->getX(), maxX);
         maxY = std::max(currentVertex->getY(), maxY);
     }
-    
+
+    // find the rescale factor
     float rescalFactor = std::max(std::max(std::max(maxX, maxY), -minX), -minY);
+    // border can be used to avoid a perfect [-1, 1]x[-1, 1]
     rescalFactor += border * rescalFactor;
     
-    //Now scale the mesh
+    //Now scale the plans
     for(unsigned int i(0); i < plans.size(); ++i) {
         std::vector< Vertex* > currentLevel = plans[i];
         for(unsigned int j(0); j < currentLevel.size(); ++j) {
@@ -75,18 +72,19 @@ void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >
         }
     }
     
+    // also scale the delta height
     dy = dy / rescalFactor;
 }
 
-void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, std::vector<std::vector<Vertex *> > &plans)
-{
-    //For every two vertices, find the faces normals they have in common,
+void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, std::vector<std::vector<Vertex *> > &plans) {
+
+    // For every two vertices, find the faces normals they have in common,
     // construct the edge between them and associate a normal to this edge
     for(unsigned int i(0); i < plans.size(); ++i){
         std::vector<Vertex*> level = plans[i];
-        unsigned int numberertexAtLevel = level.size();
-        if (numberertexAtLevel > 1) {
-            for(unsigned int j(0); j < numberertexAtLevel; ++j) {
+        unsigned int numberVertexAtLevel = level.size();
+        if (numberVertexAtLevel > 1) {
+            for(unsigned int j(0); j < numberVertexAtLevel; ++j) {
                 Vertex* current = level[j];
                 if (current->isValid()) {
                     Vertex* neighbor = current->getNeighbor2();
@@ -119,16 +117,35 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
     }
     
     
-    //Construct the profile
+    /*
+     * Construct the profile:
+     The algorithm works as follow: For every edge e1 on the first floor plan we will construct its profile
+     Thus we take le floor plan at level 2, then 3 etc.. And for every edge ei at the level i
+     if the two edges are not parallel, then they do not define a profile. If they are parallel,
+     they can be associated with face in opposite direction. Thus we check the dot product between
+     the two edges (e1 and ei) normal and if this dot product is negativ, then the two edges normals doesnt
+     face toward the same direction and thus do not define a profile. if the dot product is positiv
+     then they can define a profile. In fact, more than one edge ei can pass all of these test, thus we
+     keep only the edge that is the nearest to e1.
+     Finally, given an edge e1 and an edge ei that define a part of the profile, we can add a vertex to the profile
+     where the inclination is the distance between e1 and ei and the height is simply dy * i. The only question remaining
+     is the sign of the inclination. To compute it, we use the normal n at e1 and the direction vector from e1 to ei called d.
+     The normal n at e1 is oriented toward the exterior, thus if the dot product between n and d is positiv, it means that
+     ei is in the direction pointed by the normal of e1 and thus the sign of the inclination is -1, otherwise the sign is 1
+    */
+
     std::vector<Vertex*> firstLevel = plans[0];
+    //For every edge on the first floor plan
     for(unsigned int i(0); i < firstLevel.size(); ++i) {
         Edge* currentFirstFloorEdge = firstLevel[i]->getEdge2();
         OMMesh::Normal* currentFirstFloorEdgeNormal = currentFirstFloorEdge->getNormal();
         
+        // we will add vertices into this profile associated with the current first floor edge
         Profile* currentProfile = new Profile(true);
         currentFirstFloorEdge->setProfile(currentProfile);
         ProfileDestructorManager::putProfile(currentProfile);
 
+        // we try to find a profile vertex at each level above
         for(unsigned int j(1); j < plans.size(); ++j){
             std::vector<Vertex*> level = plans[j];
 
@@ -156,6 +173,7 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
                 float minDistance = FLT_MAX;
                 float sign = 1.0f;
                 for(unsigned int k(0); k < numberVertexAtLevel; ++k) {
+                    // for every edge at this level
                     Edge* currentFloorEdge = level[k]->getEdge2();
                     OMMesh::Normal* currentFloorEdgeNormal = currentFloorEdge->getNormal();
 
@@ -187,14 +205,13 @@ void FloorPlanAndProfileExtractor::profileConstruction(const OMMesh* inputMesh, 
                 }
             }
         }
-        //we can decimate the profile
+        //we can decimate the profile.
         currentProfile->vertexDecimation();
     }
     
 }
 
-void FloorPlanAndProfileExtractor::findMinMaxYValueMesh(const OMMesh *inputMesh, float &minY, float &maxY)
-{
+void FloorPlanAndProfileExtractor::findMinMaxYValueMesh(const OMMesh *inputMesh, float &minY, float &maxY) {
     OMMesh::VertexIter v_it, v_end(inputMesh->vertices_end());
     minY = FLT_MAX;
     maxY = FLT_MIN;
@@ -205,11 +222,24 @@ void FloorPlanAndProfileExtractor::findMinMaxYValueMesh(const OMMesh *inputMesh,
     }
 }
 
-bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Vertex *> > &plans, const OMMesh *inputMesh)
-{
+bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Vertex *> > &plans, const OMMesh *inputMesh) {
+
+    /*  First we have to find sample on the mesh
+     *
+        The algorithm works as follow:
+        for every edge of the mesh, we will do a plan/edge. We consider the edge as a ray,
+        compute the intersection and then test if this intersection is on the edge. If it is,
+        then we have a vertex. We do this for every edge anf for plan at every height.
+        notation: ray: o + t*d, plan equation: (x - p) dot (n) = 0, we want to find x
+
+        Later, we will have to transform this set of vertices into a chains of vertices,
+        defining every floor plan. Thus to know of two vertices are neighbor, we store
+        every faces associated with the vertex when we compute it during the plan/edge intersection.
+        Because if two vertices are at the same height and have at least one face in common, they
+        are neighbor.
+    */
     OpenMesh::Vec3f p(0,0,0);
-    OpenMesh::Vec3f n(0,1,0);
-    
+    OpenMesh::Vec3f n(0,1,0);    
     for (OMMesh::EdgeIter e_it=inputMesh->edges_begin(); e_it!=inputMesh->edges_end(); ++e_it) {
         
         //get the 2 halfedge of this edge:
@@ -233,7 +263,6 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         }
         
         // ray - plan intersection, to find the intersection
-        // notation: ray: o + t*d, plan equation: (x - p) dot (n) = 0
         OpenMesh::Vec3f d = (endPoint - startPoint).normalized();
         
         for (int i = 0; i < levels; i++) {
@@ -277,7 +306,7 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         }
     }
     
-    //find all neighbour in a certain floor
+    //find all neighbour in a certain floor using the face information
     foreach (std::vector<Vertex*> level, plans) {
         foreach (Vertex* vertex, level) {
             int found = 0;
@@ -380,25 +409,7 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             level = tempLevel;
         }
 
-    }
-    
-    
-    ///////DEBUT TEST
-    /*std::cerr <<"--------------------------" << std::endl << "avec les invalid" << std::endl;
-     int po=0;
-     foreach (std::vector<Vertex*> level, plans) {
-     std::cerr << "chain " << po << std::endl;
-     if (level.size() > 2 ) {
-     foreach (Vertex* vertex, level) {
-     std::cerr << vertex->getNeighbor1()->getX() << ", " << vertex->getNeighbor1()->getY();
-     std::cerr << " || " << vertex->getX() << ", " << vertex->getY() << " || ";
-     std::cerr << vertex->getNeighbor2()->getX() << ", " << vertex->getNeighbor2()->getY() << std::endl;
-     }
-     }
-     po++;
-     }*/
-    ///////FIN TEST
-    
+    }     
     
     //find vertex of v that have the same face normal delete it and replace with neigbour
     for(unsigned int j(0); j < plans.size(); ++j) {
@@ -427,26 +438,7 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
                 vertex->invalid();
             }
         }
-    }
-    
-    
-    ///////DEBUT TEST
-    /*std::cerr <<"--------------------------" << std::endl << "sans les invalid" << std::endl;
-     po=0;
-     foreach (std::vector<Vertex*> level, plans) {
-     std::cerr << "chain " << po << std::endl;
-     if (level.size() > 2 ) {
-     foreach (Vertex* vertex, level) {
-     if (vertex->isValid()) {
-     std::cerr << vertex->getNeighbor1()->getX() << ", " << vertex->getNeighbor1()->getY();
-     std::cerr << " || " << vertex->getX() << ", " << vertex->getY() << " || ";
-     std::cerr << vertex->getNeighbor2()->getX() << ", " << vertex->getNeighbor2()->getY() << std::endl;
-     }
-     }
-     }
-     po++;
-     }*/
-    ///////FIN TEST
+    }       
     
     //remove invalid vertex
     for(unsigned int i(0); i < plans.size(); ++i){
@@ -463,8 +455,7 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
     return true;
 }
 
-void FloorPlanAndProfileExtractor::upsideDownCorrection(std::vector<std::vector<Vertex *> > &plans)
-{
+void FloorPlanAndProfileExtractor::upsideDownCorrection(std::vector<std::vector<Vertex *> > &plans) {
     unsigned int planSize = plans.size();
     unsigned int plansSize_2 = std::ceil((float)planSize / 2.0f);
     for(unsigned int i(0); i < plansSize_2; ++i) {
@@ -478,17 +469,21 @@ void FloorPlanAndProfileExtractor::upsideDownCorrection(std::vector<std::vector<
 
 bool FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& floorPlan,
                                            Profile*& currentProfile, unsigned int& floorPlanSize,
-                                           std::vector< std::vector< Vertex* > >& plansAbove)
-{
+                                           std::vector< std::vector< Vertex* > >& plansAbove) {
+
     float minYValue(0.0f);
     float maxYValue(0.0f);
     findMinMaxYValueMesh(inputMesh, minYValue, maxYValue);
     
+    // define an uniform delta height at which we will search samples
     dy = (maxYValue - minYValue) / (levels - 1);
+
+    // define the height of the first plan
     baseY = minYValue;
     
     std::vector< std::vector<Vertex*> > plans(levels, std::vector<Vertex*>());
     
+    // extract all plan
     if(!extractAllPlans(plans, inputMesh)){
         return false;
     }
@@ -501,48 +496,24 @@ bool FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
             std::cerr << "First floor plans has less than 3 vertices!" << std::endl;
             return false;
         }
-    }
-    
+    }    
     
     recenter(plans);
-    rescale(plans);
+    rescale(plans);      
     
-    
-    
-    
-    
-    ///////DEBUT TEST
-    /*std::cerr << "-----------------------------" << std::endl;
-     int ii = 1;
-     foreach (std::vector<Vertex*> level, plans) {
-     std::cerr << "level " << ii << std::endl;
-     if(level.size() < 3) {
-     continue;
-     }
-     foreach (Vertex* vertex, level) {
-     std::cerr << vertex->getNeighbor1()->getX() << ", " << vertex->getNeighbor1()->getY() << " || " << vertex->getX() << ", " << vertex->getY() << " || " << vertex->getNeighbor2()->getX() << ", " << vertex->getNeighbor2()->getY() << std::endl;
-     std::cerr << "Valid ?" << std::endl;
-     std::cerr << vertex->getNeighbor1()->isValid() << ", " << vertex->isValid() << ", " << vertex->getNeighbor2()->isValid() << std::endl;
-     }
-     std::cerr <<std:: endl;
-     ii++;
-     }
-     std::cerr << "-----------------------------" << std::endl;*/
-    ////////FIN TEST
-    
-    
-    
-    
-    
+    // construct all profiles
     profileConstruction(inputMesh, plans);
     
     std::vector<Vertex*> firstFloorPlanlevel = plans[0];
+
+    //decimate the profiles
     profileDecimation(firstFloorPlanlevel);
     
     floorPlanSize = firstFloorPlanlevel.size();
     floorPlan = firstFloorPlanlevel[0];
     currentProfile = floorPlan->getEdge2()->getProfile();
     
+    // store all levels, thus the user will be able to see them
     for(unsigned int i(1); i < plans.size(); ++i) {
         plansAbove.push_back(plans[i]);
     }
@@ -550,16 +521,14 @@ bool FloorPlanAndProfileExtractor::extract(const OMMesh* inputMesh, Vertex*& flo
 }
 
 
-void FloorPlanAndProfileExtractor::profileDecimation(std::vector<Vertex*>& firstFloorPlanlevel){
+void FloorPlanAndProfileExtractor::profileDecimation(std::vector<Vertex*>& firstFloorPlanlevel) {
     foreach (Vertex* vertexP, firstFloorPlanlevel) {
         foreach (Vertex* vertexC, firstFloorPlanlevel) {
             if(vertexC != vertexP && vertexC->getEdge2()->getProfile()!= vertexP->getEdge2()->getProfile()){
                 if(vertexC->getEdge2()->getProfile()->isEqual(vertexP->getEdge2()->getProfile())){
                     vertexC->getEdge2()->setProfile(vertexP->getEdge2()->getProfile());
                 }
-                
             }
-            
         }
     }
 }

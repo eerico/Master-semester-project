@@ -3,18 +3,23 @@
 FloorAndProfileViewer::FloorAndProfileViewer()
     : QMainWindow()
 {
+    // all main data will be computed and accessed through this object
     meshManager = new MeshManager();
 
+    // create the object viewer
     objViewer = new ObjectViewer(meshManager);
     objViewer->setWindowTitle("Object Viewer");
     objViewer->show();
 
+    // create the central widget
     centralWidget = new CentralWidget(this, meshManager);
     this->setCentralWidget(centralWidget);
 
     createMenuBar();
 
+    // if we close the window, tells the object viewer to close itself
     QObject::connect(this, SIGNAL(closeSignal()), objViewer, SLOT(close()));
+    // if the object viewer is closed, then we close this window
     QObject::connect(objViewer, SIGNAL(closeSignal()), this, SLOT(close()));
 }
 
@@ -34,27 +39,19 @@ FloorAndProfileViewer::~FloorAndProfileViewer()
     delete objViewer;
 }
 
-void FloorAndProfileViewer::closeEvent(QCloseEvent *event)
-{
+void FloorAndProfileViewer::closeEvent(QCloseEvent *event) {
     emit closeSignal();
     event->accept();
 }
 
-void FloorAndProfileViewer::closeViewer()
-{
-    this->close();
-}
-
-
-void FloorAndProfileViewer::createMenuBar()
-{
+void FloorAndProfileViewer::createMenuBar() {
+    // create all menu in the menu bar
     createFileMenu();
     createViewMenu();
     createAboutMenu();
 }
 
-void FloorAndProfileViewer::createFileMenu()
-{
+void FloorAndProfileViewer::createFileMenu() {
     fileMenu = this->menuBar()->addMenu(tr("&File"));
 
     openAction = new QAction(tr("&Open"), this);
@@ -75,8 +72,7 @@ void FloorAndProfileViewer::createFileMenu()
     QObject::connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 }
 
-void FloorAndProfileViewer::createAboutMenu()
-{
+void FloorAndProfileViewer::createAboutMenu() {
     aboutMenu = this->menuBar()->addMenu(tr("&About"));
 
     aboutQtAction = new QAction(tr("&About Qt"), this);
@@ -84,8 +80,7 @@ void FloorAndProfileViewer::createAboutMenu()
     QObject::connect(aboutQtAction, SIGNAL(triggered()), this, SLOT(aboutQtMessageBox()));
 }
 
-void FloorAndProfileViewer::createViewMenu()
-{
+void FloorAndProfileViewer::createViewMenu() {
     viewMenu = this->menuBar()->addMenu(tr("&View"));
 
     wireframeAction = new QAction(tr("&Wireframe"), this);
@@ -109,25 +104,27 @@ void FloorAndProfileViewer::createViewMenu()
     QObject::connect(noViewAction, SIGNAL(triggered()), objViewer, SLOT(noViewMode()));
 }
 
-void FloorAndProfileViewer::aboutQtMessageBox()
-{
+void FloorAndProfileViewer::aboutQtMessageBox() {
     QMessageBox::aboutQt(this);
 }
 
 
-void FloorAndProfileViewer::openFile()
-{
+void FloorAndProfileViewer::openFile() {
     QString file = QFileDialog::getOpenFileName(this, "Open File", QString(), "Mesh Files (*.obj *.off *.stl)");
 
     if (file.isEmpty()) {
         return;
     }
+
+    // by default, we do not show all the floor plan
     centralWidget->hideAllPlans();
     centralWidget->uncheckShowPlans();
+
+    // tells the mesh manager that a new mesh can be read
     meshManager->loadMesh(file);
 }
 
-void FloorAndProfileViewer::clearFile(){
+void FloorAndProfileViewer::clearFile() {
     this->hide();
     QObject::disconnect(objViewer, SIGNAL(closeSignal()), this, SLOT(close()));
     emit closeSignal();
@@ -159,9 +156,7 @@ void FloorAndProfileViewer::clearFile(){
     centralWidget = newCentralWidget;
     meshManager = meshManager2;
 
-
     this->show();
     QObject::connect(this, SIGNAL(closeSignal()), objViewer, SLOT(close()));
     QObject::connect(objViewer, SIGNAL(closeSignal()), this, SLOT(close()));
-
 }
