@@ -2,7 +2,7 @@
 #include "Vertex.h"
 #include "Profile.h"
 
-Edge::Edge(Vertex* vertex1, Vertex* vertex2, Profile* p)
+Edge::Edge(Vertex * const vertex1, Vertex * const vertex2, Profile * const p)
     :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
 {
     edgePen.setWidth(3);
@@ -20,7 +20,7 @@ Profile* Edge::getProfile() {
     return profile;
 }
 
-void Edge::setProfile(Profile* p) {
+void Edge::setProfile(Profile * const p) {
     profile = p;
 }
 
@@ -28,7 +28,7 @@ Vertex* Edge::getVertex1() {
     return vertex1;
 }
 
-void Edge::setVertex1(Vertex* vertex) {
+void Edge::setVertex1(Vertex* const vertex) {
     vertex1 = vertex;
 }
 
@@ -36,11 +36,11 @@ Vertex* Edge::getVertex2() {
     return vertex2;
 }
 
-void Edge::setVertex2(Vertex* vertex) {
+void Edge::setVertex2(Vertex* const vertex) {
     vertex2 = vertex;
 }
 
-void Edge::setNormal(OMMesh::Normal *n) {
+void Edge::setNormal(OMMesh::Normal* const n) {
     normal = n;
 }
 
@@ -48,7 +48,7 @@ Edge::OMMesh::Normal* Edge::getNormal() {
     return normal;
 }
 
-void Edge::setLineItem(QGraphicsLineItem* item) {
+void Edge::setLineItem(QGraphicsLineItem* const item) {
     lineItem = item;
 }
 
@@ -73,7 +73,7 @@ QGraphicsLineItem* Edge::computeLineItem() {
     return lineItem;
 }
 
-bool Edge::isParallel(Edge* edge) {
+bool Edge::isParallel(Edge* const edge) {
     // To check if the current edge and the compared edge are parallel
     // we can use the dot product between them. If the dot product
     // is 1 or -1, then they are parallel
@@ -106,13 +106,13 @@ bool Edge::isParallel(Edge* edge) {
     return (std::abs(1.0f - dotProduct) < 0.01f) || (std::abs(-1.0f - dotProduct) < 0.01f);
 }
 
-float Edge::distance(Edge* edge) {
+float Edge::distance(Edge* const edge) {
     // the two edges must be parallel to use this method
     // if they are, the distance between them is the distance between one edge and a vertex on the other edge
     return distance(edge->getVertex2());
 }
 
-float Edge::distance(Vertex* vertex) {
+float Edge::distance(Vertex* const vertex) {
     // compute the edge vertex distance
 
     float fromX = this->getVertex1()->getX();
@@ -157,7 +157,7 @@ bool Edge::isValid() {
     return valid;
 }
 
-void Edge::setValid(bool valid) {
+void Edge::setValid(const bool &valid) {
     this->valid = valid;
 }
 

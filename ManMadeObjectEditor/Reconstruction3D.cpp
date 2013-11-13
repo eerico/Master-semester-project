@@ -18,7 +18,7 @@
  */
 
 
-Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *>* triangles)
+Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * const>* triangles)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
 {
     priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparison>;
@@ -667,6 +667,12 @@ void Reconstruction3D::splitEdgeAtCorner(Edge *edgeToSplit, Intersection& corner
 
 void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& chains, Intersection& intersection)
 {
+    // le code est faux mais idée est juste. 1 edge se split en 2 et on reconstruit en dessus mais comment update dans
+    // la priority queue pour chaque intersection ?
+
+
+
+
     // on suppose que les chaines sont bien successive...
     unsigned int chainsSize = chains.size();
     for(unsigned int i(0); i < chainsSize; i++) {
@@ -823,7 +829,7 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
             }
         } else {
             //que faire ici ?
-            //je crois que il en parle dans paper, relire
+            // On doit faire ce triangle la. Si le gars est seul on va le split ensuite
             /*Edge* firstEdge = (*currentChain)[0];
 
             if(!firstEdge->isValid()) {

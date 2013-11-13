@@ -20,24 +20,24 @@ class Vertex
     typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
 
 public:
-    Vertex(float x, float y, bool addFaces=false, bool valid = false);
-    Vertex(float x, float y, float z);
+    Vertex(const float& x, const float& y, const bool& addFaces=false, const bool& valid = false);
+    Vertex(const float& x, const float& y, const float& z);
     virtual ~Vertex();
 
     float getX();
-    void setX(float i);
+    void setX(const float& i);
 
     float getY();
-    void setY(float i);
+    void setY(const float& i);
 
     float getZ();    
-    void setZ(float i);
+    void setZ(const float& i);
 
     Vertex* getNeighbor1();
-    void setNeighbor1(Vertex *vx);
+    void setNeighbor1(Vertex* const vx);
 
     Vertex* getNeighbor2();    
-    void setNeighbor2(Vertex *vx);
+    void setNeighbor2(Vertex* const vx);
 
     /**
      * @brief replaceNeighbour
@@ -47,16 +47,16 @@ public:
      * @param newVx
      * @return the new edge between this vertex and newVx or 0 if it failed
      */
-    Edge* replaceNeighbour(Vertex* oldVx, Vertex* newVx);
+    Edge* replaceNeighbour(Vertex * const oldVx, Vertex * const newVx);
 
     QGraphicsEllipseItem* getEllipse();
-    void setEllipse(QGraphicsEllipseItem* e);
+    void setEllipse(QGraphicsEllipseItem* const e);
 
     Edge* getEdge1();
-    void setEdge1(Edge* e);
+    void setEdge1(Edge* const e);
 
     Edge* getEdge2();   
-    void setEdge2(Edge* e);
+    void setEdge2(Edge* const e);
 
     std::vector<OMMesh::FaceHandle>* getFaces();
 
@@ -65,14 +65,14 @@ public:
      * Add a face associated with this vertex.
      * @param face
      */
-    void addFace(OMMesh::FaceHandle face);
+    void addFace(const OMMesh::FaceHandle face);
 
     /**
      * @brief isValid
      * @return If the vertex is valid
      */
     bool isValid();
-    void setValid(bool valid);
+    void setValid(const bool& valid);
 
     /**
      * @brief invalid

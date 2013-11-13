@@ -15,7 +15,7 @@ class Edge;
 class Profile
 {
 public:
-    Profile(bool empty);
+    Profile(const bool& empty);
     ~Profile();
 
     Vertex* getProfileVertex();
@@ -26,7 +26,7 @@ public:
      * @param w The inclination
      * @param z The height
      */
-    void addProfileVertex(float w, float z);
+    void addProfileVertex(const float& w, const float& z);
 
     /**
      * @brief addVertexEnd
@@ -34,7 +34,7 @@ public:
      * @param v
      * @return true if the method succeeded (do not break the monotonicity)
      */
-    bool addVertexEnd(Vertex * v);
+    bool addVertexEnd(Vertex * const v);
 
     /**
      * @brief vertexDecimation
@@ -48,7 +48,7 @@ public:
      * @param compareProfile
      * @return true if the two profiles are the same
      */
-    bool isEqual(Profile* compareProfile);
+    bool isEqual(Profile * const compareProfile);
 
     /**
      * @brief nextDirectionPlan
@@ -77,14 +77,14 @@ private:
      * Create a profile using the skewed line
      * @param numSample The number of sample to take
      */
-    void initProfileSkewedLine(int numSample);
+    void initProfileSkewedLine(const int& numSample);
 
     /**
      * @brief initProfileBezier
      * Create a profile using a bezier curve
      * @param numSample The number of sample to take
      */
-    void initProfileBezier(int numSample);
+    void initProfileBezier(const int& numSample);
 
 };
 

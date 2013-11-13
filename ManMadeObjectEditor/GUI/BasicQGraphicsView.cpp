@@ -1,6 +1,6 @@
 #include "BasicQGraphicsView.h"
 
-BasicQGraphicsView::BasicQGraphicsView(QGraphicsScene* parent): QGraphicsView(parent)
+BasicQGraphicsView::BasicQGraphicsView(QGraphicsScene* const parent): QGraphicsView(parent)
 {
     //Use ScrollHand Drag Mode to enable Panning
     setDragMode(ScrollHandDrag);

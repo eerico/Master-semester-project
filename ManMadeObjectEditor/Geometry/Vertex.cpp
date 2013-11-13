@@ -1,7 +1,7 @@
 #include "Vertex.h"
 
 
-Vertex::Vertex(float x, float y, bool addFaces, bool valid)
+Vertex::Vertex(const float& x, const float& y, const bool& addFaces, const bool& valid)
     : x(x), y(y), z(0.0f), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0), valid(valid)
 {
     vertexPen.setWidth(5);
@@ -15,7 +15,7 @@ Vertex::Vertex(float x, float y, bool addFaces, bool valid)
 
 }
 
-Vertex::Vertex(float x, float y, float z)
+Vertex::Vertex(const float& x, const float& y, const float& z)
     : x(x), y(y), z(z)
 {
 
@@ -34,15 +34,15 @@ QGraphicsEllipseItem* Vertex::getEllipse(){
     return ellipse;
 }
 
-void Vertex::setNeighbor1(Vertex *vx) {
+void Vertex::setNeighbor1(Vertex* const vx) {
     neighbor1 = vx;
 }
 
-void Vertex::setNeighbor2(Vertex *vx) {
+void Vertex::setNeighbor2(Vertex* const vx) {
     neighbor2 = vx;
 }
 
-Edge* Vertex::replaceNeighbour(Vertex* oldVx, Vertex* newVx) {
+Edge* Vertex::replaceNeighbour(Vertex* const oldVx, Vertex* const newVx) {
     Edge* newEdge(0);
 
     if(oldVx == neighbor1){
@@ -96,15 +96,15 @@ float Vertex::getZ() {
     return z;
 }
 
-void Vertex::setY(float i) {
+void Vertex::setY(const float& i) {
     y = i;
 }
 
-void Vertex::setX(float i) {
+void Vertex::setX(const float& i) {
     x = i;
 }
 
-void Vertex::setZ(float i) {
+void Vertex::setZ(const float& i) {
     z = i;
 }
 
@@ -124,22 +124,22 @@ Edge* Vertex::getEdge2() {
     return edge2;
 }
 
-void Vertex::setEdge1(Edge* e) {
+void Vertex::setEdge1(Edge* const e) {
     edge1 = e;
 }
 
-void Vertex::setEdge2(Edge* e) {
+void Vertex::setEdge2(Edge* const e) {
     edge2 = e;
 }
 
-void Vertex::setEllipse(QGraphicsEllipseItem* e) {
+void Vertex::setEllipse(QGraphicsEllipseItem* const e) {
     ellipse = e;
     ellipse->setPen(vertexPen);
     ellipse->setBrush(vertexBrush);
     ellipse->setZValue(Utils::getZValueForeground());
 }
 
-void Vertex::addFace(OMMesh::FaceHandle face) {
+void Vertex::addFace(const OMMesh::FaceHandle face) {
     faces->push_back(face);
 }
 
@@ -155,7 +155,7 @@ void Vertex::invalid() {
     valid = false;
 }
 
-void Vertex::setValid(bool valid) {
+void Vertex::setValid(const bool& valid) {
     this->valid = valid;
 }
 

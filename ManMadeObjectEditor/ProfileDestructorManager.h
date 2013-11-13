@@ -16,7 +16,7 @@ public:
      * Put the profile into the garbage colector
      * @param p The profile to put into the garbage collector
      */
-    static void putProfile(Profile* p);
+    static void putProfile(const Profile* const p);
 
     /**
      * @brief deleteProfiles
@@ -37,14 +37,14 @@ private:
     ProfileDestructorManager();
 
     // The first profile manager
-    static std::vector<Profile*> profileManager1;
+    static std::vector<const Profile* const> profileManager1;
 
     // The second profile manager
-    static std::vector<Profile*> profileManager2;
+    static std::vector<const Profile* const> profileManager2;
 
     // The current profile manager, that is a pointer to either
     // the first or the second profile manager
-    static std::vector<Profile*>* profileManager;
+    static std::vector<const Profile*const >* profileManager;
 };
 
 #endif // PROFILEDESTRUCTORMANAGER_H

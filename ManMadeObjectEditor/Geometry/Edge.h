@@ -21,20 +21,20 @@ class Edge
     // Used to use OpenMesh data
 	typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
 public:
-    Edge(Vertex* vertex1, Vertex* vertex2, Profile* p = 0);
+    Edge(Vertex* const vertex1, Vertex* const vertex2, Profile* const p = 0);
     ~Edge();
 
 
     Profile* getProfile();
-    void setProfile(Profile* p);
+    void setProfile(Profile* const p);
 
     Vertex* getVertex1();
-    void setVertex1(Vertex* vertex);
+    void setVertex1(Vertex* const vertex);
 
     Vertex* getVertex2();
-    void setVertex2(Vertex* vertex);
+    void setVertex2(Vertex* const vertex);
 
-    void setLineItem(QGraphicsLineItem* item);
+    void setLineItem(QGraphicsLineItem* const item);
     QGraphicsLineItem* getLineItem();
 
     /**
@@ -50,7 +50,7 @@ public:
      * @param edge
      * @return If the two edges are parallel
      */
-    bool isParallel(Edge* edge);
+    bool isParallel(Edge* const edge);
 
     /**
      * @brief distance
@@ -58,7 +58,7 @@ public:
      * @param edge
      * @return The distance between two edges if they are parallel
      */
-	float distance(Edge* edge);
+    float distance(Edge* const edge);
 
     /**
      * @brief distance
@@ -66,9 +66,9 @@ public:
      * @param vertex
      * @return The distance between the edge and the vertex
      */
-    float distance(Vertex* vertex);
+    float distance(Vertex* const vertex);
 
-    void setNormal(OMMesh::Normal *n);
+    void setNormal(OMMesh::Normal* constn);
     OMMesh::Normal* getNormal();
 
     /**
@@ -76,7 +76,7 @@ public:
      * @return if the edge is valid
      */
     bool isValid();
-    void setValid(bool valid);
+    void setValid(const bool& valid);
 
     /**
      * @brief invalid

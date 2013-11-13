@@ -13,7 +13,7 @@ class AllPlanScene : public QGraphicsScene
 {
 
 public:
-    AllPlanScene(MeshManager* meshManager);
+    AllPlanScene(MeshManager* const meshManager);
     ~AllPlanScene();
 
     /**
@@ -22,7 +22,7 @@ public:
      * in this scene
      * @param level The level to show
      */
-    void loadPlan(int level);
+    void loadPlan(const int& level);
 
 private:
 

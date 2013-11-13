@@ -31,7 +31,7 @@ public:
     MeshManager();
     ~MeshManager();
 
-    void setCurrentProfile(Profile* p);
+    void setCurrentProfile(Profile* const p);
     Profile* getCurrentProfile();
 
     unsigned int getFloorPlanSize();
@@ -40,7 +40,7 @@ public:
 
     Vertex* getFloorPlan();
     // The floor plan is a linked list of vertices, thus only one vertex is enough to describe it
-    void setFloorPlan(Vertex* vertex);
+    void setFloorPlan(Vertex* const vertex);
 
     /**
      * @brief loadMesh
@@ -48,7 +48,7 @@ public:
      * signal that a new floor plan has been loaded
      * @param fileName The file containing the mesh that we want to load
      */
-    void loadMesh(QString fileName);
+    void loadMesh(const QString fileName);
 
     /**
      * @brief setUpdateOnMesh
@@ -61,7 +61,7 @@ public:
      * Tells the mesh manager that the floor plan or profile is currently modified
      * @param b Must be true when there is modification and false when its over
      */
-    void setLongUpdateOnMesh(bool b);
+    void setLongUpdateOnMesh(const bool& b);
 
     /**
      * @brief clearTriangles
@@ -82,7 +82,7 @@ public:
      * the 3D reconstruction
      * @return A vector of triangles
      */
-    const std::vector<qglviewer::Vec *>* getTriangles();
+    const std::vector<qglviewer::Vec * const>* getTriangles();
 
     /**
      * @brief getPoints
@@ -91,13 +91,13 @@ public:
      * the 3D reconstruction
      * @return A vector of points
      */
-    std::vector<qglviewer::Vec*>* getPoints();
+    const std::vector<qglviewer::Vec * const>* getPoints();
 
     /**
      * @brief getPlans
      * @return A vector that contain all floor plan above the first one
      */
-    std::vector< std::vector< Vertex* > >& getPlans();
+    std::vector<std::vector<Vertex * const> > &getPlans();
 
 signals:
     /**
@@ -109,10 +109,10 @@ signals:
 private:
 
     // a vector that contain the triangles obtain with the 3D reconstruction
-    std::vector<qglviewer::Vec *>* triangles;
+    std::vector<qglviewer::Vec * const>* triangles;
 
     // a vector that contain the points obtain with the 3D reconstruction
-    std::vector<qglviewer::Vec*>* points;
+    std::vector<qglviewer::Vec* const>* points;
 
     // the first floor plan
     Vertex* floorPlan; // linked list, can iterate on it using the neighbor
@@ -134,7 +134,7 @@ private:
     unsigned int floorPlanSize;
 
     // a vector that contain all floor plan above the first one
-    std::vector< std::vector< Vertex* > > plans;
+    std::vector< std::vector< Vertex* const > > plans;
 };
 
 #endif // MESH_H

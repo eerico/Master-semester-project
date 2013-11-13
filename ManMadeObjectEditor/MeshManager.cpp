@@ -4,8 +4,8 @@
 
 MeshManager::MeshManager(): inputMesh(0), floorPlan(0), updateOnMesh(false), longUpdateOnMesh(false), floorPlanSize(0)
 {
-    points = new std::vector<qglviewer::Vec*>;
-    triangles = new std::vector<qglviewer::Vec*>;
+    points = new std::vector<qglviewer::Vec* const>;
+    triangles = new std::vector<qglviewer::Vec* const>;
 }
 
 MeshManager::~MeshManager()
@@ -50,7 +50,7 @@ MeshManager::~MeshManager()
     }
 
     for(unsigned int i(0); i < plans.size(); ++i) {
-        std::vector< Vertex* > level = plans[i];
+        std::vector< Vertex* const> level = plans[i];
 
         for(unsigned int j(0); j < level.size(); ++j) {
             Vertex* vertex = level[j];
@@ -94,11 +94,11 @@ void MeshManager::clearTriangles() {
     triangles->clear();
 }
 
-void MeshManager::setFloorPlan(Vertex* vertex) {
+void MeshManager::setFloorPlan(Vertex * const vertex) {
    floorPlan = vertex;
 }
 
-const std::vector<qglviewer::Vec *>* MeshManager::getTriangles() {
+const std::vector<qglviewer::Vec * const> *MeshManager::getTriangles() {
 
     // if there is no modification, we can return the old vector
     if (!updateOnMesh && !longUpdateOnMesh) {
@@ -124,7 +124,7 @@ const std::vector<qglviewer::Vec *>* MeshManager::getTriangles() {
     return triangles;
 }
 
-std::vector<qglviewer::Vec*>* MeshManager::getPoints() {
+const std::vector<qglviewer::Vec* const>* MeshManager::getPoints() {
 
     // if there is no modification, we can return the old vector
     if (!updateOnMesh && !longUpdateOnMesh) {
@@ -165,11 +165,11 @@ Profile* MeshManager::getCurrentProfile() {
     return currentProfile;
 }
 
-void MeshManager::setCurrentProfile(Profile* p) {
+void MeshManager::setCurrentProfile(Profile * const p) {
     currentProfile = p;
 }
 
-void MeshManager::loadMesh(QString fileName) {
+void MeshManager::loadMesh(const QString fileName) {
     //delete old OpenMesh data
     if(inputMesh != 0)
     {
@@ -192,7 +192,7 @@ void MeshManager::loadMesh(QString fileName) {
     currentProfile = 0;
 
     for(unsigned int i(0); i < plans.size(); ++i) {
-        std::vector< Vertex* > level = plans[i];
+        std::vector< Vertex* const> level = plans[i];
 
         for(unsigned int j(0); j < level.size(); ++j) {
             Vertex* vertex = level[j];
@@ -261,11 +261,11 @@ void MeshManager::setUpdateOnMesh() {
     updateOnMesh = true;
 }
 
-void MeshManager::setLongUpdateOnMesh(bool b) {
+void MeshManager::setLongUpdateOnMesh(const bool &b) {
     longUpdateOnMesh = b;
 }
 
-std::vector< std::vector< Vertex* > >& MeshManager::getPlans() {
+std::vector< std::vector< Vertex* const> >& MeshManager::getPlans() {
     return plans;
 }
 

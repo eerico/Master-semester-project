@@ -30,8 +30,8 @@ public:
      * @param plansAbove All plan above the first floor plan
      * @return True if the extraction do not failed
      */
-    bool extract(const OMMesh* inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize,
-                 std::vector< std::vector< Vertex* > >& plansAbove);
+    bool extract(const OMMesh* const inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize,
+                 std::vector<std::vector<Vertex * const> > &plansAbove);
     
 private:
     /**
@@ -40,7 +40,7 @@ private:
      * Thus this method ensure that if two or more edges have the same profile, then this is the same profile object.
      * @param firstFloorPlanlevel The floor plan at the first level
      */
-    void profileDecimation(std::vector<Vertex*>& firstFloorPlanlevel);
+    void profileDecimation(const std::vector<Vertex* const>& firstFloorPlanlevel);
 
     /**
      * @brief profileConstruction
@@ -48,7 +48,7 @@ private:
      * @param inputMesh the mesh load with OpenMesh
      * @param plans A vector that contain all floor plan at every level
      */
-    void profileConstruction(const OMMesh* inputMesh, std::vector< std::vector< Vertex* > >& plans);
+    void profileConstruction(const OMMesh* const inputMesh, std::vector< std::vector< Vertex* const> >& plans);
 
     /**
      * @brief recenter
@@ -56,14 +56,14 @@ private:
      * of the first floor plan
      * @param plans A vector that contain all floor plan at every level
      */
-    void recenter(std::vector< std::vector< Vertex* > >& plans);
+    void recenter(std::vector< std::vector< Vertex* const > >& plans);
 
     /**
      * @brief rescale
      * This method scale all floor plan at every level such that the first floor plan is between [-1, 1]x[-1, 1]
      * @param plans A vector that contain all floor plan at every level
      */
-    void rescale(std::vector< std::vector< Vertex* > >& plans);
+    void rescale(std::vector< std::vector< Vertex* const > >& plans);
 
     /**
      * @brief findMinMaxYValueMesh
@@ -72,7 +72,7 @@ private:
      * @param minY
      * @param maxY
      */
-    void findMinMaxYValueMesh(const OMMesh* inputMesh, float &minY, float &maxY);
+    void findMinMaxYValueMesh(const OMMesh* const inputMesh, float &minY, float &maxY);
 
     /**
      * @brief extractAllPlans
@@ -82,7 +82,7 @@ private:
      * @param inputMesh
      * @return True if the extration succeeded
      */
-    bool extractAllPlans(std::vector< std::vector<Vertex*> > &plans, const OMMesh* inputMesh);
+    bool extractAllPlans(std::vector< std::vector<Vertex* const> > &plans, const OMMesh* const inputMesh);
 
     /**
      * @brief upsideDownCorrection
@@ -90,7 +90,7 @@ private:
      * We can then try to correct it
      * @param plans A vector that contain all floor plan at every level
      */
-    void upsideDownCorrection(std::vector< std::vector<Vertex*> > &plans);
+    void upsideDownCorrection(std::vector< std::vector<Vertex* const> > &plans);
 
     // the delta height between different floor plan (the distance between each level)
     float dy;

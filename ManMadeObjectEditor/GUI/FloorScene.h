@@ -25,7 +25,7 @@ class FloorScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    FloorScene(MeshManager* meshManager);
+    FloorScene(MeshManager* const meshManager);
     ~FloorScene();
 
 signals:
@@ -69,7 +69,7 @@ private:
      * Add a vertex if the user has clicked on an edge
      * @param mousePos The mouse position
      */
-    void addVertex(QPoint mousePos);
+    void addVertex(const QPoint mousePos);
 
     /**
      * @brief removeVertex
@@ -93,7 +93,7 @@ private:
      * @param mousePos The mouse position
      * @param numSample The number of sample we will take
      */
-    void basicCircle(QPoint* mousePos, int numSample);
+    void basicCircle(QPoint* const mousePos, const int& numSample);
 
     /**
      * @brief newProfileSelected

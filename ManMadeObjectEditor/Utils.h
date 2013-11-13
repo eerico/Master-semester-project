@@ -21,7 +21,7 @@ public:
      * @param y2
      * @return The distance between (x1, y1) and (x2, y2)
      */
-    static float distance(float x1, float y1, float x2, float y2);
+    static float distance(const float& x1, const float& y1, const float& x2, const float& y2);
 
     /**
      * @brief adjustCoordinates3DToScene
@@ -32,7 +32,7 @@ public:
      * @param width The scene width
      * @param height The scene height
      */
-    static void adjustCoordinates3DToScene(float& x, float& y, float width, float height);
+    static void adjustCoordinates3DToScene(float& x, float& y, const float& width, const float& height);
 
     /**
      * @brief adjustCoordinatesSceneTo3D
@@ -43,7 +43,7 @@ public:
      * @param width
      * @param height
      */
-    static void adjustCoordinatesSceneTo3D(float& x, float& y, float width, float height);
+    static void adjustCoordinatesSceneTo3D(float& x, float& y, const float& width, const float& height);
 
     /**
      * @brief normalize
@@ -71,7 +71,7 @@ public:
      * @param y2
      * @return the dot product between (x1, y1) and (x2, y2)
      */
-    static float dotProduct(float x1, float y1, float x2, float y2);
+    static float dotProduct(const float& x1, const float& y1, const float& x2, const float& y2);
 
     /**
      * @brief getZValueForeground
@@ -98,7 +98,9 @@ public:
      * @param y The resulting y
      * @param z The resulting z
      */
-    static void crossProduct(float x1, float y1, float z1, float x2, float y2, float z2, float& x, float& y, float& z);
+    static void crossProduct(const float& x1, const float& y1, const float& z1,
+                             const float& x2, const float& y2, const float& z2,
+                             float& x, float& y, float& z);
 };
 
 #endif // UTILS_H

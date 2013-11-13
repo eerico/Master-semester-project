@@ -3,7 +3,7 @@
 
 const int ProfileScene::vertexRadius(6);
 
-ProfileScene::ProfileScene(MeshManager* meshManager)
+ProfileScene::ProfileScene(MeshManager* const meshManager)
     : QGraphicsScene(), meshManager(meshManager), isProfileSelected(false), currentProfile(0)
     , currentlyMovingVertex(0), isVertexMoving(false)
 {
@@ -35,7 +35,7 @@ void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
     }
 }
 
-void ProfileScene::addVertex(QPoint mousePos) {
+void ProfileScene::addVertex(const QPoint mousePos) {
     //test if the user has clicked on an edge
     Edge* currentEdge(0);
     bool foundEdge(false);
