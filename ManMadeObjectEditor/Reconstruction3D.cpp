@@ -326,8 +326,9 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
 
             removeDuplicateEdges(intersection);
 
-            // filtering invalid event
+            // if the number of edges in f is less than 3, the event is ignored
             if(intersection.edgeVector->size() < 3) {
+                std::cerr << "intersection ignored" << std::endl;
                 return;
             }
 
