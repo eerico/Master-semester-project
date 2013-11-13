@@ -6,17 +6,6 @@ MeshManager::MeshManager(): inputMesh(0), floorPlan(0), updateOnMesh(false), lon
 {
     points = new std::vector<qglviewer::Vec*>;
     triangles = new std::vector<qglviewer::Vec*>;
-
-
-    // simple test
-    /*triangles.push_back(new qglviewer::Vec(-1.0f, 0.0f, 0.5f));
-    triangles.push_back(new qglviewer::Vec(-1.0f, 1.0f, 0.5f));
-    triangles.push_back(new qglviewer::Vec(1.0f, 0.0f, 0.5f));
-
-    triangles.push_back(new qglviewer::Vec(1.0f, 0.0f, 0.5f));
-    triangles.push_back(new qglviewer::Vec(-1.0f, 1.0f, 0.5f));
-    triangles.push_back(new qglviewer::Vec(1.0f, 1.0f, 0.5f));*/
-
 }
 
 MeshManager::~MeshManager()
@@ -83,7 +72,6 @@ MeshManager::~MeshManager()
         level.clear();
     }
     plans.clear();
-
 }
 
 void MeshManager::clearPoints() {
@@ -110,136 +98,86 @@ void MeshManager::setFloorPlan(Vertex* vertex) {
    floorPlan = vertex;
 }
 
-const std::vector<qglviewer::Vec *>* MeshManager::getTriangles()
-{
+const std::vector<qglviewer::Vec *>* MeshManager::getTriangles() {
+
+    // if there is no modification, we can return the old vector
     if (!updateOnMesh && !longUpdateOnMesh) {
         return triangles;
     }
-    std::cerr << "update Triangle" << std::endl;
+    std::cerr << "update triangle" << std::endl;
 
+    // first clear the old data
     unsigned int trianglesSize = triangles->size();
     for(unsigned int i(0); i < trianglesSize; ++i) {
         delete (*triangles)[i];
     }
     triangles->clear();
 
-
-
-
-
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /*Vertex* current = floorPlan;
-    for(unsigned int i(0); i < floorPlanSize; ++i) {
-        std::cerr << "(" << current->getX() << ", " << current->getY() << ", " << current->getZ() << ") - " << std::endl;
-        Vertex* p = current->getEdge2()->getProfile()->getProfileVertex();
-        while(p != 0) {
-            std::cerr << "(" << p->getX() << ", " << p->getY() << ", " << p->getZ() << ") - ";
-            p = p->getNeighbor2();
-        }
-        std::cerr << std::endl;
-
-        current = current->getNeighbor2();
-    }
-    std::cerr << std::endl;*/
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
+    // recompute the 3D reconstruction
     Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, triangles);
     reconstruction3D.reconstruct();
 
-
-
-
-
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /*current = floorPlan;
-    for(unsigned int i(0); i < floorPlanSize; ++i) {
-        std::cerr << "(" << current->getX() << ", " << current->getY() << ", " << current->getZ() << ") - " << std::endl;
-        Vertex* p = current->getEdge2()->getProfile()->getProfileVertex();
-        while(p != 0) {
-            std::cerr << "(" << p->getX() << ", " << p->getY() << ", " << p->getZ() << ") - ";
-            p = p->getNeighbor2();
-        }
-        std::cerr << std::endl;
-
-        current = current->getNeighbor2();
-    }
-    std::cerr << std::endl;*/
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
+    // the update is done
     updateOnMesh = false;
     std::cerr << "apres reconstruction, nombre de triangles: " << (triangles->size() / 3.0f) << std::endl;
 
     return triangles;
 }
 
-std::vector<qglviewer::Vec*>* MeshManager::getPoints()
-{
+std::vector<qglviewer::Vec*>* MeshManager::getPoints() {
 
+    // if there is no modification, we can return the old vector
     if (!updateOnMesh && !longUpdateOnMesh) {
         return points;
     }
 
-
+    // first clear the old data
     unsigned int pointsSize = points->size();
     for(unsigned int i(0); i < pointsSize; ++i) {
         delete (*points)[i];
     }
     points->clear();
 
-
+    // recompute the 3D reconstruction
     Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, points);
     reconstruction3D.reconstruct();
 
-
+    // the update is done
     updateOnMesh = false;
 
     return points;
 }
 
 
-unsigned int MeshManager::getFloorPlanSize()
-{
+unsigned int MeshManager::getFloorPlanSize() {
     return floorPlanSize;
 }
 
-void MeshManager::incrementFloorPlanSize()
-{
+void MeshManager::incrementFloorPlanSize() {
     floorPlanSize++;
 }
 
-void MeshManager::decrementFloorPlanSize()
-{
+void MeshManager::decrementFloorPlanSize() {
     floorPlanSize--;
 }
 
-Profile* MeshManager::getCurrentProfile()
-{
+Profile* MeshManager::getCurrentProfile() {
     return currentProfile;
 }
 
-void MeshManager::setCurrentProfile(Profile* p)
-{
+void MeshManager::setCurrentProfile(Profile* p) {
     currentProfile = p;
 }
 
-void MeshManager::loadMesh(QString fileName)
-{
-    //delete old data
+void MeshManager::loadMesh(QString fileName) {
+    //delete old OpenMesh data
     if(inputMesh != 0)
     {
         delete inputMesh;
     }
     inputMesh = new OMMesh;
 
+    // delete old floor plan data
     Vertex* currentVertex = floorPlan;
     for( unsigned int i(0); i < floorPlanSize; ++i)
     {
@@ -280,7 +218,7 @@ void MeshManager::loadMesh(QString fileName)
     // we will delete the previous profiles after having loaded the new profiles
     ProfileDestructorManager::swap();
 
-    //load the mesh
+    //load the new mesh
     //http://openmesh.org/Documentation/OpenMesh-Doc-Latest/tutorial_05.html
     inputMesh->request_vertex_normals();
     inputMesh->request_face_normals();
@@ -300,12 +238,13 @@ void MeshManager::loadMesh(QString fileName)
 		return;
     }
 
-
+    // extract the floor plans and the profiles
     FloorPlanAndProfileExtractor extractor;
-    if(extractor.extract(inputMesh, floorPlan, currentProfile, floorPlanSize, plans))
-    {
-         emit newFloorPlan();
+    if(extractor.extract(inputMesh, floorPlan, currentProfile, floorPlanSize, plans)) {
+        // the extraction succeeded
+        emit newFloorPlan();
     } else {
+        // the extraction failed
         QMessageBox messageBox;
         messageBox.critical(0,"Error","Impossible to import this mesh!");
     }
@@ -314,13 +253,11 @@ void MeshManager::loadMesh(QString fileName)
     inputMesh = 0;
 }
 
-Vertex* MeshManager::getFloorPlan()
-{
+Vertex* MeshManager::getFloorPlan() {
     return floorPlan;
 }
 
-void MeshManager::setUpdateOnMesh()
-{
+void MeshManager::setUpdateOnMesh() {
     updateOnMesh = true;
 }
 
@@ -328,8 +265,7 @@ void MeshManager::setLongUpdateOnMesh(bool b) {
     longUpdateOnMesh = b;
 }
 
-std::vector< std::vector< Vertex* > >& MeshManager::getPlans()
-{
+std::vector< std::vector< Vertex* > >& MeshManager::getPlans() {
     return plans;
 }
 

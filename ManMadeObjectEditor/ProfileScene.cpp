@@ -100,12 +100,16 @@ void ProfileScene::addVertex(QPoint mousePos)
         newVertex->setX(w);
         newVertex->setY(z);
 
-        this->currentProfile->addVertexEnd(newVertex);
-        this->addItem(newVertex->getEllipse());
-        this->addItem(newVertex->getEdge1()->computeLineItem());
+        if(this->currentProfile->addVertexEnd(newVertex)) {
+            this->addItem(newVertex->getEllipse());
+            this->addItem(newVertex->getEdge1()->computeLineItem());
 
-        // tell the meshManager to generate new point/triangle
-        meshManager->setUpdateOnMesh();
+            // tell the meshManager to generate new point/triangle
+            meshManager->setUpdateOnMesh();
+        } else {
+            delete newVertex;
+            delete ellipse;
+        }
     }
 }
 

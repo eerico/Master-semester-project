@@ -6,6 +6,7 @@ const int FloorScene::vertexRadius(6);
 FloorScene::FloorScene(MeshManager* meshManager)
 : QGraphicsScene(), meshManager(meshManager), currentlyMovingVertex(0), isVertexMoving(false)
 {
+    // set the scene size
     this->setSceneRect(QRectF(0, 0, 400, 600));
 }
 
@@ -14,11 +15,12 @@ FloorScene::~FloorScene()
     
 }
 
-void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
-{
+void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
     if (mouseEvent->button() ==  Qt::RightButton){
+        // if user use right click + ctrl
         if(mouseEvent->modifiers() == Qt::ControlModifier){
             addVertex(mouseEvent->lastScenePos().toPoint());
+        // if user use right click + shift
         } else if (mouseEvent->modifiers() == Qt::ShiftModifier) {
             removeVertex();
         } else {
@@ -38,8 +40,7 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
     }
 }
 
-void FloorScene::moveVertexOrLoadProfile()
-{
+void FloorScene::moveVertexOrLoadProfile() {
     unsigned int floorPlanSize = meshManager->getFloorPlanSize();
     // find which vertex we have selected
     Vertex* currentVertex = meshManager->getFloorPlan();
@@ -68,12 +69,12 @@ void FloorScene::moveVertexOrLoadProfile()
     }
 }
 
-void FloorScene::removeVertex()
-{
+void FloorScene::removeVertex() {
     //remove point if clicked on a point
     Vertex* floorplan = meshManager->getFloorPlan();
     unsigned int floorPlanSize = meshManager->getFloorPlanSize();
     
+    // we want at least 3 vertices on the floor plan
     if (floorPlanSize <= 3) {
         return;
     }
@@ -123,8 +124,7 @@ void FloorScene::removeVertex()
     }
 }
 
-void FloorScene::addVertex(QPoint mousePos)
-{
+void FloorScene::addVertex(QPoint mousePos) {
     //add point if clicked on an edge
     Vertex* floorplan = meshManager->getFloorPlan();
     unsigned int floorPlanSize = meshManager->getFloorPlanSize();
@@ -182,11 +182,11 @@ void FloorScene::addVertex(QPoint mousePos)
     }
 }
 
-void FloorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
+void FloorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     
     if (event->button() ==  Qt::RightButton) {
         if (isVertexMoving) {
+            // then the vertex will not move anymore when we move the mouse
             isVertexMoving = false;
             currentlyMovingVertex = 0;
             // tell the meshManager to generate new point/triangle
@@ -195,8 +195,7 @@ void FloorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void FloorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
+void FloorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     if (isVertexMoving) {
         QPoint mousePos = event->lastScenePos().toPoint();
         float x = mousePos.x();
@@ -225,8 +224,7 @@ void FloorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void FloorScene::basicCircle(QPoint *mousePos, int numSample)
-{
+void FloorScene::basicCircle(QPoint *mousePos, int numSample) {
     
     Profile* commonProfile = new Profile(false);
     ProfileDestructorManager::putProfile(commonProfile);
@@ -259,8 +257,8 @@ void FloorScene::basicCircle(QPoint *mousePos, int numSample)
         } else {
             currentVertex = new Vertex(x, y);
             meshManager->incrementFloorPlanSize();
-            previousVertex->setNeighbor2(currentVertex);//addNeighbor
-            currentVertex->setNeighbor1(previousVertex);//addNeighbor
+            previousVertex->setNeighbor2(currentVertex);
+            currentVertex->setNeighbor1(previousVertex);
             
             Edge* edge = new Edge(previousVertex, currentVertex, commonProfile);
             previousVertex->setEdge2(edge);
@@ -270,8 +268,8 @@ void FloorScene::basicCircle(QPoint *mousePos, int numSample)
         }
     }
     
-    currentVertex->setNeighbor2(firstVertex);//addNeighbor
-    firstVertex->setNeighbor1(currentVertex);//addNeighbor
+    currentVertex->setNeighbor2(firstVertex);
+    firstVertex->setNeighbor1(currentVertex);
     
     Edge* edge = new Edge(currentVertex, firstVertex, commonProfile);
     currentVertex->setEdge2(edge);
@@ -281,15 +279,16 @@ void FloorScene::basicCircle(QPoint *mousePos, int numSample)
     loadFloorPlan();
 }
 
-void FloorScene::newProfileSelected(Profile* p)
-{
+void FloorScene::newProfileSelected(Profile* p) {
     meshManager->setCurrentProfile(p);
     emit newProfileSelected();
 }
 
 void FloorScene::loadFloorPlan() {
+    // remove the old floor plan
     this->clear();
     
+    // get the new floor plan
     Vertex* floorplan = meshManager->getFloorPlan();
     unsigned int floorPlanSize = meshManager->getFloorPlanSize();
     float x(0.0f);
@@ -326,5 +325,3 @@ void FloorScene::loadFloorPlan() {
     // tell the meshManager to generate new point/triangle
     meshManager->setUpdateOnMesh();
 }
-
-

@@ -90,7 +90,7 @@ private:
     ObjectViewer* objViewer;
     MeshManager* meshManager;
 
-    // the different menu and actino
+    // the different menu and action
     QMenu* fileMenu;
     QAction* openAction;
     QAction* clearAction;

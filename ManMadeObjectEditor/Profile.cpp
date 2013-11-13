@@ -33,13 +33,12 @@ Profile::~Profile()
     delete profileColorIdentification;
 }
 
-QColor* Profile::getProfileColorIdentification()
-{
+QColor* Profile::getProfileColorIdentification() {
     return profileColorIdentification;
 }
 
-void Profile::initProfileSkewedLine(int numSample)
-{
+void Profile::initProfileSkewedLine(int numSample) {
+    //create the skewed line
     float fromW(0.0f);
     float fromZ(0.0f);
     float toW(0.5f);
@@ -53,6 +52,7 @@ void Profile::initProfileSkewedLine(int numSample)
     Vertex* previous = 0;
     float t(0.0f);
     
+    // take samples on this line
     for(int sampleCounter(0); sampleCounter < numSample; sampleCounter++) {
         w = (1.0f - t) * fromW + t * toW;
         z = (1.0f - t) * fromZ + t * toZ;
@@ -77,8 +77,8 @@ void Profile::initProfileSkewedLine(int numSample)
     current->setNeighbor2(0);
 }
 
-void Profile::initProfileBezier(int numSample)
-{
+void Profile::initProfileBezier(int numSample) {
+    // create the bezier curve
     float p0X(0.0f);
     float p0Y(0.0f);
     float c0X(0.0f);
@@ -96,6 +96,7 @@ void Profile::initProfileBezier(int numSample)
     Vertex* previous = 0;
     float t(0.0f);
     
+    // take samples on this curve
     for(int sampleCounter(0); sampleCounter < numSample; sampleCounter++) {
         w = pow(1.0f - t, 3) * p0X + 3.0f * pow(1.0f - t, 2) * t * c0X + 3.0f * (1.0f - t) * t * t * c1X + t * t * t * p1X;
         z = pow(1.0f - t, 3) * p0Y + 3.0f * pow(1.0f - t, 2) * t * c0Y + 3.0f * (1.0f - t) * t * t * c1Y + t * t * t * p1Y;
@@ -122,26 +123,34 @@ void Profile::initProfileBezier(int numSample)
     current->setNeighbor2(0);
 }
 
-Vertex* Profile::getProfileVertex()
-{
+Vertex* Profile::getProfileVertex() {
     return pVertex;
 }
 
-void Profile::addVertexEnd(Vertex * v){
+bool Profile::addVertexEnd(Vertex * v){
+    // find the last vertex
     Vertex* current = pVertex;
     while (current->getNeighbor2()!= 0){
         current = current->getNeighbor2();
     }
+
+    // check the monotonicity
+    if (v->getY() < current->getY()) {
+        // then the new vertex is below the last. This breaks the monotonicity
+        return false;
+    }
+
+    // add the vertex v at the end of the profile
     current->setNeighbor2(v);
     v->setNeighbor1(current);
     Edge* edge = new Edge(current, v);
     current->setEdge2(edge);
     v->setEdge1(edge);
     
+    return true;
 }
 
-void Profile::addProfileVertex(float w, float z)
-{
+void Profile::addProfileVertex(float w, float z) {
     Vertex* newPvertex = new Vertex(w,z);
     
     if(pVertex!= 0){
@@ -179,13 +188,16 @@ void Profile::addProfileVertex(float w, float z)
     }
 }
 
-void Profile::vertexDecimation()
-{
+void Profile::vertexDecimation() {
+    /*
+     * The algorithm works as follow: we take a current vertex, its previous vertex and its next
+     * vertex. If this three vertices are on the same line then the current vertex doesnt add any
+     * details on the profile and we thus can remove it
+     */
     Vertex* next;
     Vertex* previous;
     Vertex* current = pVertex;
-    while(current != 0)
-    {
+    while(current != 0) {
         next = current->getNeighbor2();
         previous = current->getNeighbor1();
         if (next != 0 && previous != 0) {
@@ -213,37 +225,33 @@ void Profile::vertexDecimation()
         }
         
         current = next;
-    }
-    
+    } 
 }
 
-bool Profile::isEqual( Profile* compareProfile)
-{
+bool Profile::isEqual( Profile* compareProfile) {
     
     Vertex* compare = compareProfile->getProfileVertex();
     Vertex* current = pVertex;
-    while(current != 0 && compare!= 0)
-    {
+    while(current != 0 && compare!= 0) {
+        // test if the two vertices different
         if((std::abs(compare->getX() - current->getX()) > 0.01f) || (std::abs(compare->getY() != current->getY())> 0.01f)){
             break;
         }
+        // they are the same, thus test the next one
         compare = compare->getNeighbor2();
         current = current->getNeighbor2();
     }
     if(current == 0 && compare == 0){
         return true;
     }
-    return false;
-    
+    return false;   
 }
 
-void Profile::nextDirectionPlan()
-{
+void Profile::nextDirectionPlan() {
     pVertex = pVertex->getNeighbor2();
 }
 
-void Profile::resetDirectionPlan()
-{
+void Profile::resetDirectionPlan() {
     while(pVertex->getNeighbor1() != 0) {
         pVertex = pVertex->getNeighbor1();
     }
