@@ -100,7 +100,7 @@ private:
      * Tells the mesh manager and other classes that a new profile has been selected
      * @param p The new selected profile
      */
-    void newProfileSelected(Profile* p);
+    void newProfileSelected(Profile* const p);
 
     // Used to know if a vertex is currently being moved with the mouse, and thus using action
     // defined in the mouse move event
