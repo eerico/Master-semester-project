@@ -304,7 +304,7 @@ void FloorScene::basicCircle(QPoint *mousePos, int numSample) {
     meshManager->setFloorPlan(a);
 
 
-    a->setNeighbor1(d);
+    a->setNeighbor1(e);
     a->setNeighbor2(b);
     b->setNeighbor1(a);
     b->setNeighbor2(c);

@@ -84,6 +84,14 @@ public:
      */
     void invalid();
 
+    /*Edge* getChild1();
+    void setChild1(Edge* child);
+
+    Edge* getChild2();
+    void setChild2(Edge* child);
+
+    bool hasChild();*/
+
 private:
 
     // The first vertex
@@ -106,6 +114,9 @@ private:
 
     // If the edge is valid or not
     bool valid;
+
+    Edge* child1;
+    Edge* child2;
 };
 
 #endif // EDGE_H
