@@ -2,7 +2,7 @@
 
 const qglviewer::Vec ObjectViewer::defaultColor(0.5f, 0.5f, 0.5f);
 
-ObjectViewer::ObjectViewer(MeshManager* const meshManager)
+ObjectViewer::ObjectViewer(MeshManager* meshManager)
     :meshManager(meshManager), vMode(noView), color(defaultColor)
 {
 
@@ -72,7 +72,7 @@ void ObjectViewer::draw() {
 void ObjectViewer::drawTriangles() {
      glBegin(GL_TRIANGLES);
 
-     const std::vector<qglviewer::Vec *>* triangles = meshManager->getTriangles();
+     const std::vector<qglviewer::Vec * >* triangles = meshManager->getTriangles();
      unsigned int size = triangles->size();
 
      float normalX(0.0f);
@@ -118,7 +118,7 @@ void ObjectViewer::drawPoints() {
      glPointSize(2.0f);
      glBegin(GL_POINTS);
 
-     const std::vector<qglviewer::Vec *>* points = meshManager->getPoints();
+     const std::vector< qglviewer::Vec * >* points = meshManager->getPoints();
 
      unsigned int size = points->size();
      for( unsigned int i(0); i < size; ++i) {

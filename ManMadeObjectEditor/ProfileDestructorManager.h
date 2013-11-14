@@ -37,14 +37,14 @@ private:
     ProfileDestructorManager();
 
     // The first profile manager
-    static std::vector<Profile*> profileManager1;
+    static std::vector< Profile* > profileManager1;
 
     // The second profile manager
-    static std::vector<Profile*> profileManager2;
+    static std::vector< Profile* > profileManager2;
 
     // The current profile manager, that is a pointer to either
     // the first or the second profile manager
-    static std::vector<Profile*>* profileManager;
+    static std::vector< Profile* >* profileManager;
 };
 
 #endif // PROFILEDESTRUCTORMANAGER_H

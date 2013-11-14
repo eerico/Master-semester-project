@@ -50,8 +50,8 @@ HEADERS  += \
     GUI/ProfileScene.h \
     Reconstruction3D/Reconstruction3D.h \
     Reconstruction3D/Plan.h \
-    Reconstruction3D/IntersectionComparator.h \
-    Reconstruction3D/Intersection.h
+    Reconstruction3D/Intersection.h \
+    Reconstruction3D/IntersectionComparator.h
 
 #QT *= xml opengl
 

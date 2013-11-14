@@ -82,7 +82,7 @@ public:
      * the 3D reconstruction
      * @return A vector of triangles
      */
-    const std::vector<qglviewer::Vec *>* getTriangles();
+    const std::vector< qglviewer::Vec * >* getTriangles();
 
     /**
      * @brief getPoints
@@ -91,13 +91,13 @@ public:
      * the 3D reconstruction
      * @return A vector of points
      */
-    const std::vector<qglviewer::Vec*>* getPoints();
+    const std::vector< qglviewer::Vec * >* getPoints();
 
     /**
      * @brief getPlans
      * @return A vector that contain all floor plan above the first one
      */
-    std::vector< std::vector< Vertex* > >& getPlans();
+    std::vector<std::vector<Vertex * > > &getPlans();
 
 signals:
     /**
@@ -109,10 +109,10 @@ signals:
 private:
 
     // a vector that contain the triangles obtain with the 3D reconstruction
-    std::vector<qglviewer::Vec *>* triangles;
+    std::vector< qglviewer::Vec * >* triangles;
 
     // a vector that contain the points obtain with the 3D reconstruction
-    std::vector<qglviewer::Vec*>* points;
+    std::vector< qglviewer::Vec* >* points;
 
     // the first floor plan
     Vertex* floorPlan; // linked list, can iterate on it using the neighbor

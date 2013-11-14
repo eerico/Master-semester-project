@@ -4,15 +4,14 @@
 
 MeshManager::MeshManager(): inputMesh(0), floorPlan(0), updateOnMesh(false), longUpdateOnMesh(false), floorPlanSize(0)
 {
-    points = new std::vector<qglviewer::Vec*>;
-    triangles = new std::vector<qglviewer::Vec*>;
+    points = new std::vector<qglviewer::Vec* >;
+    triangles = new std::vector<qglviewer::Vec* >;
 }
 
 MeshManager::~MeshManager()
 {
     unsigned int size = triangles->size();
-    for( unsigned int i(0); i < size; ++i)
-    {
+    for( unsigned int i(0); i < size; ++i) {
         qglviewer::Vec* tmp = (*triangles)[i];
         delete tmp;
     }
@@ -20,8 +19,7 @@ MeshManager::~MeshManager()
 
 
     size = points->size();
-    for( unsigned int i(0); i < size; ++i)
-    {
+    for( unsigned int i(0); i < size; ++i) {
         qglviewer::Vec* tmp = (*points)[i];
         delete tmp;
     }
@@ -76,8 +74,7 @@ MeshManager::~MeshManager()
 
 void MeshManager::clearPoints() {
     unsigned int size = points->size();
-    for( unsigned int i(0); i < size; ++i)
-    {
+    for( unsigned int i(0); i < size; ++i) {
         qglviewer::Vec* tmp = (*points)[i];
         delete tmp;
     }
@@ -86,19 +83,18 @@ void MeshManager::clearPoints() {
 
 void MeshManager::clearTriangles() {
     unsigned int size = triangles->size();
-    for( unsigned int i(0); i < size; ++i)
-    {
+    for( unsigned int i(0); i < size; ++i) {
         qglviewer::Vec* tmp = (*triangles)[i];
         delete tmp;
     }
     triangles->clear();
 }
 
-void MeshManager::setFloorPlan(Vertex* vertex) {
+void MeshManager::setFloorPlan(Vertex * vertex) {
    floorPlan = vertex;
 }
 
-const std::vector<qglviewer::Vec *>* MeshManager::getTriangles() {
+const std::vector<qglviewer::Vec * > *MeshManager::getTriangles() {
 
     // if there is no modification, we can return the old vector
     if (!updateOnMesh && !longUpdateOnMesh) {
@@ -124,7 +120,7 @@ const std::vector<qglviewer::Vec *>* MeshManager::getTriangles() {
     return triangles;
 }
 
-const std::vector<qglviewer::Vec *> *MeshManager::getPoints() {
+const std::vector<qglviewer::Vec* >* MeshManager::getPoints() {
 
     // if there is no modification, we can return the old vector
     if (!updateOnMesh && !longUpdateOnMesh) {
@@ -165,7 +161,7 @@ Profile* MeshManager::getCurrentProfile() {
     return currentProfile;
 }
 
-void MeshManager::setCurrentProfile(Profile* p) {
+void MeshManager::setCurrentProfile(Profile * p) {
     currentProfile = p;
 }
 

@@ -30,7 +30,7 @@ class ObjectViewer : public QGLViewer
 {
     Q_OBJECT
 public:
-    ObjectViewer(MeshManager* const meshManager);
+    ObjectViewer(MeshManager* meshManager);
 
     /**
      * @brief init

@@ -34,10 +34,10 @@ public:
     void setZ(float i);
 
     Vertex* getNeighbor1();
-    void setNeighbor1(Vertex *vx);
+    void setNeighbor1(Vertex* vx);
 
     Vertex* getNeighbor2();    
-    void setNeighbor2(Vertex *vx);
+    void setNeighbor2(Vertex* vx);
 
     /**
      * @brief replaceNeighbour
@@ -47,7 +47,7 @@ public:
      * @param newVx
      * @return the new edge between this vertex and newVx or 0 if it failed
      */
-    Edge* replaceNeighbour(Vertex* oldVx, Vertex* newVx);
+    Edge* replaceNeighbour(Vertex * oldVx, Vertex * newVx);
 
     QGraphicsEllipseItem* getEllipse();
     void setEllipse(QGraphicsEllipseItem* e);

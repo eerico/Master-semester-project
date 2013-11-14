@@ -127,7 +127,7 @@ Vertex* Profile::getProfileVertex() {
     return pVertex;
 }
 
-bool Profile::addVertexEnd(Vertex * v){
+bool Profile::addVertexEnd(Vertex* v){
     // find the last vertex
     Vertex* current = pVertex;
     while (current->getNeighbor2()!= 0){
@@ -228,7 +228,7 @@ void Profile::vertexDecimation() {
     } 
 }
 
-bool Profile::isEqual( Profile* compareProfile) {
+bool Profile::isEqual(Profile* compareProfile) {
     
     Vertex* compare = compareProfile->getProfileVertex();
     Vertex* current = pVertex;

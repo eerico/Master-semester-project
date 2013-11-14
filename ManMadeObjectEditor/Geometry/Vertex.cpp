@@ -34,11 +34,11 @@ QGraphicsEllipseItem* Vertex::getEllipse(){
     return ellipse;
 }
 
-void Vertex::setNeighbor1(Vertex *vx) {
+void Vertex::setNeighbor1(Vertex* vx) {
     neighbor1 = vx;
 }
 
-void Vertex::setNeighbor2(Vertex *vx) {
+void Vertex::setNeighbor2(Vertex* vx) {
     neighbor2 = vx;
 }
 

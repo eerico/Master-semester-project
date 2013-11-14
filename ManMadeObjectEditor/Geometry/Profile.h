@@ -48,7 +48,7 @@ public:
      * @param compareProfile
      * @return true if the two profiles are the same
      */
-    bool isEqual(Profile* compareProfile);
+    bool isEqual(Profile * compareProfile);
 
     /**
      * @brief nextDirectionPlan

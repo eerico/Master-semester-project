@@ -2,8 +2,8 @@
 #include "Vertex.h"
 #include "Profile.h"
 
-Edge::Edge(Vertex* vertex1, Vertex* vertex2, Profile* p)
-    :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true), child1(0), child2(0)
+Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
+    :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
 {
     edgePen.setWidth(3);
 }
@@ -20,7 +20,7 @@ Profile* Edge::getProfile() {
     return profile;
 }
 
-void Edge::setProfile(Profile* p) {
+void Edge::setProfile(Profile * p) {
     profile = p;
 }
 
@@ -40,7 +40,7 @@ void Edge::setVertex2(Vertex* vertex) {
     vertex2 = vertex;
 }
 
-void Edge::setNormal(OMMesh::Normal *n) {
+void Edge::setNormal(OMMesh::Normal* n) {
     normal = n;
 }
 
@@ -164,23 +164,3 @@ void Edge::setValid(bool valid) {
 void Edge::invalid() {
     valid = false;
 }
-/*
-void Edge::setChild1(Edge *child) {
-    child1 = child;
-}
-
-Edge* Edge::getChild1() {
-    return child1;
-}
-
-void Edge::setChild2(Edge *child) {
-    child2 = child;
-}
-
-Edge* Edge::getChild2() {
-    return child2;
-}
-
-bool Edge::hasChild() {
-    return child1 != 0 || child2 != 0;
-}*/

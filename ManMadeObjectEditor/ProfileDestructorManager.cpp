@@ -1,10 +1,10 @@
 #include "ProfileDestructorManager.h"
 
-std::vector<Profile*> ProfileDestructorManager::profileManager1;
-std::vector<Profile*> ProfileDestructorManager::profileManager2;
-std::vector<Profile*>* ProfileDestructorManager::profileManager(&ProfileDestructorManager::profileManager1);
+std::vector<Profile* > ProfileDestructorManager::profileManager1;
+std::vector<Profile* > ProfileDestructorManager::profileManager2;
+std::vector<Profile* >* ProfileDestructorManager::profileManager(&ProfileDestructorManager::profileManager1);
 
-void ProfileDestructorManager::putProfile(Profile* p) {
+void ProfileDestructorManager::putProfile(Profile * p) {
     profileManager->push_back(p);
 }
 

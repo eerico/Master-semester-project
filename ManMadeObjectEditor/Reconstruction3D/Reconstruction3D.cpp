@@ -18,7 +18,7 @@
  */
 
 
-Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *> *triangles)
+Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
 {
     priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
@@ -252,7 +252,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             chainConstruction(intersection, chains);
 
             intraChainHandling(chains, intersection);
-            interChainHandling(chains, intersection);
+            //interChainHandling(chains, intersection);
 
             break;
         }
@@ -586,7 +586,8 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& 
     // le code est faux mais idée est juste. 1 edge se split en 2 et on reconstruit en dessus mais comment update dans
     // la priority queue pour chaque intersection ?
 
-//
+
+
 
     // on suppose que les chaines sont bien successive...
     unsigned int chainsSize = chains.size();

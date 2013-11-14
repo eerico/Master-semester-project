@@ -2,7 +2,7 @@
 
 const int AllPlanScene::vertexRadius(2);
 
-AllPlanScene::AllPlanScene(MeshManager* meshManager)
+AllPlanScene::AllPlanScene(MeshManager * meshManager)
     : QGraphicsScene(), meshManager(meshManager)
 {
     // set the scene size

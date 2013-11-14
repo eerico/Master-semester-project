@@ -51,7 +51,7 @@ void Test::Reconstruction3DTest()
 
     int size = 4;
 
-    std::vector<qglviewer::Vec *>* triangles = new std::vector<qglviewer::Vec *>;
+    std::vector<qglviewer::Vec * >* triangles = new std::vector<qglviewer::Vec * >;
     Reconstruction3D test = Reconstruction3D(a, size, triangles);
 
 

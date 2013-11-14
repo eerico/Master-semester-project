@@ -98,7 +98,9 @@ public:
      * @param y The resulting y
      * @param z The resulting z
      */
-    static void crossProduct(float x1, float y1, float z1, float x2, float y2, float z2, float& x, float& y, float& z);
+    static void crossProduct(float x1, float y1, float z1,
+                             float x2, float y2, float z2,
+                             float& x, float& y, float& z);
 };
 
 #endif // UTILS_H

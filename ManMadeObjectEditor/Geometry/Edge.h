@@ -58,7 +58,7 @@ public:
      * @param edge
      * @return The distance between two edges if they are parallel
      */
-	float distance(Edge* edge);
+    float distance(Edge* edge);
 
     /**
      * @brief distance
@@ -68,7 +68,7 @@ public:
      */
     float distance(Vertex* vertex);
 
-    void setNormal(OMMesh::Normal *n);
+    void setNormal(OMMesh::Normal* n);
     OMMesh::Normal* getNormal();
 
     /**
@@ -83,14 +83,6 @@ public:
      * Set the edge to be invalid
      */
     void invalid();
-
-    /*Edge* getChild1();
-    void setChild1(Edge* child);
-
-    Edge* getChild2();
-    void setChild2(Edge* child);
-
-    bool hasChild();*/
 
 private:
 
@@ -114,9 +106,6 @@ private:
 
     // If the edge is valid or not
     bool valid;
-
-    Edge* child1;
-    Edge* child2;
 };
 
 #endif // EDGE_H
