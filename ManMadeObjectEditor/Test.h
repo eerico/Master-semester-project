@@ -1,6 +1,6 @@
 #ifndef TEST_H
 #define TEST_H
-#include "Reconstruction3D.h"
+#include "Reconstruction3D/Reconstruction3D.h"
 
 class Test
 {

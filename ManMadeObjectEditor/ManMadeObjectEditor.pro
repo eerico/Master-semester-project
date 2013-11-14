@@ -17,7 +17,6 @@ SOURCES +=\
     FloorPlanAndProfileExtractor.cpp \
     ProfileDestructorManager.cpp \
     Utils.cpp \
-    Reconstruction3D.cpp \
     MeshManager.cpp \
     Test.cpp \
     GUI/ObjectViewer.cpp \
@@ -29,13 +28,14 @@ SOURCES +=\
     Geometry/Vertex.cpp \
     Geometry/Profile.cpp \
     Geometry/Edge.cpp \
-    GUI/ProfileScene.cpp
+    GUI/ProfileScene.cpp \
+    Reconstruction3D/Reconstruction3D.cpp \
+    Reconstruction3D/Plan.cpp
 
 HEADERS  += \
     FloorPlanAndProfileExtractor.h \
     ProfileDestructorManager.h \
     Utils.h \
-    Reconstruction3D.h \
     MeshManager.h \
     Test.h \
     GUI/ObjectViewer.h \
@@ -47,7 +47,11 @@ HEADERS  += \
     Geometry/Vertex.h \
     Geometry/Profile.h \
     Geometry/Edge.h \
-    GUI/ProfileScene.h
+    GUI/ProfileScene.h \
+    Reconstruction3D/Reconstruction3D.h \
+    Reconstruction3D/Plan.h \
+    Reconstruction3D/Intersection.h \
+    Reconstruction3D/IntersectionComparator.h
 
 #QT *= xml opengl
 
