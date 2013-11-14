@@ -17,7 +17,6 @@ SOURCES +=\
     FloorPlanAndProfileExtractor.cpp \
     ProfileDestructorManager.cpp \
     Utils.cpp \
-    Reconstruction3D.cpp \
     MeshManager.cpp \
     Test.cpp \
     GUI/ObjectViewer.cpp \
@@ -37,7 +36,6 @@ HEADERS  += \
     FloorPlanAndProfileExtractor.h \
     ProfileDestructorManager.h \
     Utils.h \
-    Reconstruction3D.h \
     MeshManager.h \
     Test.h \
     GUI/ObjectViewer.h \
