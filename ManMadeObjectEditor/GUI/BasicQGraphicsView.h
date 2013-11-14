@@ -16,7 +16,7 @@
 class BasicQGraphicsView : public QGraphicsView
 {
 public:
-    BasicQGraphicsView(QGraphicsScene* const parent = NULL);
+    BasicQGraphicsView(QGraphicsScene* parent = NULL);
 protected:
 
     /**

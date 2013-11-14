@@ -2,7 +2,7 @@
 
 const int AllPlanScene::vertexRadius(2);
 
-AllPlanScene::AllPlanScene(MeshManager * const meshManager)
+AllPlanScene::AllPlanScene(MeshManager* meshManager)
     : QGraphicsScene(), meshManager(meshManager)
 {
     // set the scene size
@@ -14,15 +14,15 @@ AllPlanScene::~AllPlanScene()
     this->clear();
 }
 
-void AllPlanScene::loadPlan(const int& level) {
+void AllPlanScene::loadPlan(int level) {
     // delete the previous loaded plan
     this->clear();
 
     // get the floor plans at every level
-    std::vector< std::vector< Vertex* const> > plans = meshManager->getPlans();
+    std::vector< std::vector< Vertex* > > plans = meshManager->getPlans();
 
     // take the plan at the level that we want to draaw
-    std::vector< Vertex* const> plan = plans[level];
+    std::vector< Vertex* > plan = plans[level];
 
     unsigned int planSize = plan.size();
     float x(0.0f);

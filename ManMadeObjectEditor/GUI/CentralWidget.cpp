@@ -1,6 +1,6 @@
 #include "CentralWidget.h"
 
-CentralWidget::CentralWidget(QWidget* const parent, MeshManager* const meshManager) :
+CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
     QWidget(parent), meshManager(meshManager), allPlanView(0), allPlanScene(0), levelSelector(0)
 {
     layout = new QGridLayout();
@@ -68,7 +68,7 @@ void CentralWidget::changeProfileColorIndication() {
     this->setPalette(palette);
 }
 
-void CentralWidget::valueSliderChanged(const int& level) {
+void CentralWidget::valueSliderChanged(int level) {
     allPlanScene->loadPlan(level);
 }
 

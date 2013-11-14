@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-Profile::Profile(const bool &empty): pVertex(0)
+Profile::Profile(bool empty): pVertex(0)
 {
 	pVertex = new Vertex(0,0);
     pVertex->setNeighbor2(0);
@@ -37,7 +37,7 @@ QColor* Profile::getProfileColorIdentification() {
     return profileColorIdentification;
 }
 
-void Profile::initProfileSkewedLine(const int& numSample) {
+void Profile::initProfileSkewedLine(int numSample) {
     //create the skewed line
     float fromW(0.0f);
     float fromZ(0.0f);
@@ -77,7 +77,7 @@ void Profile::initProfileSkewedLine(const int& numSample) {
     current->setNeighbor2(0);
 }
 
-void Profile::initProfileBezier(const int& numSample) {
+void Profile::initProfileBezier(int numSample) {
     // create the bezier curve
     float p0X(0.0f);
     float p0Y(0.0f);
@@ -127,7 +127,7 @@ Vertex* Profile::getProfileVertex() {
     return pVertex;
 }
 
-bool Profile::addVertexEnd(Vertex* const v){
+bool Profile::addVertexEnd(Vertex * v){
     // find the last vertex
     Vertex* current = pVertex;
     while (current->getNeighbor2()!= 0){
@@ -150,7 +150,7 @@ bool Profile::addVertexEnd(Vertex* const v){
     return true;
 }
 
-void Profile::addProfileVertex(const float &w, const float &z) {
+void Profile::addProfileVertex(float w, float z) {
     Vertex* newPvertex = new Vertex(w,z);
     
     if(pVertex!= 0){
@@ -228,7 +228,7 @@ void Profile::vertexDecimation() {
     } 
 }
 
-bool Profile::isEqual(Profile* const compareProfile) {
+bool Profile::isEqual( Profile* compareProfile) {
     
     Vertex* compare = compareProfile->getProfileVertex();
     Vertex* current = pVertex;

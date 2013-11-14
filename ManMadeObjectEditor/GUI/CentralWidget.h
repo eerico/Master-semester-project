@@ -24,7 +24,7 @@ class CentralWidget : public QWidget
 {
     Q_OBJECT
 public:
-    CentralWidget(QWidget* const parent, MeshManager* const meshManager);
+    CentralWidget(QWidget* parent, MeshManager* meshManager);
     ~CentralWidget();
     
     // The layout used to place our element inside this widget
@@ -82,7 +82,7 @@ public slots:
      * level is given by the value of the slider
      * @param level The level selected by the slider
      */
-    void valueSliderChanged(const int& level);
+    void valueSliderChanged(int level);
 
     /**
      * @brief uncheckShowPlans

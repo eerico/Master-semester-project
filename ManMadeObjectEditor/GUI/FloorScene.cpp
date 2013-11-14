@@ -3,7 +3,7 @@
 
 const int FloorScene::vertexRadius(6);
 
-FloorScene::FloorScene(MeshManager * const meshManager)
+FloorScene::FloorScene(MeshManager* meshManager)
 : QGraphicsScene(), meshManager(meshManager), currentlyMovingVertex(0), isVertexMoving(false)
 {
     // set the scene size
@@ -124,7 +124,7 @@ void FloorScene::removeVertex() {
     }
 }
 
-void FloorScene::addVertex(const QPoint mousePos) {
+void FloorScene::addVertex(QPoint mousePos) {
     //add point if clicked on an edge
     Vertex* floorplan = meshManager->getFloorPlan();
     unsigned int floorPlanSize = meshManager->getFloorPlanSize();
@@ -224,7 +224,7 @@ void FloorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     }
 }
 
-void FloorScene::basicCircle(QPoint * const mousePos, const int &numSample) {
+void FloorScene::basicCircle(QPoint *mousePos, int numSample) {
     
     /*Profile* commonProfile = new Profile(false);
     ProfileDestructorManager::putProfile(commonProfile);
@@ -304,7 +304,7 @@ void FloorScene::basicCircle(QPoint * const mousePos, const int &numSample) {
     meshManager->setFloorPlan(a);
 
 
-    a->setNeighbor1(e);
+    a->setNeighbor1(d);
     a->setNeighbor2(b);
     b->setNeighbor1(a);
     b->setNeighbor2(c);
@@ -341,7 +341,7 @@ void FloorScene::basicCircle(QPoint * const mousePos, const int &numSample) {
     loadFloorPlan();
 }
 
-void FloorScene::newProfileSelected(Profile * const p) {
+void FloorScene::newProfileSelected(Profile* p) {
     meshManager->setCurrentProfile(p);
     emit newProfileSelected();
 }

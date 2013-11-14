@@ -25,7 +25,7 @@ class ProfileScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    ProfileScene(MeshManager* const meshManager);
+    ProfileScene(MeshManager* meshManager);
     ~ProfileScene();
 
 public slots:
@@ -64,7 +64,7 @@ private:
      * Add a vertex on the profile, either on an edge, or at the end of the profile
      * @param mousePos
      */
-    void addVertex(const QPoint mousePos);
+    void addVertex(QPoint mousePos);
 
     /**
      * @brief removeVertex

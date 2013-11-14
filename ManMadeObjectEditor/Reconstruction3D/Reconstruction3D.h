@@ -15,13 +15,13 @@
 class Reconstruction3D
 {
 public:
-    Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<const qglviewer::Vec * const>* triangles);
+    Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *> *triangles);
     ~Reconstruction3D();
     void reconstruct();
 private:
     Vertex* floorPlan;
     unsigned int floorPlanSize;
-    std::vector<const qglviewer::Vec *const >* triangles;
+    std::vector<qglviewer::Vec *>* triangles;
     std::vector< Edge* >* activePlan;
     std::vector< std::vector< Edge* >* >* allActivePlan;
 

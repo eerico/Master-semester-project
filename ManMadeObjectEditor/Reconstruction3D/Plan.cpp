@@ -1,13 +1,13 @@
 #include "Plan.h"
 
-Plan::Plan(const float &pointX, const float &pointY, const float &pointZ,
-           const float &normalX, const float &normalY, const float &normalZ)
+Plan::Plan(float pointX, float pointY, float pointZ,
+           float normalX, float normalY, float normalZ)
     :pointX(pointX), pointY(pointY), pointZ(pointZ), normalX(normalX), normalY(normalY), normalZ(normalZ)
 {
 
 }
 
-Intersection Plan::intersect3Plans(const Plan& plan2, const Plan& plan3)
+Intersection Plan::intersect3Plans(Plan& plan2, Plan& plan3)
 {
     Intersection intersection;
     intersection.eventType = General;
@@ -100,7 +100,7 @@ Intersection Plan::intersect3Plans(const Plan& plan2, const Plan& plan3)
     return intersection;
 }
 
-void Plan::setNormal(const float &nx, const float &ny, const float &nz) {
+void Plan::setNormal(float nx, float ny, float nz) {
     normalX = nx;
     normalY = ny;
     normalZ = nz;

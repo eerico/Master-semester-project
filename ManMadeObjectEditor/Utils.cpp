@@ -4,13 +4,13 @@ Utils::Utils()
 {
 }
 
-float Utils::distance(const float &x1, const float &y1, const float &x2, const float &y2) {
+float Utils::distance(float x1, float y1, float x2, float y2) {
     float diffX = x1 - x2;
     float diffY = y1 - y2;
     return std::sqrt(diffX * diffX + diffY * diffY);
 }
 
-void Utils::adjustCoordinates3DToScene(float& x, float& y, const float &width, const float &height) {
+void Utils::adjustCoordinates3DToScene(float& x, float& y, float width, float height) {
     // from 3D to Scene coord
     float width_2 = width/ 2.0f;
     float height_2 = height / 2.0f;
@@ -22,7 +22,7 @@ void Utils::adjustCoordinates3DToScene(float& x, float& y, const float &width, c
     x = x + width_2;
 }
 
-void Utils::adjustCoordinatesSceneTo3D(float& x, float& y, const float& width, const float& height) {
+void Utils::adjustCoordinatesSceneTo3D(float& x, float& y, float width, float height) {
     // from scene coord to 3D
     float width_2 = width/ 2.0f;
     float height_2 = height / 2.0f;
@@ -53,7 +53,7 @@ void Utils::normalize(float &n_x, float &n_y, float &n_z) {
     }
 }
 
-float Utils::dotProduct(const float &x1, const float &y1, const float &x2, const float &y2) {
+float Utils::dotProduct(float x1, float y1, float x2, float y2) {
     return x1 * x2 + y1 * y2;
 }
 
@@ -65,7 +65,7 @@ float Utils::getZValueBackground() {
     return 0.0f;
 }
 
-void Utils::crossProduct(const float &x1, const float &y1, const float &z1, const float &x2, const float &y2, const float &z2, float &x, float &y, float& z) {
+void Utils::crossProduct(float x1, float y1, float z1, float x2, float y2, float z2, float &x, float &y, float& z) {
     x = y1 * z2 - z1 * y2;
     y = z1 * x2 - x1 * z2;
     z = x1 * y2 - y1 * x2;
