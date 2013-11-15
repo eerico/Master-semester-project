@@ -6,6 +6,7 @@
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <QPen>
 #include <QBrush>
+#include <ostream>
 
 class Vertex;
 class Profile;
@@ -19,7 +20,7 @@ class Profile;
 class Edge
 {
     // Used to use OpenMesh data
-	typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
+    typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;
 public:
     Edge(Vertex* vertex1, Vertex* vertex2, Profile* p = 0);
     ~Edge();
@@ -83,6 +84,8 @@ public:
      * Set the edge to be invalid
      */
     void invalid();
+
+    friend std::ostream& operator<< (std::ostream& out, Edge& v);
 
 private:
 

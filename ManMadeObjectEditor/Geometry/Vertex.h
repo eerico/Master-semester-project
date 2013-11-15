@@ -7,6 +7,7 @@
 #include <QBrush>
 #include "../Geometry/Edge.h"
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
+#include <ostream>
 
 /**
  * @brief The Vertex class
@@ -30,13 +31,13 @@ public:
     float getY();
     void setY(float i);
 
-    float getZ();    
+    float getZ();
     void setZ(float i);
 
     Vertex* getNeighbor1();
     void setNeighbor1(Vertex* vx);
 
-    Vertex* getNeighbor2();    
+    Vertex* getNeighbor2();
     void setNeighbor2(Vertex* vx);
 
     /**
@@ -55,7 +56,7 @@ public:
     Edge* getEdge1();
     void setEdge1(Edge* e);
 
-    Edge* getEdge2();   
+    Edge* getEdge2();
     void setEdge2(Edge* e);
 
     std::vector<OMMesh::FaceHandle>* getFaces();
@@ -87,6 +88,8 @@ public:
      * have two neighbors
      */
     Edge* removeVertex();
+
+    friend std::ostream& operator<< (std::ostream& out, Vertex& v);
 
 private:
     float x;

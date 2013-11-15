@@ -11,9 +11,9 @@ Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
 Edge::~Edge()
 {
     // the normal is not mandatory. It used when the floor plan and the profile are constructed
-	if (normal != 0) {
-		delete normal;
-	}
+    if (normal != 0) {
+        delete normal;
+    }
 }
 
 Profile* Edge::getProfile() {
@@ -163,4 +163,9 @@ void Edge::setValid(bool valid) {
 
 void Edge::invalid() {
     valid = false;
+}
+
+std::ostream& operator<<(std::ostream& out, Edge& e) {
+    out << *e.getVertex1() << " - " << *e.getVertex2();
+    return out;
 }

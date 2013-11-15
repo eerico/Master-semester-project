@@ -237,10 +237,18 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
         }
         case General:
         {
-        std::cerr << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+        std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             eventClustering(intersection);
 
             removeDuplicateEdges(intersection);
+
+            ///////////////////////////////
+            std::cerr << "with edges: " << std::endl;
+            foreach(Edge* e, *intersection.edgeVector) {
+                std::cerr << *e << ": " << e << std::endl;
+            }
+
+            ////////////////////////////
 
             // if the number of edges in f is less than 3, the event is ignored
             if(intersection.edgeVector->size() < 3) {
@@ -771,7 +779,6 @@ void Reconstruction3D::intraChainHandling(std::vector< std::vector< Edge* >* >& 
 
 void Reconstruction3D::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3)
 {
-
     qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
     qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());
     qglviewer::Vec* triangleVertex3 = new qglviewer::Vec(vertex3->getX(), vertex3->getY(), vertex3->getZ());

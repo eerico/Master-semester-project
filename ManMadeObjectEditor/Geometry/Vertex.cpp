@@ -159,3 +159,7 @@ void Vertex::setValid(bool valid) {
     this->valid = valid;
 }
 
+std::ostream& operator<<(std::ostream& out, Vertex& v) {
+    out << "(" << v.getX() << ", " << v.getY() << ", " << v.getZ() << ")";
+    return out;
+}
