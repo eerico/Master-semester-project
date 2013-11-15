@@ -267,17 +267,19 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             pointerCloneActivePlan(oldActivePlan);
 
             ////////////////////////////////////////////////
-            std::cerr << "old clone" << std::endl;
+            /*std::cerr << "old clone" << std::endl;
             foreach(Edge* e, oldActivePlan) {
                 std::cerr << *e << std::endl;
-            }
+            }*/
             //////////////////////////////////////////////////
+
+            unsigned int numberTrianglesAdded = triangles->size();
 
             intraChainHandling(chains, intersection);
             interChainHandling(chains, intersection);
 
-            std::cerr << "after update without correction" << std::endl;
-            printActivePlan();
+            //std::cerr << "after update without correction" << std::endl;
+            //printActivePlan();
 
             //test if self intersection
             bool interectionValid(true);
@@ -295,13 +297,14 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             }
 
             ////////////////////////////////////////////////
-            std::cerr << "old clone" << std::endl;
+            /*std::cerr << "old clone" << std::endl;
             foreach(Edge* e, oldActivePlan) {
-                std::cerr << *e << std::endl;
-            }
+                std::cerr << *e << ", " << e << std::endl;
+            }*/
             //////////////////////////////////////////////////
 
             //the intersection is not valid, thus we revert the active plan
+            // and remove the added triangles
             if(!interectionValid) {
                 unsigned int size = oldActivePlan.size();
                 activePlan->clear();
@@ -310,10 +313,16 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
                     edge->revert();
                     activePlan->push_back(edge);
                 }
+
+                numberTrianglesAdded = triangles->size() - numberTrianglesAdded;
+                for(unsigned int i(0); i < numberTrianglesAdded; ++i) {
+                   triangles->pop_back();
+                }
             }
 
             std::cerr << "after update wih correction" << std::endl;
             printActivePlan();
+            std::cerr << "......................................................................." << std::endl;
             break;
         }
     }
@@ -651,7 +660,7 @@ void Reconstruction3D::splitEdgeAtCorner(Edge *edgeToSplit, Intersection& corner
         Edge* currentEdge = (*activePlan)[i];
         if(!currentEdge->isValid()) {
             activePlan->erase(activePlan->begin() + i);
-            delete currentEdge;
+            //delete currentEdge;
 
             activePlan->insert(activePlan->begin() + i, newEdge1);
             activePlan->insert(activePlan->begin() + i + 1, newEdge2);
@@ -689,6 +698,9 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& 
             Edge* chainEdge = (*chain1)[0];
             splitEdgeAtCorner(chainEdge, intersection, newEdge1, newEdge2);
 
+            chainEdge->invalid();
+            addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
+
             chain1->pop_back();
             chain1->push_back(newEdge1);
             chain1->push_back(newEdge2);
@@ -703,6 +715,9 @@ void Reconstruction3D::interChainHandling(std::vector< std::vector< Edge* >* >& 
 
             Edge* chainEdge = (*chain2)[0];
             splitEdgeAtCorner(chainEdge, intersection, newEdge1, newEdge2);
+
+            chainEdge->invalid();
+            addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
 
             chain2->pop_back();
             chain2->push_back(newEdge1);

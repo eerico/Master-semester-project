@@ -35,12 +35,6 @@ public:
     Vertex* getVertex2();
     void setVertex2(Vertex* vertex);
 
-    Vertex* getOldVertex1();
-    void setOldVertex1(Vertex* vertex);
-
-    Vertex* getOldVertex2();
-    void setOldVertex2(Vertex* vertex);
-
     void setLineItem(QGraphicsLineItem* item);
     QGraphicsLineItem* getLineItem();
 
@@ -97,6 +91,18 @@ public:
      */
     void revert();
 
+    /**
+     * @brief hasChild
+     * @return True if the edge has 2 child because it has been splitted
+     */
+    bool hasChild();
+
+    Edge* getChild1();
+    void setChild1(Edge* child);
+
+    Edge* getChild2();
+    void setChild2(Edge* child);
+
     friend std::ostream& operator<< (std::ostream& out, Edge& v);
 
 private:
@@ -112,6 +118,12 @@ private:
 
     // The old vertex2
     Vertex* oldVertex2;
+
+    // first child if the edge is splitted
+    Edge* child1;
+
+    // second child if the edge is splitted
+    Edge* child2;
 
     // The associated profile
     Profile* profile;

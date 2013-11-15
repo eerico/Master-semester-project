@@ -4,7 +4,7 @@
 
 Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
     :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
-    , oldVertex1(vertex1), oldVertex2(vertex2)
+    , oldVertex1(vertex1), oldVertex2(vertex2), child1(0), child2(0)
 {
     edgePen.setWidth(3);
 }
@@ -41,22 +41,6 @@ Vertex* Edge::getVertex2() {
 void Edge::setVertex2(Vertex* vertex) {
     oldVertex2 = vertex2;
     vertex2 = vertex;
-}
-
-Vertex* Edge::getOldVertex1() {
-    return oldVertex1;
-}
-
-void Edge::setOldVertex1(Vertex* vertex) {
-    oldVertex1 = vertex;
-}
-
-Vertex* Edge::getOldVertex2() {
-    return oldVertex2;
-}
-
-void Edge::setOldVertex2(Vertex* vertex) {
-    oldVertex2 = vertex;
 }
 
 void Edge::setNormal(OMMesh::Normal* n) {
@@ -193,4 +177,24 @@ void Edge::revert() {
     vertex1 = oldVertex1;
     vertex2 = oldVertex2;
     valid = true;
+}
+
+Edge* Edge::getChild1() {
+    return child1;
+}
+
+void Edge::setChild1(Edge *child) {
+    child1 = child;
+}
+
+Edge* Edge::getChild2() {
+    return child2;
+}
+
+void Edge::setChild2(Edge *child) {
+    child2 = child;
+}
+
+bool Edge::hasChild() {
+    return child1 != 0 || child2 != 0;
 }
