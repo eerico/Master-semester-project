@@ -4,7 +4,7 @@
 
 Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
     :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
-    , oldVertex1(vertex1), oldVertex2(vertex2), child1(0), child2(0), oldChild1(0), oldChild2(0)
+    , oldVertex1(vertex1), oldVertex2(vertex2), child1(0), child2(0)
 {
     edgePen.setWidth(3);
 }
@@ -177,8 +177,8 @@ void Edge::revert() {
     vertex1 = oldVertex1;
     vertex2 = oldVertex2;
 
-    child1 = oldChild1;
-    child2 = oldChild2;
+    child1 = 0;
+    child2 = 0;
 
     valid = true;
 }
@@ -188,7 +188,6 @@ Edge* Edge::getChild1() {
 }
 
 void Edge::setChild1(Edge *child) {
-    oldChild1 = child1;
     child1 = child;
 }
 
@@ -197,7 +196,6 @@ Edge* Edge::getChild2() {
 }
 
 void Edge::setChild2(Edge *child) {
-    oldChild2 = child2;
     child2 = child;
 }
 
