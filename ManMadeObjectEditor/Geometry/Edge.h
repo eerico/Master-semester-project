@@ -125,6 +125,12 @@ private:
     // second child if the edge is splitted
     Edge* child2;
 
+    // The old child1
+    Vertex* oldChild1;
+
+    // The old child2
+    Vertex* oldChild2;
+
     // The associated profile
     Profile* profile;
 
