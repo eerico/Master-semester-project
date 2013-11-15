@@ -30,7 +30,8 @@ SOURCES +=\
     Geometry/Edge.cpp \
     GUI/ProfileScene.cpp \
     Reconstruction3D/Reconstruction3D.cpp \
-    Reconstruction3D/Plan.cpp
+    Reconstruction3D/Plan.cpp \
+    Reconstruction3D/Chain.cpp
 
 HEADERS  += \
     FloorPlanAndProfileExtractor.h \
@@ -51,7 +52,8 @@ HEADERS  += \
     Reconstruction3D/Reconstruction3D.h \
     Reconstruction3D/Plan.h \
     Reconstruction3D/Intersection.h \
-    Reconstruction3D/IntersectionComparator.h
+    Reconstruction3D/IntersectionComparator.h \
+    Reconstruction3D/Chain.h
 
 #QT *= xml opengl
 

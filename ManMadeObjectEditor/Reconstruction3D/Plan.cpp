@@ -105,3 +105,55 @@ void Plan::setNormal(float nx, float ny, float nz) {
     normalY = ny;
     normalZ = nz;
 }
+
+void Plan::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile)
+{
+    float nx(0.0f);
+    float ny(0.0f);
+    float nz(0.0f);
+
+    float a = vertex2->getX() - vertex1->getX();
+    float b = vertex2->getY() - vertex1->getY();
+    float c = 0.0f;
+
+    Utils::normalize(a, b);
+
+    Vertex* profileVertex = profile->getProfileVertex();
+    Vertex* nextProfileVertex = profileVertex->getNeighbor2();
+
+    float w = nextProfileVertex->getX() - profileVertex->getX();
+    float z = nextProfileVertex->getY() - profileVertex->getY();
+
+    //est ce correct ou bien sa joue pas avec orientation des edges ?
+    float wx = b;
+    float wy = -a;
+
+    float d = w * wx;
+    float e = w * wy;
+    float f = z;
+
+    Utils::crossProduct(d, e, f, a, b, c, nx, ny, nz);
+    Utils::normalize(nx, ny, nz);
+
+    normalX = nx;
+    normalY = ny;
+    normalZ = nz;
+
+
+
+
+    // show the profile orientation
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    /*float aa = vertex2->getX() + vertex1->getX();
+    float bb = vertex2->getY() + vertex1->getY();
+    float cc = 0.0f;
+
+    Vertex* v3  = new Vertex(d+ 0.5f*aa, e + 0.5f*bb);
+    v3->setZ(f + 0.5f*cc);
+    Vertex* v  = new Vertex(0.5f*aa, 0.5f*bb);
+    v->setZ(cc);
+    addNewTriangle(v, v3, v);*/
+
+    //////////////////////////////////////////////////////////////////////////////////////
+}
