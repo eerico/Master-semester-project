@@ -73,6 +73,8 @@ private:
 
     void edgeDirectionHandling(Intersection& intersection);
 
+    void printActivePlan();
+
     //bool isIntersectionExternToEdges(Intersection& intersection);
 };
 

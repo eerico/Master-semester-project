@@ -260,11 +260,23 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             chainConstruction(intersection, chains);
 
             intraChainHandling(chains, intersection);
-            //interChainHandling(chains, intersection);
+            interChainHandling(chains, intersection);
 
+            printActivePlan();
             break;
         }
     }
+}
+
+void Reconstruction3D::printActivePlan() {
+    std::vector<Edge* > ap = *activePlan;
+    unsigned int size = ap.size();
+
+    std::cerr << "ACTIVE PLAN" << std::endl;
+    for(unsigned int i(0); i < size; ++i) {
+        std::cerr << *ap[i] << std::endl;
+    }
+    std::cerr << std::endl;
 }
 
 void Reconstruction3D::edgeDirectionHandling(Intersection &intersection)
