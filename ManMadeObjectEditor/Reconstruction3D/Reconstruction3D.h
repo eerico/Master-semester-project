@@ -75,6 +75,8 @@ private:
 
     void printActivePlan();
 
+    void pointerCloneActivePlan(std::vector< Edge* >& clone);
+
     //bool isIntersectionExternToEdges(Intersection& intersection);
 };
 

@@ -256,12 +256,63 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
                 return;
             }
 
+            std::cerr << "before update" << std::endl;
+            printActivePlan();
+
             std::vector< std::vector< Edge* >* > chains;
             chainConstruction(intersection, chains);
+
+
+            std::vector< Edge* > oldActivePlan;
+            pointerCloneActivePlan(oldActivePlan);
+
+            ////////////////////////////////////////////////
+            std::cerr << "old clone" << std::endl;
+            foreach(Edge* e, oldActivePlan) {
+                std::cerr << *e << std::endl;
+            }
+            //////////////////////////////////////////////////
 
             intraChainHandling(chains, intersection);
             interChainHandling(chains, intersection);
 
+            std::cerr << "after update without correction" << std::endl;
+            printActivePlan();
+
+            //test if self intersection
+            bool interectionValid(true);
+            for(unsigned int i(0); i < activePlan->size() && interectionValid; ++i) {
+                Edge* edge = (*activePlan)[i];
+                for(unsigned int j(i+1); j < activePlan->size() && interectionValid; ++j) {
+                    Edge* comparedEdge = (*activePlan)[j];
+                    if(edge->isParallel(comparedEdge)) {
+                        if(edge->distance(comparedEdge) < 0.001f) {
+                            interectionValid = false;
+                            std::cerr << "Self intersection" << std::endl;
+                        }
+                    }
+                }
+            }
+
+            ////////////////////////////////////////////////
+            std::cerr << "old clone" << std::endl;
+            foreach(Edge* e, oldActivePlan) {
+                std::cerr << *e << std::endl;
+            }
+            //////////////////////////////////////////////////
+
+            //the intersection is not valid, thus we revert the active plan
+            if(!interectionValid) {
+                unsigned int size = oldActivePlan.size();
+                activePlan->clear();
+                for(unsigned int i(0); i < size; ++i) {
+                    Edge* edge = oldActivePlan[i];
+                    edge->revert();
+                    activePlan->push_back(edge);
+                }
+            }
+
+            std::cerr << "after update wih correction" << std::endl;
             printActivePlan();
             break;
         }
@@ -277,6 +328,14 @@ void Reconstruction3D::printActivePlan() {
         std::cerr << *ap[i] << std::endl;
     }
     std::cerr << std::endl;
+}
+
+void Reconstruction3D::pointerCloneActivePlan(std::vector<Edge *> &clone)
+{
+    unsigned int size = activePlan->size();
+    for(unsigned int i(0); i < size; ++i) {
+        clone.push_back((*activePlan)[i]);
+    }
 }
 
 void Reconstruction3D::edgeDirectionHandling(Intersection &intersection)

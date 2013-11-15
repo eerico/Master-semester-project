@@ -4,6 +4,7 @@
 
 Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
     :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
+    , oldVertex1(vertex1), oldVertex2(vertex2)
 {
     edgePen.setWidth(3);
 }
@@ -29,6 +30,7 @@ Vertex* Edge::getVertex1() {
 }
 
 void Edge::setVertex1(Vertex* vertex) {
+    oldVertex1 = vertex1;
     vertex1 = vertex;
 }
 
@@ -37,7 +39,24 @@ Vertex* Edge::getVertex2() {
 }
 
 void Edge::setVertex2(Vertex* vertex) {
+    oldVertex2 = vertex2;
     vertex2 = vertex;
+}
+
+Vertex* Edge::getOldVertex1() {
+    return oldVertex1;
+}
+
+void Edge::setOldVertex1(Vertex* vertex) {
+    oldVertex1 = vertex;
+}
+
+Vertex* Edge::getOldVertex2() {
+    return oldVertex2;
+}
+
+void Edge::setOldVertex2(Vertex* vertex) {
+    oldVertex2 = vertex;
 }
 
 void Edge::setNormal(OMMesh::Normal* n) {
@@ -168,4 +187,10 @@ void Edge::invalid() {
 std::ostream& operator<<(std::ostream& out, Edge& e) {
     out << *e.getVertex1() << " - " << *e.getVertex2();
     return out;
+}
+
+void Edge::revert() {
+    vertex1 = oldVertex1;
+    vertex2 = oldVertex2;
+    valid = true;
 }

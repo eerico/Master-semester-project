@@ -35,6 +35,12 @@ public:
     Vertex* getVertex2();
     void setVertex2(Vertex* vertex);
 
+    Vertex* getOldVertex1();
+    void setOldVertex1(Vertex* vertex);
+
+    Vertex* getOldVertex2();
+    void setOldVertex2(Vertex* vertex);
+
     void setLineItem(QGraphicsLineItem* item);
     QGraphicsLineItem* getLineItem();
 
@@ -85,6 +91,12 @@ public:
      */
     void invalid();
 
+    /**
+     * @brief revert
+     * Replace the current vertices by the old vetices and re valid the edge
+     */
+    void revert();
+
     friend std::ostream& operator<< (std::ostream& out, Edge& v);
 
 private:
@@ -94,6 +106,12 @@ private:
 
     // The second vertex
     Vertex* vertex2;
+
+    // The old vertex1
+    Vertex* oldVertex1;
+
+    // The old vertex2
+    Vertex* oldVertex2;
 
     // The associated profile
     Profile* profile;
