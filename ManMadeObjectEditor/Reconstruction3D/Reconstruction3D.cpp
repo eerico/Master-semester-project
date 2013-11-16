@@ -1,12 +1,5 @@
 #include "Reconstruction3D.h"
 
-
-/*
- * Here, the z value is the up vector (in order to match the 3D representation used with QGLViewer)
- *
- */
-
-
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
 {
@@ -147,14 +140,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
 
             removeDuplicateEdges(intersection);
 
-            ///////////////////////////////
-            std::cerr << "with edges: " << std::endl;
-            foreach(Edge* e, *intersection.edgeVector) {
-                std::cerr << *e << ": " << e << std::endl;
-            }
-
-            ////////////////////////////
-
             // if the number of edges in f is less than 3, the event is ignored
             if(intersection.edgeVector->size() < 3) {
                 std::cerr << "intersection ignored" << std::endl;
@@ -164,28 +149,17 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             std::cerr << "before update" << std::endl;
             printActivePlan();
 
-            //std::vector< std::vector< Edge* >* > chains;
             Chain currentChain(intersection, activePlan, triangles);
-
 
             std::vector< Edge* > oldActivePlan;
             pointerCloneActivePlan(oldActivePlan);
 
-            ////////////////////////////////////////////////
-            /*std::cerr << "old clone" << std::endl;
-            foreach(Edge* e, oldActivePlan) {
-                std::cerr << *e << std::endl;
-            }*/
-            //////////////////////////////////////////////////
 
             unsigned int numberTrianglesAdded = triangles->size();
 
             currentChain.intraChainHandling();
             removeInvalidEdge(activePlan);
             currentChain.interChainHandling();
-
-            //std::cerr << "after update without correction" << std::endl;
-            //printActivePlan();
 
             //test if self intersection
             bool interectionValid(true);
@@ -202,12 +176,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
                 }
             }
 
-            ////////////////////////////////////////////////
-            /*std::cerr << "old clone" << std::endl;
-            foreach(Edge* e, oldActivePlan) {
-                std::cerr << *e << ", " << e << std::endl;
-            }*/
-            //////////////////////////////////////////////////
 
             //the intersection is not valid, thus we revert the active plan
             // and remove the added triangles
