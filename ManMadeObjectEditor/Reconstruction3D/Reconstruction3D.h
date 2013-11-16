@@ -53,6 +53,10 @@ private:
     void printActivePlan();
 
     void pointerCloneActivePlan(std::vector< Edge* >& clone);
+
+    void replaceParentByChild(Intersection& intersection);
+
+    void addChildIntoVector(Edge* parent, std::vector< Edge* >* vector);
 };
 
 #endif // RECONSTRUCTION3D_H

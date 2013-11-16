@@ -250,7 +250,6 @@ void Chain::intraChainHandling()
 void Chain::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2)
 {
     Vertex* cornerVertex = new Vertex(intersection.x, intersection.y, intersection.z);
-    edgeToSplit->invalid();
 
     newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
     newEdge2 = new Edge(cornerVertex, edgeToSplit->getVertex2(), edgeToSplit->getProfile());
@@ -263,9 +262,12 @@ void Chain::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge
     bool found(false);
     for(unsigned int i(0); (i < activePlanSize) && !found; ++i) {
         Edge* currentEdge = (*activePlan)[i];
-        if(!currentEdge->isValid()) {
+        if(currentEdge == edgeToSplit) {
             activePlan->erase(activePlan->begin() + i);
             //delete currentEdge;
+
+            currentEdge->setChild1(newEdge1);
+            currentEdge->setChild2(newEdge2);
 
             activePlan->insert(activePlan->begin() + i, newEdge1);
             activePlan->insert(activePlan->begin() + i + 1, newEdge2);

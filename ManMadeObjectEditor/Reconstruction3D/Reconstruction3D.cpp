@@ -138,18 +138,31 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
         std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             eventClustering(intersection);
 
+            //replaceParentByChild(intersection);
+
             removeDuplicateEdges(intersection);
+
+            ///////////////////////////////
+            std::cerr << "with edges: " << std::endl;
+            foreach(Edge* e, *intersection.edgeVector) {
+                std::cerr << *e << ": " << e << std::endl;
+            }
+
+            ////////////////////////////
 
             // if the number of edges in f is less than 3, the event is ignored
             if(intersection.edgeVector->size() < 3) {
                 std::cerr << "intersection ignored" << std::endl;
+                std::cerr << "......................................................................." << std::endl;
                 return;
             }
 
             std::cerr << "before update" << std::endl;
             printActivePlan();
 
+            //std::vector< std::vector< Edge* >* > chains;
             Chain currentChain(intersection, activePlan, triangles);
+
 
             std::vector< Edge* > oldActivePlan;
             pointerCloneActivePlan(oldActivePlan);
@@ -160,6 +173,9 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             currentChain.intraChainHandling();
             removeInvalidEdge(activePlan);
             currentChain.interChainHandling();
+
+            //std::cerr << "after update without correction" << std::endl;
+            //printActivePlan();
 
             //test if self intersection
             bool interectionValid(true);
@@ -211,6 +227,30 @@ void Reconstruction3D::printActivePlan() {
         std::cerr << *ap[i] << std::endl;
     }
     std::cerr << std::endl;
+}
+
+void Reconstruction3D::replaceParentByChild(Intersection& intersection) {
+    std::vector< Edge* >* edges = intersection.edgeVector;
+    unsigned int size = edges->size();
+
+    for(unsigned int i(0); i < size; ++i) {
+        Edge* edge = (*edges)[i];
+        if(edge->hasChild()) {
+            edges->erase(edges->begin() + i);
+            addChildIntoVector(edge, edges);
+            i--;
+            size--;
+        }
+    }
+}
+
+void Reconstruction3D::addChildIntoVector(Edge* parent, std::vector< Edge* >* vector) {
+    if (!parent->hasChild()) {
+        vector->push_back(parent);
+    } else {
+        addChildIntoVector(parent->getChild1(), vector);
+        addChildIntoVector(parent->getChild2(), vector);
+    }
 }
 
 void Reconstruction3D::pointerCloneActivePlan(std::vector<Edge *> &clone)
@@ -324,6 +364,7 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
     bool stop(false);
 
     std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
+    replaceParentByChild(intersection);
     removeInvalidEdge(intersectionEdges);
 
     while(!stop && (priorityQueue->size() > 0)){
@@ -333,7 +374,7 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
         if ((std::abs(event.y - y) < delta1) && (Utils::distance(event.x, event.z, intersection.x, intersection.z) < delta2)) {
             priorityQueue->pop();
             std::vector<Edge*>* eventEdges = event.edgeVector;
-
+            replaceParentByChild(event);
             removeInvalidEdge(eventEdges);
 
             for(unsigned int i(0); i < eventEdges->size(); ++i) {
@@ -387,6 +428,3 @@ void Reconstruction3D::removeDuplicateEdges(Intersection& intersection)
         }
     }
 }
-
-
-
