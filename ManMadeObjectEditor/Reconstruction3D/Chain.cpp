@@ -55,7 +55,6 @@ Chain::Chain(Intersection intersection, std::vector<Edge *> *activePlan, std::ve
     }
 }
 
-
 void Chain::interChainHandling()
 {
     // le code est faux mais idée est juste. 1 edge se split en 2 et on reconstruit en dessus mais comment update dans
@@ -284,4 +283,14 @@ void Chain::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
     triangles->push_back(triangleVertex1);
     triangles->push_back(triangleVertex2);
     triangles->push_back(triangleVertex3);
+}
+
+void Chain::printChain() {
+    std::cerr << "Chain: " << std::endl;
+    foreach(std::vector< Edge* >* vector, chains) {
+        foreach(Edge* edge, *vector) {
+            std::cerr << *edge << "::";
+        }
+        std::cerr << std::endl;
+    }
 }

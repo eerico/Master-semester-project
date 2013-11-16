@@ -138,8 +138,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
         std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             eventClustering(intersection);
 
-            //replaceParentByChild(intersection);
-
             removeDuplicateEdges(intersection);
 
             ///////////////////////////////
@@ -157,12 +155,12 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
                 return;
             }
 
-            std::cerr << "before update" << std::endl;
-            printActivePlan();
+            //std::cerr << "before update" << std::endl;
+            //printActivePlan();
 
             //std::vector< std::vector< Edge* >* > chains;
             Chain currentChain(intersection, activePlan, triangles);
-
+            currentChain.printChain();
 
             std::vector< Edge* > oldActivePlan;
             pointerCloneActivePlan(oldActivePlan);

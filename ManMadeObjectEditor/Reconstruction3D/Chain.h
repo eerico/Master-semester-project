@@ -12,6 +12,7 @@ public:
     Chain(Intersection intersection, std::vector< Edge* >* activePlan, std::vector< qglviewer::Vec * >* triangles);
     void intraChainHandling();
     void interChainHandling();
+    void printChain();
 
 private:
     void splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2);
