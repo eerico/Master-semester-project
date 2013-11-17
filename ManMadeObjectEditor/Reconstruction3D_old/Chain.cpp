@@ -1,25 +1,9 @@
 #include "Chain.h"
 
-Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
+Chain::Chain(Intersection intersection, std::vector<Edge *> *activePlan, std::vector<qglviewer::Vec *> *triangles)
+    :intersection(intersection), activePlan(activePlan), triangles(triangles)
 {
-    Vertex* currentVertex = floorPlan;
-    //std::vector< std::vector< Edge* >* > chains;
-    std::vector< Edge* >* chain = new std::vector< Edge* >;
-
-    for(unsigned int i(0); i < floorPlanSize ; ++i) {
-        Edge* currentEdge = currentVertex->getEdge2();
-        Edge* clone = new Edge(currentEdge->getVertex1(), currentEdge->getVertex2(), currentEdge->getProfile());
-        chain->push_back(clone);
-        currentVertex = currentVertex->getNeighbor2();
-    }
-    chains = new std::vector< std::vector< Edge* >* >;
-    chains->push_back(chain);
-}
-
-Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * >* triangles)
-    :previousChains(previousChains), triangles(triangles)
-{
-    /*std::vector< Edge* >* edges = intersection.edgeVector;
+    std::vector< Edge* >* edges = intersection.edgeVector;
     unsigned int size = edges->size();
 
     //create the chains
@@ -68,8 +52,7 @@ Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * 
         }
 
         chains.push_back(currentChain);
-    }*/
-    chains = new std::vector< std::vector< Edge* >* >;
+    }
 }
 
 
@@ -82,7 +65,7 @@ void Chain::interChainHandling()
 
 
     // on suppose que les chaines sont bien successive...
-    /*unsigned int chainsSize = chains.size();
+    unsigned int chainsSize = chains.size();
     if (chainsSize < 2) {
         return;
     }
@@ -135,13 +118,13 @@ void Chain::interChainHandling()
 
         intersectionVertex->setEdge1(firstEdgeChain2);
         intersectionVertex->setEdge2(lastEdgeChain1);
-    }*/
+    }
 }
 
 void Chain::intraChainHandling()
 {
 
-    /*unsigned int chainsSize = chains.size();
+    unsigned int chainsSize = chains.size();
     for(unsigned int j(0); j < chainsSize; ++j) {
         std::vector< Edge* >* currentChain = chains[j];
         unsigned int currentChainSize = currentChain->size();
@@ -260,13 +243,13 @@ void Chain::intraChainHandling()
 
             addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
             firstEdge->invalid();*/
-        /*}
-    }*/
+        }
+    }
 }
 
 void Chain::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2)
 {
-    /*Vertex* cornerVertex = new Vertex(intersection.x, intersection.y, intersection.z);
+    Vertex* cornerVertex = new Vertex(intersection.x, intersection.y, intersection.z);
 
     newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
     newEdge2 = new Edge(cornerVertex, edgeToSplit->getVertex2(), edgeToSplit->getProfile());
@@ -290,11 +273,7 @@ void Chain::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge
             activePlan->insert(activePlan->begin() + i + 1, newEdge2);
             found = true;
         }
-    }*/
-}
-
-std::vector<std::vector<Edge *> *>* Chain::getChains() {
-    return chains;
+    }
 }
 
 void Chain::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
@@ -309,7 +288,7 @@ void Chain::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
 
 void Chain::printChain() {
     std::cerr << "Chain: " << std::endl;
-    foreach(std::vector< Edge* >* vector, *chains) {
+    foreach(std::vector< Edge* >* vector, chains) {
         foreach(Edge* edge, *vector) {
             std::cerr << *edge << "::";
         }

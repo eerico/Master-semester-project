@@ -2,6 +2,7 @@
 #define INTERSECTION_H
 
 #include "../Geometry/Edge.h"
+#include <vector>
 
 enum EventType {
     NoIntersection,
@@ -10,7 +11,7 @@ enum EventType {
 };
 
 struct Intersection {
-    Edge* edge;
+    std::vector<Edge*>* edgeVector;
 
     //intersection point
     float x;

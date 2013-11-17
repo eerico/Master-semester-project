@@ -9,18 +9,19 @@
 class Chain
 {
 public:
-    Chain(Intersection intersection, std::vector< Edge* >* activePlan, std::vector< qglviewer::Vec * >* triangles);
+    Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * >* triangles);
+    Chain(Vertex* floorPlan, unsigned int floorPlanSize);
     void intraChainHandling();
     void interChainHandling();
+    std::vector<std::vector<Edge *>* >* getChains();
     void printChain();
 
 private:
     void splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2);
     void addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3);
 
-    std::vector< std::vector< Edge* >* > chains;
-    Intersection intersection;
-    std::vector< Edge* >* activePlan;
+    std::vector< std::vector< Edge* >* >* chains;
+    Chain* previousChains;
     std::vector< qglviewer::Vec * >* triangles;
 };
 
