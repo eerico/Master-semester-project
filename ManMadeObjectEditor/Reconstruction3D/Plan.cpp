@@ -9,6 +9,7 @@ Plan::Plan(float pointX, float pointY, float pointZ,
 
 Intersection Plan::intersect3Plans(Plan& plan2, Plan& plan3)
 {
+    //std::cerr << "intersect3 plan: " << std::endl;
     Intersection intersection;
     intersection.eventType = General;
 
@@ -19,6 +20,8 @@ Intersection Plan::intersect3Plans(Plan& plan2, Plan& plan3)
     float n2 = normalY;
     float n3 = normalZ;
 
+    //std::cerr << p1 << ", " << p2 << ", " << p3 << ", " << normalX << ", " << normalY << ", " << normalZ << std::endl;
+
     float p1_p = plan2.pointX;
     float p2_p = plan2.pointY;
     float p3_p = plan2.pointZ;
@@ -26,12 +29,16 @@ Intersection Plan::intersect3Plans(Plan& plan2, Plan& plan3)
     float n2_p = plan2.normalY;
     float n3_p = plan2.normalZ;
 
+    //std::cerr << p1_p << ", " << p2_p << ", " << p3_p << ", " << n1_p << ", " << n2_p << ", " << n3_p << std::endl;
+
     float p1_pp = plan3.pointX;
     float p2_pp = plan3.pointY;
     float p3_pp = plan3.pointZ;
     float n1_pp = plan3.normalX;
     float n2_pp = plan3.normalY;
     float n3_pp = plan3.normalZ;
+
+    //std::cerr << p1_pp << ", " << p2_pp << ", " << p3_pp << ", " << n1_pp << ", " << n2_pp << ", " << n3_pp << std::endl;
 
     // we can write the plan equation like (xVector - pVector) * nVector = 0,
     // but we can also write it: x * nx + y * ny + z * nz = px * nx + py * ny + pz * nz = pn
@@ -140,8 +147,7 @@ void Plan::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile)
     normalZ = nz;
 
 
-
-
+    //std::cerr << "normal: " << normalX << ", " << normalY << ", " << normalZ << std::endl;
     // show the profile orientation
     //////////////////////////////////////////////////////////////////////////////////////
 

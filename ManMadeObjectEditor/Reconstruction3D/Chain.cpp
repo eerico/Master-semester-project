@@ -19,57 +19,68 @@ Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
 Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * >* triangles)
     :previousChains(previousChains), triangles(triangles)
 {
-    /*std::vector< Edge* >* edges = intersection.edgeVector;
-    unsigned int size = edges->size();
+    chains = new std::vector< std::vector< Edge* >* >;
+    std::vector< Edge* >* currentSubChain;
 
-    //create the chains
-    Vertex* first = 0;
-    Vertex* last = 0;
+    std::vector< std::vector< Edge* >* >* previousChainsVector = previousChains->getChains();
+    unsigned int numberSubChains = previousChainsVector->size();
 
-    for(unsigned int i(0); i < size; ++i) {
-        std::vector< Edge* >* currentChain = new std::vector< Edge* >;
-        Edge* currentEdge = (*edges)[i];
+    Plan horizontalPlan(0.0f, 0.0f, height, 0.0f, 0.0f, 1.0f);
 
-        first = currentEdge->getVertex1();
-        last = currentEdge->getVertex2();
-        currentChain->push_back(currentEdge);
+    for(unsigned int subChainIndex(0); subChainIndex < numberSubChains; ++subChainIndex) {
+        currentSubChain = new std::vector< Edge* >;
 
-        for(unsigned int j(i+1); j < size; ++j) {
-            Edge* comparedEdge = (*edges)[j];
+        std::vector< Edge* >* edges = (*previousChainsVector)[subChainIndex];
+        unsigned int numberEdge = edges->size();
+        Vertex* firstNewVertex;
+        Vertex* previousNewVertex;
+        Profile* previousProfile;
+        Vertex* newVertex;
+        Edge* newEdge;
+        for(unsigned int edgeIndex(0); edgeIndex < numberEdge; ++edgeIndex) {
 
-            Vertex* vertex1 = comparedEdge->getVertex1();
-            Vertex* vertex2 = comparedEdge->getVertex2();
+            Edge* currentEdge = (*edges)[edgeIndex];
 
-            if(vertex1 == first) {
-                currentChain->insert(currentChain->begin(), comparedEdge);
-                edges->erase(edges->begin() + j);
-                size--;
-                j = i;
-                first = vertex2;
-            } else if(vertex2 == first) {
-                currentChain->insert(currentChain->begin(), comparedEdge);
-                edges->erase(edges->begin() + j);
-                size--;
-                j = i;
-                first = vertex1;
-            } else if(vertex1 == last) {
-                currentChain->push_back(comparedEdge);
-                edges->erase(edges->begin() + j);
-                size--;
-                j = i;
-                last = vertex2;
-            } else if(vertex2 == last) {
-                currentChain->push_back(comparedEdge);
-                edges->erase(edges->begin() + j);
-                size--;
-                j = i;
-                last = vertex1;
+            Vertex* vertex1 = currentEdge->getVertex1();
+            Vertex* vertex2 = currentEdge->getVertex2();
+
+            Edge* previousEdge = vertex1->getEdge1();
+            Vertex* vertex0 = previousEdge->getVertex1();
+
+            Plan plan1(vertex0->getX(), vertex0->getY(), vertex0->getZ());
+            plan1.computePlanNormal(vertex0, vertex1, previousEdge->getProfile());
+
+            Plan plan2(vertex1->getX(), vertex1->getY(), vertex1->getZ());
+            plan2.computePlanNormal(vertex1, vertex2, currentEdge->getProfile());
+
+            Intersection newIntersection = horizontalPlan.intersect3Plans(plan1, plan2);
+            newVertex = new Vertex(newIntersection.x, newIntersection.y, newIntersection.z);
+
+            if (edgeIndex > 0) {
+                newEdge = new Edge(previousNewVertex, newVertex, previousProfile);
+                previousNewVertex->setEdge2(newEdge);
+                previousNewVertex->setNeighbor2(newVertex);
+                newVertex->setEdge1(newEdge);
+                newVertex->setNeighbor1(previousNewVertex);
+
+                currentSubChain->push_back(newEdge);
+            } else {
+                firstNewVertex = newVertex;
             }
+
+            previousNewVertex = newVertex;
+            previousProfile = currentEdge->getProfile();
         }
 
-        chains.push_back(currentChain);
-    }*/
-    chains = new std::vector< std::vector< Edge* >* >;
+        newEdge = new Edge(previousNewVertex, firstNewVertex, previousProfile);
+        previousNewVertex->setEdge2(newEdge);
+        previousNewVertex->setNeighbor2(firstNewVertex);
+        firstNewVertex->setEdge1(newEdge);
+        firstNewVertex->setNeighbor1(previousNewVertex);
+        currentSubChain->push_back(newEdge);
+
+        chains->push_back(currentSubChain);
+    }
 }
 
 
@@ -309,10 +320,13 @@ void Chain::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
 
 void Chain::printChain() {
     std::cerr << "Chain: " << std::endl;
+    unsigned int i = 1;
     foreach(std::vector< Edge* >* vector, *chains) {
+        std::cerr << "chain " << i << std::endl;
         foreach(Edge* edge, *vector) {
             std::cerr << *edge << "::";
         }
+        i++;
         std::cerr << std::endl;
     }
 }

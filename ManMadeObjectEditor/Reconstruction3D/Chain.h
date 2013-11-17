@@ -4,6 +4,7 @@
 #include "Intersection.h"
 #include "../Geometry/Vertex.h"
 #include "../Geometry/Edge.h"
+#include "Plan.h"
 #include <QGLViewer/qglviewer.h>
 
 class Chain

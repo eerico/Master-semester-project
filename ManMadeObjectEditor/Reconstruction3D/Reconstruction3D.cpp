@@ -132,9 +132,11 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         }
         case General:
         {
-        std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            if(intersection.z == 0.0f) {
+                return;
+            }
+            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             eventClustering(intersection);
-
 
             Chain* chain = new Chain(intersection.z, currentChain, triangles);
             chain->printChain();
@@ -145,34 +147,12 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             delete currentChain;
             currentChain = chain;
 
-            std::cerr << "after update wih correction" << std::endl;
-            printActiveChain();
+            std::cerr << "after update" << std::endl;
+            currentChain->printChain();
             std::cerr << "......................................................................." << std::endl;
             break;
         }
     }
-}
-
-void Reconstruction3D::printActiveChain() { //////////////////////
-    std::vector< std::vector< Edge* >* >* chains = currentChain->getChains();
-    std::vector< Edge* > unrolledChain;
-    unsigned int numberChain = chains->size();
-    for(unsigned int i(0); i < numberChain; ++i) {
-        std::vector< Edge* >* subChain = (*chains)[i];
-        unsigned int numberEdge = subChain->size();
-        for(unsigned int j(0); j < numberEdge; ++j) {
-            unrolledChain.push_back((*subChain)[j]);
-        }
-    }
-
-
-    unsigned int size = unrolledChain.size();
-
-    std::cerr << "ACTIVE Chain" << std::endl;
-    for(unsigned int i(0); i < size; ++i) {
-        std::cerr << *unrolledChain[i] << std::endl;
-    }
-    std::cerr << std::endl;
 }
 
 void Reconstruction3D::edgeDirectionHandling(Intersection &intersection) //////////////////
@@ -240,7 +220,7 @@ void Reconstruction3D::edgeDirectionHandling(Intersection &intersection) ///////
 
 void Reconstruction3D::eventClustering(Intersection& intersection) ////////////////////
 {
-    float y(intersection.y);
+    float z = intersection.z;
 
     float delta1(0.01f);
 

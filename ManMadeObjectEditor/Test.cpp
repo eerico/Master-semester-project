@@ -19,7 +19,7 @@ void Test::Reconstruction3DTest()
     Vertex* c = new Vertex(1.0f, -1.0f);
     Vertex* d = new Vertex(-1.0f, -1.0f);*/
 
-    Vertex* a = new Vertex(-0.5, 1.0);
+    /*Vertex* a = new Vertex(-0.5, 1.0);
     Vertex* b = new Vertex(0.5, 1.0);
     Vertex* c = new Vertex(0.5, -1.0);
     Vertex* d = new Vertex(-0.5, -1.0);
@@ -345,7 +345,7 @@ void Test::Reconstruction3DTest()
     cout << endl;*/
 
 
-    test.reconstruct();
+    //test.reconstruct();
 
     /*cout << "fin" << endl;
     current = a;
@@ -360,7 +360,7 @@ void Test::Reconstruction3DTest()
 
         current = current->getNeighbor2();
     }*/
-    cerr << endl;cerr << "Triangles: " << endl;
+    /*cerr << endl;cerr << "Triangles: " << endl;
 
     for(unsigned int i(0); i < triangles->size(); i = i + 3) {
         qglviewer::Vec pt1 = *((*triangles)[i]);
@@ -368,6 +368,31 @@ void Test::Reconstruction3DTest()
         qglviewer::Vec pt3 = *((*triangles)[i+2]);
 
         std::cerr << "(" << pt1[0] << ", " << pt1[1] << ", " << pt1[2] << ") - ( " << pt2[0] << ", " << pt2[1] << ", " << pt2[2] << ") - ( " << pt3[0] << ", " << pt3[1] << ", " << pt3[2] << ")" << std::endl;
+    }*/
+
+
+
+
+
+
+    /*
+     *
+
+normal: -0.5, -0.5, 0.707107
+normal: -0, 0.707107, 0.707107
+intersection at (4.11626e-039, 4.07887e+024, 4.25369e+024)
+between edge: (-1, 1, 0) - (1, 1, 0) and (0, 0, 0) - (-1, 1, 0)
+
+     */
+
+    Plan p1(-1.0f, 1.0f, 0.0f, -0.5, -0.5, 0.707107);
+    Plan p2(1.0f, 1.0f, 0.0f, 0.0f, 0.707107, 0.707107);
+    Plan p3(0.0f, 0.0f, 0.413214, 0.0f, 0.0f, 1.0f);
+
+    Intersection i = p1.intersect3Plans(p2, p3);
+    std::cerr << "intersection test: " << i.x << ", " << i.y << ", " << i.z << std::endl;
+    if(i.eventType == NoIntersection) {
+        std::cerr << "no intersection" << std::endl;
     }
 
     exit(EXIT_SUCCESS);

@@ -41,8 +41,6 @@ private:
 
     void edgeDirectionHandling(Intersection& intersection);
 
-    void printActiveChain();
-
 };
 
 #endif // RECONSTRUCTION3D_H
