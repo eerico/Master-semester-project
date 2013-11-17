@@ -359,7 +359,7 @@ void Reconstruction3D::removeInvalidIntersection(Edge *edge, float height)
 
 void Reconstruction3D::eventClustering(Intersection& intersection)
 {
-    float y(intersection.y);
+    float z(intersection.z);
 
     float delta1(0.01f);
     float delta2(0.01f);
@@ -374,7 +374,7 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
         Intersection event = priorityQueue->top();
 
         //std::cerr << "      MM: " << std::abs(event.y - y) << ", " << Utils::distance(event.x, event.z, intersection.x, intersection.z) << std::endl;
-        if ((std::abs(event.y - y) < delta1) && (Utils::distance(event.x, event.z, intersection.x, intersection.z) < delta2)) {
+        if ((std::abs(event.z - z) < delta1) && (Utils::distance(event.x, event.y, intersection.x, intersection.y) < delta2)) {
             priorityQueue->pop();
             std::vector<Edge*>* eventEdges = event.edgeVector;
             replaceParentByChild(event);
