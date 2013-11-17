@@ -202,3 +202,49 @@ void Edge::setChild2(Edge *child) {
 bool Edge::hasChild() {
     return child1 != 0 || child2 != 0;
 }
+
+bool Edge::existIntersection(Edge *edge) {
+    if (this->isParallel(edge)) {
+        return false;
+    } else {
+        Vertex* edge1Vertex1 = vertex1;
+        Vertex* edge1Vertex2 = vertex2;
+        Vertex* edge2Vertex1 = edge->getVertex1();
+        Vertex* edge2Vertex2 = edge->getVertex2();
+
+        // compute intersectino between two lines
+        // thus solve these equations:
+        // a*x + b = y
+        // c*x + d = y
+        //
+        // x = (d-b)/(a-c)
+        // y = a*x + b
+
+        if(edge1Vertex1->getX() > edge1Vertex2->getX()) {
+            Vertex* tmp = edge1Vertex1;
+            edge1Vertex1 = edge1Vertex2;
+            edge1Vertex2 = tmp;
+        }
+
+        float a = (edge1Vertex2->getY() - edge1Vertex1->getY()) / (edge1Vertex2->getX() - edge1Vertex1->getX());
+        float b = edge1Vertex1->getY() - a * edge1Vertex1->getX();
+
+        if(edge2Vertex1->getX() > edge2Vertex2->getX()) {
+            Vertex* tmp = edge2Vertex1;
+            edge2Vertex1 = edge2Vertex2;
+            edge2Vertex2 = tmp;
+        }
+        float c = (edge2Vertex2->getY() - edge2Vertex1->getY()) / (edge2Vertex2->getX() - edge2Vertex1->getX());
+        float d = edge2Vertex1->getY() - c * edge2Vertex1->getX();
+
+        float x = (d-b) / (a-c);
+        if((edge1Vertex1->getX() + 0.001f < x) && (x < edge1Vertex2->getX() - 0.001f )
+            && (edge2Vertex1->getX() + 0.001f  < x) && (x < edge2Vertex2->getX() - 0.001f )) {
+            std::cerr << "intersection between: " << *this << " and " << *edge << " at ";
+            std::cerr << ".." << x << ", " << (a*x+b) << std::endl;
+            return true;
+        } else {
+            return false;
+        }
+    }
+}

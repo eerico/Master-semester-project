@@ -57,6 +57,13 @@ private:
     void replaceParentByChild(Intersection& intersection);
 
     void addChildIntoVector(Edge* parent, std::vector< Edge* >* vector);
+
+    /**
+     * @brief isActivePlanValid
+     * Test if the current active plan is valid (if there is no self intersection)
+     * @return if the active plan is valid
+     */
+    bool isActivePlanValid();
 };
 
 #endif // RECONSTRUCTION3D_H

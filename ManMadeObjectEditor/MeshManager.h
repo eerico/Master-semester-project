@@ -99,6 +99,8 @@ public:
      */
     std::vector<std::vector<Vertex * > > &getPlans();
 
+    std::vector<std::vector<Vertex * > > &getChains();
+
 signals:
     /**
      * @brief newFloorPlan
@@ -135,6 +137,9 @@ private:
 
     // a vector that contain all floor plan above the first one
     std::vector< std::vector< Vertex* > > plans;
+
+    // a vector that contain all chains for debugging
+    std::vector< std::vector< Vertex* > > chains;
 };
 
 #endif // MESH_H

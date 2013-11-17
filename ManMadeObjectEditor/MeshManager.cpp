@@ -265,3 +265,7 @@ std::vector< std::vector< Vertex* > >& MeshManager::getPlans() {
     return plans;
 }
 
+std::vector< std::vector< Vertex* > >& MeshManager::getChains() {
+    return chains;
+}
+

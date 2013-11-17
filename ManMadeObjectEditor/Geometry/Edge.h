@@ -103,6 +103,15 @@ public:
     Edge* getChild2();
     void setChild2(Edge* child);
 
+    /**
+     * @brief existIntersection
+     * Test in there exist an interection between this edge and the edge
+     * passed in parameter
+     * @param edge
+     * @return if there is an interection
+     */
+    bool existIntersection(Edge* edge);
+
     friend std::ostream& operator<< (std::ostream& out, Edge& v);
 
 private:

@@ -55,6 +55,7 @@ Chain::Chain(Intersection intersection, std::vector<Edge *> *activePlan, std::ve
     }
 }
 
+
 void Chain::interChainHandling()
 {
     // le code est faux mais idée est juste. 1 edge se split en 2 et on reconstruit en dessus mais comment update dans

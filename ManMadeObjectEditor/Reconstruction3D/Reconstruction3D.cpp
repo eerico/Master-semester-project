@@ -208,6 +208,11 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
                 }
             }
 
+            if (!isActivePlanValid()) {
+                // see post inter chain intersection
+                // TODO
+            }
+
             std::cerr << "after update wih correction" << std::endl;
             printActivePlan();
             std::cerr << "......................................................................." << std::endl;
@@ -425,4 +430,18 @@ void Reconstruction3D::removeDuplicateEdges(Intersection& intersection)
             }
         }
     }
+}
+
+bool Reconstruction3D::isActivePlanValid() {
+    unsigned int size = activePlan->size();
+    for(unsigned int i(0); i < size; ++i) {
+        Edge* edge1 = (*activePlan)[i];
+        for(unsigned int j(i+1); j < size; ++j) {
+            Edge* edge2 = (*activePlan)[j];
+            if (edge1->existIntersection(edge2)) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
