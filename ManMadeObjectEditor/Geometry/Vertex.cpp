@@ -159,6 +159,14 @@ void Vertex::setValid(bool valid) {
     this->valid = valid;
 }
 
+float Vertex::distance(Vertex *vertex) {
+    float deltaX = x - vertex->getX();
+    float deltaY = y - vertex->getY();
+    float deltaZ = z - vertex->getZ();
+
+    return std::sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+}
+
 std::ostream& operator<<(std::ostream& out, Vertex& v) {
     out << "(" << v.getX() << ", " << v.getY() << ", " << v.getZ() << ")";
     return out;

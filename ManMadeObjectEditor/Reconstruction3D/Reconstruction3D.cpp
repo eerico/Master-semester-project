@@ -20,7 +20,7 @@ void Reconstruction3D::reconstruct()
     //main loop
     addEdgeDirectionEvent();
     computeIntersection();
-    while(priorityQueue->size() > 0) {
+    while((priorityQueue->size() > 0) && !currentChain->isEmpty()) {
         Intersection event = priorityQueue->top();
         priorityQueue->pop();
         handleEvent(event);

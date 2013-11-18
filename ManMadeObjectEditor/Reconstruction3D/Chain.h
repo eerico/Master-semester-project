@@ -16,10 +16,12 @@ public:
     void interChainHandling();
     std::vector<std::vector<Edge *>* >* getChains();
     void printChain();
+    bool isEmpty();
 
 private:
     void splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2);
     void addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3);
+    void createTwoChain(Edge* edgeToSplit, Vertex* corner);
 
     std::vector< std::vector< Edge* >* >* chains;
     Chain* previousChains;

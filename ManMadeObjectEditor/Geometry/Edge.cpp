@@ -4,7 +4,7 @@
 
 Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
     :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
-    , oldVertex1(vertex1), oldVertex2(vertex2), child1(0), child2(0)
+    , oldVertex1(vertex1), oldVertex2(vertex2), child1(0), child2(0), parent(0)
 {
     edgePen.setWidth(3);
 }
@@ -203,6 +203,14 @@ bool Edge::hasChild() {
     return child1 != 0 || child2 != 0;
 }
 
+Edge* Edge::getParent() {
+     return parent;
+}
+
+void Edge::setParent(Edge *parent) {
+    this->parent = parent;
+}
+
 bool Edge::existIntersection(Edge *edge) {
     if (this->isParallel(edge)) {
         return false;
@@ -212,7 +220,7 @@ bool Edge::existIntersection(Edge *edge) {
         Vertex* edge2Vertex1 = edge->getVertex1();
         Vertex* edge2Vertex2 = edge->getVertex2();
 
-        // compute intersectino between two lines
+        // compute intersection between two lines
         // thus solve these equations:
         // a*x + b = y
         // c*x + d = y

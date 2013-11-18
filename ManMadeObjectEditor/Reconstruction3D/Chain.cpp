@@ -6,12 +6,41 @@ Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
     //std::vector< std::vector< Edge* >* > chains;
     std::vector< Edge* >* chain = new std::vector< Edge* >;
 
+    Vertex* firstCloneVertex;
+    Vertex* previousVertex;
+    Edge* previousEdge;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
         Edge* currentEdge = currentVertex->getEdge2();
-        Edge* clone = new Edge(currentEdge->getVertex1(), currentEdge->getVertex2(), currentEdge->getProfile());
-        chain->push_back(clone);
+
+        Edge* cloneEdge = new Edge(currentEdge->getVertex1(), currentEdge->getVertex2(), currentEdge->getProfile());
+        Vertex* cloneVertex1 = new Vertex(currentVertex->getX(), currentVertex->getY(), currentVertex->getZ());
+
+        cloneVertex1->setEdge2(cloneEdge);
+        cloneEdge->setVertex1(cloneVertex1);
+
+        if(i > 0) {
+            cloneVertex1->setEdge1(previousEdge);
+            cloneVertex1->setNeighbor1(previousVertex);
+            previousVertex->setNeighbor2(cloneVertex1);
+            previousEdge->setVertex2(cloneVertex1);
+        } else {
+            firstCloneVertex = cloneVertex1;
+        }
+
+        previousVertex = cloneVertex1;
+        previousEdge = cloneEdge;
+
+        chain->push_back(cloneEdge);
         currentVertex = currentVertex->getNeighbor2();
     }
+
+    firstCloneVertex->setEdge1(previousEdge);
+    firstCloneVertex->setNeighbor1(previousVertex);
+    previousVertex->setNeighbor2(firstCloneVertex);
+    previousEdge->setVertex2(firstCloneVertex);
+
+
+
     chains = new std::vector< std::vector< Edge* >* >;
     chains->push_back(chain);
 }
@@ -19,6 +48,8 @@ Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
 Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * >* triangles)
     :previousChains(previousChains), triangles(triangles)
 {
+    // Peu etre que sa marche pas correctement de comment on creer les sub chaine, a verifier !!
+
     chains = new std::vector< std::vector< Edge* >* >;
     std::vector< Edge* >* currentSubChain;
 
@@ -37,6 +68,8 @@ Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * 
         Profile* previousProfile;
         Vertex* newVertex;
         Edge* newEdge;
+        Edge* firstPreviousEdge;
+
         for(unsigned int edgeIndex(0); edgeIndex < numberEdge; ++edgeIndex) {
 
             Edge* currentEdge = (*edges)[edgeIndex];
@@ -58,14 +91,25 @@ Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * 
 
             if (edgeIndex > 0) {
                 newEdge = new Edge(previousNewVertex, newVertex, previousProfile);
+
+                previousEdge->setChild1(newEdge);
+                newEdge->setParent(previousEdge);
+
+                //for debugging
+                //addNewTriangle(newEdge->getVertex1(), newEdge->getVertex2(), new Vertex(newEdge->getVertex1()->getX() + 0.05f, newEdge->getVertex1()->getY() + 0.05f, newEdge->getVertex1()->getZ() + 0.01f));
+                //
+
+
                 previousNewVertex->setEdge2(newEdge);
                 previousNewVertex->setNeighbor2(newVertex);
                 newVertex->setEdge1(newEdge);
                 newVertex->setNeighbor1(previousNewVertex);
 
+
                 currentSubChain->push_back(newEdge);
             } else {
                 firstNewVertex = newVertex;
+                firstPreviousEdge = previousEdge;
             }
 
             previousNewVertex = newVertex;
@@ -73,6 +117,15 @@ Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * 
         }
 
         newEdge = new Edge(previousNewVertex, firstNewVertex, previousProfile);
+
+
+
+        //for debugging
+        //addNewTriangle(newEdge->getVertex1(), newEdge->getVertex2(), new Vertex(newEdge->getVertex1()->getX() + 0.05f, newEdge->getVertex1()->getY() + 0.05f, newEdge->getVertex1()->getZ() + 0.01f));
+        //
+        firstPreviousEdge->setChild1(newEdge);
+        newEdge->setParent(firstPreviousEdge);
+
         previousNewVertex->setEdge2(newEdge);
         previousNewVertex->setNeighbor2(firstNewVertex);
         firstNewVertex->setEdge1(newEdge);
@@ -83,197 +136,137 @@ Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * 
     }
 }
 
-
-void Chain::interChainHandling()
-{
-    // le code est faux mais idée est juste. 1 edge se split en 2 et on reconstruit en dessus mais comment update dans
-    // la priority queue pour chaque intersection ?
-    //
-
-
-
-    // on suppose que les chaines sont bien successive...
-    /*unsigned int chainsSize = chains.size();
-    if (chainsSize < 2) {
-        return;
-    }
-    for(unsigned int i(0); i < chainsSize; i++) {
-        std::vector< Edge* >* chain1 = chains[i];
-        std::vector< Edge* >* chain2 = chains[(i+1) % chainsSize];
-
-        Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
-
-        Edge* lastEdgeChain1(0);
-        Edge* firstEdgeChain2(0);
-
-        if(chain1->size() == 1) {
-            Edge* newEdge1(0);
-            Edge* newEdge2(0);
-
-            Edge* chainEdge = (*chain1)[0];
-            splitEdgeAtCorner(chainEdge, newEdge1, newEdge2);
-
-            chainEdge->invalid();
-            addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
-
-            chain1->pop_back();
-            chain1->push_back(newEdge1);
-            chain1->push_back(newEdge2);
-            lastEdgeChain1 = newEdge2;
-        } else {
-            lastEdgeChain1 = (*chain1)[1];
-        }
-
-        if(chain2->size() == 1) {
-            Edge* newEdge1(0);
-            Edge* newEdge2(0);
-
-            Edge* chainEdge = (*chain2)[0];
-            splitEdgeAtCorner(chainEdge, newEdge1, newEdge2);
-
-            chainEdge->invalid();
-            addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
-
-            chain2->pop_back();
-            chain2->push_back(newEdge1);
-            chain2->push_back(newEdge2);
-            firstEdgeChain2 = newEdge1;
-        } else {
-            firstEdgeChain2 = (*chain2)[0];
-        }
-        lastEdgeChain1->setVertex1(intersectionVertex);
-        firstEdgeChain2->setVertex2(intersectionVertex);
-
-        intersectionVertex->setEdge1(firstEdgeChain2);
-        intersectionVertex->setEdge2(lastEdgeChain1);
-    }*/
-}
-
+// test if there is some edge collapsing
 void Chain::intraChainHandling()
 {
+    unsigned int numberSubChains = chains->size();
+    for(unsigned int subChainIndex(0); subChainIndex < numberSubChains; ++subChainIndex) {
+        std::vector< Edge* >* edges = (*chains)[subChainIndex];
+        unsigned int numberEdges = edges->size();
 
-    /*unsigned int chainsSize = chains.size();
-    for(unsigned int j(0); j < chainsSize; ++j) {
-        std::vector< Edge* >* currentChain = chains[j];
-        unsigned int currentChainSize = currentChain->size();
+        for(unsigned int edgeIndex(0); edgeIndex < numberEdges; ++edgeIndex) {
+            Edge* currentEdge = (*edges)[edgeIndex];
+            if(currentEdge->getVertex1()->distance(currentEdge->getVertex2()) < 0.001f) {
+                edges->erase(edges->begin() + edgeIndex);
+                edgeIndex--;
+                numberEdges--;
 
-        if (currentChainSize > 2) {
+                Edge* parent = currentEdge->getParent();
+                addNewTriangle(currentEdge->getVertex1(), parent->getVertex1(), parent->getVertex2());
 
-            Edge* firstEdge = (*currentChain)[0];
-            Edge* lastEdge = (*currentChain)[currentChainSize - 1];
+            } else {
+                Edge* parent = currentEdge->getParent();
+                if (parent->getChild2() != 0) {
 
-            Edge* firstNeighbor = (*currentChain)[1];
-            Edge* lastNeighbor = (*currentChain)[currentChainSize - 2];
-
-            if(!firstEdge->isValid() || !lastEdge->isValid() || !firstNeighbor->isValid() || !lastNeighbor->isValid()) {
-                break;
-            }
-
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
-
-            // first check if the chain is circular. If it is the case, all edges are interior edges that will shrink to 0
-            if (firstEdge->getVertex1() == lastEdge->getVertex2()) {
-                //invalid all interior edges
-                while(!currentChain->empty()){
-                    Edge* edgeInvalid = (*currentChain)[currentChain->size()-1];
-                    currentChain->pop_back();
-                    edgeInvalid->invalid();
-
-                    addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
+                } else {
+                    addNewTriangle(parent->getVertex1(), parent->getVertex2(), currentEdge->getVertex1());
+                    addNewTriangle(parent->getVertex2(), currentEdge->getVertex2(), currentEdge->getVertex1() );
                 }
-                chains.erase(chains.begin() + j);
-                continue;
             }
+        }
 
-
-            addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
-            addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
-
-            //find which vertex will be reassigned and reassigned it
-            Vertex* vertex1 = firstEdge->getVertex1();
-            if ((vertex1 != firstNeighbor->getVertex1()) && (vertex1 != firstNeighbor->getVertex2())) {
-                firstEdge->setVertex2(intersectionVertex);
-                intersectionVertex->setEdge1(firstEdge);
-            } else {
-                firstEdge->setVertex1(intersectionVertex);
-                intersectionVertex->setEdge2(firstEdge);
-            }
-
-            //find which vertex will be reassigned and reassigned it
-            Vertex* vertex2 = lastEdge->getVertex1();
-            if ((vertex2 != lastNeighbor->getVertex1()) && (vertex2 != lastNeighbor->getVertex2())) {
-                lastEdge->setVertex2(intersectionVertex);
-                intersectionVertex->setEdge1(lastEdge);
-            } else {
-                lastEdge->setVertex1(intersectionVertex);
-                intersectionVertex->setEdge2(lastEdge);
-            }
-
-            //invalid all interior edges
-            for(unsigned int i(1); i < currentChainSize - 1; ++i) {
-                Edge* edgeInvalid = (*currentChain)[i];
-                currentChain->erase(currentChain->begin() + i);
-                i--;
-                currentChainSize--;
-                edgeInvalid->invalid();
-
-                addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
-            }
-            if(currentChain->size() == 0) {
-                chains.erase(chains.begin() + j);
-            }
-        } else if (currentChainSize == 2) {
-
-            Edge* firstEdge = (*currentChain)[0];
-            Edge* lastEdge = (*currentChain)[1];
-
-            if(!firstEdge->isValid() || !lastEdge->isValid()) {
-                break;
-            }
-
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
-
-            addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
-            addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
-
-            //find which vertex will be reassigned and reassigned it
-            Vertex* vertex1 = firstEdge->getVertex1();
-            Vertex* vertex2 = firstEdge->getVertex2();
-            if ((vertex1 != lastEdge->getVertex1()) && (vertex1 != lastEdge->getVertex2())) {
-                firstEdge->setVertex2(intersectionVertex);
-                intersectionVertex->setEdge1(firstEdge);
-            } else {
-                firstEdge->setVertex1(intersectionVertex);
-                intersectionVertex->setEdge2(firstEdge);
-            }
-
-            Vertex* lastEdgeVertex = lastEdge->getVertex1();
-            if ((vertex1 != lastEdgeVertex) && (vertex2 != lastEdgeVertex)) {
-                lastEdge->setVertex2(intersectionVertex);
-                intersectionVertex->setEdge1(lastEdge);
-            } else {
-                lastEdge->setVertex1(intersectionVertex);
-                intersectionVertex->setEdge2(lastEdge);
-            }
-        } else {
-            //que faire ici ?
-            // On doit faire ce triangle la. Si le gars est seul on va le split ensuite
-            /*Edge* firstEdge = (*currentChain)[0];
-
-            if(!firstEdge->isValid()) {
-                break;
-            }
-
-            std::cerr << currentChainSize  << ": " << firstEdge->getVertex1()->getX() << ", " << firstEdge->getVertex1()->getY() << ", " << firstEdge->getVertex1()->getZ()
-                      << " - " << firstEdge->getVertex2()->getX() << ", " << firstEdge->getVertex2()->getY() << ", " << firstEdge->getVertex2()->getZ() << std::endl;
-
-            Vertex* intersectionVertex = new Vertex(intersection.x, intersection.y, intersection.z);
-
-            addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
-            firstEdge->invalid();*/
-        /*}
-    }*/
+        // if the current chain collapse to a point, then this chain disapear
+        if(edges->size() == 0) {
+            chains->erase(chains->begin() + subChainIndex);
+            subChainIndex--;
+            numberSubChains--;
+        }
+    }
 }
+
+// test if there is some edge splitting
+void Chain::interChainHandling()
+{
+    unsigned int numberSubChains = chains->size();
+    for(unsigned int subChainIndex(0); subChainIndex < numberSubChains; ++subChainIndex) {
+        std::vector< Edge* >* edges = (*chains)[subChainIndex];
+        unsigned int numberEdges = edges->size();
+
+        bool newChainCreated = false;
+
+        for(unsigned int edgeIndex(0); (edgeIndex < numberEdges) && !newChainCreated; ++edgeIndex) {
+            Edge* currentEdge = (*edges)[edgeIndex];
+            Vertex* currentVertex = currentEdge->getVertex1();
+            Edge* previousEdge = currentVertex->getEdge1();
+
+
+            for(unsigned int edgeIndex2(0); (edgeIndex2 < numberEdges) && !newChainCreated; ++edgeIndex2) {
+                Edge* edge = (*edges)[edgeIndex2];
+                if(edge == currentEdge || edge == previousEdge) {
+                    continue;
+                }
+
+                float distance = edge->distance(currentVertex);
+                if(std::abs(distance) < 0.0001f) {
+                    // then the current chain contain at least 2 chain that must be splitted
+                    // first remove the current chain
+                    chains->erase(chains->begin() + subChainIndex);
+                    // then create the two new chains
+                    createTwoChain(edge, currentVertex);
+                    newChainCreated = true;
+                    subChainIndex--;
+                    numberSubChains++;
+                }
+            }
+        }
+    }
+}
+
+void Chain::createTwoChain(Edge* edgeToSplit, Vertex* corner) {
+    Vertex* newCorner1 = new Vertex(corner->getX(), corner->getY(), corner->getZ());
+    Vertex* newCorner2 = new Vertex(corner->getX(), corner->getY(), corner->getZ());
+
+    Edge* newEdge1 = new Edge(edgeToSplit->getVertex1(), newCorner1, edgeToSplit->getProfile());
+    edgeToSplit->getVertex1()->setEdge2(newEdge1);
+    edgeToSplit->getVertex1()->setNeighbor2(newCorner1);
+
+    corner->getNeighbor2()->setNeighbor1(newCorner1);
+    corner->getEdge2()->setVertex1(newCorner1);
+
+    newCorner1->setEdge1(newEdge1);
+    newCorner1->setEdge2(corner->getEdge2());
+    newCorner1->setNeighbor1(edgeToSplit->getVertex1());
+    newCorner1->setNeighbor2(corner->getNeighbor2());
+
+
+    Edge* newEdge2 = new Edge(newCorner2, edgeToSplit->getVertex2(), edgeToSplit->getProfile());
+    edgeToSplit->getVertex2()->setEdge1(newEdge2);
+    edgeToSplit->getVertex2()->setNeighbor1(newCorner2);
+
+    corner->getNeighbor1()->setNeighbor2(newCorner2);
+    corner->getEdge1()->setVertex2(newCorner2);
+
+    newCorner2->setEdge2(newEdge2);
+    newCorner2->setEdge1(corner->getEdge1());
+    newCorner2->setNeighbor1(corner->getNeighbor1());
+    newCorner2->setNeighbor2(edgeToSplit->getVertex2());
+
+    Edge* parent = edgeToSplit->getParent();
+    parent->setChild1(newEdge1);
+    parent->setChild2(newEdge2);
+    newEdge1->setParent(parent);
+    newEdge2->setParent(parent);
+
+    //Now create the two sub chains
+    std::vector< Edge* >* subChains1 = new std::vector< Edge* >;
+
+    Vertex* vertexIterator = newCorner1;
+    do {
+        subChains1->push_back(vertexIterator->getEdge2());
+        vertexIterator = vertexIterator->getNeighbor2();
+    } while(vertexIterator != newCorner1);
+
+    std::vector< Edge* >* subChains2 = new std::vector< Edge* >;
+    vertexIterator = newCorner2;
+    do {
+        subChains2->push_back(vertexIterator->getEdge2());
+        vertexIterator = vertexIterator->getNeighbor2();
+    } while(vertexIterator != newCorner2);
+
+    chains->push_back(subChains1);
+    chains->push_back(subChains2);
+}
+
 
 void Chain::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2)
 {
@@ -306,6 +299,10 @@ void Chain::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge
 
 std::vector<std::vector<Edge *> *>* Chain::getChains() {
     return chains;
+}
+
+bool Chain::isEmpty() {
+    return chains->size() == 0;
 }
 
 void Chain::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {

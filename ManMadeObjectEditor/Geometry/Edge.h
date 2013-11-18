@@ -103,6 +103,9 @@ public:
     Edge* getChild2();
     void setChild2(Edge* child);
 
+    Edge* getParent();
+    void setParent(Edge* parent);
+
     /**
      * @brief existIntersection
      * Test in there exist an interection between this edge and the edge
@@ -133,6 +136,8 @@ private:
 
     // second child if the edge is splitted
     Edge* child2;
+
+    Edge* parent;
 
     // The associated profile
     Profile* profile;

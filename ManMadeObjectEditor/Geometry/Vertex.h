@@ -89,6 +89,8 @@ public:
      */
     Edge* removeVertex();
 
+    float distance(Vertex* vertex);
+
     friend std::ostream& operator<< (std::ostream& out, Vertex& v);
 
 private:
