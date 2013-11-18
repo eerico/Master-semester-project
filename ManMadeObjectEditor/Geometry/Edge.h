@@ -7,6 +7,7 @@
 #include <QPen>
 #include <QBrush>
 #include <ostream>
+#include <cmath>
 
 class Vertex;
 class Profile;

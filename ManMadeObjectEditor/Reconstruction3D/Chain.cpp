@@ -229,8 +229,7 @@ void Chain::interChainHandling()
                 float distance = edge->distance(currentVertex);
 
                 if(std::abs(distance) < 0.0001f) {
-                    std::cerr << "SPLIT?: " << *currentVertex << ", " << *edge << ", " << distance << std::endl;
-                    printChain();
+                    //printChain();
                     // then the current chain contain at least 2 chain that must be splitted
                     // first remove the current chain
                     chains->erase(chains->begin() + subChainIndex);
@@ -239,7 +238,7 @@ void Chain::interChainHandling()
                     newChainCreated = true;
                     subChainIndex--;
                     numberSubChains++;
-                    printChain();
+                    //printChain();
                 }
             }
         }
