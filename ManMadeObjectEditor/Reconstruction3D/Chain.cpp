@@ -174,6 +174,14 @@ void Chain::intraChainHandling()
             subChainIndex--;
             numberSubChains--;
         }
+
+        //if there is only two edge or one, they close the object with an edge
+        if(edges->size() == 2 || edges->size() == 1) {
+            chains->erase(chains->begin() + subChainIndex);
+            subChainIndex--;
+            numberSubChains--;
+        }
+
     }
 }
 
@@ -268,36 +276,6 @@ void Chain::createTwoChain(Edge* edgeToSplit, Vertex* corner) {
 
     chains->push_back(subChains1);
     chains->push_back(subChains2);
-}
-
-
-void Chain::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2)
-{
-    /*Vertex* cornerVertex = new Vertex(intersection.x, intersection.y, intersection.z);
-
-    newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
-    newEdge2 = new Edge(cornerVertex, edgeToSplit->getVertex2(), edgeToSplit->getProfile());
-
-    cornerVertex->setEdge1(newEdge1);
-    cornerVertex->setEdge2(newEdge2);
-
-    //remove invalid edge from the active plan and add the two new edges
-    unsigned int activePlanSize = activePlan->size();
-    bool found(false);
-    for(unsigned int i(0); (i < activePlanSize) && !found; ++i) {
-        Edge* currentEdge = (*activePlan)[i];
-        if(currentEdge == edgeToSplit) {
-            activePlan->erase(activePlan->begin() + i);
-            //delete currentEdge;
-
-            currentEdge->setChild1(newEdge1);
-            currentEdge->setChild2(newEdge2);
-
-            activePlan->insert(activePlan->begin() + i, newEdge1);
-            activePlan->insert(activePlan->begin() + i + 1, newEdge2);
-            found = true;
-        }
-    }*/
 }
 
 std::vector<std::vector<Edge *> *>* Chain::getChains() {

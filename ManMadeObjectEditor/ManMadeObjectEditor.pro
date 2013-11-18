@@ -32,9 +32,9 @@ SOURCES +=\
     Reconstruction3D/Reconstruction3D.cpp \
     Reconstruction3D/Plan.cpp \
     Reconstruction3D/Chain.cpp \
-    Reconstruction3D_old/Reconstruction3D.cpp \
-    Reconstruction3D_old/Plan.cpp \
-    Reconstruction3D_old/Chain.cpp
+    #Reconstruction3D_old/Reconstruction3D.cpp \
+    #Reconstruction3D_old/Plan.cpp \
+    #Reconstruction3D_old/Chain.cpp
 
 HEADERS  += \
     FloorPlanAndProfileExtractor.h \
@@ -57,11 +57,11 @@ HEADERS  += \
     Reconstruction3D/Intersection.h \
     Reconstruction3D/IntersectionComparator.h \
     Reconstruction3D/Chain.h \
-    Reconstruction3D_old/Reconstruction3D.h \
-    Reconstruction3D_old/Plan.h \
-    Reconstruction3D_old/IntersectionComparator.h \
-    Reconstruction3D_old/Intersection.h \
-    Reconstruction3D_old/Chain.h
+    #Reconstruction3D_old/Reconstruction3D.h \
+    #Reconstruction3D_old/Plan.h \
+    #Reconstruction3D_old/IntersectionComparator.h \
+    #Reconstruction3D_old/Intersection.h \
+    #Reconstruction3D_old/Chain.h
 
 #QT *= xml opengl
 
