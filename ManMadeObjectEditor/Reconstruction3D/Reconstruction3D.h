@@ -37,8 +37,6 @@ private:
 
     void handleEvent(Intersection& intersection);
 
-    void eventClustering(Intersection& intersection);
-
     void edgeDirectionHandling(Intersection& intersection);
 
 };

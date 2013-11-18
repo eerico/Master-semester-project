@@ -139,7 +139,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 return;
             }
             //std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
-            eventClustering(intersection);
 
             Chain* chain = new Chain(intersection.z, currentChain, triangles);
             //chain->printChain();
@@ -151,7 +150,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             currentChain = chain;
 
             //std::cerr << "after update" << std::endl;
-            currentChain->printChain();
+            //currentChain->printChain();
             std::cerr << "......................................................................." << std::endl;
             break;
         }
@@ -219,23 +218,4 @@ void Reconstruction3D::edgeDirectionHandling(Intersection &intersection) ///////
 
     edge->setVertex1(intersectionVertex);
     edge->setVertex2(intersectionVertex2);*/
-}
-
-void Reconstruction3D::eventClustering(Intersection& intersection) ////////////////////
-{
-    float z = intersection.z;
-
-    float delta1(0.01f);
-
-    bool stop(false);
-
-    while(!stop && (priorityQueue->size() > 0)){
-        Intersection event = priorityQueue->top();
-
-        if ((event.eventType != EdgeDirection) && (std::abs(event.z - z) < delta1)) {
-            priorityQueue->pop();
-        } else {
-            stop = true;
-        }
-    }
 }

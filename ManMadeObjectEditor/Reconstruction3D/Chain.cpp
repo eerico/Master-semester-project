@@ -157,6 +157,12 @@ void Chain::intraChainHandling()
                     addNewTriangle(currentEdge->getVertex1(), parent->getVertex1(), parent->getVertex2());
                 #endif
 
+                #ifdef DEBUG
+                    addNewTriangle(new Vertex(currentEdge->getVertex1()->getX() - 0.05f, currentEdge->getVertex1()->getY() + 0.05f, currentEdge->getVertex1()->getZ() + 0.01f),
+                                   new Vertex(currentEdge->getVertex1()->getX() + 0.05f, currentEdge->getVertex1()->getY() + 0.05f, currentEdge->getVertex1()->getZ() + 0.01f),
+                                   new Vertex(currentEdge->getVertex1()->getX() + 0.05f, currentEdge->getVertex1()->getY() - 0.05f, currentEdge->getVertex1()->getZ() + 0.01f));
+                #endif
+
                 Vertex* vertex1 = currentEdge->getVertex1();
                 Vertex* vertex2 = currentEdge->getVertex2();
                 Vertex* newCorner = new Vertex(vertex1->getX(), vertex1->getY(), vertex1->getZ());
@@ -178,7 +184,6 @@ void Chain::intraChainHandling()
                     addNewTriangle(parent->getVertex1(), parent->getVertex2(), currentEdge->getVertex1());
                     addNewTriangle(parent->getVertex2(), currentEdge->getVertex2(), currentEdge->getVertex1());
                 #endif
-
             }
         }
 
@@ -222,7 +227,10 @@ void Chain::interChainHandling()
                 }
 
                 float distance = edge->distance(currentVertex);
+
                 if(std::abs(distance) < 0.0001f) {
+                    std::cerr << "SPLIT?: " << *currentVertex << ", " << *edge << ", " << distance << std::endl;
+                    printChain();
                     // then the current chain contain at least 2 chain that must be splitted
                     // first remove the current chain
                     chains->erase(chains->begin() + subChainIndex);
@@ -231,7 +239,7 @@ void Chain::interChainHandling()
                     newChainCreated = true;
                     subChainIndex--;
                     numberSubChains++;
-                    //printChain();
+                    printChain();
                 }
             }
         }
@@ -239,6 +247,7 @@ void Chain::interChainHandling()
 }
 
 void Chain::createTwoChain(Edge* edgeToSplit, Vertex* corner) {
+
     Vertex* newCorner1 = new Vertex(corner->getX(), corner->getY(), corner->getZ());
     Vertex* newCorner2 = new Vertex(corner->getX(), corner->getY(), corner->getZ());
 

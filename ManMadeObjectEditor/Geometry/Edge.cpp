@@ -117,6 +117,7 @@ float Edge::distance(Edge* edge) {
 
 float Edge::distance(Vertex* vertex) {
     // compute the edge vertex distance
+    // only on X and Y coordinates
 
     float fromX = this->getVertex1()->getX();
     float fromY = this->getVertex1()->getY();
