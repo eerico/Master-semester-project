@@ -157,6 +157,20 @@ void Chain::intraChainHandling()
                     addNewTriangle(currentEdge->getVertex1(), parent->getVertex1(), parent->getVertex2());
                 #endif
 
+                Vertex* vertex1 = currentEdge->getVertex1();
+                Vertex* vertex2 = currentEdge->getVertex2();
+                Vertex* newCorner = new Vertex(vertex1->getX(), vertex1->getY(), vertex1->getZ());
+
+                vertex1->getNeighbor1()->setNeighbor2(newCorner);
+                vertex2->getNeighbor2()->setNeighbor1(newCorner);
+                vertex1->getEdge1()->setVertex2(newCorner);
+                vertex2->getEdge2()->setVertex1(newCorner);
+
+                newCorner->setEdge1(vertex1->getEdge1());
+                newCorner->setEdge2(vertex2->getEdge2());
+                newCorner->setNeighbor1(vertex1->getNeighbor1());
+                newCorner->setNeighbor2(vertex2->getNeighbor2());
+
             } else {
                 Edge* parent = currentEdge->getParent();
 
