@@ -217,6 +217,7 @@ void Chain::interChainHandling()
                     newChainCreated = true;
                     subChainIndex--;
                     numberSubChains++;
+                    //printChain();
                 }
             }
         }
@@ -302,7 +303,7 @@ void Chain::printChain() {
     foreach(std::vector< Edge* >* vector, *chains) {
         std::cerr << "chain " << i << std::endl;
         foreach(Edge* edge, *vector) {
-            std::cerr << *edge << "::";
+            std::cerr << *edge->getVertex1() << "\n";
         }
         i++;
         std::cerr << std::endl;

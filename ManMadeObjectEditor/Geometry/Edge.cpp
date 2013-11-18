@@ -133,27 +133,44 @@ float Edge::distance(Vertex* vertex) {
     float toYVertex = vertex->getY();
 
     // define the direction vector from the edge to the vertex
-    float vectorVertexEdgeX = toXVertex - fromX;
-    float vectorVertexEdgeY = toYVertex - fromY;
+    float vectorVertexEdgeX1 = toXVertex - fromX;
+    float vectorVertexEdgeY1 = toYVertex - fromY;
 
-    Utils::normalize(vectorVertexEdgeX, vectorVertexEdgeY);
+    // define the direction vector from the edge to the vertex
+    float vectorVertexEdgeX2 = toXVertex - toX;
+    float vectorVertexEdgeY2 = toYVertex - toY;
 
-    //if the two vectors are identical, the distance is 0
+    Utils::normalize(vectorVertexEdgeX1, vectorVertexEdgeY1);
+    Utils::normalize(vectorVertexEdgeX2, vectorVertexEdgeY2);
+
+    /*//if the two vectors are identical, the distance is 0
     if ((std::abs(vectorEdgeX - vectorVertexEdgeX) < 0.001f) && (std::abs(vectorEdgeY - vectorVertexEdgeY) < 0.001f)) {
         return 0.0f;
-    }
+    }*/
 
     // use trigonometry to find the edge vertex distance
 
     // ||a||*||b||*cos, a = b = 1 because we normalized each vector before
-    float dotProduct = Utils::dotProduct(vectorEdgeX, vectorEdgeY, vectorVertexEdgeX, vectorVertexEdgeY);
+    float dotProduct1 = Utils::dotProduct(vectorEdgeX, vectorEdgeY, vectorVertexEdgeX1, vectorVertexEdgeY1);
+    float dotProduct2 = Utils::dotProduct(-vectorEdgeX, -vectorEdgeY, vectorVertexEdgeX2, vectorVertexEdgeY2);
 
-    float angle = std::acos(dotProduct);
-    float hypotenuse = Utils::distance(fromX, fromY, toXVertex, toYVertex);
-    // opposite = edge vertex distance = sin * hypotenuse
-    float sinTimesHypotenuse = std::sin(angle) * hypotenuse;
+    // we compute the distance between a vertex and an edge, then if the projected vertex is not
+    // on the edge, we compute the distance with the closest vertex on the edge and the vertex
+    float angle1 = std::acos(dotProduct1);
+    float angle2 = std::acos(dotProduct2);
 
-    return sinTimesHypotenuse;
+    if (angle1 > M_PI_2) {
+        return Utils::distance(toXVertex, toYVertex, fromX, fromY);
+    } else if (angle2 > M_PI_2) {
+        return Utils::distance(toXVertex, toYVertex, toX, toY);
+    } else {
+
+        float hypotenuse = Utils::distance(fromX, fromY, toXVertex, toYVertex);
+        // opposite = edge vertex distance = sin * hypotenuse
+        float sinTimesHypotenuse = std::sin(angle1) * hypotenuse;
+
+        return sinTimesHypotenuse;
+    }
 }
 
 bool Edge::isValid() {

@@ -36,6 +36,9 @@ void Reconstruction3D::reconstruct()
 
 void Reconstruction3D::computeIntersection() ////////////////
 {
+
+    //TODO compute les intersections dans les sous chaine, pas dans la unrolled
+
     std::vector< std::vector< Edge* >* >* chains = currentChain->getChains();
     std::vector< Edge* > unrolledChain;
     unsigned int numberChain = chains->size();
@@ -135,11 +138,11 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             if(intersection.z == 0.0f) {
                 return;
             }
-            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            //std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             eventClustering(intersection);
 
             Chain* chain = new Chain(intersection.z, currentChain, triangles);
-            chain->printChain();
+            //chain->printChain();
 
             chain->intraChainHandling();
             chain->interChainHandling();
@@ -147,7 +150,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             delete currentChain;
             currentChain = chain;
 
-            std::cerr << "after update" << std::endl;
+            //std::cerr << "after update" << std::endl;
             currentChain->printChain();
             std::cerr << "......................................................................." << std::endl;
             break;
@@ -229,7 +232,6 @@ void Reconstruction3D::eventClustering(Intersection& intersection) /////////////
     while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
 
-        //std::cerr << "      MM: " << std::abs(event.y - y) << ", " << Utils::distance(event.x, event.z, intersection.x, intersection.z) << std::endl;
         if ((event.eventType != EdgeDirection) && (std::abs(event.z - z) < delta1)) {
             priorityQueue->pop();
         } else {

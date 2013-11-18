@@ -168,6 +168,6 @@ float Vertex::distance(Vertex *vertex) {
 }
 
 std::ostream& operator<<(std::ostream& out, Vertex& v) {
-    out << "(" << v.getX() << ", " << v.getY() << ", " << v.getZ() << ")";
+    out << v.getX() << "\t" << v.getY() << "\t" << v.getZ();
     return out;
 }
