@@ -15,7 +15,7 @@ void Reconstruction3D::reconstruct()
 {
     //set the current chain
     currentChain = new Chain(floorPlan, floorPlanSize);
-    currentChain->printChain();
+    //currentChain->printChain();
 
     //main loop
     addEdgeDirectionEvent();
@@ -151,7 +151,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
             //std::cerr << "after update" << std::endl;
             //currentChain->printChain();
-            std::cerr << "......................................................................." << std::endl;
+            //std::cerr << "......................................................................." << std::endl;
             break;
         }
     }

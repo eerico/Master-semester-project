@@ -173,12 +173,8 @@ float Edge::distance(Vertex* vertex) {
         dotProduct2 = 1.0f;
     }
 
-
     float angle2 = std::acos(dotProduct2);
 
-    if (std::abs(vertex->getX() -0.575153f) < 0.0001f) {
-        std::cerr << "mmamsd  " << angle1 << " <= " << dotProduct1 << ", " << angle2 << " <= " << dotProduct2 << std::endl;
-    }
     if (angle1 > M_PI_2) {
         return Utils::distance(toXVertex, toYVertex, fromX, fromY);
     } else if (angle2 > M_PI_2) {

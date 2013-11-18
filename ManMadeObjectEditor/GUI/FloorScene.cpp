@@ -219,6 +219,7 @@ void FloorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
         //update the coordinate of the currently moving vertex
         QRectF thisSize = this->sceneRect();
         Utils::adjustCoordinatesSceneTo3D(x, y, thisSize.width(), thisSize.height());
+        std::cerr << "Vertex moved: " << x << ", " << y << std::endl;
         currentlyMovingVertex->setX(x);
         currentlyMovingVertex->setY(y);
     }
