@@ -187,20 +187,30 @@ void Chain::intraChainHandling()
             }
         }
 
-        // if the current chain collapse to a point, then this chain disapear
-        if(edges->size() == 0) {
+        // if the current chain collapse to a point, then this chain disapear, thus edges->size == 0
+        // if there is only two edge or one, they close the object with an edge
+        if(edges->size() < 3) {
             chains->erase(chains->begin() + subChainIndex);
             subChainIndex--;
             numberSubChains--;
+        } else {
+            //check if the remaining edges are all on a same line and thus close the chain
+            Edge* edge = (*edges)[0];
+            numberEdges = edges->size();
+            bool allParallel = true;
+            for(unsigned int i(1); (i < numberEdges) && allParallel; ++i) {
+                Edge* comparedEdge = (*edges)[i];
+                if(!edge->isParallel(comparedEdge)) {
+                    allParallel = false;
+                }
+            }
+            //if all edge inside a chain are parallel, they closed the chain
+            if(allParallel) {
+                chains->erase(chains->begin() + subChainIndex);
+                subChainIndex--;
+                numberSubChains--;
+            }
         }
-
-        //if there is only two edge or one, they close the object with an edge
-        if(edges->size() == 2 || edges->size() == 1) {
-            chains->erase(chains->begin() + subChainIndex);
-            subChainIndex--;
-            numberSubChains--;
-        }
-
     }
 }
 

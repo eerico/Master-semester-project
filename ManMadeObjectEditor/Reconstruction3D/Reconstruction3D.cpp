@@ -138,7 +138,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             if(intersection.z == 0.0f) {
                 return;
             }
-            //std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
 
             Chain* chain = new Chain(intersection.z, currentChain, triangles);
             //chain->printChain();
@@ -150,8 +150,8 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             currentChain = chain;
 
             //std::cerr << "after update" << std::endl;
-            //currentChain->printChain();
-            //std::cerr << "......................................................................." << std::endl;
+            currentChain->printChain();
+            std::cerr << "......................................................................." << std::endl;
             break;
         }
     }
