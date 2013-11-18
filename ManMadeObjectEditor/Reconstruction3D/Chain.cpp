@@ -1,5 +1,7 @@
 #include "Chain.h"
 
+//#define DEBUG
+
 Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
 {
     Vertex* currentVertex = floorPlan;
@@ -95,9 +97,9 @@ Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * 
                 previousEdge->setChild1(newEdge);
                 newEdge->setParent(previousEdge);
 
-                //for debugging
-                //addNewTriangle(newEdge->getVertex1(), newEdge->getVertex2(), new Vertex(newEdge->getVertex1()->getX() + 0.05f, newEdge->getVertex1()->getY() + 0.05f, newEdge->getVertex1()->getZ() + 0.01f));
-                //
+                #ifdef DEBUG
+                    addNewTriangle(newEdge->getVertex1(), newEdge->getVertex2(), new Vertex(newEdge->getVertex1()->getX() + 0.05f, newEdge->getVertex1()->getY() + 0.05f, newEdge->getVertex1()->getZ() + 0.01f));
+                #endif
 
 
                 previousNewVertex->setEdge2(newEdge);
@@ -118,11 +120,10 @@ Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * 
 
         newEdge = new Edge(previousNewVertex, firstNewVertex, previousProfile);
 
+        #ifdef DEBUG
+            addNewTriangle(newEdge->getVertex1(), newEdge->getVertex2(), new Vertex(newEdge->getVertex1()->getX() + 0.05f, newEdge->getVertex1()->getY() + 0.05f, newEdge->getVertex1()->getZ() + 0.01f));
+        #endif
 
-
-        //for debugging
-        //addNewTriangle(newEdge->getVertex1(), newEdge->getVertex2(), new Vertex(newEdge->getVertex1()->getX() + 0.05f, newEdge->getVertex1()->getY() + 0.05f, newEdge->getVertex1()->getZ() + 0.01f));
-        //
         firstPreviousEdge->setChild1(newEdge);
         newEdge->setParent(firstPreviousEdge);
 
@@ -152,16 +153,18 @@ void Chain::intraChainHandling()
                 numberEdges--;
 
                 Edge* parent = currentEdge->getParent();
-                addNewTriangle(currentEdge->getVertex1(), parent->getVertex1(), parent->getVertex2());
+                #ifndef DEBUG
+                    addNewTriangle(currentEdge->getVertex1(), parent->getVertex1(), parent->getVertex2());
+                #endif
 
             } else {
                 Edge* parent = currentEdge->getParent();
-                if (parent->getChild2() != 0) {
 
-                } else {
+                #ifndef DEBUG
                     addNewTriangle(parent->getVertex1(), parent->getVertex2(), currentEdge->getVertex1());
-                    addNewTriangle(parent->getVertex2(), currentEdge->getVertex2(), currentEdge->getVertex1() );
-                }
+                    addNewTriangle(parent->getVertex2(), currentEdge->getVertex2(), currentEdge->getVertex1());
+                #endif
+
             }
         }
 
