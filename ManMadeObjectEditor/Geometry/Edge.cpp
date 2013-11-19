@@ -155,9 +155,7 @@ float Edge::distance(Vertex* vertex) {
     float dotProduct1 = Utils::dotProduct(vectorEdgeX, vectorEdgeY, vectorVertexEdgeX1, vectorVertexEdgeY1);
     float dotProduct2 = Utils::dotProduct(-vectorEdgeX, -vectorEdgeY, vectorVertexEdgeX2, vectorVertexEdgeY2);
 
-    // we compute the distance between a vertex and an edge, then if the projected vertex is not
-    // on the edge, we compute the distance with the closest vertex on the edge and the vertex
-    float angle1 = std::acos(dotProduct1);
+
 
     // It can happen because of the floating point representation
     if(dotProduct1 < -1.0f) {
@@ -173,6 +171,9 @@ float Edge::distance(Vertex* vertex) {
         dotProduct2 = 1.0f;
     }
 
+    // we compute the distance between a vertex and an edge, then if the projected vertex is not
+    // on the edge, we compute the distance with the closest vertex on the edge and the vertex
+    float angle1 = std::acos(dotProduct1);
     float angle2 = std::acos(dotProduct2);
 
     if (angle1 > M_PI_2) {

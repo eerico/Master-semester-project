@@ -432,8 +432,8 @@ chain 2
 */
 
 
-    Edge* e = new Edge(new Vertex(-0.200891f, -0.575153f, 0.424847f), new Vertex(0.22493f, 0.0560283f, 0.424847f));
-    Vertex* v = new Vertex(0.575153f, 0.575153f, 0.424847f);
+    Edge* e = new Edge(new Vertex(0.6332f, -0.6652f, 0.3348f), new Vertex(0.5098f, 0.6859f, 0.3348f));
+    Vertex* v = new Vertex(0.5667f, 0.0623f, 0.3348f);
     std::cerr << "--> " << e->distance(v) << std::endl;
 
 
