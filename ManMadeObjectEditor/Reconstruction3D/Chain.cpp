@@ -43,6 +43,23 @@ Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
     previousEdge->setVertex2(firstCloneVertex);
 
 
+    // check if two edge are parallel
+    for(unsigned int i(0); i < floorPlanSize ; ++i) {
+        Edge* currentEdge = (*chain)[i];
+        Edge* nextEdge = (*chain)[(i+1) % floorPlanSize];
+
+        if (currentEdge->isParallel(nextEdge)) {
+            //Vertex* vertexToRemove = currentEdge->getVertex2();
+            Vertex* vertex1 = currentEdge->getVertex1();
+            Vertex* vertex2 = nextEdge->getVertex2();
+
+            vertex1->setNeighbor2(vertex2);
+            vertex2->setNeighbor1(vertex1);
+
+            currentEdge->setVertex2(vertex2);
+            vertex2->setEdge1(currentEdge);
+        }
+    }
 
     chains = new std::vector< std::vector< Edge* >* >;
     chains->push_back(chain);
@@ -90,6 +107,7 @@ Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * 
             plan2.computePlanNormal(vertex1, vertex2, currentEdge->getProfile());
 
             Intersection newIntersection = horizontalPlan.intersect3Plans(plan1, plan2);
+
             newVertex = new Vertex(newIntersection.x, newIntersection.y, newIntersection.z);
 
             if (edgeIndex > 0) {

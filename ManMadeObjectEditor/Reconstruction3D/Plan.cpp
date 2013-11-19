@@ -113,6 +113,12 @@ void Plan::setNormal(float nx, float ny, float nz) {
     normalZ = nz;
 }
 
+void Plan::getNormal(float& nx, float& ny, float& nz) {
+    nx = normalX;
+    ny = normalY;
+    nz = normalZ;
+}
+
 void Plan::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile)
 {
     float nx(0.0f);

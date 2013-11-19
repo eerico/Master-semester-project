@@ -14,6 +14,7 @@ public:
     Intersection intersect3Plans(Plan& plan2, Plan& plan3);
 
     void setNormal(float nx, float ny, float nz);
+    void getNormal(float& nx, float& ny, float& nz);
     void computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile);
 
 private:
