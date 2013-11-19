@@ -34,6 +34,25 @@ void Reconstruction3D::reconstruct()
     }
 }
 
+/*void Reconstruction3D::eventClustering(Intersection& intersection)
+{
+    float z(intersection.z);
+
+    float delta1(0.01f);
+
+    bool stop(false);
+
+    while(!stop && (priorityQueue->size() > 0)){
+        Intersection event = priorityQueue->top();
+
+        if (std::abs(event.z - z) < delta1) {
+            priorityQueue->pop();
+        } else {
+            stop = true;
+        }
+    }
+}*/
+
 void Reconstruction3D::computeIntersection() ////////////////
 {
 

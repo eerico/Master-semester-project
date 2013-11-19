@@ -39,6 +39,8 @@ private:
 
     void edgeDirectionHandling(Intersection& intersection);
 
+    //void eventClustering(Intersection& intersection);
+
 };
 
 #endif // RECONSTRUCTION3D_H
