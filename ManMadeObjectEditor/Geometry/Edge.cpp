@@ -106,7 +106,7 @@ bool Edge::isParallel(Edge* edge) {
 
     // what error can we consider maximal
     // before considering the two edge not parallel ?
-    return (std::abs(1.0f - dotProduct) < 0.01f) || (std::abs(-1.0f - dotProduct) < 0.01f);
+    return (std::abs(1.0f - dotProduct) < 0.0002f) || (std::abs(-1.0f - dotProduct) < 0.0002f);
 }
 
 float Edge::distance(Edge* edge) {

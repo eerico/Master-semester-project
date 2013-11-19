@@ -44,6 +44,7 @@ Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
 
 
     // check if two edge are parallel
+    // if there are, we remove the connection between them
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
         Edge* currentEdge = (*chain)[i];
         Edge* nextEdge = (*chain)[(i+1) % floorPlanSize];
@@ -56,8 +57,12 @@ Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
             vertex1->setNeighbor2(vertex2);
             vertex2->setNeighbor1(vertex1);
 
-            currentEdge->setVertex2(vertex2);
-            vertex2->setEdge1(currentEdge);
+            nextEdge->setVertex1(vertex1);
+            vertex1->setEdge2(nextEdge);
+
+            chain->erase(chain->begin() + i);
+            floorPlanSize--;
+            i--;
         }
     }
 
