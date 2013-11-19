@@ -165,11 +165,18 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             chain->intraChainHandling();
             chain->interChainHandling();
 
-            delete currentChain;
-            currentChain = chain;
+            if (chain->hasChanged()) {
+                chain->computeTriangle();
+                delete currentChain;
+                currentChain = chain;
+                currentChain->printChain();
+            } else {
+                delete chain;
+            }
+
 
             //std::cerr << "after update" << std::endl;
-            currentChain->printChain();
+            //currentChain->printChain();
             std::cerr << "......................................................................." << std::endl;
             break;
         }

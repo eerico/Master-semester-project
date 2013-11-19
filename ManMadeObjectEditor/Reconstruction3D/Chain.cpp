@@ -3,6 +3,7 @@
 //#define DEBUG
 
 Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
+    : chainHasChanged(false)
 {
     Vertex* currentVertex = floorPlan;
     //std::vector< std::vector< Edge* >* > chains;
@@ -48,7 +49,7 @@ Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
 }
 
 Chain::Chain(float height, Chain* previousChains, std::vector< qglviewer::Vec * >* triangles)
-    :previousChains(previousChains), triangles(triangles)
+    :previousChains(previousChains), triangles(triangles), chainHasChanged(false)
 {
     // Peu etre que sa marche pas correctement de comment on creer les sub chaine, a verifier !!
 
@@ -152,16 +153,13 @@ void Chain::intraChainHandling()
                 edgeIndex--;
                 numberEdges--;
 
-                Edge* parent = currentEdge->getParent();
-                #ifndef DEBUG
-                    addNewTriangle(currentEdge->getVertex1(), parent->getVertex1(), parent->getVertex2());
-                #endif
-
                 #ifdef DEBUG
                     addNewTriangle(new Vertex(currentEdge->getVertex1()->getX() - 0.05f, currentEdge->getVertex1()->getY() + 0.05f, currentEdge->getVertex1()->getZ() + 0.01f),
                                    new Vertex(currentEdge->getVertex1()->getX() + 0.05f, currentEdge->getVertex1()->getY() + 0.05f, currentEdge->getVertex1()->getZ() + 0.01f),
                                    new Vertex(currentEdge->getVertex1()->getX() + 0.05f, currentEdge->getVertex1()->getY() - 0.05f, currentEdge->getVertex1()->getZ() + 0.01f));
                 #endif
+
+                chainHasChanged = true;
 
                 Vertex* vertex1 = currentEdge->getVertex1();
                 Vertex* vertex2 = currentEdge->getVertex2();
@@ -177,13 +175,6 @@ void Chain::intraChainHandling()
                 newCorner->setNeighbor1(vertex1->getNeighbor1());
                 newCorner->setNeighbor2(vertex2->getNeighbor2());
 
-            } else {
-                Edge* parent = currentEdge->getParent();
-
-                #ifndef DEBUG
-                    addNewTriangle(parent->getVertex1(), parent->getVertex2(), currentEdge->getVertex1());
-                    addNewTriangle(parent->getVertex2(), currentEdge->getVertex2(), currentEdge->getVertex1());
-                #endif
             }
         }
 
@@ -193,6 +184,7 @@ void Chain::intraChainHandling()
             chains->erase(chains->begin() + subChainIndex);
             subChainIndex--;
             numberSubChains--;
+            chainHasChanged = true;
         } else {
             //check if the remaining edges are all on a same line and thus close the chain
             Edge* edge = (*edges)[0];
@@ -209,6 +201,7 @@ void Chain::intraChainHandling()
                 chains->erase(chains->begin() + subChainIndex);
                 subChainIndex--;
                 numberSubChains--;
+                chainHasChanged = true;
             }
         }
     }
@@ -248,7 +241,7 @@ void Chain::interChainHandling()
                     newChainCreated = true;
                     subChainIndex--;
                     numberSubChains++;
-                    //printChain();
+                    chainHasChanged = true;
                 }
             }
         }
@@ -317,6 +310,43 @@ std::vector<std::vector<Edge *> *>* Chain::getChains() {
 
 bool Chain::isEmpty() {
     return chains->size() == 0;
+}
+
+bool Chain::hasChanged() {
+    return chainHasChanged;
+}
+
+void Chain::computeTriangle() {
+    std::vector< std::vector< Edge* >* >* chainToDraw = previousChains->getChains();
+    unsigned int numberSubChains = chainToDraw->size();
+    for(unsigned int subChainIndex(0); subChainIndex < numberSubChains; ++subChainIndex) {
+        std::vector< Edge* >* edges = (*chainToDraw)[subChainIndex];
+        unsigned int numberEdges = edges->size();
+
+        bool newChainCreated = false;
+
+        for(unsigned int edgeIndex(0); (edgeIndex < numberEdges) && !newChainCreated; ++edgeIndex) {
+            Edge* currentEdge = (*edges)[edgeIndex];
+            Edge* child1 = currentEdge->getChild1();
+            Edge* child2 = currentEdge->getChild2();
+            if(child1->getVertex1()->distance(child1->getVertex2()) < 0.001f) {
+                #ifndef DEBUG
+                    addNewTriangle(currentEdge->getVertex1(), currentEdge->getVertex2(), child1->getVertex2());
+                #endif
+            } else if (child2 != 0) {
+                #ifndef DEBUG
+                    addNewTriangle(currentEdge->getVertex1(), child1->getVertex2(), child1->getVertex1());
+                    addNewTriangle(currentEdge->getVertex2(), child2->getVertex2(), child2->getVertex1());
+                    addNewTriangle(currentEdge->getVertex1(), currentEdge->getVertex2(), child1->getVertex2());
+                #endif
+            } else {
+                #ifndef DEBUG
+                    addNewTriangle(currentEdge->getVertex1(), currentEdge->getVertex2(), child1->getVertex1());
+                    addNewTriangle(child1->getVertex1(), currentEdge->getVertex2(), child1->getVertex2());
+                #endif
+            }
+        }
+    }
 }
 
 void Chain::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {

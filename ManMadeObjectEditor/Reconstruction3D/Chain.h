@@ -17,6 +17,8 @@ public:
     std::vector<std::vector<Edge *>* >* getChains();
     void printChain();
     bool isEmpty();
+    bool hasChanged();
+    void computeTriangle();
 
 private:
     void addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3);
@@ -25,6 +27,7 @@ private:
     std::vector< std::vector< Edge* >* >* chains;
     Chain* previousChains;
     std::vector< qglviewer::Vec * >* triangles;
+    bool chainHasChanged;
 };
 
 #endif // CHAIN_H
