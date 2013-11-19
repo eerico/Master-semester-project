@@ -171,7 +171,7 @@ void Chain::intraChainHandling()
 
         for(unsigned int edgeIndex(0); edgeIndex < numberEdges; ++edgeIndex) {
             Edge* currentEdge = (*edges)[edgeIndex];
-            if(currentEdge->getVertex1()->distance(currentEdge->getVertex2()) < 0.001f) {
+            if(currentEdge->getVertex1()->distance(currentEdge->getVertex2()) < 0.00001f) {
                 edges->erase(edges->begin() + edgeIndex);
                 edgeIndex--;
                 numberEdges--;
@@ -352,7 +352,7 @@ void Chain::computeTriangle() {
             Edge* currentEdge = (*edges)[edgeIndex];
             Edge* child1 = currentEdge->getChild1();
             Edge* child2 = currentEdge->getChild2();
-            if(child1->getVertex1()->distance(child1->getVertex2()) < 0.001f) {
+            if(child1->getVertex1()->distance(child1->getVertex2()) < 0.00001f) {
                 #ifndef DEBUG
                     addNewTriangle(currentEdge->getVertex1(), currentEdge->getVertex2(), child1->getVertex2());
                 #endif

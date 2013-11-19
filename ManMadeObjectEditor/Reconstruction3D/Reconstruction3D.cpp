@@ -19,12 +19,15 @@ void Reconstruction3D::reconstruct()
 
     //main loop
     addEdgeDirectionEvent();
-    computeIntersection();
-    while((priorityQueue->size() > 0) && !currentChain->isEmpty()) {
-        Intersection event = priorityQueue->top();
-        priorityQueue->pop();
-        handleEvent(event);
-    }
+
+    //while(!currentChain->isEmpty()) {
+        computeIntersection();
+        while((priorityQueue->size() > 0) && !currentChain->isEmpty()) {
+            Intersection event = priorityQueue->top();
+            priorityQueue->pop();
+            handleEvent(event);
+        }
+    //}
 
     //reset to inital state
     Vertex* currentVertex = floorPlan;
@@ -59,30 +62,26 @@ void Reconstruction3D::computeIntersection() ////////////////
     //TODO compute les intersections dans les sous chaine, pas dans la unrolled
 
     std::vector< std::vector< Edge* >* >* chains = currentChain->getChains();
-    std::vector< Edge* > unrolledChain;
-    unsigned int numberChain = chains->size();
-    for(unsigned int i(0); i < numberChain; ++i) {
-        std::vector< Edge* >* subChain = (*chains)[i];
-        unsigned int numberEdge = subChain->size();
-        for(unsigned int j(0); j < numberEdge; ++j) {
-            unrolledChain.push_back((*subChain)[j]);
-        }
-    }
 
-    unsigned int unrolledChainSize = unrolledChain.size();
-    for(unsigned int i(0); i < unrolledChainSize; ++i) {
-        Edge* edge2 = unrolledChain[i];
-        Edge* edge3 = unrolledChain[(i+1) % unrolledChainSize];
 
-        foreach(Edge* edge1, unrolledChain) {
-            if(edge1 == edge2 || edge1 == edge3) {
-                continue;
-            }
+    unsigned int numberSubChains = chains->size();
+    for(unsigned int subChainIndex(0); subChainIndex < numberSubChains; ++subChainIndex) {
+        std::vector< Edge* >* subChain = (*chains)[subChainIndex];
+        unsigned int numberEdges = subChain->size();
 
-            Intersection intersection = intersect(edge1, edge2, edge3);
+        for(unsigned int i(0); i < numberEdges; ++i) {
+            Edge* edge2 = (*subChain)[i];
+            Edge* edge3 = (*subChain)[(i+1) % numberEdges];
 
-            if(intersection.eventType != NoIntersection) {
-                priorityQueue->push(intersection);
+            foreach(Edge* edge1, (*subChain)) {
+                if(edge1 == edge2 || edge1 == edge3) {
+                    continue;
+                }
+                Intersection intersection = intersect(edge1, edge2, edge3);
+
+                if(intersection.eventType != NoIntersection) {
+                    priorityQueue->push(intersection);
+                }
             }
         }
     }
