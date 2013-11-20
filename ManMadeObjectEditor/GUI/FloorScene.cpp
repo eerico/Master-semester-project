@@ -233,21 +233,21 @@ void FloorScene::basicCross(float centerX, float centerY) {
     Profile* commonProfile = new Profile(false);
     ProfileDestructorManager::putProfile(commonProfile);
 
-    Vertex* x1 = new Vertex(centerX + halfSquareSize, centerX + halfSquareSize );
-    Vertex* x11 = new Vertex(centerX + halfSquareSize  + halfRectSize, centerX + halfSquareSize );
-    Vertex* x12 = new Vertex(centerX + halfSquareSize  + halfRectSize, centerX - halfSquareSize );
+    Vertex* x1 = new Vertex(centerX + halfSquareSize, centerY + halfSquareSize );
+    Vertex* x11 = new Vertex(centerX + halfSquareSize  + halfRectSize, centerY + halfSquareSize );
+    Vertex* x12 = new Vertex(centerX + halfSquareSize  + halfRectSize, centerY - halfSquareSize );
 
-    Vertex* x2 = new Vertex(centerX + halfSquareSize , centerX - halfSquareSize );
-    Vertex* x21 = new Vertex(centerX + halfSquareSize, centerX - halfSquareSize  - halfRectSize );
-    Vertex* x22 = new Vertex(centerX - halfSquareSize, centerX - halfSquareSize  - halfRectSize );
+    Vertex* x2 = new Vertex(centerX + halfSquareSize , centerY - halfSquareSize );
+    Vertex* x21 = new Vertex(centerX + halfSquareSize, centerY - halfSquareSize  - halfRectSize );
+    Vertex* x22 = new Vertex(centerX - halfSquareSize, centerY - halfSquareSize  - halfRectSize );
 
-    Vertex* x3 = new Vertex(centerX - halfSquareSize, centerX - halfSquareSize );
-    Vertex* x31 = new Vertex(centerX - halfSquareSize  - halfRectSize, centerX - halfSquareSize );
-    Vertex* x32 = new Vertex(centerX - halfSquareSize  - halfRectSize, centerX + halfSquareSize  );
+    Vertex* x3 = new Vertex(centerX - halfSquareSize, centerY - halfSquareSize );
+    Vertex* x31 = new Vertex(centerX - halfSquareSize  - halfRectSize, centerY - halfSquareSize );
+    Vertex* x32 = new Vertex(centerX - halfSquareSize  - halfRectSize, centerY + halfSquareSize  );
 
-    Vertex* x4 = new Vertex(centerX - halfSquareSize, centerX + halfSquareSize );
-    Vertex* x41 = new Vertex(centerX - halfSquareSize, centerX + halfSquareSize  + halfRectSize );
-    Vertex* x42 = new Vertex(centerX + halfSquareSize, centerX + halfSquareSize  + halfRectSize );
+    Vertex* x4 = new Vertex(centerX - halfSquareSize, centerY + halfSquareSize );
+    Vertex* x41 = new Vertex(centerX - halfSquareSize, centerY + halfSquareSize  + halfRectSize );
+    Vertex* x42 = new Vertex(centerX + halfSquareSize, centerY + halfSquareSize  + halfRectSize );
 
     Vertex* array[12] = {x1, x11, x12, x2, x21, x22, x3, x31, x32, x4, x41, x42};
 
