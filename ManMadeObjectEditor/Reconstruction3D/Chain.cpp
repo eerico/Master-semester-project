@@ -2,6 +2,11 @@
 
 //#define DEBUG
 
+const float Chain::collapseThreshold(0.001f);
+const float Chain::splitThreshold(0.001f);
+const float Chain::maxSize(1000.0f);
+
+
 Chain::Chain(Vertex* floorPlan, unsigned int floorPlanSize)
     : chainHasChanged(false)
 {
@@ -171,7 +176,7 @@ void Chain::intraChainHandling()
 
         for(unsigned int edgeIndex(0); edgeIndex < numberEdges; ++edgeIndex) {
             Edge* currentEdge = (*edges)[edgeIndex];
-            if(currentEdge->getVertex1()->distance(currentEdge->getVertex2()) < 0.00001f) {
+            if(currentEdge->getVertex1()->distance(currentEdge->getVertex2()) < collapseThreshold) {
                 edges->erase(edges->begin() + edgeIndex);
                 edgeIndex--;
                 numberEdges--;
@@ -254,7 +259,7 @@ void Chain::interChainHandling()
 
                 float distance = edge->distance(currentVertex);
 
-                if(distance < 0.001f) {
+                if(distance < splitThreshold) {
                     //printChain();
                     // then the current chain contain at least 2 chain that must be splitted
                     // first remove the current chain
@@ -352,7 +357,7 @@ void Chain::computeTriangle() {
             Edge* currentEdge = (*edges)[edgeIndex];
             Edge* child1 = currentEdge->getChild1();
             Edge* child2 = currentEdge->getChild2();
-            if(child1->getVertex1()->distance(child1->getVertex2()) < 0.00001f) {
+            if(child1->getVertex1()->distance(child1->getVertex2()) < collapseThreshold) {
                 #ifndef DEBUG
                     addNewTriangle(currentEdge->getVertex1(), currentEdge->getVertex2(), child1->getVertex2());
                 #endif
@@ -373,6 +378,26 @@ void Chain::computeTriangle() {
 }
 
 void Chain::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
+    float x1 = vertex1->getX();
+    float y1 = vertex1->getY();
+    float z1 = vertex1->getZ();
+
+    float x2 = vertex2->getX();
+    float y2 = vertex2->getY();
+    float z2 = vertex2->getZ();
+
+    float x3 = vertex3->getX();
+    float y3 = vertex3->getY();
+    float z3 = vertex3->getZ();
+
+    if(x1 > maxSize || y1 > maxSize || z1 > maxSize || x1 < -maxSize || y1 < -maxSize || z1 < -maxSize
+       || x2 > maxSize || y2 > maxSize || z2 > maxSize || x2 < -maxSize || y2 < -maxSize || z2 < -maxSize
+       || x3 > maxSize || y3 > maxSize || z3 > maxSize || x3 < -maxSize || y3 < -maxSize || z3 < -maxSize) {
+        return;
+    }
+
+
+
     qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
     qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());
     qglviewer::Vec* triangleVertex3 = new qglviewer::Vec(vertex3->getX(), vertex3->getY(), vertex3->getZ());

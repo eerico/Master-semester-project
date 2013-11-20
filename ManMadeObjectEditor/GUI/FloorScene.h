@@ -95,6 +95,8 @@ private:
      */
     void basicCircle(QPoint* mousePos, int numSample);
 
+    void basicCross(float centerX, float centerY);
+
     /**
      * @brief newProfileSelected
      * Tells the mesh manager and other classes that a new profile has been selected

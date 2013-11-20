@@ -28,6 +28,10 @@ private:
     Chain* previousChains;
     std::vector< qglviewer::Vec * >* triangles;
     bool chainHasChanged;
+
+    static const float collapseThreshold;
+    static const float splitThreshold;
+    static const float maxSize;
 };
 
 #endif // CHAIN_H

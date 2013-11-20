@@ -100,7 +100,6 @@ const std::vector<qglviewer::Vec * > *MeshManager::getTriangles() {
     if (!updateOnMesh && !longUpdateOnMesh) {
         return triangles;
     }
-    std::cerr << "update triangle" << std::endl;
 
     // first clear the old data
     unsigned int trianglesSize = triangles->size();
@@ -115,7 +114,6 @@ const std::vector<qglviewer::Vec * > *MeshManager::getTriangles() {
 
     // the update is done
     updateOnMesh = false;
-    std::cerr << "apres reconstruction, nombre de triangles: " << (triangles->size() / 3.0f) << std::endl;
 
     return triangles;
 }

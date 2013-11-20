@@ -34,7 +34,8 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
             } else {
                 QPoint mousePos = mouseEvent->lastScenePos().toPoint();
                 // no point defined thus we add an initial geometric structure
-                basicCircle(&mousePos, 5);
+                //basicCircle(&mousePos, 5);
+                basicCross(0.0f, 0.0f);
             }
         }
     }
@@ -223,6 +224,54 @@ void FloorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
         currentlyMovingVertex->setX(x);
         currentlyMovingVertex->setY(y);
     }
+}
+
+void FloorScene::basicCross(float centerX, float centerY) {
+    float halfSquareSize= 0.1f;
+    float halfRectSize = 0.4f;
+
+    Profile* commonProfile = new Profile(false);
+    ProfileDestructorManager::putProfile(commonProfile);
+
+    Vertex* x1 = new Vertex(centerX + halfSquareSize, centerX + halfSquareSize );
+    Vertex* x11 = new Vertex(centerX + halfSquareSize  + halfRectSize, centerX + halfSquareSize );
+    Vertex* x12 = new Vertex(centerX + halfSquareSize  + halfRectSize, centerX - halfSquareSize );
+
+    Vertex* x2 = new Vertex(centerX + halfSquareSize , centerX - halfSquareSize );
+    Vertex* x21 = new Vertex(centerX + halfSquareSize, centerX - halfSquareSize  - halfRectSize );
+    Vertex* x22 = new Vertex(centerX - halfSquareSize, centerX - halfSquareSize  - halfRectSize );
+
+    Vertex* x3 = new Vertex(centerX - halfSquareSize, centerX - halfSquareSize );
+    Vertex* x31 = new Vertex(centerX - halfSquareSize  - halfRectSize, centerX - halfSquareSize );
+    Vertex* x32 = new Vertex(centerX - halfSquareSize  - halfRectSize, centerX + halfSquareSize  );
+
+    Vertex* x4 = new Vertex(centerX - halfSquareSize, centerX + halfSquareSize );
+    Vertex* x41 = new Vertex(centerX - halfSquareSize, centerX + halfSquareSize  + halfRectSize );
+    Vertex* x42 = new Vertex(centerX + halfSquareSize, centerX + halfSquareSize  + halfRectSize );
+
+    Vertex* array[12] = {x1, x11, x12, x2, x21, x22, x3, x31, x32, x4, x41, x42};
+
+    for(unsigned int i(0); i < 12; ++i) {
+        Vertex* currentVertex = array[i];
+        Vertex* nextVertex;
+        if (i < 11) {
+            nextVertex = array[i+1];
+        } else {
+            nextVertex = array[0];
+        }
+
+        Edge* edge = new Edge(currentVertex, nextVertex, commonProfile);
+        currentVertex->setEdge2(edge);
+        nextVertex->setEdge1(edge);
+        currentVertex->setNeighbor2(nextVertex);
+        nextVertex->setNeighbor1(currentVertex);
+
+        meshManager->incrementFloorPlanSize();
+    }
+
+    meshManager->setFloorPlan(x1);
+    newProfileSelected(commonProfile);
+    loadFloorPlan();
 }
 
 void FloorScene::basicCircle(QPoint * mousePos, int numSample) {
