@@ -4,7 +4,7 @@
 
 Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
     :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
-    , oldVertex1(vertex1), oldVertex2(vertex2), child1(0), child2(0), parent(0)
+    , oldVertex1(vertex1), oldVertex2(vertex2), child1(0), child2(0), parent(0), cloned(false)
 {
     edgePen.setWidth(3);
 }
@@ -303,6 +303,14 @@ Edge* Edge::getParent() {
 
 void Edge::setParent(Edge *parent) {
     this->parent = parent;
+}
+
+bool Edge::hasBeenCloned() {
+    return cloned;
+}
+
+void setCloned(bool b) {
+    cloned = b;
 }
 
 bool Edge::existIntersection(Edge *edge) {

@@ -80,6 +80,7 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vecto
 #endif
 }
 
+// Constructor only used for debugging
 ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector< qglviewer::Vec * >* triangles)
     :previousActivePlan(previousActivePlan), triangles(triangles)
 {
@@ -99,7 +100,6 @@ ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector
 
     for(unsigned int edgeIndex(0); edgeIndex < numberEdge; ++edgeIndex) {
 
-        // On peut pas faire sa car ya pas de garantie que le prochain c est le voisin de celui d avant !!
         Edge* currentEdge = (*edges)[edgeIndex];
 
         Vertex* vertex1 = currentEdge->getVertex1();
@@ -162,10 +162,14 @@ ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector
 
 }
 
-
 std::vector< Edge* >* ActivePlan::getPlans() {
     return activePlan;
 }
+
+/// TODO
+// faire une methode qui prend les 3 edge et une intersection et qui test si l'lintersection a bien
+// lieu entre les 3 edge à cette hauteur
+// Donc dans intersection, faire pour que je stock les 2 neighbor et l edge different afin de faciliter le calcul
 
 void ActivePlan::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
     qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());

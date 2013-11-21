@@ -54,6 +54,8 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
             std::vector<Edge*>* eventEdges = event.edgeVector;
 
             for(unsigned int i(0); i < eventEdges->size(); ++i) {
+                // Attention, faut rajouter que celle qui ne sont pas deja dans la liste !!
+                // Ou sinon les enlever lors que on va les trié selon leur orientation
                 intersectionEdges->push_back((*eventEdges)[i]);
             }
         } else {

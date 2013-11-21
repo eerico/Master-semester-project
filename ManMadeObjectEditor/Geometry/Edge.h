@@ -114,6 +114,10 @@ public:
     Edge* getParent();
     void setParent(Edge* parent);
 
+    bool hasBeenCloned();
+
+    void setCloned(bool b);
+
     /**
      * @brief existIntersection
      * Test in there exist an interection between this edge and the edge
@@ -161,6 +165,8 @@ private:
 
     // If the edge is valid or not
     bool valid;
+
+    bool cloned;
 };
 
 #endif // EDGE_H
