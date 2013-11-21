@@ -80,6 +80,89 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vecto
 #endif
 }
 
+ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector< qglviewer::Vec * >* triangles)
+    :previousActivePlan(previousActivePlan), triangles(triangles)
+{
+    activePlan = new std::vector< Edge* >;
+
+    Plan horizontalPlan(0.0f, 0.0f, height, 0.0f, 0.0f, 1.0f);
+
+    std::vector< Edge* >* edges = previousActivePlan->getPlans();
+    unsigned int numberEdge = edges->size();
+
+    Vertex* firstNewVertex;
+    Vertex* previousNewVertex;
+    Profile* previousProfile;
+    Vertex* newVertex;
+    Edge* newEdge;
+    Edge* firstPreviousEdge;
+
+    for(unsigned int edgeIndex(0); edgeIndex < numberEdge; ++edgeIndex) {
+
+        // On peut pas faire sa car ya pas de garantie que le prochain c est le voisin de celui d avant !!
+        Edge* currentEdge = (*edges)[edgeIndex];
+
+        Vertex* vertex1 = currentEdge->getVertex1();
+        Vertex* vertex2 = currentEdge->getVertex2();
+
+        Edge* previousEdge = vertex1->getEdge1();
+        Vertex* vertex0 = previousEdge->getVertex1();
+
+        Plan plan1(vertex0->getX(), vertex0->getY(), vertex0->getZ());
+        plan1.computePlanNormal(vertex0, vertex1, previousEdge->getProfile());
+
+        Plan plan2(vertex1->getX(), vertex1->getY(), vertex1->getZ());
+        plan2.computePlanNormal(vertex1, vertex2, currentEdge->getProfile());
+
+        Intersection newIntersection = horizontalPlan.intersect3Plans(plan1, plan2);
+
+        newVertex = new Vertex(newIntersection.x, newIntersection.y, newIntersection.z);
+
+        if (edgeIndex > 0) {
+            newEdge = new Edge(previousNewVertex, newVertex, previousProfile);
+
+            previousEdge->setChild1(newEdge);
+            newEdge->setParent(previousEdge);
+
+            previousNewVertex->setEdge2(newEdge);
+            previousNewVertex->setNeighbor2(newVertex);
+            newVertex->setEdge1(newEdge);
+            newVertex->setNeighbor1(previousNewVertex);
+
+
+            activePlan->push_back(newEdge);
+        } else {
+            firstNewVertex = newVertex;
+            firstPreviousEdge = previousEdge;
+        }
+
+        previousNewVertex = newVertex;
+        previousProfile = currentEdge->getProfile();
+    }
+
+    newEdge = new Edge(previousNewVertex, firstNewVertex, previousProfile);
+
+    firstPreviousEdge->setChild1(newEdge);
+    newEdge->setParent(firstPreviousEdge);
+
+    previousNewVertex->setEdge2(newEdge);
+    previousNewVertex->setNeighbor2(firstNewVertex);
+    firstNewVertex->setEdge1(newEdge);
+    firstNewVertex->setNeighbor1(previousNewVertex);
+    activePlan->push_back(newEdge);
+
+#ifdef DEBUG
+    foreach(Edge* e, *activePlan) {
+        Vertex* v1 = e->getVertex1();
+        Vertex* v2 = e->getVertex2();
+        Vertex* vv = new Vertex((v1->getX() + v2->getX()) / 2.0f + 0.002f, (v1->getY() + v2->getY()) / 2.0f + + 0.002f, v1->getZ());
+        addNewTriangle(v1, v2, vv);
+    }
+#endif
+
+}
+
+
 std::vector< Edge* >* ActivePlan::getPlans() {
     return activePlan;
 }

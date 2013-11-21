@@ -81,7 +81,7 @@ void Reconstruction3D::computeIntersection()
             }
             Intersection intersection = intersect(edge1, edge2, edge3);
 
-            if(intersection.eventType != NoIntersection) {
+            if(intersection.eventType != NoIntersection && intersection.z > 0.0f) {
                 priorityQueue->push(intersection);
             }
         }
@@ -132,7 +132,6 @@ Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3) 
     return intersection;
 }
 
-
 void Reconstruction3D::handleEvent(Intersection& intersection) ////////////////////////////////
 {
     switch(intersection.eventType){
@@ -161,7 +160,8 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         {
 
             std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
-
+            eventClustering(intersection);
+            activePlan = new ActivePlan(intersection.z, activePlan, triangles);
             std::cerr << "......................................................................." << std::endl;
             break;
         }
