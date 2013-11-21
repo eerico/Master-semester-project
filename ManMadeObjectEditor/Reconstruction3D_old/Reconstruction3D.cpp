@@ -1,67 +1,93 @@
 #include "Reconstruction3D.h"
 
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles)
-    :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
+    :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles), currentChain(0)
 {
     priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
-    activePlan = new std::vector< Edge* >;
 }
 
 Reconstruction3D::~Reconstruction3D()
 {
     delete priorityQueue;
-    delete activePlan;
 }
 
 void Reconstruction3D::reconstruct()
 {
-    //set the active plan
-    Vertex* currentVertex = floorPlan;
-    for(unsigned int i(0); i < floorPlanSize ; ++i) {
-        activePlan->push_back(currentVertex->getEdge2());
-        currentVertex = currentVertex->getNeighbor2();
-    }
+    //set the current chain
+    currentChain = new Chain(floorPlan, floorPlanSize);
+    //currentChain->printChain();
 
     //main loop
     addEdgeDirectionEvent();
-    computeIntersection();
-    while(priorityQueue->size() > 0) {
-        Intersection event = priorityQueue->top();
-        priorityQueue->pop();
-        handleEvent(event);
-    }
+
+    //while(!currentChain->isEmpty()) {
+        computeIntersection();
+        while((priorityQueue->size() > 0) && !currentChain->isEmpty()) {
+            Intersection event = priorityQueue->top();
+            priorityQueue->pop();
+            handleEvent(event);
+        }
+    //}
 
     //reset to inital state
-    currentVertex = floorPlan;
+    Vertex* currentVertex = floorPlan;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
         currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
         currentVertex = floorPlan->getNeighbor2();
     }
 }
 
-void Reconstruction3D::computeIntersection()
+/*void Reconstruction3D::eventClustering(Intersection& intersection)
 {
-    activePlan = cloneActivePlan(); // vraiment utile de le faire a chaque fois ?
+    float z(intersection.z);
 
-    unsigned int activePlanSize = activePlan->size();
-    for(unsigned int i(0); i < activePlanSize; ++i) {
-        Edge* edge2 = (*activePlan)[i];
-        Edge* edge3 = (*activePlan)[(i+1) % activePlanSize];
+    float delta1(0.01f);
 
-        foreach(Edge* edge1, *activePlan) {
-            if(edge1 == edge2 || edge1 == edge3) {
-                continue;
-            }
+    bool stop(false);
 
-            Intersection intersection = intersect(edge1, edge2, edge3);
-            if(intersection.eventType != NoIntersection) {
-                priorityQueue->push(intersection);
+    while(!stop && (priorityQueue->size() > 0)){
+        Intersection event = priorityQueue->top();
+
+        if (std::abs(event.z - z) < delta1) {
+            priorityQueue->pop();
+        } else {
+            stop = true;
+        }
+    }
+}*/
+
+void Reconstruction3D::computeIntersection() ////////////////
+{
+
+    //TODO compute les intersections dans les sous chaine, pas dans la unrolled
+
+    std::vector< std::vector< Edge* >* >* chains = currentChain->getChains();
+
+
+    unsigned int numberSubChains = chains->size();
+    for(unsigned int subChainIndex(0); subChainIndex < numberSubChains; ++subChainIndex) {
+        std::vector< Edge* >* subChain = (*chains)[subChainIndex];
+        unsigned int numberEdges = subChain->size();
+
+        for(unsigned int i(0); i < numberEdges; ++i) {
+            Edge* edge2 = (*subChain)[i];
+            Edge* edge3 = (*subChain)[(i+1) % numberEdges];
+
+            foreach(Edge* edge1, (*subChain)) {
+                if(edge1 == edge2 || edge1 == edge3) {
+                    continue;
+                }
+                Intersection intersection = intersect(edge1, edge2, edge3);
+
+                if(intersection.eventType != NoIntersection) {
+                    priorityQueue->push(intersection);
+                }
             }
         }
     }
 }
 
-void Reconstruction3D::addEdgeDirectionEvent()
+void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
 {
     Vertex* currentVertex = floorPlan;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
@@ -71,8 +97,7 @@ void Reconstruction3D::addEdgeDirectionEvent()
 
         while(currentProfileVertex != 0 && currentProfileVertex->getNeighbor2() != 0) {
             Intersection edgeDirectionEvent;
-            edgeDirectionEvent.edgeVector = new std::vector< Edge* >;
-            edgeDirectionEvent.edgeVector->push_back(currentEdge);
+            edgeDirectionEvent.edge = currentEdge;
             edgeDirectionEvent.eventType = EdgeDirection;
             edgeDirectionEvent.z = currentProfileVertex->getY();
             priorityQueue->push(edgeDirectionEvent);
@@ -82,7 +107,7 @@ void Reconstruction3D::addEdgeDirectionEvent()
     }
 }
 
-Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3)
+Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3) ////////////////////////
 {
     Vertex* vertex1 = edge1->getVertex1();
     Plan plan1( vertex1->getX(), vertex1->getY(), vertex1->getZ());
@@ -98,16 +123,11 @@ Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3)
 
     Intersection intersection = plan1.intersect3Plans(plan2, plan3);
 
-    intersection.edgeVector = new std::vector< Edge* >;
-    intersection.edgeVector->push_back(edge1);
-    intersection.edgeVector->push_back(edge2);
-    intersection.edgeVector->push_back(edge3);
-
     return intersection;
 }
 
 
-void Reconstruction3D::handleEvent(Intersection& intersection)
+void Reconstruction3D::handleEvent(Intersection& intersection) ////////////////////////////////
 {
     switch(intersection.eventType){
         case EdgeDirection:
@@ -120,14 +140,12 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
              * qui on le meme profiles et d appliquer les changement une seul fois et des creer pour chacun de ses edges
              * les triangles
              */
-            Edge* edge = (*intersection.edgeVector)[0];
+            Edge* edge = intersection.edge;
 
             edgeDirectionHandling(intersection);
 
             Profile* profile = edge->getProfile();
             profile->nextDirectionPlan();
-
-            removeInvalidIntersection(edge, intersection.y);
 
             computeIntersection();
 
@@ -135,136 +153,36 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
         }
         case General:
         {
-        std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
-            eventClustering(intersection);
-
-            removeDuplicateEdges(intersection);
-
-            ///////////////////////////////
-            std::cerr << "with edges: " << std::endl;
-            foreach(Edge* e, *intersection.edgeVector) {
-                std::cerr << *e << ": " << e << std::endl;
-            }
-
-            ////////////////////////////
-
-            // if the number of edges in f is less than 3, the event is ignored
-            if(intersection.edgeVector->size() < 3) {
-                std::cerr << "intersection ignored" << std::endl;
-                std::cerr << "......................................................................." << std::endl;
+            if(intersection.z == 0.0f) {
                 return;
             }
+            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
 
-            //std::cerr << "before update" << std::endl;
-            //printActivePlan();
+            Chain* chain = new Chain(intersection.z, currentChain, triangles);
+            //chain->printChain();
 
-            //std::vector< std::vector< Edge* >* > chains;
-            Chain currentChain(intersection, activePlan, triangles);
-            currentChain.printChain();
+            chain->intraChainHandling();
+            chain->interChainHandling();
 
-            std::vector< Edge* > oldActivePlan;
-            pointerCloneActivePlan(oldActivePlan);
-
-
-            unsigned int numberTrianglesAdded = triangles->size();
-
-            currentChain.intraChainHandling();
-            removeInvalidEdge(activePlan);
-            currentChain.interChainHandling();
-
-            //std::cerr << "after update without correction" << std::endl;
-            //printActivePlan();
-
-            //test if self intersection
-            bool interectionValid(true);
-            for(unsigned int i(0); i < activePlan->size() && interectionValid; ++i) {
-                Edge* edge = (*activePlan)[i];
-                for(unsigned int j(i+1); j < activePlan->size() && interectionValid; ++j) {
-                    Edge* comparedEdge = (*activePlan)[j];
-                    if(edge->isParallel(comparedEdge)) {
-                        if(edge->distance(comparedEdge) < 0.001f) {
-                            interectionValid = false;
-                            std::cerr << "Self intersection" << std::endl;
-                        }
-                    }
-                }
+            if (chain->hasChanged()) {
+                chain->computeTriangle();
+                delete currentChain;
+                currentChain = chain;
+                currentChain->printChain();
+            } else {
+                delete chain;
             }
 
 
-            //the intersection is not valid, thus we revert the active plan
-            // and remove the added triangles
-            if(!interectionValid) {
-                unsigned int size = oldActivePlan.size();
-                activePlan->clear();
-                for(unsigned int i(0); i < size; ++i) {
-                    Edge* edge = oldActivePlan[i];
-                    edge->revert();
-                    activePlan->push_back(edge);
-                }
-
-                numberTrianglesAdded = triangles->size() - numberTrianglesAdded;
-                for(unsigned int i(0); i < numberTrianglesAdded; ++i) {
-                   triangles->pop_back();
-                }
-            }
-
-            if (!isActivePlanValid()) {
-                // see post inter chain intersection
-                // TODO
-            }
-
-            std::cerr << "after update wih correction" << std::endl;
-            printActivePlan();
+            //std::cerr << "after update" << std::endl;
+            //currentChain->printChain();
             std::cerr << "......................................................................." << std::endl;
             break;
         }
     }
 }
 
-void Reconstruction3D::printActivePlan() {
-    std::vector<Edge* > ap = *activePlan;
-    unsigned int size = ap.size();
-
-    std::cerr << "ACTIVE PLAN" << std::endl;
-    for(unsigned int i(0); i < size; ++i) {
-        std::cerr << *ap[i] << std::endl;
-    }
-    std::cerr << std::endl;
-}
-
-void Reconstruction3D::replaceParentByChild(Intersection& intersection) {
-    std::vector< Edge* >* edges = intersection.edgeVector;
-    unsigned int size = edges->size();
-
-    for(unsigned int i(0); i < size; ++i) {
-        Edge* edge = (*edges)[i];
-        if(edge->hasChild()) {
-            edges->erase(edges->begin() + i);
-            addChildIntoVector(edge, edges);
-            i--;
-            size--;
-        }
-    }
-}
-
-void Reconstruction3D::addChildIntoVector(Edge* parent, std::vector< Edge* >* vector) {
-    if (!parent->hasChild()) {
-        vector->push_back(parent);
-    } else {
-        addChildIntoVector(parent->getChild1(), vector);
-        addChildIntoVector(parent->getChild2(), vector);
-    }
-}
-
-void Reconstruction3D::pointerCloneActivePlan(std::vector<Edge *> &clone)
-{
-    unsigned int size = activePlan->size();
-    for(unsigned int i(0); i < size; ++i) {
-        clone.push_back((*activePlan)[i]);
-    }
-}
-
-void Reconstruction3D::edgeDirectionHandling(Intersection &intersection)
+void Reconstruction3D::edgeDirectionHandling(Intersection &intersection) //////////////////
 {
     // we first compute the intersections with the two neighbor profiles
     // and then create the triangles
@@ -325,123 +243,4 @@ void Reconstruction3D::edgeDirectionHandling(Intersection &intersection)
 
     edge->setVertex1(intersectionVertex);
     edge->setVertex2(intersectionVertex2);*/
-}
-
-void Reconstruction3D::removeInvalidIntersection(Edge *edge, float height)
-{
-    std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>* priorityQueue2 =
-            new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
-
-    while(priorityQueue->size() > 0) {
-        Intersection event = priorityQueue->top();
-        priorityQueue->pop();
-        std::vector<Edge*>* edges = event.edgeVector;
-        Edge* edge1 = (*edges)[0];
-        Edge* edge2 = (*edges)[1];
-        Edge* edge3 = (*edges)[2];
-
-        if(event.eventType == EdgeDirection) {
-            priorityQueue2->push(event);
-        }else{
-            if ((edge1 == edge) || (edge2 == edge) || (edge3 == edge)) {
-                if (event.z < height) {
-                    priorityQueue2->push(event);
-                }
-            } else {
-                priorityQueue2->push(event);
-            }
-        }
-    }
-
-    delete priorityQueue;
-    priorityQueue = priorityQueue2;
-}
-
-void Reconstruction3D::eventClustering(Intersection& intersection)
-{
-    float z(intersection.z);
-
-    float delta1(0.01f);
-    float delta2(0.01f);
-
-    bool stop(false);
-
-    std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
-    replaceParentByChild(intersection);
-    removeInvalidEdge(intersectionEdges);
-
-    while(!stop && (priorityQueue->size() > 0)){
-        Intersection event = priorityQueue->top();
-
-        //std::cerr << "      MM: " << std::abs(event.y - y) << ", " << Utils::distance(event.x, event.z, intersection.x, intersection.z) << std::endl;
-        if ((std::abs(event.z - z) < delta1) && (Utils::distance(event.x, event.y, intersection.x, intersection.y) < delta2)) {
-            priorityQueue->pop();
-            std::vector<Edge*>* eventEdges = event.edgeVector;
-            replaceParentByChild(event);
-            removeInvalidEdge(eventEdges);
-
-            for(unsigned int i(0); i < eventEdges->size(); ++i) {
-                intersectionEdges->push_back((*eventEdges)[i]);
-            }
-        } else {
-            stop = true;
-        }
-    }
-}
-
-void Reconstruction3D::removeInvalidEdge(std::vector<Edge *> *edges){
-    unsigned int size = edges->size();
-    for(unsigned int i(0); i < size; ++i) {
-        Edge* currentEdge = (*edges)[i];
-        if(!currentEdge->isValid()) {
-            edges->erase(edges->begin() + i);
-            i--;
-            size--;
-        }
-    }
-}
-
-// this will allow us to manipulate edges while working on the activePlan
-std::vector< Edge* >* Reconstruction3D::cloneActivePlan()
-{
-    std::vector<Edge* >* cloneActivePlan = new std::vector< Edge* >;
-    unsigned int size = activePlan->size();
-    for(unsigned int i(0); i < size; ++i) {
-        Edge* currentEdge = (*activePlan)[i];
-        Edge* cloneEdge = new Edge(currentEdge->getVertex1(), currentEdge->getVertex2(), currentEdge->getProfile());
-        cloneActivePlan->push_back(cloneEdge);
-    }
-    return cloneActivePlan;
-}
-
-void Reconstruction3D::removeDuplicateEdges(Intersection& intersection)
-{
-    std::vector< Edge* >* edges = intersection.edgeVector;
-    //remove duplicate
-    unsigned int size = edges->size();
-    for(unsigned int i(0); i < size; ++i) {
-        Edge* currentEdge = (*edges)[i];
-        for(unsigned int j(i+1); j < size; ++j) {
-            Edge* comparedEdge = (*edges)[j];
-            if (currentEdge == comparedEdge) {
-                edges->erase(edges->begin() + j);
-                j--;
-                size--;
-            }
-        }
-    }
-}
-
-bool Reconstruction3D::isActivePlanValid() {
-    unsigned int size = activePlan->size();
-    for(unsigned int i(0); i < size; ++i) {
-        Edge* edge1 = (*activePlan)[i];
-        for(unsigned int j(i+1); j < size; ++j) {
-            Edge* edge2 = (*activePlan)[j];
-            if (edge1->existIntersection(edge2)) {
-                return false;
-            }
-        }
-    }
-    return true;
 }

@@ -23,7 +23,7 @@ private:
     Vertex* floorPlan;
     unsigned int floorPlanSize;
     std::vector< qglviewer::Vec * >* triangles;
-    Chain* currentChain;
+    std::vector< Edge* >* activePlan;
 
     std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>* priorityQueue;
 
@@ -32,15 +32,38 @@ private:
 
     void addEdgeDirectionEvent();
 
+    void removeInvalidIntersection(Edge* edge, float height);
 
     Intersection intersect(Edge* edge1, Edge* edge2, Edge* edge3);
 
     void handleEvent(Intersection& intersection);
 
+    void eventClustering(Intersection& intersection);
+
+    void removeDuplicateEdges(Intersection& intersection);
+
+    std::vector< Edge* >* cloneActivePlan();
+
+    void addNewTriangle(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3);
+
+    void removeInvalidEdge(std::vector< Edge* >* edges);
+
     void edgeDirectionHandling(Intersection& intersection);
 
-    //void eventClustering(Intersection& intersection);
+    void printActivePlan();
 
+    void pointerCloneActivePlan(std::vector< Edge* >& clone);
+
+    void replaceParentByChild(Intersection& intersection);
+
+    void addChildIntoVector(Edge* parent, std::vector< Edge* >* vector);
+
+    /**
+     * @brief isActivePlanValid
+     * Test if the current active plan is valid (if there is no self intersection)
+     * @return if the active plan is valid
+     */
+    bool isActivePlanValid();
 };
 
 #endif // RECONSTRUCTION3D_H

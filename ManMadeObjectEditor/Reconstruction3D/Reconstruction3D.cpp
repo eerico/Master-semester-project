@@ -1,7 +1,7 @@
 #include "Reconstruction3D.h"
 
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles)
-    :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles), currentChain(0)
+    :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
 {
     priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
 }
@@ -13,21 +13,19 @@ Reconstruction3D::~Reconstruction3D()
 
 void Reconstruction3D::reconstruct()
 {
-    //set the current chain
-    currentChain = new Chain(floorPlan, floorPlanSize);
-    //currentChain->printChain();
+    //set the current ActivePlan
+    activePlan = new ActivePlan(floorPlan, floorPlanSize);
 
     //main loop
     addEdgeDirectionEvent();
 
-    //while(!currentChain->isEmpty()) {
-        computeIntersection();
-        while((priorityQueue->size() > 0) && !currentChain->isEmpty()) {
-            Intersection event = priorityQueue->top();
-            priorityQueue->pop();
-            handleEvent(event);
-        }
-    //}
+
+    computeIntersection();
+    while((priorityQueue->size() > 0) && !currentChain->isEmpty()) {
+        Intersection event = priorityQueue->top();
+        priorityQueue->pop();
+        handleEvent(event);
+    }
 
     //reset to inital state
     Vertex* currentVertex = floorPlan;
@@ -37,54 +35,58 @@ void Reconstruction3D::reconstruct()
     }
 }
 
-/*void Reconstruction3D::eventClustering(Intersection& intersection)
+void Reconstruction3D::eventClustering(Intersection& intersection)
 {
     float z(intersection.z);
 
-    float delta1(0.01f);
+    float delta1(0.0001f);
+    float delta2(0.000001f);
 
     bool stop(false);
+
+    std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
 
     while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
 
-        if (std::abs(event.z - z) < delta1) {
+        if ((std::abs(event.z - z) < delta1) && (Utils::distance(event.x, event.y, intersection.x, intersection.y) < delta2)) {
             priorityQueue->pop();
+            std::vector<Edge*>* eventEdges = event.edgeVector;
+
+            for(unsigned int i(0); i < eventEdges->size(); ++i) {
+                intersectionEdges->push_back((*eventEdges)[i]);
+            }
         } else {
             stop = true;
         }
     }
-}*/
+}
 
-void Reconstruction3D::computeIntersection() ////////////////
+void Reconstruction3D::computeIntersection()
 {
 
-    //TODO compute les intersections dans les sous chaine, pas dans la unrolled
-
-    std::vector< std::vector< Edge* >* >* chains = currentChain->getChains();
+    std::vector< Edge* >* plans = activePlan->getPlans();
 
 
-    unsigned int numberSubChains = chains->size();
-    for(unsigned int subChainIndex(0); subChainIndex < numberSubChains; ++subChainIndex) {
-        std::vector< Edge* >* subChain = (*chains)[subChainIndex];
-        unsigned int numberEdges = subChain->size();
 
-        for(unsigned int i(0); i < numberEdges; ++i) {
-            Edge* edge2 = (*subChain)[i];
-            Edge* edge3 = (*subChain)[(i+1) % numberEdges];
+    unsigned int numberEdges = plans->size();
 
-            foreach(Edge* edge1, (*subChain)) {
-                if(edge1 == edge2 || edge1 == edge3) {
-                    continue;
-                }
-                Intersection intersection = intersect(edge1, edge2, edge3);
+    for(unsigned int i(0); i < numberEdges; ++i) {
+        Edge* edge2 = (*plans)[i];
+        Edge* edge3 = edge2->getVertex2()->getEdge2();
 
-                if(intersection.eventType != NoIntersection) {
-                    priorityQueue->push(intersection);
-                }
+        foreach(Edge* edge1, (*plans)) {
+            if(edge1 == edge2 || edge1 == edge3) {
+                continue;
+            }
+            Intersection intersection = intersect(edge1, edge2, edge3);
+
+            if(intersection.eventType != NoIntersection) {
+                priorityQueue->push(intersection);
             }
         }
     }
+
 }
 
 void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
@@ -122,6 +124,10 @@ Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3) 
     plan3.computePlanNormal(vertex3, edge3->getVertex2(), edge3->getProfile());
 
     Intersection intersection = plan1.intersect3Plans(plan2, plan3);
+    intersection.edgeVector = new std::vector< Edge* >;
+    intersection.edgeVector->push_back(edge1);
+    intersection.edgeVector->push_back(edge2);
+    intersection.edgeVector->push_back(edge3);
 
     return intersection;
 }
@@ -153,29 +159,9 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         }
         case General:
         {
-            if(intersection.z == 0.0f) {
-                return;
-            }
+
             std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
 
-            Chain* chain = new Chain(intersection.z, currentChain, triangles);
-            //chain->printChain();
-
-            chain->intraChainHandling();
-            chain->interChainHandling();
-
-            if (chain->hasChanged()) {
-                chain->computeTriangle();
-                delete currentChain;
-                currentChain = chain;
-                currentChain->printChain();
-            } else {
-                delete chain;
-            }
-
-
-            //std::cerr << "after update" << std::endl;
-            //currentChain->printChain();
             std::cerr << "......................................................................." << std::endl;
             break;
         }
@@ -184,63 +170,5 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
 void Reconstruction3D::edgeDirectionHandling(Intersection &intersection) //////////////////
 {
-    // we first compute the intersections with the two neighbor profiles
-    // and then create the triangles
 
-    /*Edge* edge = (*intersection.edgeVector)[0];
-
-    // we compute the intersection using the plan defined with the edge+profile associated with the edge direction event,
-    // the neighbor edge+profile and an horizontal plan
-
-    // the edge+profile associated with the edge direction event
-    Vertex* vertex1 = edge->getVertex1();
-    Vertex* vertex2 = edge->getVertex2();
-    Plan plan1;
-    plan1.pointX = vertex1->getX();
-    plan1.pointY = vertex1->getY();
-    plan1.pointZ = vertex1->getZ();
-    computePlanNormal(vertex1, vertex2, edge->getProfile(), plan1.normalX, plan1.normalY, plan1.normalZ);
-
-    // the neighbor edge+profile
-    Edge* neighborEdge = edge->getVertex1()->getEdge1();
-    Vertex* neighborVertex = neighborEdge->getVertex1();
-    Plan plan2;
-    plan2.pointX = neighborVertex ->getX();
-    plan2.pointY = neighborVertex ->getY();
-    plan2.pointZ = neighborVertex ->getZ();
-    computePlanNormal(neighborVertex , neighborEdge->getVertex2(), neighborEdge->getProfile(), plan2.normalX, plan2.normalY, plan2.normalZ);
-
-    // the horizontal plan
-    Plan plan3;
-    plan2.pointX = 0.0f;
-    plan2.pointY = 0.0f;
-    plan2.pointZ = intersection.z;
-    plan2.normalX = 0.0f;
-    plan2.normalY = 0.0f;
-    plan2.normalZ = 1.0f;
-
-    //compute the intersection and add the triangle
-    Intersection newIntersection = intersect3Plans(plan1, plan2, plan3);
-    Vertex* intersectionVertex = new Vertex(newIntersection.x, newIntersection.y, newIntersection.z);
-
-    addNewTriangle(vertex1, vertex2, intersectionVertex);
-
-
-    //Now do the same but for the other neighbor
-    // the neighbor edge+profile
-    neighborEdge = edge->getVertex2()->getEdge2();
-    neighborVertex = neighborEdge->getVertex1();
-    plan2.pointX = neighborVertex ->getX();
-    plan2.pointY = neighborVertex ->getY();
-    plan2.pointZ = neighborVertex ->getZ();
-    computePlanNormal(neighborVertex , neighborEdge->getVertex2(), neighborEdge->getProfile(), plan2.normalX, plan2.normalY, plan2.normalZ);
-
-    //compute the intersection and add the triangle
-    newIntersection = intersect3Plans(plan1, plan2, plan3);
-    Vertex* intersectionVertex2 = new Vertex(newIntersection.x, newIntersection.y, newIntersection.z);
-
-    addNewTriangle(vertex2, intersectionVertex, intersectionVertex2);
-
-    edge->setVertex1(intersectionVertex);
-    edge->setVertex2(intersectionVertex2);*/
 }
