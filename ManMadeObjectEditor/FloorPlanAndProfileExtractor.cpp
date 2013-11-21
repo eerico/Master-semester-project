@@ -185,7 +185,7 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
                             float x = currentFloorEdge->getVertex1()->getX() - currentFirstFloorEdge->getVertex1()->getX();
                             float y = currentFloorEdge->getVertex1()->getY() - currentFirstFloorEdge->getVertex1()->getY();
                             
-                            float distance = currentFirstFloorEdge->distance(currentFloorEdge);
+                            float distance = currentFirstFloorEdge->lineDistance(currentFloorEdge);
                             // if two edge are parallel but should be connected with a profile, we can
                             // first check if there is not a better candidate (that is closer)
                             if(distance < minDistance) {

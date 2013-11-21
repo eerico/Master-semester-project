@@ -14,7 +14,7 @@ Reconstruction3D::~Reconstruction3D()
 void Reconstruction3D::reconstruct()
 {
     //set the current ActivePlan
-    activePlan = new ActivePlan(floorPlan, floorPlanSize);
+    activePlan = new ActivePlan(floorPlan, floorPlanSize, triangles);
 
     //main loop
     addEdgeDirectionEvent();

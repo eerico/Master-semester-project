@@ -70,6 +70,13 @@ public:
      */
     float distance(Vertex* vertex);
 
+    float lineDistance(Edge* edge);
+
+    float lineDistance(Vertex* vertex);
+
+
+
+
     void setNormal(OMMesh::Normal* n);
     OMMesh::Normal* getNormal();
 

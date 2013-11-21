@@ -190,6 +190,66 @@ float Edge::distance(Vertex* vertex) {
     }
 }
 
+
+
+float Edge::lineDistance(Edge* edge) {
+    // the two edges must be parallel to use this method
+    // if they are, the distance between them is the distance between one edge and a vertex on the other edge
+    return lineDistance(edge->getVertex2());
+}
+
+float Edge::lineDistance(Vertex* vertex) {
+    // compute the edge vertex distance
+    // only on X and Y coordinates
+
+    float fromX = this->getVertex1()->getX();
+    float fromY = this->getVertex1()->getY();
+    float toX = this->getVertex2()->getX();
+    float toY = this->getVertex2()->getY();
+
+    // define the direction vector of this edge
+    float vectorEdgeX = toX - fromX;
+    float vectorEdgeY = toY - fromY;
+
+    Utils::normalize(vectorEdgeX, vectorEdgeY);
+
+    float toXVertex = vertex->getX();
+    float toYVertex = vertex->getY();
+
+    // define the direction vector from the edge to the vertex
+    float vectorVertexEdgeX1 = toXVertex - fromX;
+    float vectorVertexEdgeY1 = toYVertex - fromY;
+
+    Utils::normalize(vectorVertexEdgeX1, vectorVertexEdgeY1);
+
+    // use trigonometry to find the edge vertex distance
+
+    // ||a||*||b||*cos, a = b = 1 because we normalized each vector before
+    float dotProduct = Utils::dotProduct(vectorEdgeX, vectorEdgeY, vectorVertexEdgeX1, vectorVertexEdgeY1);
+
+
+
+    // It can happen because of the floating point representation
+    if(dotProduct < -1.0f) {
+        dotProduct = -1.0f;
+    }
+    if(dotProduct > 1.0f) {
+        dotProduct = 1.0f;
+    }
+
+    // we compute the distance between a vertex and an edge,
+    float angle1 = std::acos(dotProduct);
+
+
+    float hypotenuse = Utils::distance(fromX, fromY, toXVertex, toYVertex);
+    // opposite = edge vertex distance = sin * hypotenuse
+    float sinTimesHypotenuse = std::sin(angle1) * hypotenuse;
+
+    return sinTimesHypotenuse;
+
+}
+
+
 bool Edge::isValid() {
     return valid;
 }

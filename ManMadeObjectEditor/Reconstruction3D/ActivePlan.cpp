@@ -1,6 +1,9 @@
 #include "ActivePlan.h"
 
-ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize)
+#define DEBUG
+
+ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *> *triangles)
+    : triangles(triangles)
 {
     Vertex* currentVertex = floorPlan;
     activePlan = new std::vector< Edge* >;
@@ -61,8 +64,33 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize)
             i--;
         }
     }
+
+
+
+
+
+
+#ifdef DEBUG
+    foreach(Edge* e, *activePlan) {
+        Vertex* v1 = e->getVertex1();
+        Vertex* v2 = e->getVertex2();
+        Vertex* vv = new Vertex((v1->getX() + v2->getX()) / 2.0f + 0.002f, (v1->getY() + v2->getY()) / 2.0f + + 0.002f, v1->getZ());
+        addNewTriangle(v1, v2, vv);
+    }
+#endif
 }
 
 std::vector< Edge* >* ActivePlan::getPlans() {
     return activePlan;
 }
+
+void ActivePlan::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
+    qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
+    qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());
+    qglviewer::Vec* triangleVertex3 = new qglviewer::Vec(vertex3->getX(), vertex3->getY(), vertex3->getZ());
+
+    triangles->push_back(triangleVertex1);
+    triangles->push_back(triangleVertex2);
+    triangles->push_back(triangleVertex3);
+}
+
