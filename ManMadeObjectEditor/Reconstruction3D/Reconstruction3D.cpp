@@ -56,15 +56,16 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
             std::vector<Edge*>* eventEdges = event.edgeVector;
 
             for(unsigned int i(0); i < eventEdges->size(); ++i) {
-                // TODO
-                // Attention, faut rajouter que celle qui ne sont pas deja dans la liste !!
-                // Ou sinon les enlever lors que on va les trié selon leur orientation
-                intersectionEdges->push_back((*eventEdges)[i]);
+                Edge* edgeToAdd = (*eventEdges)[i];
+                if(!isEdgeInVector(edgeToAdd, intersectionEdges)) {
+                    intersectionEdges->push_back(edgeToAdd);
+                }
             }
         } else {
             stop = true;
         }
     }
+    std::cerr << intersectionEdges->size()<< std::endl;
 }
 
 void Reconstruction3D::computeIntersection()
@@ -168,4 +169,16 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 void Reconstruction3D::edgeDirectionHandling(Intersection &intersection) //////////////////
 {
 
+}
+
+bool Reconstruction3D::isEdgeInVector(Edge *edge, std::vector<Edge *> *vector) {
+    unsigned int size = vector->size();
+    Edge* currentEdge;
+    for(unsigned int i(0); i < size; ++i) {
+        currentEdge = (*vector)[i];
+        if(currentEdge == edge) {
+            return true;
+        }
+    }
+    return false;
 }

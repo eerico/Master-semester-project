@@ -41,6 +41,8 @@ private:
 
     void eventClustering(Intersection& intersection);
 
+    bool isEdgeInVector(Edge* edge, std::vector< Edge* >* vector);
+
 };
 
 #endif // RECONSTRUCTION3D_H
