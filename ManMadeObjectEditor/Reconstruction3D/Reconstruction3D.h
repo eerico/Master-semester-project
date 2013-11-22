@@ -39,9 +39,11 @@ private:
 
     void edgeDirectionHandling(Intersection& intersection);
 
-    void eventClustering(Intersection& intersection);
+    bool eventClustering(Intersection& intersection);
 
     bool isEdgeInVector(Edge* edge, std::vector< Edge* >* vector);
+
+
 
 };
 

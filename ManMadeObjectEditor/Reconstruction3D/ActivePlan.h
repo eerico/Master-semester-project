@@ -5,6 +5,7 @@
 #include "../Geometry/Edge.h"
 #include "../Geometry/Vertex.h"
 #include "../Geometry/Profile.h"
+#include "Intersection.h"
 #include "Plan.h"
 
 class ActivePlan
@@ -14,6 +15,7 @@ public:
     ActivePlan(float height, ActivePlan* previousActivePlan, std::vector< qglviewer::Vec * >* triangles);
     std::vector< Edge* >* getPlan();
     void computeDirectionPlan();
+    bool filteringInvalidEvent(Intersection& intersection);
 
 private:
     std::vector< Edge* >* activePlan;

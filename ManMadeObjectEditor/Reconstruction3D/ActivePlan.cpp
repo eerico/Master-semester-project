@@ -175,10 +175,56 @@ std::vector< Edge* >* ActivePlan::getPlan() {
     return activePlan;
 }
 
-/// TODO
-// faire une methode qui prend les 3 edge et une intersection et qui test si l'lintersection a bien
-// lieu entre les 3 edge à cette hauteur
-// Donc dans intersection, faire pour que je stock les 2 neighbor et l edge different afin de faciliter le calcul
+// return false si l intersection n est pas valid
+bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
+    std::vector< Edge* >* edges = intersection.edgeVector;
+    Edge* edge = (*edges)[0];
+    Edge* neighbor1 = (*edges)[1];
+    Edge* neighbor2 = (*edges)[2];
+
+    if(!edge->isValid() || !neighbor1->isValid() || !neighbor2->isValid()) {
+        std::cerr << "asd1" << std::endl;
+        return false;
+    }
+
+    Plan horizontalPlan(0.0f, 0.0f, intersection.z, 0.0f, 0.0f, 1.0f);
+
+    // v0 <- neighbor1 -> v1 <- neighbor2 -> v2
+    Plan* plan1 = neighbor1->getDirectionPlan();
+    Plan* plan2 = neighbor2->getDirectionPlan();
+
+    // compute the intersection between the two neighbor and get the point at the corresponding height
+    Intersection intersectionBetweenNeighbor = horizontalPlan.intersect3Plans(plan1, plan2);
+    Vertex* vertexAtCurrentHeight = new Vertex(intersectionBetweenNeighbor.x, intersectionBetweenNeighbor.y, intersectionBetweenNeighbor.z);
+
+    //now we compute the edge at the height and find if the distance is small
+    //enough to consider we have an intersection
+    Edge* previousEdge = edge->getVertex1()->getEdge1();
+    Edge* nextEdge = edge->getVertex2()->getEdge2();
+
+    //compute the first vertex of the edge
+    plan1 = previousEdge->getDirectionPlan();
+    plan2 = edge->getDirectionPlan();
+    Intersection intersectionPreviousEdge = horizontalPlan.intersect3Plans(plan1, plan2);
+
+    plan1 = edge->getDirectionPlan();
+    plan2 = nextEdge->getDirectionPlan();
+    Intersection intersectionNextEdge = horizontalPlan.intersect3Plans(plan1, plan2);
+
+    Edge* newEdgeAtIntersectionHeight = new Edge(new Vertex(intersectionPreviousEdge.x, intersectionPreviousEdge.y, intersectionPreviousEdge.z)
+                                                 , new Vertex(intersectionNextEdge.x, intersectionNextEdge.y, intersectionNextEdge.z));
+
+#ifdef DEBUG
+    std::cerr << "distance: " << newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) << std::endl;
+#endif
+
+    if(newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) < 0.00001) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
 
 void ActivePlan::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
     qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());

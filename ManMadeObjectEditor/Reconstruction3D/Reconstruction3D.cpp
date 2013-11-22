@@ -37,7 +37,8 @@ void Reconstruction3D::reconstruct()
     }
 }
 
-void Reconstruction3D::eventClustering(Intersection& intersection)
+// return false si l intersection n est pas valid
+bool Reconstruction3D::eventClustering(Intersection& intersection)
 {
     float z(intersection.z);
 
@@ -48,8 +49,16 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
 
     std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
 
+    if(!activePlan->filteringInvalidEvent(intersection)) {
+        return false;
+    }
+
     while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
+
+        if(!activePlan->filteringInvalidEvent(event)) {
+            continue;
+        }
 
         if ((std::abs(event.z - z) < delta1) && (Utils::distance(event.x, event.y, intersection.x, intersection.y) < delta2)) {
             priorityQueue->pop();
@@ -65,6 +74,8 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
             stop = true;
         }
     }
+
+    return true;
     std::cerr << intersectionEdges->size()<< std::endl;
 }
 
@@ -156,7 +167,13 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         {
 
             std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
-            eventClustering(intersection);
+            if(!eventClustering(intersection)) {
+                return;
+            }
+
+            if(intersection.edgeVector->size() < 3) {
+                return;
+            }
 
             // juste pour debug
             activePlan = new ActivePlan(intersection.z, activePlan, triangles);
