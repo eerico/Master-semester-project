@@ -8,6 +8,7 @@
 #include "Intersection.h"
 #include "IntersectionComparator.h"
 #include "ActivePlan.h"
+#include "Chains.h"
 #include <vector>
 #include <QGLViewer/qglviewer.h>
 #include <queue>

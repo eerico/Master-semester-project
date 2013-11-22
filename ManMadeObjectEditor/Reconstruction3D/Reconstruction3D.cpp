@@ -1,5 +1,7 @@
 #include "Reconstruction3D.h"
 
+//#define DEBUG
+
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
 {
@@ -28,6 +30,7 @@ void Reconstruction3D::reconstruct()
         priorityQueue->pop();
         handleEvent(event);
     }
+    std::cerr << "FINI" << std::endl;
 
     //reset to inital state
     Vertex* currentVertex = floorPlan;
@@ -56,7 +59,9 @@ bool Reconstruction3D::eventClustering(Intersection& intersection)
     while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
 
+        // if the current intersection (event) is invalid, we skip to the next one
         if(!activePlan->filteringInvalidEvent(event)) {
+            priorityQueue->pop();
             continue;
         }
 
@@ -76,7 +81,6 @@ bool Reconstruction3D::eventClustering(Intersection& intersection)
     }
 
     return true;
-    std::cerr << intersectionEdges->size()<< std::endl;
 }
 
 void Reconstruction3D::computeIntersection()
@@ -175,8 +179,14 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 return;
             }
 
+            Chains* chainList = new Chains(&intersection, triangles);
+            chainList->intraChainHandling();
+            chainList->interChainHandling();
+
             // juste pour debug
-            activePlan = new ActivePlan(intersection.z, activePlan, triangles);
+            #ifdef DEBUG
+                activePlan = new ActivePlan(intersection.z, activePlan, triangles);
+            #endif
             std::cerr << "......................................................................." << std::endl;
             break;
         }

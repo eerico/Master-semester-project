@@ -1,6 +1,7 @@
 #include "ActivePlan.h"
 
 #define DEBUG
+//#define DEBUG_DISTANCE
 
 ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *> *triangles)
     : triangles(triangles)
@@ -214,11 +215,11 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
     Edge* newEdgeAtIntersectionHeight = new Edge(new Vertex(intersectionPreviousEdge.x, intersectionPreviousEdge.y, intersectionPreviousEdge.z)
                                                  , new Vertex(intersectionNextEdge.x, intersectionNextEdge.y, intersectionNextEdge.z));
 
-#ifdef DEBUG
+#ifdef DEBUG_DISTANCE
     std::cerr << "distance: " << newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) << std::endl;
 #endif
 
-    if(newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) < 0.00001) {
+    if(newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) < 0.00001f) {
         return true;
     } else {
         return false;

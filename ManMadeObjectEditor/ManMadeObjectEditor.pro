@@ -32,7 +32,7 @@ SOURCES +=\
     Reconstruction3D/Reconstruction3D.cpp \
     Reconstruction3D/Plan.cpp \
     Reconstruction3D/ActivePlan.cpp \
-    Reconstruction3D/Chain.cpp
+    Reconstruction3D/Chains.cpp
     #Reconstruction3D_old/Reconstruction3D.cpp \
     #Reconstruction3D_old/Plan.cpp \
     #Reconstruction3D_old/Chain.cpp \
@@ -61,7 +61,7 @@ HEADERS  += \
     Reconstruction3D/IntersectionComparator.h \
     Reconstruction3D/Intersection.h \
     Reconstruction3D/ActivePlan.h \
-    Reconstruction3D/Chain.h
+    Reconstruction3D/Chains.h
     #Reconstruction3D_old/Reconstruction3D.h \
     #Reconstruction3D_old/Plan.h \
     #Reconstruction3D_old/Intersection.h \
