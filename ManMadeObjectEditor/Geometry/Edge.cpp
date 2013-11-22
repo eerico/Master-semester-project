@@ -1,10 +1,11 @@
 #include "Edge.h"
 #include "Vertex.h"
 #include "Profile.h"
+#include "../Reconstruction3D/Plan.h"
 
 Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
     :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
-    , oldVertex1(vertex1), oldVertex2(vertex2), child1(0), child2(0), parent(0), cloned(false)
+    , oldVertex1(vertex1), oldVertex2(vertex2), child1(0), child2(0), parent(0), directionPlan(0)
 {
     edgePen.setWidth(3);
 }
@@ -305,12 +306,12 @@ void Edge::setParent(Edge *parent) {
     this->parent = parent;
 }
 
-bool Edge::hasBeenCloned() {
-    return cloned;
+Plan* Edge::getDirectionPlan() {
+    return directionPlan;
 }
 
-void setCloned(bool b) {
-    cloned = b;
+void Edge::setDirectionPlan(Plan *plan) {
+    directionPlan = plan;
 }
 
 bool Edge::existIntersection(Edge *edge) {

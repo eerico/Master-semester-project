@@ -33,7 +33,7 @@ private:
     void addEdgeDirectionEvent();
 
 
-    Intersection intersect(Edge* edge1, Edge* edge2, Edge* edge3);
+    Intersection intersect(Edge* edge1, Edge* edgeNeighbor1, Edge* edgeNeighbor2);
 
     void handleEvent(Intersection& intersection);
 

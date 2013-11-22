@@ -11,6 +11,7 @@ enum EventType {
 
 struct Intersection {
     Edge* edge;
+
     std::vector<Edge*>* edgeVector;
 
     //intersection point

@@ -88,7 +88,7 @@ ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector
 
     Plan horizontalPlan(0.0f, 0.0f, height, 0.0f, 0.0f, 1.0f);
 
-    std::vector< Edge* >* edges = previousActivePlan->getPlans();
+    std::vector< Edge* >* edges = previousActivePlan->getPlan();
     unsigned int numberEdge = edges->size();
 
     Vertex* firstNewVertex;
@@ -114,7 +114,7 @@ ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector
         Plan plan2(vertex1->getX(), vertex1->getY(), vertex1->getZ());
         plan2.computePlanNormal(vertex1, vertex2, currentEdge->getProfile());
 
-        Intersection newIntersection = horizontalPlan.intersect3Plans(plan1, plan2);
+        Intersection newIntersection = horizontalPlan.intersect3Plans(&plan1, &plan2);
 
         newVertex = new Vertex(newIntersection.x, newIntersection.y, newIntersection.z);
 
@@ -162,7 +162,16 @@ ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector
 
 }
 
-std::vector< Edge* >* ActivePlan::getPlans() {
+void ActivePlan::computeDirectionPlan() {
+    foreach(Edge* edge, *activePlan) {
+        Vertex* vertex1 = edge->getVertex1();
+        Plan* plan = new Plan( vertex1->getX(), vertex1->getY(), vertex1->getZ());
+        plan->computePlanNormal(vertex1, edge->getVertex2(), edge->getProfile());
+        edge->setDirectionPlan(plan);
+    }
+}
+
+std::vector< Edge* >* ActivePlan::getPlan() {
     return activePlan;
 }
 

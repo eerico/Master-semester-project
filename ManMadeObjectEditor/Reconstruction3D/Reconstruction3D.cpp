@@ -15,6 +15,8 @@ void Reconstruction3D::reconstruct()
 {
     //set the current ActivePlan
     activePlan = new ActivePlan(floorPlan, floorPlanSize, triangles);
+    //compute the current direction plan
+    activePlan->computeDirectionPlan();
 
     //main loop
     addEdgeDirectionEvent();
@@ -54,6 +56,7 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
             std::vector<Edge*>* eventEdges = event.edgeVector;
 
             for(unsigned int i(0); i < eventEdges->size(); ++i) {
+                // TODO
                 // Attention, faut rajouter que celle qui ne sont pas deja dans la liste !!
                 // Ou sinon les enlever lors que on va les trié selon leur orientation
                 intersectionEdges->push_back((*eventEdges)[i]);
@@ -67,9 +70,7 @@ void Reconstruction3D::eventClustering(Intersection& intersection)
 void Reconstruction3D::computeIntersection()
 {
 
-    std::vector< Edge* >* plans = activePlan->getPlans();
-
-
+    std::vector< Edge* >* plans = activePlan->getPlan();
 
     unsigned int numberEdges = plans->size();
 
@@ -111,25 +112,17 @@ void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
     }
 }
 
-Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edge2, Edge *edge3) ////////////////////////
-{
-    Vertex* vertex1 = edge1->getVertex1();
-    Plan plan1( vertex1->getX(), vertex1->getY(), vertex1->getZ());
-    plan1.computePlanNormal(vertex1, edge1->getVertex2(), edge1->getProfile());
+Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edgeNeighbor1, Edge *edgeNeighbor2) ////////////////////////
+{    
+    Plan* plan1 = edge1->getDirectionPlan();
+    Plan* plan2 = edgeNeighbor1->getDirectionPlan();
+    Plan* plan3 = edgeNeighbor2->getDirectionPlan();
 
-    Vertex* vertex2 = edge2->getVertex1();
-    Plan plan2(vertex2->getX(), vertex2->getY(), vertex2->getZ());
-    plan2.computePlanNormal(vertex2, edge2->getVertex2(), edge2->getProfile());
-
-    Vertex* vertex3 = edge3->getVertex1();
-    Plan plan3(vertex3->getX(), vertex3->getY(), vertex3->getZ());
-    plan3.computePlanNormal(vertex3, edge3->getVertex2(), edge3->getProfile());
-
-    Intersection intersection = plan1.intersect3Plans(plan2, plan3);
+    Intersection intersection = plan1->intersect3Plans(plan2, plan3);
     intersection.edgeVector = new std::vector< Edge* >;
     intersection.edgeVector->push_back(edge1);
-    intersection.edgeVector->push_back(edge2);
-    intersection.edgeVector->push_back(edge3);
+    intersection.edgeVector->push_back(edgeNeighbor1);
+    intersection.edgeVector->push_back(edgeNeighbor2);
 
     return intersection;
 }
@@ -163,6 +156,8 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
             std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             eventClustering(intersection);
+
+            // juste pour debug
             activePlan = new ActivePlan(intersection.z, activePlan, triangles);
             std::cerr << "......................................................................." << std::endl;
             break;

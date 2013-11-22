@@ -11,7 +11,7 @@ public:
     Plan(float pointX, float pointY, float pointZ,
          float normalX = 0.0f, float normalY = 0.0f, float normalZ = 1.0f);
 
-    Intersection intersect3Plans(Plan& plan2, Plan& plan3);
+    Intersection intersect3Plans(Plan *plan2, Plan *plan3);
 
     void setNormal(float nx, float ny, float nz);
     void getNormal(float& nx, float& ny, float& nz);

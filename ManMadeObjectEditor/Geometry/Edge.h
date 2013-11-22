@@ -9,6 +9,7 @@
 #include <ostream>
 #include <cmath>
 
+class Plan;
 class Vertex;
 class Profile;
 
@@ -114,9 +115,8 @@ public:
     Edge* getParent();
     void setParent(Edge* parent);
 
-    bool hasBeenCloned();
-
-    void setCloned(bool b);
+    Plan* getDirectionPlan();
+    void setDirectionPlan(Plan* plan);
 
     /**
      * @brief existIntersection
@@ -166,7 +166,8 @@ private:
     // If the edge is valid or not
     bool valid;
 
-    bool cloned;
+    Plan* directionPlan;
+
 };
 
 #endif // EDGE_H
