@@ -123,20 +123,22 @@ void Chains::intraChainHandling() {
             Vertex* vertex1 = firstEdge->getVertex1();
             if ((vertex1 != firstNeighbor->getVertex1()) && (vertex1 != firstNeighbor->getVertex2())) {
                 firstEdge->setVertex2(intersectionVertex);
+                vertex1->setNeighbor2(intersectionVertex);
                 intersectionVertex->setEdge1(firstEdge);
+                intersectionVertex->setNeighbor1(vertex1);
             } else {
-                firstEdge->setVertex1(intersectionVertex);
-                intersectionVertex->setEdge2(firstEdge);
+                std::cerr << "Case 1 that should not happen in intraChainHandling" << std::endl;
             }
 
             //find which vertex will be reassigned and reassigned it
-            Vertex* vertex2 = lastEdge->getVertex1();
+            Vertex* vertex2 = lastEdge->getVertex2();
             if ((vertex2 != lastNeighbor->getVertex1()) && (vertex2 != lastNeighbor->getVertex2())) {
-                lastEdge->setVertex2(intersectionVertex);
-                intersectionVertex->setEdge1(lastEdge);
-            } else {
                 lastEdge->setVertex1(intersectionVertex);
+                vertex2->setNeighbor1(intersectionVertex);
                 intersectionVertex->setEdge2(lastEdge);
+                intersectionVertex->setNeighbor2(vertex2);
+            } else {
+                std::cerr << "Case 2 that should not happen in intraChainHandling" << std::endl;
             }
 
             //invalid all interior edges
@@ -168,23 +170,22 @@ void Chains::intraChainHandling() {
 
             //find which vertex will be reassigned and reassigned it
             Vertex* vertex1 = firstEdge->getVertex1();
-            Vertex* vertex2 = firstEdge->getVertex2();
-            if ((vertex1 != lastEdge->getVertex1()) && (vertex1 != lastEdge->getVertex2())) {
-                firstEdge->setVertex2(intersectionVertex);
-                intersectionVertex->setEdge1(firstEdge);
-            } else {
-                firstEdge->setVertex1(intersectionVertex);
-                intersectionVertex->setEdge2(firstEdge);
+            Vertex* vertex2 = lastEdge->getVertex2();
+            Vertex* vertexToReplaceFrstEdge = firstEdge->getVertex2();
+            Vertex* vertexToReplaceScndEdge = lastEdge->getVertex1();
+
+            if(vertexToReplaceFrstEdge != vertexToReplaceScndEdge) {
+                std::cerr << "Case 3 that should not happen in intraChainHandling" << std::endl;
             }
 
-            Vertex* lastEdgeVertex = lastEdge->getVertex1();
-            if ((vertex1 != lastEdgeVertex) && (vertex2 != lastEdgeVertex)) {
-                lastEdge->setVertex2(intersectionVertex);
-                intersectionVertex->setEdge1(lastEdge);
-            } else {
-                lastEdge->setVertex1(intersectionVertex);
-                intersectionVertex->setEdge2(lastEdge);
-            }
+            vertex1->setNeighbor2(intersectionVertex);
+            firstEdge->setVertex2(intersectionVertex);
+            vertex2->setNeighbor1(intersectionVertex);
+            lastEdge->setVertex1(intersectionVertex);
+            intersectionVertex->setNeighbor1(vertex1);
+            intersectionVertex->setNeighbor2(vertex2);
+            intersectionVertex->setEdge1(firstEdge);
+            intersectionVertex->setEdge2(lastEdge);
         }
     }
 }
