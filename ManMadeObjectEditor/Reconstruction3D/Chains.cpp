@@ -190,8 +190,100 @@ void Chains::intraChainHandling() {
     }
 }
 
-void Chains::interChainHandling() {
+// return true si il y a eu un split lors de l'algorithme car
+// si c est le cas, il faut recompute le active plan ET les intersection!
+// (voir paper page 5, paragraphe Outline, la fin)
+bool Chains::interChainHandling() {
+    unsigned int chainsSize = chainList.size();
+    if (chainsSize < 2) {
+        return false;
+    }
+    bool edgeSplitted = false;
+    for(unsigned int i(0); i < chainsSize; i++) {
+        std::vector< Edge* >* chain1 = chainList[i];
+        std::vector< Edge* >* chain2 = chainList[(i+1) % chainsSize];
 
+        Vertex* intersectionVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+
+        Edge* lastEdgeChain1(0);
+        Edge* firstEdgeChain2(0);
+
+        if(chain1->size() == 1) {
+            Edge* newEdge1(0);
+            Edge* newEdge2(0);
+
+            Edge* chainEdge = (*chain1)[0];
+            splitEdgeAtCorner(chainEdge, newEdge1, newEdge2);
+
+            chainEdge->invalid();
+            addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
+
+            chain1->pop_back();
+            chain1->push_back(newEdge1);
+            chain1->push_back(newEdge2);
+            lastEdgeChain1 = newEdge2;
+
+            edgeSplitted = true;
+        } else {
+            lastEdgeChain1 = (*chain1)[1];
+        }
+
+        if(chain2->size() == 1) {
+            Edge* newEdge1(0);
+            Edge* newEdge2(0);
+
+            Edge* chainEdge = (*chain2)[0];
+            splitEdgeAtCorner(chainEdge, newEdge1, newEdge2);
+
+            chainEdge->invalid();
+            addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
+
+            chain2->pop_back();
+            chain2->push_back(newEdge1);
+            chain2->push_back(newEdge2);
+            firstEdgeChain2 = newEdge1;
+
+            edgeSplitted = true;
+        } else {
+            firstEdgeChain2 = (*chain2)[0];
+        }
+        lastEdgeChain1->setVertex1(intersectionVertex);
+        firstEdgeChain2->setVertex2(intersectionVertex);
+
+        intersectionVertex->setEdge1(firstEdgeChain2);
+        intersectionVertex->setEdge2(lastEdgeChain1);
+    }
+
+    return edgeSplitted;
+}
+
+void Chains::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2)
+{
+    Vertex* cornerVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+
+    newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
+    newEdge2 = new Edge(cornerVertex, edgeToSplit->getVertex2(), edgeToSplit->getProfile());
+
+    cornerVertex->setEdge1(newEdge1);
+    cornerVertex->setEdge2(newEdge2);
+
+    //remove invalid edge from the active plan and add the two new edges
+    /*unsigned int activePlanSize = activePlan->size();
+    bool found(false);
+    for(unsigned int i(0); (i < activePlanSize) && !found; ++i) {
+        Edge* currentEdge = (*activePlan)[i];
+        if(currentEdge == edgeToSplit) {
+            activePlan->erase(activePlan->begin() + i);
+            //delete currentEdge;
+
+            currentEdge->setChild1(newEdge1);
+            currentEdge->setChild2(newEdge2);
+
+            activePlan->insert(activePlan->begin() + i, newEdge1);
+            activePlan->insert(activePlan->begin() + i + 1, newEdge2);
+            found = true;
+        }
+    }*/
 }
 
 void Chains::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {

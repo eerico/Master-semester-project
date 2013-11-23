@@ -14,13 +14,14 @@ class Chains
 public:
     Chains(Intersection *intersection, std::vector<qglviewer::Vec *> *triangles);
     void intraChainHandling();
-    void interChainHandling();
+    bool interChainHandling();
 
 private:
     Intersection* intersection;
     std::vector<qglviewer::Vec *> *triangles;
     std::vector< std::vector< Edge* >* > chainList;
-    void addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) ;
+    void addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3);
+    void splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2);
 };
 
 #endif // CHAINS_H

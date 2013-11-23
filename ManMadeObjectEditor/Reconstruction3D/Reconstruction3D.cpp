@@ -40,49 +40,6 @@ void Reconstruction3D::reconstruct()
     }
 }
 
-// return false si l intersection n est pas valid
-bool Reconstruction3D::eventClustering(Intersection& intersection)
-{
-    float z(intersection.z);
-
-    float delta1(0.0001f);
-    float delta2(0.000001f);
-
-    bool stop(false);
-
-    std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
-
-    if(!activePlan->filteringInvalidEvent(intersection)) {
-        return false;
-    }
-
-    while(!stop && (priorityQueue->size() > 0)){
-        Intersection event = priorityQueue->top();
-
-        // if the current intersection (event) is invalid, we skip to the next one
-        if(!activePlan->filteringInvalidEvent(event)) {
-            priorityQueue->pop();
-            continue;
-        }
-
-        if ((std::abs(event.z - z) < delta1) && (Utils::distance(event.x, event.y, intersection.x, intersection.y) < delta2)) {
-            priorityQueue->pop();
-            std::vector<Edge*>* eventEdges = event.edgeVector;
-
-            for(unsigned int i(0); i < eventEdges->size(); ++i) {
-                Edge* edgeToAdd = (*eventEdges)[i];
-                if(!isEdgeInVector(edgeToAdd, intersectionEdges)) {
-                    intersectionEdges->push_back(edgeToAdd);
-                }
-            }
-        } else {
-            stop = true;
-        }
-    }
-
-    return true;
-}
-
 void Reconstruction3D::computeIntersection()
 {
 
@@ -108,28 +65,8 @@ void Reconstruction3D::computeIntersection()
 
 }
 
-void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
-{
-    Vertex* currentVertex = floorPlan;
-    for(unsigned int i(0); i < floorPlanSize ; ++i) {
-        Edge* currentEdge = currentVertex->getEdge2();
-        Vertex* currentProfileVertex = currentEdge->getProfile()->getProfileVertex();
-        currentProfileVertex = currentProfileVertex->getNeighbor2();
-
-        while(currentProfileVertex != 0 && currentProfileVertex->getNeighbor2() != 0) {
-            Intersection edgeDirectionEvent;
-            edgeDirectionEvent.edge = currentEdge;
-            edgeDirectionEvent.eventType = EdgeDirection;
-            edgeDirectionEvent.z = currentProfileVertex->getY();
-            priorityQueue->push(edgeDirectionEvent);
-            currentProfileVertex = currentProfileVertex->getNeighbor2();
-        }
-        currentVertex = floorPlan->getNeighbor2();
-    }
-}
-
 Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edgeNeighbor1, Edge *edgeNeighbor2) ////////////////////////
-{    
+{
     Plan* plan1 = edge1->getDirectionPlan();
     Plan* plan2 = edgeNeighbor1->getDirectionPlan();
     Plan* plan3 = edgeNeighbor2->getDirectionPlan();
@@ -181,7 +118,10 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
             Chains* chainList = new Chains(&intersection, triangles);
             chainList->intraChainHandling();
-            chainList->interChainHandling();
+
+            if(chainList->interChainHandling()){
+                // TODO, on a split un ou plusieur edge donc on doit recalculer les intersection
+            }
 
             // juste pour debug
             #ifdef DEBUG
@@ -190,6 +130,71 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             std::cerr << "......................................................................." << std::endl;
             break;
         }
+    }
+}
+
+
+// return false si l intersection n est pas valid
+bool Reconstruction3D::eventClustering(Intersection& intersection)
+{
+    float z(intersection.z);
+
+    float delta1(0.0001f);
+    float delta2(0.000001f);
+
+    bool stop(false);
+
+    std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
+
+    if(!activePlan->filteringInvalidEvent(intersection)) {
+        return false;
+    }
+
+    while(!stop && (priorityQueue->size() > 0)){
+        Intersection event = priorityQueue->top();
+
+        // if the current intersection (event) is invalid, we skip to the next one
+        if(!activePlan->filteringInvalidEvent(event)) {
+            priorityQueue->pop();
+            continue;
+        }
+
+        if ((std::abs(event.z - z) < delta1) && (Utils::distance(event.x, event.y, intersection.x, intersection.y) < delta2)) {
+            priorityQueue->pop();
+            std::vector<Edge*>* eventEdges = event.edgeVector;
+
+            for(unsigned int i(0); i < eventEdges->size(); ++i) {
+                Edge* edgeToAdd = (*eventEdges)[i];
+                if(!isEdgeInVector(edgeToAdd, intersectionEdges)) {
+                    intersectionEdges->push_back(edgeToAdd);
+                }
+            }
+        } else {
+            stop = true;
+        }
+    }
+
+    return true;
+}
+
+
+void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
+{
+    Vertex* currentVertex = floorPlan;
+    for(unsigned int i(0); i < floorPlanSize ; ++i) {
+        Edge* currentEdge = currentVertex->getEdge2();
+        Vertex* currentProfileVertex = currentEdge->getProfile()->getProfileVertex();
+        currentProfileVertex = currentProfileVertex->getNeighbor2();
+
+        while(currentProfileVertex != 0 && currentProfileVertex->getNeighbor2() != 0) {
+            Intersection edgeDirectionEvent;
+            edgeDirectionEvent.edge = currentEdge;
+            edgeDirectionEvent.eventType = EdgeDirection;
+            edgeDirectionEvent.z = currentProfileVertex->getY();
+            priorityQueue->push(edgeDirectionEvent);
+            currentProfileVertex = currentProfileVertex->getNeighbor2();
+        }
+        currentVertex = floorPlan->getNeighbor2();
     }
 }
 
