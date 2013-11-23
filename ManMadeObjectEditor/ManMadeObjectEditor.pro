@@ -61,7 +61,8 @@ HEADERS  += \
     Reconstruction3D/IntersectionComparator.h \
     Reconstruction3D/Intersection.h \
     Reconstruction3D/ActivePlan.h \
-    Reconstruction3D/Chains.h
+    Reconstruction3D/Chains.h \
+    Reconstruction3D/ChainOrientationComparator.h
     #Reconstruction3D_old/Reconstruction3D.h \
     #Reconstruction3D_old/Plan.h \
     #Reconstruction3D_old/Intersection.h \

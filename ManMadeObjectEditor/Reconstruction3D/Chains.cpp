@@ -58,11 +58,16 @@ Chains::Chains(Intersection* intersection, std::vector<qglviewer::Vec *> *triang
         chainList.push_back(currentChain);
     }
 
+    // sort the list of chain around the intersection
+    ChainOrientationComparator chainOrientationComparator;
+    std::sort(chainList.begin(), chainList.end(), chainOrientationComparator);
 
 
-    // Maintenant faut les orienter en fonction de leur orientation
 #ifdef DEBUG
+    int chainIndex = 0;
     foreach(std::vector< Edge* >* v, chainList) {
+        chainIndex++;
+        std::cerr << "chain no: " << chainIndex << std::endl;
         foreach(Edge* e, *v) {
             Vertex* v1 = e->getVertex1();
             v1->setZ(intersection->z);

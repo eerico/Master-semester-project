@@ -4,7 +4,10 @@
 #include "../Geometry/Vertex.h"
 #include "../Geometry/Edge.h"
 #include "../Geometry/Profile.h"
+#include "ChainOrientationComparator.h"
 #include "Intersection.h"
+#include <algorithm>
+#include <cmath>
 
 class Chains
 {
