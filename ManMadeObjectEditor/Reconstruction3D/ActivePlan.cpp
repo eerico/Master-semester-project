@@ -1,6 +1,6 @@
 #include "ActivePlan.h"
 
-#define DEBUG
+//#define DEBUG
 //#define DEBUG_DISTANCE
 
 ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec *> *triangles)

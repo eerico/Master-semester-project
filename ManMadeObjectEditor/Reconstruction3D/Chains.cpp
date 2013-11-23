@@ -1,6 +1,6 @@
 #include "Chains.h"
 
-#define DEBUG
+//#define DEBUG
 
 // Cette classe doit creer la chaines en faisant le truc des orientation ET implementer le inter et intra chain handling
 // qui va update l active plan ET ceer des triangles (? ou pas ?)
@@ -82,7 +82,111 @@ Chains::Chains(Intersection* intersection, std::vector<qglviewer::Vec *> *triang
 }
 
 void Chains::intraChainHandling() {
+    unsigned int chainsSize = chainList.size();
+    for(unsigned int j(0); j < chainsSize; ++j) {
+        std::vector< Edge* >* currentChain = chainList[j];
+        unsigned int currentChainSize = currentChain->size();
 
+        if (currentChainSize > 2) {
+
+            Edge* firstEdge = (*currentChain)[0];
+            Edge* lastEdge = (*currentChain)[currentChainSize - 1];
+
+            Edge* firstNeighbor = (*currentChain)[1];
+            Edge* lastNeighbor = (*currentChain)[currentChainSize - 2];
+
+            if(!firstEdge->isValid() || !lastEdge->isValid() || !firstNeighbor->isValid() || !lastNeighbor->isValid()) {
+                break;
+            }
+
+            Vertex* intersectionVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+
+            // first check if the chain is circular. If it is the case, all edges are interior edges that will shrink to 0
+            if (firstEdge->getVertex1() == lastEdge->getVertex2()) {
+                //invalid all interior edges
+                while(!currentChain->empty()){
+                    Edge* edgeInvalid = (*currentChain)[currentChain->size()-1];
+                    currentChain->pop_back();
+                    edgeInvalid->invalid();
+
+                    addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
+                }
+                chainList.erase(chainList.begin() + j);
+                continue;
+            }
+
+
+            addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
+            addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
+
+            //find which vertex will be reassigned and reassigned it
+            Vertex* vertex1 = firstEdge->getVertex1();
+            if ((vertex1 != firstNeighbor->getVertex1()) && (vertex1 != firstNeighbor->getVertex2())) {
+                firstEdge->setVertex2(intersectionVertex);
+                intersectionVertex->setEdge1(firstEdge);
+            } else {
+                firstEdge->setVertex1(intersectionVertex);
+                intersectionVertex->setEdge2(firstEdge);
+            }
+
+            //find which vertex will be reassigned and reassigned it
+            Vertex* vertex2 = lastEdge->getVertex1();
+            if ((vertex2 != lastNeighbor->getVertex1()) && (vertex2 != lastNeighbor->getVertex2())) {
+                lastEdge->setVertex2(intersectionVertex);
+                intersectionVertex->setEdge1(lastEdge);
+            } else {
+                lastEdge->setVertex1(intersectionVertex);
+                intersectionVertex->setEdge2(lastEdge);
+            }
+
+            //invalid all interior edges
+            for(unsigned int i(1); i < currentChainSize - 1; ++i) {
+                Edge* edgeInvalid = (*currentChain)[i];
+                currentChain->erase(currentChain->begin() + i);
+                i--;
+                currentChainSize--;
+                edgeInvalid->invalid();
+
+                addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
+            }
+            if(currentChain->size() == 0) {
+                chainList.erase(chainList.begin() + j);
+            }
+        } else if (currentChainSize == 2) {
+
+            Edge* firstEdge = (*currentChain)[0];
+            Edge* lastEdge = (*currentChain)[1];
+
+            if(!firstEdge->isValid() || !lastEdge->isValid()) {
+                break;
+            }
+
+            Vertex* intersectionVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+
+            addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
+            addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
+
+            //find which vertex will be reassigned and reassigned it
+            Vertex* vertex1 = firstEdge->getVertex1();
+            Vertex* vertex2 = firstEdge->getVertex2();
+            if ((vertex1 != lastEdge->getVertex1()) && (vertex1 != lastEdge->getVertex2())) {
+                firstEdge->setVertex2(intersectionVertex);
+                intersectionVertex->setEdge1(firstEdge);
+            } else {
+                firstEdge->setVertex1(intersectionVertex);
+                intersectionVertex->setEdge2(firstEdge);
+            }
+
+            Vertex* lastEdgeVertex = lastEdge->getVertex1();
+            if ((vertex1 != lastEdgeVertex) && (vertex2 != lastEdgeVertex)) {
+                lastEdge->setVertex2(intersectionVertex);
+                intersectionVertex->setEdge1(lastEdge);
+            } else {
+                lastEdge->setVertex1(intersectionVertex);
+                intersectionVertex->setEdge2(lastEdge);
+            }
+        }
+    }
 }
 
 void Chains::interChainHandling() {
