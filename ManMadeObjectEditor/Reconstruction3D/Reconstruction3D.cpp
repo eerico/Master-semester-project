@@ -3,7 +3,7 @@
 //#define DEBUG
 
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles)
-    :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
+    :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles), minimumHeight(0.0f)
 {
     priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
 }
@@ -57,7 +57,7 @@ void Reconstruction3D::computeIntersection()
             }
             Intersection intersection = intersect(edge1, edge2, edge3);
 
-            if(intersection.eventType != NoIntersection && intersection.z > 0.0f) {
+            if(intersection.eventType != NoIntersection && intersection.z > minimumHeight) {
                 priorityQueue->push(intersection);
             }
         }
@@ -136,9 +136,16 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 }
                 delete priorityQueue;
                 priorityQueue = priorityQueueTmp;
-                /*delete activePlan;
-                activePlan = new ... TODO
-                computeIntersection();*/
+
+                // We have updated the current active plan by insterting new edges into it,
+                // we will thus create a new active plan, delete the old one and recompute the
+                // intersection for the new active plan (only the itersection above the current one,
+                // we thus use a variable to control this behaviour, the variable minimumHeight)
+                ActivePlan* oldActivePlan = activePlan;
+                activePlan = new ActivePlan(oldActivePlan, triangles);
+                delete oldActivePlan;
+                minimumHeight = intersection.z;
+                computeIntersection();
             }
 
             // juste pour debug

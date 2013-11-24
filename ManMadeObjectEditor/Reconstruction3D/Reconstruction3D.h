@@ -44,7 +44,7 @@ private:
 
     bool isEdgeInVector(Edge* edge, std::vector< Edge* >* vector);
 
-
+    float minimumHeight;
 
 };
 

@@ -1,6 +1,7 @@
 #include "Chains.h"
 
 //#define DEBUG
+//#define NOCHAIN
 
 // Cette classe doit creer la chaines en faisant le truc des orientation ET implementer le inter et intra chain handling
 // qui va update l active plan ET ceer des triangles (? ou pas ?)
@@ -109,15 +110,18 @@ void Chains::intraChainHandling() {
                     currentChain->pop_back();
                     edgeInvalid->invalid();
 
-                    addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
+                    #ifndef DEBUG
+                        addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
+                    #endif
                 }
                 chainList.erase(chainList.begin() + j);
                 continue;
             }
 
-
-            addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
-            addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
+            #ifndef DEBUG
+                addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
+                addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
+            #endif
 
             //reassign the vertices
             Vertex* vertex1 = firstEdge->getVertex1();
@@ -216,7 +220,9 @@ bool Chains::interChainHandling() {
             splitEdgeAtCorner(chainEdge, newEdge1, newEdge2);
 
             chainEdge->invalid();
-            addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
+            #ifndef DEBUG
+                addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
+            #endif
 
             chain1->pop_back();
             chain1->push_back(newEdge1);
@@ -236,7 +242,9 @@ bool Chains::interChainHandling() {
             splitEdgeAtCorner(chainEdge, newEdge1, newEdge2);
 
             chainEdge->invalid();
-            addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
+            #ifndef DEBUG
+                addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
+            #endif
 
             chain2->pop_back();
             chain2->push_back(newEdge1);
@@ -255,7 +263,9 @@ bool Chains::interChainHandling() {
         firstEdgeChain2->getVertex1()->setNeighbor2(intersectionVertex);
 
         intersectionVertex->setEdge1(firstEdgeChain2);
+        intersectionVertex->setNeighbor1(firstEdgeChain2->getVertex1());
         intersectionVertex->setEdge2(lastEdgeChain1);
+        intersectionVertex->setNeighbor2(lastEdgeChain1->getVertex2());
     }
 
     return edgeSplitted;
@@ -274,17 +284,19 @@ void Chains::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdg
     cornerVertex->setEdge1(newEdge1);
     cornerVertex->setEdge2(newEdge2);
     newEdge1->getVertex1()->setNeighbor2(cornerVertex);
+    newEdge1->getVertex1()->setEdge2(newEdge1);
     newEdge2->getVertex2()->setNeighbor1(cornerVertex);
+    newEdge2->getVertex2()->setEdge1(newEdge2);
     cornerVertex->setNeighbor1(newEdge1->getVertex1());
     cornerVertex->setNeighbor2(newEdge2->getVertex2());
 
 
-    // on doit rajouter ici les 2 edge dans le active plan sinon sa marche pas !!
-    // TODO
+    // we update the current active plan. We have to remove the old edge and insert the two new one
     activePlan->insert2Edges(edgeToSplit, newEdge1, newEdge2);
 }
 
 void Chains::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
+#ifndef NOCHAIN
     qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
     qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());
     qglviewer::Vec* triangleVertex3 = new qglviewer::Vec(vertex3->getX(), vertex3->getY(), vertex3->getZ());
@@ -292,4 +304,5 @@ void Chains::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
     triangles->push_back(triangleVertex1);
     triangles->push_back(triangleVertex2);
     triangles->push_back(triangleVertex3);
+#endif
 }

@@ -20,6 +20,7 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vecto
 
         cloneVertex1->setEdge2(cloneEdge);
         cloneEdge->setVertex1(cloneVertex1);
+        cloneEdge->setDirectionPlan(currentEdge->getDirectionPlan());
 
         if(i > 0) {
             cloneVertex1->setEdge1(previousEdge);
@@ -83,8 +84,10 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vecto
 
 // Constructor only used for debugging
 ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector< qglviewer::Vec * >* triangles)
-    :previousActivePlan(previousActivePlan), triangles(triangles)
+    :triangles(triangles)
 {
+    #ifdef DEBUG
+
     activePlan = new std::vector< Edge* >;
 
     Plan horizontalPlan(0.0f, 0.0f, height, 0.0f, 0.0f, 1.0f);
@@ -152,7 +155,7 @@ ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector
     firstNewVertex->setNeighbor1(previousNewVertex);
     activePlan->push_back(newEdge);
 
-#ifdef DEBUG
+
     foreach(Edge* e, *activePlan) {
         Vertex* v1 = e->getVertex1();
         Vertex* v2 = e->getVertex2();
@@ -161,6 +164,116 @@ ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector
     }
 #endif
 
+}
+
+ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Vec *> *triangles)
+    :triangles(triangles)
+{
+    activePlan = new std::vector< Edge* >;
+    // The previous active plan can contain several loop, it is no more only one loop.
+    // To simplify the cloning process, first construct every chain
+    std::vector< std::vector< Edge* >* >* chains = createChain(previousActivePlan);
+
+    // Then for each chain, we can construct the associated active plan
+    // and merge them
+   // std::cerr << "CHAIN: " << std::endl;
+    foreach(std::vector< Edge* >* currentChain, *chains) {
+        //std::cerr << "  chain" << std::endl;
+        //foreach(Edge* e, *currentChain) {
+            //std::cerr << "EDGE(" <<  *e << ")" << "N1 previous Edge: " << *e->getVertex1()->getEdge1() << " N2 next: " << *e->getVertex2()->getEdge2() <<std::endl;
+            //std::cerr << "EDGE(" <<  *e << ")   ";
+            //std::cerr << "V2 info: " << *e->getVertex2()->getEdge1() << ", " << *e->getVertex2()->getEdge2() << std::endl;
+            //std::cerr << "EDGE(" <<  *e << ")" << std::endl;
+        //}
+
+
+
+        /*unsigned int i = currentChain->size();
+        Edge* ee = (*currentChain)[0];
+        Vertex* v = ee->getVertex1();
+        for(unsigned int ii(0); ii < i; ++ii) {
+            std::cerr << *v << std::endl;
+
+            v = v->getNeighbor1();
+        }*/
+
+
+        unsigned int size = currentChain->size();
+        Edge* edgeTmp = (*currentChain)[0];
+
+        ActivePlan activePlanTmp(edgeTmp->getVertex1(), size, triangles);
+        std::vector< Edge* >* plansTmp = activePlanTmp.getPlan();
+        activePlan->insert(activePlan->end(), plansTmp->begin(), plansTmp->end());
+    }
+
+}
+
+std::vector< std::vector< Edge* >* >* ActivePlan::createChain(ActivePlan* previousActivePlan) {
+    std::vector< std::vector< Edge* >* >* chains = new std::vector< std::vector< Edge* >* >;
+
+    std::vector< Edge* >* edges = previousActivePlan->getPlan();
+    unsigned int size = edges->size();
+
+    //DEBUG: first remove any invalid edges
+    /*for(unsigned int i(0); i < size; ++i) {
+        Edge* currentEdge = (*edges)[i];
+        if (!currentEdge->isValid()) {
+            std::cerr << "ERROR: activePlan createChain -> invalid edges still exist" << std::endl;
+            edges->erase(edges->begin() + i);
+            i--;
+            size--;
+        }
+    }*/
+
+    //create the chains
+    Vertex* first = 0;
+    Vertex* last = 0;
+
+    for(unsigned int i(0); i < size; ++i) {
+        std::vector< Edge* >* currentChain = new std::vector< Edge* >;
+        Edge* currentEdge = (*edges)[i];
+
+        first = currentEdge->getVertex1();
+        last = currentEdge->getVertex2();
+        currentChain->push_back(currentEdge);
+
+        for(unsigned int j(i+1); j < size; ++j) {
+            Edge* comparedEdge = (*edges)[j];
+
+            Vertex* vertex1 = comparedEdge->getVertex1();
+            Vertex* vertex2 = comparedEdge->getVertex2();
+
+            if(vertex1 == first) {
+                currentChain->insert(currentChain->begin(), comparedEdge);
+                edges->erase(edges->begin() + j);
+                size--;
+                j = i;
+                first = vertex2;
+            } else if(vertex2 == first) {
+                currentChain->insert(currentChain->begin(), comparedEdge);
+                edges->erase(edges->begin() + j);
+                size--;
+                j = i;
+                first = vertex1;
+            } else if(vertex1 == last) {
+                currentChain->push_back(comparedEdge);
+                edges->erase(edges->begin() + j);
+                size--;
+                j = i;
+                last = vertex2;
+            } else if(vertex2 == last) {
+                currentChain->push_back(comparedEdge);
+                edges->erase(edges->begin() + j);
+                size--;
+                j = i;
+                last = vertex1;
+            }
+        }
+
+        chains->push_back(currentChain);
+    }
+
+    return chains;
 }
 
 void ActivePlan::computeDirectionPlan() {
