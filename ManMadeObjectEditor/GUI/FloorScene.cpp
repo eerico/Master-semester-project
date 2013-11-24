@@ -343,11 +343,11 @@ void FloorScene::basicCircle(QPoint * mousePos, int numSample) {
     meshManager->incrementFloorPlanSize();
 
 
-    Vertex* a = new Vertex(-1.0, 1.0);
+    Vertex* a = new Vertex(-1.23, 0.99);//new Vertex(-1.0, 1.0);
     Vertex* b = new Vertex(1.0, 1.0);//new Vertex(0.815, 1.025);
     Vertex* c = new Vertex(1.0, -1.0);
     Vertex* d = new Vertex(-1.0, -1.0);
-    Vertex* e = new Vertex(-0.11, -0.175);//new Vertex(0.0, 0.0);
+    Vertex* e = new Vertex(-1.5, 0.0);//new Vertex(0.0, 0.0);
 
 
 

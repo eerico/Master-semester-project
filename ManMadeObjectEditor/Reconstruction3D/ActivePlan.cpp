@@ -340,3 +340,29 @@ void ActivePlan::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex
     triangles->push_back(triangleVertex3);
 }
 
+void ActivePlan::print(bool onlyValidEdge) {
+    std::cerr << "Active Plan: " << std::endl;
+    if(onlyValidEdge) {
+        foreach(Edge* e, *activePlan) {
+            if(e->isValid()) {
+                std::cerr << "    " << *e << std::endl;
+            }
+        }
+    } else {
+        foreach(Edge* e, *activePlan) {
+            std::cerr << "    " << *e << std::endl;
+        }
+    }
+}
+
+unsigned int ActivePlan::numberValidEdge() {
+    unsigned int numberValidEdgeCounter(0);
+    foreach(Edge* e, *activePlan) {
+        if(e->isValid()) {
+            numberValidEdgeCounter++;
+        }
+    }
+
+    return numberValidEdgeCounter;
+}
+
