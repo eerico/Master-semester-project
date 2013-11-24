@@ -106,7 +106,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         case General:
         {
 
-            //std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             if(!eventClustering(intersection)) {
                 return;
             }
@@ -119,6 +119,23 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             chainList->intraChainHandling();
 
             if(chainList->interChainHandling()){
+                // We have updated the current active plan by insterting new edges into it,
+                // we will thus create a new active plan, delete the old one and recompute the
+                // intersection for the new active plan (only the itersection above the current one,
+                // we thus use a variable to control this behaviour, the variable minimumHeight)
+                ActivePlan* oldActivePlan = activePlan;
+                bool chainSizeOne;
+                activePlan = new ActivePlan(oldActivePlan, triangles, chainSizeOne);
+
+                // It can happen that a chain of size 1 is created. We just ignore it.
+                if(!chainSizeOne) {
+                    delete oldActivePlan;
+                    minimumHeight = intersection.z + 0.000001f; //we use a small delta to ensure that the next intersection will be above the current one
+                } else {
+                    activePlan = oldActivePlan;
+                    return;
+                }
+
                 // the inter chain algorithm has inserted new edges. We thus have to recompute the active plan,
                 // recompute the intersection for this new active plan and handle these new intersections
                 std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>* priorityQueueTmp
@@ -136,14 +153,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 delete priorityQueue;
                 priorityQueue = priorityQueueTmp;
 
-                // We have updated the current active plan by insterting new edges into it,
-                // we will thus create a new active plan, delete the old one and recompute the
-                // intersection for the new active plan (only the itersection above the current one,
-                // we thus use a variable to control this behaviour, the variable minimumHeight)
-                ActivePlan* oldActivePlan = activePlan;
-                activePlan = new ActivePlan(oldActivePlan, triangles);
-                delete oldActivePlan;
-                minimumHeight = intersection.z;
                 computeIntersection();
             }
 
@@ -151,7 +160,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             #ifdef DEBUG
                 activePlan = new ActivePlan(intersection.z, activePlan, triangles);
             #endif
-            //std::cerr << "......................................................................." << std::endl;
+            std::cerr << "......................................................................." << std::endl;
             break;
         }
     }

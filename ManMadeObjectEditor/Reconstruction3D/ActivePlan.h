@@ -13,7 +13,7 @@ class ActivePlan
 public:
     ActivePlan(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles);
     ActivePlan(float height, ActivePlan* previousActivePlan, std::vector< qglviewer::Vec * >* triangles);
-    ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Vec *> *triangles);
+    ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Vec *> *triangles, bool &chainSizeOne);
     std::vector< Edge* >* getPlan();
     void computeDirectionPlan();
     bool filteringInvalidEvent(Intersection& intersection);

@@ -166,9 +166,10 @@ ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector
 
 }
 
-ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Vec *> *triangles)
+ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Vec *> *triangles, bool& chainSizeOne)
     :triangles(triangles)
 {
+    chainSizeOne = false;
     activePlan = new std::vector< Edge* >;
     // The previous active plan can contain several loop, it is no more only one loop.
     // To simplify the cloning process, first construct every chain
@@ -177,11 +178,16 @@ ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Ve
     // Then for each chain, we can construct the associated active plan
     // and merge them
     std::cerr << "nombre de chain: " << chains->size() << std::endl;
-    foreach(std::vector< Edge* >* currentChain, *chains) {
+    /*foreach(std::vector< Edge* >* currentChain, *chains) {
         std::cerr << "  chain" << std::endl;
         foreach(Edge* e, *currentChain) {
             std::cerr << *e << std::endl;
         }
+    }*/
+
+    if(chains->size() == 1) {
+        chainSizeOne = true;
+        return;
     }
 
     foreach(std::vector< Edge* >* currentChain, *chains) {
