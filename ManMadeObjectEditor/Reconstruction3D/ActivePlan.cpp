@@ -175,21 +175,13 @@ ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Ve
     // To simplify the cloning process, first construct every chain
     std::vector< std::vector< Edge* >* >* chains = createChain(previousActivePlan);
 
-    // Then for each chain, we can construct the associated active plan
-    // and merge them
-    std::cerr << "nombre de chain: " << chains->size() << std::endl;
-    /*foreach(std::vector< Edge* >* currentChain, *chains) {
-        std::cerr << "  chain" << std::endl;
-        foreach(Edge* e, *currentChain) {
-            std::cerr << *e << std::endl;
-        }
-    }*/
-
     if(chains->size() == 1) {
         chainSizeOne = true;
         return;
     }
 
+    // Then for each chain, we can construct the associated active plan
+    // and merge them
     foreach(std::vector< Edge* >* currentChain, *chains) {
         unsigned int size = currentChain->size();
         Edge* edgeTmp = (*currentChain)[0];

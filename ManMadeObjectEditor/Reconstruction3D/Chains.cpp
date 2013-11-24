@@ -84,7 +84,6 @@ Chains::Chains(Intersection* intersection, std::vector<qglviewer::Vec *> *triang
 
 void Chains::intraChainHandling() {
     unsigned int chainsSize = chainList.size();
-    std::cerr << "intra chain: nb de chaines: " << chainsSize << std::endl;
     for(unsigned int j(0); j < chainsSize; ++j) {
         std::vector< Edge* >* currentChain = chainList[j];
         unsigned int currentChainSize = currentChain->size();
