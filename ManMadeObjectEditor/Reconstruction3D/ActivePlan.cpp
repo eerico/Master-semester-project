@@ -176,28 +176,15 @@ ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Ve
 
     // Then for each chain, we can construct the associated active plan
     // and merge them
-   // std::cerr << "CHAIN: " << std::endl;
+    std::cerr << "nombre de chain: " << chains->size() << std::endl;
     foreach(std::vector< Edge* >* currentChain, *chains) {
-        //std::cerr << "  chain" << std::endl;
-        //foreach(Edge* e, *currentChain) {
-            //std::cerr << "EDGE(" <<  *e << ")" << "N1 previous Edge: " << *e->getVertex1()->getEdge1() << " N2 next: " << *e->getVertex2()->getEdge2() <<std::endl;
-            //std::cerr << "EDGE(" <<  *e << ")   ";
-            //std::cerr << "V2 info: " << *e->getVertex2()->getEdge1() << ", " << *e->getVertex2()->getEdge2() << std::endl;
-            //std::cerr << "EDGE(" <<  *e << ")" << std::endl;
-        //}
+        std::cerr << "  chain" << std::endl;
+        foreach(Edge* e, *currentChain) {
+            std::cerr << *e << std::endl;
+        }
+    }
 
-
-
-        /*unsigned int i = currentChain->size();
-        Edge* ee = (*currentChain)[0];
-        Vertex* v = ee->getVertex1();
-        for(unsigned int ii(0); ii < i; ++ii) {
-            std::cerr << *v << std::endl;
-
-            v = v->getNeighbor1();
-        }*/
-
-
+    foreach(std::vector< Edge* >* currentChain, *chains) {
         unsigned int size = currentChain->size();
         Edge* edgeTmp = (*currentChain)[0];
 
@@ -205,7 +192,6 @@ ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Ve
         std::vector< Edge* >* plansTmp = activePlanTmp.getPlan();
         activePlan->insert(activePlan->end(), plansTmp->begin(), plansTmp->end());
     }
-
 }
 
 std::vector< std::vector< Edge* >* >* ActivePlan::createChain(ActivePlan* previousActivePlan) {
@@ -213,17 +199,6 @@ std::vector< std::vector< Edge* >* >* ActivePlan::createChain(ActivePlan* previo
 
     std::vector< Edge* >* edges = previousActivePlan->getPlan();
     unsigned int size = edges->size();
-
-    //DEBUG: first remove any invalid edges
-    /*for(unsigned int i(0); i < size; ++i) {
-        Edge* currentEdge = (*edges)[i];
-        if (!currentEdge->isValid()) {
-            std::cerr << "ERROR: activePlan createChain -> invalid edges still exist" << std::endl;
-            edges->erase(edges->begin() + i);
-            i--;
-            size--;
-        }
-    }*/
 
     //create the chains
     Vertex* first = 0;

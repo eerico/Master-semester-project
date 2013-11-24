@@ -30,7 +30,6 @@ void Reconstruction3D::reconstruct()
         priorityQueue->pop();
         handleEvent(event);
     }
-    std::cerr << "FINI" << std::endl;
 
     //reset to inital state
     Vertex* currentVertex = floorPlan;
@@ -107,7 +106,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         case General:
         {
 
-            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            //std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             if(!eventClustering(intersection)) {
                 return;
             }
@@ -152,7 +151,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             #ifdef DEBUG
                 activePlan = new ActivePlan(intersection.z, activePlan, triangles);
             #endif
-            std::cerr << "......................................................................." << std::endl;
+            //std::cerr << "......................................................................." << std::endl;
             break;
         }
     }
