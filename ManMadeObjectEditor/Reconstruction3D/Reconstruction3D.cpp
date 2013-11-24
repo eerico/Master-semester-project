@@ -116,11 +116,29 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 return;
             }
 
-            Chains* chainList = new Chains(&intersection, triangles);
+            Chains* chainList = new Chains(&intersection, triangles, activePlan);
             chainList->intraChainHandling();
 
             if(chainList->interChainHandling()){
-                // TODO, on a split un ou plusieur edge donc on doit recalculer les intersection
+                // the inter chain algorithm has inserted new edges. We thus have to recompute the active plan,
+                // recompute the intersection for this new active plan and handle these new intersections
+                std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>* priorityQueueTmp
+                        = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
+
+                //remove the old computed intersection
+                while(!priorityQueue->empty()) {
+                    Intersection intersection = priorityQueue->top();
+                    // we save the edge direction event
+                    if(intersection.eventType == EdgeDirection) {
+                        priorityQueueTmp->push(intersection);
+                    }
+                    priorityQueue->pop();
+                }
+                delete priorityQueue;
+                priorityQueue = priorityQueueTmp;
+                /*delete activePlan;
+                activePlan = new ... TODO
+                computeIntersection();*/
             }
 
             // juste pour debug

@@ -347,7 +347,7 @@ void FloorScene::basicCircle(QPoint * mousePos, int numSample) {
     Vertex* b = new Vertex(1.0, 1.0);//new Vertex(0.815, 1.025);
     Vertex* c = new Vertex(1.0, -1.0);
     Vertex* d = new Vertex(-1.0, -1.0);
-    Vertex* e = new Vertex(0.0, 0.0);//new Vertex(-1.17, -0.1);//new Vertex(-0.295, 0.045);//new Vertex(-0.5, 0.0);
+    Vertex* e = new Vertex(0.0, 0.0);//new Vertex(-2.045, -0.47);//new Vertex(0.0, 0.0);
 
 
 

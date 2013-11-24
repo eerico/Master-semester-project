@@ -226,6 +226,24 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
 
 }
 
+void ActivePlan::insert2Edges(Edge* oldEdge, Edge* newEdge1, Edge* newEdge2) {
+    unsigned int size = activePlan->size();
+    bool found = false;
+    for(unsigned int i(0); (i < size) && !found; ++i) {
+        Edge* currentEdge = (*activePlan)[i];
+        if(currentEdge == oldEdge) {
+            found = true;
+            activePlan->erase(activePlan->begin() + i);
+            activePlan->insert(activePlan->begin() + i, newEdge1);
+            activePlan->insert(activePlan->begin() + i + 1, newEdge2);
+        }
+    }
+
+    if(found == false) {
+        std::cerr << "insert2Edges Error, found = false" << std::endl;
+    }
+}
+
 void ActivePlan::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
     qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
     qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());

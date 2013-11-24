@@ -4,8 +4,8 @@
 
 // Cette classe doit creer la chaines en faisant le truc des orientation ET implementer le inter et intra chain handling
 // qui va update l active plan ET ceer des triangles (? ou pas ?)
-Chains::Chains(Intersection* intersection, std::vector<qglviewer::Vec *> *triangles)
-    :intersection(intersection), triangles(triangles)
+Chains::Chains(Intersection* intersection, std::vector<qglviewer::Vec *> *triangles, ActivePlan* activePlan)
+    :intersection(intersection), triangles(triangles), activePlan(activePlan)
 {
     std::vector< Edge* >* edges = intersection->edgeVector;
     unsigned int size = edges->size();
@@ -119,7 +119,7 @@ void Chains::intraChainHandling() {
             addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
             addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
 
-            //find which vertex will be reassigned and reassigned it
+            //reassign the vertices
             Vertex* vertex1 = firstEdge->getVertex1();
             if ((vertex1 != firstNeighbor->getVertex1()) && (vertex1 != firstNeighbor->getVertex2())) {
                 firstEdge->setVertex2(intersectionVertex);
@@ -130,7 +130,7 @@ void Chains::intraChainHandling() {
                 std::cerr << "Case 1 that should not happen in intraChainHandling" << std::endl;
             }
 
-            //find which vertex will be reassigned and reassigned it
+            //reassign the vertices
             Vertex* vertex2 = lastEdge->getVertex2();
             if ((vertex2 != lastNeighbor->getVertex1()) && (vertex2 != lastNeighbor->getVertex2())) {
                 lastEdge->setVertex1(intersectionVertex);
@@ -168,7 +168,7 @@ void Chains::intraChainHandling() {
             addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
             addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
 
-            //find which vertex will be reassigned and reassigned it
+            //reassign the vertices
             Vertex* vertex1 = firstEdge->getVertex1();
             Vertex* vertex2 = lastEdge->getVertex2();
             Vertex* vertexToReplaceFrstEdge = firstEdge->getVertex2();
@@ -247,8 +247,12 @@ bool Chains::interChainHandling() {
         } else {
             firstEdgeChain2 = (*chain2)[0];
         }
+
+        // set the edge and vertex information
         lastEdgeChain1->setVertex1(intersectionVertex);
         firstEdgeChain2->setVertex2(intersectionVertex);
+        lastEdgeChain1->getVertex2()->setNeighbor1(intersectionVertex);
+        firstEdgeChain2->getVertex1()->setNeighbor2(intersectionVertex);
 
         intersectionVertex->setEdge1(firstEdgeChain2);
         intersectionVertex->setEdge2(lastEdgeChain1);
@@ -264,26 +268,20 @@ void Chains::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdg
     newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
     newEdge2 = new Edge(cornerVertex, edgeToSplit->getVertex2(), edgeToSplit->getProfile());
 
+    newEdge1->setDirectionPlan(edgeToSplit->getDirectionPlan());
+    newEdge2->setDirectionPlan(edgeToSplit->getDirectionPlan());
+
     cornerVertex->setEdge1(newEdge1);
     cornerVertex->setEdge2(newEdge2);
+    newEdge1->getVertex1()->setNeighbor2(cornerVertex);
+    newEdge2->getVertex2()->setNeighbor1(cornerVertex);
+    cornerVertex->setNeighbor1(newEdge1->getVertex1());
+    cornerVertex->setNeighbor2(newEdge2->getVertex2());
 
-    //remove invalid edge from the active plan and add the two new edges
-    /*unsigned int activePlanSize = activePlan->size();
-    bool found(false);
-    for(unsigned int i(0); (i < activePlanSize) && !found; ++i) {
-        Edge* currentEdge = (*activePlan)[i];
-        if(currentEdge == edgeToSplit) {
-            activePlan->erase(activePlan->begin() + i);
-            //delete currentEdge;
 
-            currentEdge->setChild1(newEdge1);
-            currentEdge->setChild2(newEdge2);
-
-            activePlan->insert(activePlan->begin() + i, newEdge1);
-            activePlan->insert(activePlan->begin() + i + 1, newEdge2);
-            found = true;
-        }
-    }*/
+    // on doit rajouter ici les 2 edge dans le active plan sinon sa marche pas !!
+    // TODO
+    activePlan->insert2Edges(edgeToSplit, newEdge1, newEdge2);
 }
 
 void Chains::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
