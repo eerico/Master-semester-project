@@ -38,8 +38,6 @@ void Reconstruction3D::reconstruct()
     // we impose a maximum number of iteration
     }while(activePlan->numberValidEdge() > 0 && numberIteration < numberMaxIteration);
 
-    activePlan->print(true);
-
     //reset to inital state
     Vertex* currentVertex = floorPlan;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
