@@ -125,6 +125,8 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
             chainList->intraChainHandling();
 
+            activePlan->removeInvalidEdges();
+
             if(chainList->interChainHandling()){
                 // We have updated the current active plan by insterting new edges into it,
                 // we will thus create a new active plan, delete the old one and recompute the
