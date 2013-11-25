@@ -171,6 +171,9 @@ ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Ve
 {
     chainSizeOne = false;
     activePlan = new std::vector< Edge* >;
+
+    previousActivePlan->removeInvalidEdges();
+
     // The previous active plan can contain several loop, it is no more only one loop.
     // To simplify the cloning process, first construct every chain
     std::vector< std::vector< Edge* >* >* chains = createChain(previousActivePlan);
@@ -189,6 +192,18 @@ ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Ve
         ActivePlan activePlanTmp(edgeTmp->getVertex1(), size, triangles);
         std::vector< Edge* >* plansTmp = activePlanTmp.getPlan();
         activePlan->insert(activePlan->end(), plansTmp->begin(), plansTmp->end());
+    }
+}
+
+void ActivePlan::removeInvalidEdges() {
+    unsigned int size = activePlan->size();
+    for(unsigned int i(0); i < size; ++i) {
+        Edge* currentEdge = (*activePlan)[i];
+        if(!currentEdge->isValid()) {
+            activePlan->erase(activePlan->begin() + i);
+            i--;
+            size--;
+        }
     }
 }
 

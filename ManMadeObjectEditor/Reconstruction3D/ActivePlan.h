@@ -21,6 +21,8 @@ public:
     unsigned int numberValidEdge();
     void print(bool onlyValidEdge);
 
+    void removeInvalidEdges();
+
 private:
     std::vector< Edge* >* activePlan;
     std::vector<qglviewer::Vec * > *triangles;
