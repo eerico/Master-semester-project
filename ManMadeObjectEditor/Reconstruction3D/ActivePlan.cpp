@@ -315,13 +315,12 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
     Edge* newEdgeAtIntersectionHeight = new Edge(new Vertex(intersectionPreviousEdge.x, intersectionPreviousEdge.y, intersectionPreviousEdge.z)
                                                  , new Vertex(intersectionNextEdge.x, intersectionNextEdge.y, intersectionNextEdge.z));
 
-#ifdef DEBUG_DISTANCE
-    std::cerr << "distance: " << newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) << std::endl;
-#endif
-
-    if(newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) < 0.00001f) {
+    if(newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) < /*0.00001f*/ 0.0005f) {
         return true;
     } else {
+        #ifdef DEBUG_DISTANCE
+            std::cerr << "distance: " << newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) << std::endl;
+        #endif
         return false;
     }
 
