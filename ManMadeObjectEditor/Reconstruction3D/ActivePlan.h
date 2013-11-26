@@ -23,6 +23,8 @@ public:
 
     void removeInvalidEdges();
 
+    void fillHoles();
+
 private:
     std::vector< Edge* >* activePlan;
     std::vector<qglviewer::Vec * > *triangles;

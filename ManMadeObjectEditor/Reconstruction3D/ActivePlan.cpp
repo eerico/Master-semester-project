@@ -380,3 +380,21 @@ unsigned int ActivePlan::numberValidEdge() {
     return numberValidEdgeCounter;
 }
 
+void ActivePlan::fillHoles() {
+    unsigned int numberEdges = activePlan->size();
+    for(unsigned int i(0); i < numberEdges; ++i) {
+        Edge* edge = (*activePlan)[i];
+        if(edge->isValid()) {
+            Edge* neighbor1 = edge->getVertex1()->getEdge1();
+            if (neighbor1->isValid()) {
+                Edge* neighbor1n1 = neighbor1->getVertex1()->getEdge1();
+                if (neighbor1n1->isValid()) {
+                    edge->invalid();
+                    neighbor1->invalid();
+                    neighbor1n1->invalid();
+                    addNewTriangle(edge->getVertex1(), neighbor1n1->getVertex1(), neighbor1->getVertex1());
+                }
+            }
+        }
+    }
+}

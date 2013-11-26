@@ -38,6 +38,13 @@ void Reconstruction3D::reconstruct()
     // we impose a maximum number of iteration
     }while(activePlan->numberValidEdge() > 0 && numberIteration < numberMaxIteration);
 
+    if (activePlan->numberValidEdge() > 0) {
+        activePlan->fillHoles();
+    }
+
+    std::cerr << activePlan->numberValidEdge() << std::endl;
+    activePlan->print(true);
+
     //reset to inital state
     Vertex* currentVertex = floorPlan;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
@@ -98,15 +105,36 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
              * mais pour que ceux qui ont des profiles differents. Une idée serait de prendre tous les edges
              * qui on le meme profiles et d appliquer les changement une seul fois et des creer pour chacun de ses edges
              * les triangles
+             *
+             *
+             * Attention, il faut update le direction plan
              */
-            Edge* edge = intersection.edge;
+            /*Edge* edge = intersection.edge;
 
             edgeDirectionHandling(intersection);
 
             Profile* profile = edge->getProfile();
-            profile->nextDirectionPlan();
+            //profile->nextDirectionPlan();
 
-            computeIntersection();
+
+            std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>* priorityQueueTmp
+                    = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
+
+            //remove the old computed intersection
+            while(!priorityQueue->empty()) {
+                Intersection intersection = priorityQueue->top();
+                // we save the edge direction event
+                if(intersection.eventType == EdgeDirection) {
+                    priorityQueueTmp->push(intersection);
+                }
+                priorityQueue->pop();
+            }
+            delete priorityQueue;
+            priorityQueue = priorityQueueTmp;
+
+            minimumHeight = intersection.z;
+
+            computeIntersection();*/
 
             break;
         }
@@ -130,11 +158,11 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
 
 
-            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            /*std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             std::cerr << "with edges: " << std::endl;
             foreach(Edge* e, *intersection.edgeVector) {
                 std::cerr << "    " << *e << std::endl;
-            }
+            }*/
 
 
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
@@ -210,6 +238,12 @@ bool Reconstruction3D::eventClustering(Intersection& intersection)
     std::vector<Intersection> eventVectorTmp;
     while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
+
+        if(event.eventType == EdgeDirection) {
+            priorityQueue->pop();
+            eventVectorTmp.push_back(event);
+            continue;
+        }
 
         // if the current intersection (event) is invalid, we skip to the next one
         if(!activePlan->filteringInvalidEvent(event)) {
