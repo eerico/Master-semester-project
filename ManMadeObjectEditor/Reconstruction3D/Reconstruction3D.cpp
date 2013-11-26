@@ -113,11 +113,11 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         case General:
         {
 
-            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            /*std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             std::cerr << "with edges: " << std::endl;
             foreach(Edge* e, *intersection.edgeVector) {
                 std::cerr << "    " << *e << std::endl;
-            }
+            }*/
 
 
             if(!eventClustering(intersection)) {
@@ -175,7 +175,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             #ifdef DEBUG
                 activePlan = new ActivePlan(intersection.z, activePlan, triangles);
             #endif
-            std::cerr << "......................................................................." << std::endl;
+            //std::cerr << "......................................................................." << std::endl;
             break;
         }
     }

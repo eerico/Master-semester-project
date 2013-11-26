@@ -167,6 +167,15 @@ void Chains::intraChainHandling() {
                 break;
             }
 
+            // first check if the chain is circular. If it is the case, all edges are interior edges that will shrink to 0
+            if (firstEdge->getVertex1() == lastEdge->getVertex2()) {
+                //invalid all interior edges
+                firstEdge->invalid();
+                lastEdge->invalid();
+                chainList.erase(chainList.begin() + j);
+                continue;
+            }
+
             Vertex* intersectionVertex = new Vertex(intersection->x, intersection->y, intersection->z);
 
             addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
