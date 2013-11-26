@@ -128,6 +128,15 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 return;
             }
 
+
+
+            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            std::cerr << "with edges: " << std::endl;
+            foreach(Edge* e, *intersection.edgeVector) {
+                std::cerr << "    " << *e << std::endl;
+            }
+
+
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
             chainList->intraChainHandling();
 
@@ -198,6 +207,7 @@ bool Reconstruction3D::eventClustering(Intersection& intersection)
         return false;
     }
 
+    std::vector<Intersection> eventVectorTmp;
     while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
 
@@ -207,19 +217,30 @@ bool Reconstruction3D::eventClustering(Intersection& intersection)
             continue;
         }
 
-        if ((std::abs(event.z - z) < delta1) && (Utils::distance(event.x, event.y, intersection.x, intersection.y) < delta2)) {
+        if (std::abs(event.z - z) < delta1) {
             priorityQueue->pop();
-            std::vector<Edge*>* eventEdges = event.edgeVector;
 
-            for(unsigned int i(0); i < eventEdges->size(); ++i) {
-                Edge* edgeToAdd = (*eventEdges)[i];
-                if(!isEdgeInVector(edgeToAdd, intersectionEdges)) {
-                    intersectionEdges->push_back(edgeToAdd);
+            if(Utils::distance(event.x, event.y, intersection.x, intersection.y) < delta2){
+                std::vector<Edge*>* eventEdges = event.edgeVector;
+
+                for(unsigned int i(0); i < eventEdges->size(); ++i) {
+                    Edge* edgeToAdd = (*eventEdges)[i];
+                    if(!isEdgeInVector(edgeToAdd, intersectionEdges)) {
+                        intersectionEdges->push_back(edgeToAdd);
+                    }
                 }
+            } else {
+                eventVectorTmp.push_back(event);
             }
         } else {
             stop = true;
         }
+    }
+
+    while(!eventVectorTmp.empty()) {
+        Intersection event = eventVectorTmp[eventVectorTmp.size() - 1];
+        priorityQueue->push(event);
+        eventVectorTmp.pop_back();
     }
 
     return true;
