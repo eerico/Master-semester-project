@@ -64,12 +64,16 @@ public:
 
     QColor* getProfileColorIdentification();
 
+    Vertex* getProfileVertexIterator();
+
     void printProfile();
     
 private:
 
     // the vertex at the current direction plan
     Vertex* pVertex;
+
+    Vertex* profileVertexIterator;
 
     // the color identification of this profile
     QColor* profileColorIdentification;

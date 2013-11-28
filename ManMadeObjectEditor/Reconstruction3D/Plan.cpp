@@ -143,7 +143,7 @@ void Plan::computePlanNormal()
 
     Utils::normalize(a, b);
 
-    Vertex* profileVertex = profile->getProfileVertex();
+    Vertex* profileVertex = profile->getProfileVertexIterator();
     Vertex* nextProfileVertex = profileVertex->getNeighbor2();
 
     float w = nextProfileVertex->getX() - profileVertex->getX();

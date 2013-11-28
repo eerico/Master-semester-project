@@ -15,6 +15,8 @@ Reconstruction3D::~Reconstruction3D()
 
 void Reconstruction3D::reconstruct()
 {
+    //std::cerr << "RECONSTRUCT" << std::endl;
+
     //set the current ActivePlan
     activePlan = new ActivePlan(floorPlan, floorPlanSize, triangles);
     //compute the current direction plan
@@ -49,7 +51,7 @@ void Reconstruction3D::reconstruct()
     Vertex* currentVertex = floorPlan;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
         currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
-        currentVertex = floorPlan->getNeighbor2();
+        currentVertex = currentVertex->getNeighbor2();
     }
 }
 
@@ -333,9 +335,8 @@ void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
 {
     std::vector< Edge* >* edges = activePlan->getPlan();
     foreach(Edge* currentEdge, *edges) {
-        Vertex* currentProfileVertex = currentEdge->getProfile()->getProfileVertex();
+        Vertex* currentProfileVertex = currentEdge->getProfile()->getProfileVertexIterator();
         currentProfileVertex = currentProfileVertex->getNeighbor2();
-
         while(currentProfileVertex != 0 && currentProfileVertex->getNeighbor2() != 0) {
             Intersection edgeDirectionEvent;
             edgeDirectionEvent.edge = currentEdge;

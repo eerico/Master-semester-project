@@ -6,6 +6,7 @@
 Profile::Profile(bool empty): pVertex(0)
 {
 	pVertex = new Vertex(0,0);
+    profileVertexIterator = pVertex;
     pVertex->setNeighbor2(0);
     if (!empty) {
         initProfileSkewedLine(2);
@@ -248,13 +249,15 @@ bool Profile::isEqual(Profile* compareProfile) {
 }
 
 void Profile::nextDirectionPlan() {
-    pVertex = pVertex->getNeighbor2();
+    profileVertexIterator = profileVertexIterator->getNeighbor2();
 }
 
 void Profile::resetDirectionPlan() {
-    while(pVertex->getNeighbor1() != 0) {
-        pVertex = pVertex->getNeighbor1();
-    }
+    profileVertexIterator = pVertex;
+}
+
+Vertex* Profile::getProfileVertexIterator() {
+    return profileVertexIterator;
 }
 
 void Profile::printProfile() {
