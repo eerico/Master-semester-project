@@ -1,19 +1,21 @@
 #include "Plan.h"
+#include <cmath>
 
 Plan::Plan(Vertex *vertex1, Vertex *vertex2, Profile *profile)
     :pointX(vertex1->getX()), pointY(vertex1->getY()), pointZ(vertex1->getZ())
     , normalX(0.0f), normalY(0.0f), normalZ(1.0f)
     , pointX2(vertex2->getX()), pointY2(vertex2->getY()), pointZ2(vertex2->getZ())
-    , profile(profile)
+    , profile(profile), vertex(vertex1)
 {
 
 }
 
-Plan::Plan(float pointX, float pointY, float pointZ,
+Plan::Plan(float vertexX, float vertexY, float vertexZ,
            float normalX, float normalY, float normalZ)
-    :pointX(pointX), pointY(pointY), pointZ(pointZ), normalX(normalX), normalY(normalY), normalZ(normalZ)
-{
+    :normalX(normalX), normalY(normalY), normalZ(normalZ)
 
+{
+    vertex = new Vertex(vertexX, vertexY, vertexZ);
 }
 
 Intersection Plan::intersect3Plans(Plan* plan2, Plan* plan3)
@@ -22,27 +24,28 @@ Intersection Plan::intersect3Plans(Plan* plan2, Plan* plan3)
     Intersection intersection;
     intersection.eventType = General;
 
-    float p1 = pointX;
-    float p2 = pointY;
-    float p3 = pointZ;
+
+    float p1 = vertex->getX();
+    float p2 = vertex->getY();
+    float p3 = vertex->getZ();
     float n1 = normalX;
     float n2 = normalY;
     float n3 = normalZ;
 
     //std::cerr << p1 << ", " << p2 << ", " << p3 << ", " << normalX << ", " << normalY << ", " << normalZ << std::endl;
 
-    float p1_p = plan2->pointX;
-    float p2_p = plan2->pointY;
-    float p3_p = plan2->pointZ;
+    float p1_p = plan2->vertex->getX();
+    float p2_p = plan2->vertex->getY();
+    float p3_p = plan2->vertex->getZ();
     float n1_p = plan2->normalX;
     float n2_p = plan2->normalY;
     float n3_p = plan2->normalZ;
 
     //std::cerr << p1_p << ", " << p2_p << ", " << p3_p << ", " << n1_p << ", " << n2_p << ", " << n3_p << std::endl;
 
-    float p1_pp = plan3->pointX;
-    float p2_pp = plan3->pointY;
-    float p3_pp = plan3->pointZ;
+    float p1_pp = plan3->vertex->getX();
+    float p2_pp = plan3->vertex->getY();
+    float p3_pp = plan3->vertex->getZ();
     float n1_pp = plan3->normalX;
     float n2_pp = plan3->normalY;
     float n3_pp = plan3->normalZ;
@@ -145,6 +148,8 @@ void Plan::computePlanNormal()
 
     float w = nextProfileVertex->getX() - profileVertex->getX();
     float z = nextProfileVertex->getY() - profileVertex->getY();
+
+    //std::cerr << "angle: " << std::abs(std::atan(z / w) * 360.0f / (M_PI * 2.0f)) << std::endl;
 
     //est ce correct ou bien sa joue pas avec orientation des edges ?
     float wx = b;
