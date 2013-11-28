@@ -118,13 +118,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
             edgeDirectionHandling(intersection);
 
-            /*std::cerr << "Edge event intersection: " <<  intersection.z << std::endl;
-            std::cerr << "with edges: " << std::endl;
-            foreach(Edge* e, *intersection.edgeVector) {
-                std::cerr << "    " << *e << std::endl;
-            }*/
-
-
             std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>* priorityQueueTmp
                     = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
 
@@ -299,6 +292,7 @@ void Reconstruction3D::edgeDirectionEventClustering(Intersection& intersection)
     float delta1(0.0001f);
     float z(intersection.z);
 
+    std::vector<Intersection> eventVectorTmp;
     while(!stop && (priorityQueue->size() > 0)){
         Intersection event = priorityQueue->top();
 
@@ -314,15 +308,23 @@ void Reconstruction3D::edgeDirectionEventClustering(Intersection& intersection)
             continue;
         }
 
-        if ((eventEdge->getProfile() == currentProfile) && std::abs(event.z - z) < delta1) {
+        if (std::abs(event.z - z) < delta1) {
             priorityQueue->pop();
-            edgeDirectionEdges->push_back(eventEdge);
-
+            if(eventEdge->getProfile() == currentProfile){
+                edgeDirectionEdges->push_back(eventEdge);
+            } else {
+                eventVectorTmp.push_back(event);
+            }
         } else {
             stop = true;
         }
     }
 
+    while(!eventVectorTmp.empty()) {
+        Intersection event = eventVectorTmp[eventVectorTmp.size() - 1];
+        priorityQueue->push(event);
+        eventVectorTmp.pop_back();
+    }
     intersection.edgeVector = edgeDirectionEdges;
 }
 
@@ -352,7 +354,6 @@ void Reconstruction3D::edgeDirectionHandling(Intersection &intersection) ///////
 
     foreach(Edge* edge, *edges) {
         // previousEdge(plan1) - currentEdge(currentPlan) - nextEdge(plan2)
-
         Vertex* vertex1 = edge->getVertex1();
         Vertex* vertex2 = edge->getVertex2();
 

@@ -34,8 +34,8 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
             } else {
                 QPoint mousePos = mouseEvent->lastScenePos().toPoint();
                 // no point defined thus we add an initial geometric structure
-                basicCircle(&mousePos, 5);
-                //basicCross(0.0f, 0.0f);
+                //basicCircle(&mousePos, 5);
+                basicCross(0.0f, 0.0f);
             }
         }
     }
