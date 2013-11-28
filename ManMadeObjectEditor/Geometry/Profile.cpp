@@ -256,3 +256,13 @@ void Profile::resetDirectionPlan() {
         pVertex = pVertex->getNeighbor1();
     }
 }
+
+void Profile::printProfile() {
+    std::cout << "Profile: " << std::endl;
+    Vertex* iterator = pVertex;
+    while(iterator != 0) {
+        std::cout << *iterator << std::endl;
+        iterator = iterator->getNeighbor2();
+    }
+
+}

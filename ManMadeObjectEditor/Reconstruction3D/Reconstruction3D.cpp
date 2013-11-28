@@ -42,8 +42,8 @@ void Reconstruction3D::reconstruct()
         activePlan->fillHoles();
     }
 
-    std::cerr << activePlan->numberValidEdge() << std::endl;
-    activePlan->print(true);
+    //std::cerr << activePlan->numberValidEdge() << std::endl;
+    //activePlan->print(true);
 
     //reset to inital state
     Vertex* currentVertex = floorPlan;
@@ -109,12 +109,20 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
              *
              * Attention, il faut update le direction plan
              */
-            /*Edge* edge = intersection.edge;
+
+            if(!intersection.edge->isValid()) {
+                return;
+            }
+
+            edgeDirectionEventClustering(intersection);
 
             edgeDirectionHandling(intersection);
 
-            Profile* profile = edge->getProfile();
-            //profile->nextDirectionPlan();
+            /*std::cerr << "Edge event intersection: " <<  intersection.z << std::endl;
+            std::cerr << "with edges: " << std::endl;
+            foreach(Edge* e, *intersection.edgeVector) {
+                std::cerr << "    " << *e << std::endl;
+            }*/
 
 
             std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>* priorityQueueTmp
@@ -132,9 +140,9 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             delete priorityQueue;
             priorityQueue = priorityQueueTmp;
 
-            minimumHeight = intersection.z;
+            minimumHeight = intersection.z + 0.000001f;
 
-            computeIntersection();*/
+            computeIntersection();
 
             break;
         }
@@ -148,7 +156,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             }*/
 
 
-            if(!eventClustering(intersection)) {
+            if(!generalEventClustering(intersection)) {
                 return;
             }
 
@@ -220,7 +228,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
 
 // return false si l intersection n est pas valid
-bool Reconstruction3D::eventClustering(Intersection& intersection)
+bool Reconstruction3D::generalEventClustering(Intersection& intersection)
 {
     float z(intersection.z);
 
@@ -280,12 +288,49 @@ bool Reconstruction3D::eventClustering(Intersection& intersection)
     return true;
 }
 
+void Reconstruction3D::edgeDirectionEventClustering(Intersection& intersection)
+{
+
+    std::vector<Edge*>* edgeDirectionEdges = new std::vector<Edge*>;
+    edgeDirectionEdges->push_back(intersection.edge);
+    Profile* currentProfile = intersection.edge->getProfile();
+
+    bool stop(false);
+    float delta1(0.0001f);
+    float z(intersection.z);
+
+    while(!stop && (priorityQueue->size() > 0)){
+        Intersection event = priorityQueue->top();
+
+        if(event.eventType == General) {
+            priorityQueue->pop();
+            continue;
+        }
+
+        Edge* eventEdge = event.edge;
+
+        if(!eventEdge->isValid()) {
+            priorityQueue->pop();
+            continue;
+        }
+
+        if ((eventEdge->getProfile() == currentProfile) && std::abs(event.z - z) < delta1) {
+            priorityQueue->pop();
+            edgeDirectionEdges->push_back(eventEdge);
+
+        } else {
+            stop = true;
+        }
+    }
+
+    intersection.edgeVector = edgeDirectionEdges;
+}
+
 
 void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
 {
-    Vertex* currentVertex = floorPlan;
-    for(unsigned int i(0); i < floorPlanSize ; ++i) {
-        Edge* currentEdge = currentVertex->getEdge2();
+    std::vector< Edge* >* edges = activePlan->getPlan();
+    foreach(Edge* currentEdge, *edges) {
         Vertex* currentProfileVertex = currentEdge->getProfile()->getProfileVertex();
         currentProfileVertex = currentProfileVertex->getNeighbor2();
 
@@ -297,13 +342,54 @@ void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
             priorityQueue->push(edgeDirectionEvent);
             currentProfileVertex = currentProfileVertex->getNeighbor2();
         }
-        currentVertex = floorPlan->getNeighbor2();
     }
 }
 
 void Reconstruction3D::edgeDirectionHandling(Intersection &intersection) //////////////////
 {
+    std::vector< Edge* >* edges = intersection.edgeVector;
+    Plan horizontalPlan(0.0f, 0.0f, intersection.z, 0.0f, 0.0f, 1.0f);
 
+    foreach(Edge* edge, *edges) {
+        // previousEdge(plan1) - currentEdge(currentPlan) - nextEdge(plan2)
+
+        Vertex* vertex1 = edge->getVertex1();
+        Vertex* vertex2 = edge->getVertex2();
+
+        Plan* plan1 = vertex1->getEdge1()->getDirectionPlan();
+        Plan* currentPlan = edge->getDirectionPlan();
+        Plan* plan2 = vertex2->getEdge2()->getDirectionPlan();
+
+        Intersection newIntersection1 = horizontalPlan.intersect3Plans(plan1, currentPlan);
+
+        Vertex newIntersectionVertex1(newIntersection1.x, newIntersection1.y, newIntersection1.z);
+        if (std::abs(vertex1->distance(&newIntersectionVertex1)) > 0.0001f) {
+            addNewTriangle(vertex1, vertex2, &newIntersectionVertex1);
+            addNewTriangle(vertex1->getEdge1()->getVertex1(), vertex1, &newIntersectionVertex1);
+        }
+
+        vertex1->setX(newIntersection1.x);
+        vertex1->setY(newIntersection1.y);
+        vertex1->setZ(newIntersection1.z);
+
+        Intersection newIntersection2 = horizontalPlan.intersect3Plans(currentPlan, plan2);
+
+        Vertex newIntersectionVertex2(newIntersection2.x, newIntersection2.y, newIntersection2.z);
+        if (std::abs(vertex2->distance(&newIntersectionVertex2)) > 0.0001f) {
+            addNewTriangle(vertex1, vertex2, &newIntersectionVertex2);
+            addNewTriangle(vertex2, vertex2->getEdge2()->getVertex2(), &newIntersectionVertex2);
+        }
+
+        vertex2->setX(newIntersection2.x);
+        vertex2->setY(newIntersection2.y);
+        vertex2->setZ(newIntersection2.z);
+    }
+
+    intersection.edge->getProfile()->nextDirectionPlan();
+
+    foreach(Edge* edge, *edges) {
+        edge->getDirectionPlan()->computePlanNormal();
+    }
 }
 
 bool Reconstruction3D::isEdgeInVector(Edge *edge, std::vector<Edge *> *vector) {
@@ -317,3 +403,14 @@ bool Reconstruction3D::isEdgeInVector(Edge *edge, std::vector<Edge *> *vector) {
     }
     return false;
 }
+
+void Reconstruction3D::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
+    qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
+    qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());
+    qglviewer::Vec* triangleVertex3 = new qglviewer::Vec(vertex3->getX(), vertex3->getY(), vertex3->getZ());
+
+    triangles->push_back(triangleVertex1);
+    triangles->push_back(triangleVertex2);
+    triangles->push_back(triangleVertex3);
+}
+

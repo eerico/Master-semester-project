@@ -40,9 +40,13 @@ private:
 
     void edgeDirectionHandling(Intersection& intersection);
 
-    bool eventClustering(Intersection& intersection);
+    bool generalEventClustering(Intersection& intersection);
+
+    void edgeDirectionEventClustering(Intersection& intersection);
 
     bool isEdgeInVector(Edge* edge, std::vector< Edge* >* vector);
+
+    void addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3);
 
     float minimumHeight;
 

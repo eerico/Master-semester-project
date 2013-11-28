@@ -1,5 +1,14 @@
 #include "Plan.h"
 
+Plan::Plan(Vertex *vertex1, Vertex *vertex2, Profile *profile)
+    :pointX(vertex1->getX()), pointY(vertex1->getY()), pointZ(vertex1->getZ())
+    , normalX(0.0f), normalY(0.0f), normalZ(1.0f)
+    , pointX2(vertex2->getX()), pointY2(vertex2->getY()), pointZ2(vertex2->getZ())
+    , profile(profile)
+{
+
+}
+
 Plan::Plan(float pointX, float pointY, float pointZ,
            float normalX, float normalY, float normalZ)
     :pointX(pointX), pointY(pointY), pointZ(pointZ), normalX(normalX), normalY(normalY), normalZ(normalZ)
@@ -119,14 +128,14 @@ void Plan::getNormal(float& nx, float& ny, float& nz) {
     nz = normalZ;
 }
 
-void Plan::computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile)
+void Plan::computePlanNormal()
 {
     float nx(0.0f);
     float ny(0.0f);
     float nz(0.0f);
 
-    float a = vertex2->getX() - vertex1->getX();
-    float b = vertex2->getY() - vertex1->getY();
+    float a = pointX2 - pointX;//vertex2->getX() - vertex1->getX();
+    float b = pointY2 - pointY; //vertex2->getY() - vertex1->getY();
     float c = 0.0f;
 
     Utils::normalize(a, b);

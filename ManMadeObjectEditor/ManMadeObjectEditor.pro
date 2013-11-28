@@ -80,17 +80,30 @@ HEADERS  += \
 
 
 win32{
-    INCLUDEPATH *= "C:\Program Files (x86)\libQGLViewer-2.4.0"
-    LIBS *= -L"C:\Program Files (x86)\libQGLViewer-2.4.0/QGLViewer" -lQGLViewer2
+    #path to where is the libqglviewer root
+    LIBQGL_PATH = "C:/Program Files (x86)/libQGLViewer"
 
-    win32:CONFIG(release, debug|release): LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshCore
-    else:win32:CONFIG(debug, debug|release): LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshCored
+    win32:INCLUDEPATH += $$LIBQGL_PATH/sources
+    win32:DEPENDPATH += $$LIBQGL_PATH/sources
+
+
+    # LIB_NAME
+
+    LIB_NAME = QGLViewer
+    build_pass:CONFIG(debug, debug|release) {
+        LIB_NAME = $$join(LIB_NAME,,,d)
+    }
+    LIB_NAME = $$join(LIB_NAME,,,2)
+
+    win32:LIBS += -L$$LIBQGL_PATH/lib/QGLViewer -l$$LIB_NAME
+
+
+    win32:LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshCore
 
     INCLUDEPATH += "C:\Program Files (x86)\OpenMesh\include"
     DEPENDPATH += "C:\Program Files (x86)\OpenMesh\include"
 
-    win32:CONFIG(release, debug|release): LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshTools
-    else:win32:CONFIG(debug, debug|release): LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshToolsd
+    win32:LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshTools
 
     DEFINES +=  _USE_MATH_DEFINES
 }

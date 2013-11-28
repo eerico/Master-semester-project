@@ -8,6 +8,8 @@
 class Plan
 {
 public:
+    Plan(Vertex* vertex1, Vertex* vertex2, Profile* profile);
+
     Plan(float pointX, float pointY, float pointZ,
          float normalX = 0.0f, float normalY = 0.0f, float normalZ = 1.0f);
 
@@ -15,7 +17,7 @@ public:
 
     void setNormal(float nx, float ny, float nz);
     void getNormal(float& nx, float& ny, float& nz);
-    void computePlanNormal(Vertex* vertex1, Vertex* vertex2, Profile* profile);
+    void computePlanNormal();
 
 private:
     // a plan is defined by a point and a normal
@@ -26,6 +28,12 @@ private:
     float normalX;
     float normalY;
     float normalZ;
+
+    float pointX2;
+    float pointY2;
+    float pointZ2;
+
+    Profile* profile;
 };
 
 #endif // PLAN_H

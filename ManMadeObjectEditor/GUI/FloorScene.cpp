@@ -34,8 +34,8 @@ void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
             } else {
                 QPoint mousePos = mouseEvent->lastScenePos().toPoint();
                 // no point defined thus we add an initial geometric structure
-                //basicCircle(&mousePos, 5);
-                basicCross(0.0f, 0.0f);
+                basicCircle(&mousePos, 5);
+                //basicCross(0.0f, 0.0f);
             }
         }
     }
@@ -336,7 +336,7 @@ void FloorScene::basicCircle(QPoint * mousePos, int numSample) {
     QRectF thisSize = this->sceneRect();
 
 
-    meshManager->incrementFloorPlanSize();
+    /*meshManager->incrementFloorPlanSize();
     meshManager->incrementFloorPlanSize();
     meshManager->incrementFloorPlanSize();
     meshManager->incrementFloorPlanSize();
@@ -383,7 +383,57 @@ void FloorScene::basicCircle(QPoint * mousePos, int numSample) {
     d->setEdge1(cd);
     d->setEdge2(de);
     e->setEdge1(de);
-    e->setEdge2(ea);
+    e->setEdge2(ea);*/
+
+
+
+
+
+    meshManager->incrementFloorPlanSize();
+        meshManager->incrementFloorPlanSize();
+        meshManager->incrementFloorPlanSize();
+
+
+
+        Vertex* a = new Vertex(-1.0, 1.0);//new Vertex(-1.0, 1.0);
+        Vertex* b = new Vertex(1.0, 1.0);//new Vertex(1.0, 1.0);//new Vertex(-0.91, -0.33);
+        Vertex* c = new Vertex(0.0, 0.0);
+
+
+
+
+        meshManager->setFloorPlan(a);
+
+
+        a->setNeighbor1(c);
+        a->setNeighbor2(b);
+        b->setNeighbor1(a);
+        b->setNeighbor2(c);
+        c->setNeighbor1(b);
+        c->setNeighbor2(a);
+
+        Profile* p = new Profile(false);
+        Edge* ab = new Edge(a, b, p);
+        Edge* bc = new Edge(b, c, p);
+        Edge* ca = new Edge(c, a, p);
+
+        a->setEdge1(ca);
+        a->setEdge2(ab);
+        b->setEdge1(ab);
+        b->setEdge2(bc);
+        c->setEdge1(bc);
+        c->setEdge2(ca);
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -77,7 +77,6 @@ void ProfileScene::addVertex(QPoint mousePos) {
         newVertex->setNeighbor2(nextVertex);//addNeighbor
         newVertex->setEdge2(edge2);
 
-
         //finally show the ellipse and delete the old edge
         this->addItem(ellipse);
         this->addItem(edge1->computeLineItem());

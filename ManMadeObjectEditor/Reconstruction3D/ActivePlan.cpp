@@ -267,8 +267,8 @@ std::vector< std::vector< Edge* >* >* ActivePlan::createChain(ActivePlan* previo
 void ActivePlan::computeDirectionPlan() {
     foreach(Edge* edge, *activePlan) {
         Vertex* vertex1 = edge->getVertex1();
-        Plan* plan = new Plan( vertex1->getX(), vertex1->getY(), vertex1->getZ());
-        plan->computePlanNormal(vertex1, edge->getVertex2(), edge->getProfile());
+        Plan* plan = new Plan( vertex1, edge->getVertex2(), edge->getProfile());
+        plan->computePlanNormal();
         edge->setDirectionPlan(plan);
     }
 }

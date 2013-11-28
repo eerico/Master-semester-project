@@ -16,7 +16,7 @@ Vertex::Vertex(float x, float y, bool addFaces, bool valid)
 }
 
 Vertex::Vertex(float x, float y, float z)
-    : x(x), y(y), z(z)
+    : x(x), y(y), z(z), bFaces(false)
 {
 
 }

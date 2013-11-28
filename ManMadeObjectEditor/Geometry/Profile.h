@@ -63,6 +63,8 @@ public:
     void resetDirectionPlan(); 
 
     QColor* getProfileColorIdentification();
+
+    void printProfile();
     
 private:
 
