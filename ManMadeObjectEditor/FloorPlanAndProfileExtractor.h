@@ -92,6 +92,14 @@ private:
      */
     void upsideDownCorrection(std::vector< std::vector<Vertex* > > &plans);
 
+    /**
+     * @brief planOrientation
+     * check if the orientation of this plan is correct, if not correct it
+     *(i.e. it match the 3D reconstruction direction)
+     * @param level is the level we want to
+     */
+    void planOrientation(std::vector<Vertex* > &level);
+
     // the delta height between different floor plan (the distance between each level)
     float dy;
 

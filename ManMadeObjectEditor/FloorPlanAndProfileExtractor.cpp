@@ -116,6 +116,8 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
         }
     }
     
+    //check if the floorplan chain orientation is correct (otherwise reverse it)
+    planOrientation(plans[0]);
     
     /*
      * Construct the profile:
@@ -209,6 +211,34 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
         currentProfile->vertexDecimation();
     }
     
+}
+
+void FloorPlanAndProfileExtractor::planOrientation(std::vector<Vertex* > &level){
+    Edge* edge = level[0]->getEdge2();
+
+    float v1 = (level[0]->getNeighbor2()->getX() - level[0]->getX());
+    float v2 =  level[0]->getNeighbor2()->getY() - level[0]->getY();
+
+    float a=edge->getNormal()[0][0];
+    float b =edge->getNormal()[0][1];
+
+    //check if the real normal and the one we compute point in the same direction
+    float dot  =  Utils::dotProduct(-v2,v1,(*edge->getNormal())[0],(*edge->getNormal())[1]);
+
+    if(dot < 0){ //reverse the chain
+        Vertex* tempV;
+        Edge* tempE;
+        foreach (Vertex* v, level) {
+            tempV = v->getNeighbor1();
+            tempE = v->getEdge1();
+            v->setNeighbor1(v->getNeighbor2());
+            v->setEdge1(v->getEdge2());
+
+            v->setNeighbor2(tempV);
+            v->setEdge2(tempE);
+
+        }
+    }
 }
 
 void FloorPlanAndProfileExtractor::findMinMaxYValueMesh(OMMesh *inputMesh, float &minY, float &maxY) {
@@ -409,7 +439,9 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             level = tempLevel;
         }
 
-    }     
+    }
+
+
     
     //find vertex of v that have the same face normal delete it and replace with neigbour
     for(unsigned int j(0); j < plans.size(); ++j) {
