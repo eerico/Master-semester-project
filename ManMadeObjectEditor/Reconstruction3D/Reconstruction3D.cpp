@@ -2,8 +2,11 @@
 
 //#define DEBUG
 
-Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles)
+Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles
+                                   , std::vector<std::vector< std::vector< Edge* >>>* chainsDebug
+                                   , std::vector<std::vector< std::vector< Edge* >>>* chainsDebug2)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles), minimumHeight(0.0f)
+    , chainsDebug(chainsDebug), chainsDebug2(chainsDebug2)
 {
     priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
 }
@@ -169,6 +172,9 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
 
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
+
+            chainList->getChains(chainsDebug);
+
             chainList->intraChainHandling();
 
             activePlan->removeInvalidEdges();
@@ -210,6 +216,8 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
                 computeIntersection();
             }
+
+            chainList->getChains(chainsDebug2);
 
             // juste pour debug
             #ifdef DEBUG
