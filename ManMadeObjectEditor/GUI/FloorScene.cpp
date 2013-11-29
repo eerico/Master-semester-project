@@ -115,9 +115,13 @@ void FloorScene::removeVertex() {
             
             
             meshManager->decrementFloorPlanSize();
+
+            meshManager->setCurrentProfile(profile);
             
             // tell the meshManager to generate new point/triangle
             meshManager->setUpdateOnMesh();
+
+            newProfileSelected(profile);
             
             break;
         }
