@@ -109,7 +109,7 @@ const std::vector<qglviewer::Vec * > *MeshManager::getTriangles() {
     triangles->clear();
 
     chains.clear();
-    chains.clear();
+    chains2.clear();
 
     // recompute the 3D reconstruction
     Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, triangles, &chains, &chains2);
