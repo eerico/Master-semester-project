@@ -124,16 +124,22 @@ void FloorAndProfileViewer::openFile() {
     QFileInfo fi(file);
     if(fi.suffix().toLower() =="xml"){
         Utils::readXML(meshManager, file);
+
+        // by default, we do not show all the floor plan
+        centralWidget->hideAllPlans();
+        centralWidget->uncheckShowPlans();
+        centralWidget->hideAllChains();
+        centralWidget->uncheckShowChains();
     } else {
 
-    // by default, we do not show all the floor plan
-    centralWidget->hideAllPlans();
-    centralWidget->uncheckShowPlans();
-    centralWidget->hideAllChains();
-    centralWidget->uncheckShowChains();
+        // by default, we do not show all the floor plan
+        centralWidget->hideAllPlans();
+        centralWidget->uncheckShowPlans();
+        centralWidget->hideAllChains();
+        centralWidget->uncheckShowChains();
 
-    // tells the mesh manager that a new mesh can be read
-    meshManager->loadMesh(file);
+        // tells the mesh manager that a new mesh can be read
+        meshManager->loadMesh(file);
     }
 }
 
