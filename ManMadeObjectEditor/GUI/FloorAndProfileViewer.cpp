@@ -116,11 +116,15 @@ void FloorAndProfileViewer::aboutQtMessageBox() {
 
 
 void FloorAndProfileViewer::openFile() {
-    QString file = QFileDialog::getOpenFileName(this, "Open File", QString(), "Mesh Files (*.obj *.off *.stl)");
+    QString file = QFileDialog::getOpenFileName(this, "Open File", QString(), "Mesh Files (*.obj *.off *.stl *.xml)");
 
     if (file.isEmpty()) {
         return;
     }
+    QFileInfo fi(file);
+    if(fi.suffix().toLower() =="xml"){
+        Utils::readXML(meshManager, file);
+    } else {
 
     // by default, we do not show all the floor plan
     centralWidget->hideAllPlans();
@@ -130,6 +134,7 @@ void FloorAndProfileViewer::openFile() {
 
     // tells the mesh manager that a new mesh can be read
     meshManager->loadMesh(file);
+    }
 }
 
 void FloorAndProfileViewer::saveXML() {

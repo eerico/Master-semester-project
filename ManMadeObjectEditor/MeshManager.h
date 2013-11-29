@@ -103,6 +103,9 @@ public:
 
     std::vector<std::vector<std::vector<Edge *> > > &getChains2();
 
+
+    void emitNewFloorPlan();
+
 signals:
     /**
      * @brief newFloorPlan

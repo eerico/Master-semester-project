@@ -90,7 +90,7 @@ void Utils::CreateXMLFile(MeshManager* meshmanager, QString &filename){
         xmlWriter->setDevice(&file);
         xmlWriter->writeStartDocument();
         //Writes a start element with name
-        xmlWriter->writeStartElement("3DExtrusionModel");
+        xmlWriter->writeStartElement("ExtrusionModel");
 
 
         QSet<QColor*> profiles;
@@ -117,6 +117,134 @@ void Utils::CreateXMLFile(MeshManager* meshmanager, QString &filename){
         xmlWriter->writeEndElement();
 
         xmlWriter->writeEndDocument();
+        file.close();
         delete xmlWriter;
+    }
+}
+
+void Utils::readXML(MeshManager* meshmanager, QString &filename){
+
+    QFile file(filename);
+    /* If we can't open it, let's show an error message. */
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::critical(0,
+                              "QXSRExample::parseXML",
+                              "Couldn't open example.xml",
+                              QMessageBox::Ok);
+        return;
+    }
+    /* QXmlStreamReader takes any QIODevice. */
+    QXmlStreamReader xml(&file);
+
+    Edge* firstEdge =0;
+    Edge* tempEdge =0;
+    Edge* tempEdge2 =0;
+    QMap<QString,Profile*> profiles;
+
+    /* We'll parse the XML until we reach end of it.*/
+    while(!xml.atEnd() &&
+            !xml.hasError()) {
+        /* Read next element.*/
+        QXmlStreamReader::TokenType token = xml.readNext();
+        /* If token is just StartDocument, we'll go to next.*/
+        if(token == QXmlStreamReader::StartDocument) {
+            continue;
+        }
+        /* If token is StartElement, we'll see if we can read it.*/
+
+        if(token == QXmlStreamReader::StartElement) {
+            /* If it's named persons, we'll go to the next.*/
+            QString a = xml.name().toString();
+            if(xml.name() == "ExtrusionModel") {
+                continue;
+            } else if (xml.name() == "Profile") {
+                std::pair<QString, Profile*> tempProfile = Profile::readXML(xml);
+                if(tempProfile.first!=0){
+                    profiles.insert(tempProfile.first, tempProfile.second);
+                }
+                continue;
+            } else if (xml.name() == "Edge"){
+                std::pair<QString, Edge*> edgePair = Edge::readXML(xml);
+                meshmanager->incrementFloorPlanSize();
+                if (firstEdge ==0){
+                  firstEdge=  edgePair.second;
+                  tempEdge = firstEdge;
+                } else{
+                   tempEdge2=  edgePair.second;
+                   if(tempEdge2->getVertex1()->getX() == tempEdge->getVertex2()->getX()
+                           && tempEdge2->getVertex1()->getY() == tempEdge->getVertex2()->getY()){
+
+                       delete tempEdge2->getVertex1();
+                       tempEdge2->setVertex1(tempEdge->getVertex2());
+
+                       tempEdge->getVertex2()->setNeighbor2(tempEdge2->getVertex2());
+                       tempEdge->getVertex2()->setNeighbor1(tempEdge->getVertex1());
+
+                      tempEdge->getVertex2()->setEdge1(tempEdge);
+                      tempEdge->getVertex2()->setEdge2(tempEdge2);
+
+                       tempEdge = tempEdge2;
+                   } else {
+                       std::cerr << "bad xml, chaose what to do..."<< std::endl;
+                   }
+                }
+
+                //add profile:
+                QMap<QString,Profile*>::const_iterator i = profiles.find(edgePair.first);
+                Profile* a = profiles.value(edgePair.first, 0);
+                if(a!=0){
+                     tempEdge->setProfile(a);
+                } else{
+                    std::cerr << "something wrong with profiles blaaaa" << std::endl;
+                }
+                continue;
+            }
+        }
+    }
+
+
+
+    /* Error handling. */
+    if(xml.hasError()) {
+        QMessageBox::critical(0,
+                              "QXSRExample::parseXML",
+                              xml.errorString(),
+                              QMessageBox::Ok);
+    } else {
+
+
+        //check if last edge is link to the first
+        if(firstEdge->getVertex1()->getX() == tempEdge->getVertex2()->getX()
+                && firstEdge->getVertex1()->getY() == tempEdge->getVertex2()->getY()){
+
+            delete firstEdge->getVertex1();
+            firstEdge->setVertex1(tempEdge->getVertex2());
+
+            tempEdge->getVertex2()->setNeighbor2(firstEdge->getVertex2());
+            tempEdge->getVertex2()->setNeighbor1(tempEdge->getVertex1());
+
+           tempEdge->getVertex2()->setEdge1(tempEdge);
+           tempEdge->getVertex2()->setEdge2(firstEdge);
+        } else {
+            std::cerr << "bad xml, chaose what to do..."<< std::endl;
+        }
+
+
+    //Removes any device() or data from the reader
+    //and resets its internal state to the initial state.
+        file.close();
+        xml.clear();
+
+    meshmanager->setFloorPlan(firstEdge->getVertex1());
+
+    meshmanager->setCurrentProfile(profiles.begin().value());
+
+    QMap<QString, Profile *>::iterator iteratorProfiles = profiles.begin();
+    while (iteratorProfiles != profiles.end()) {
+         ProfileDestructorManager::putProfile(iteratorProfiles.value());
+         iteratorProfiles++;
+    }
+
+    meshmanager->emitNewFloorPlan();
     }
 }

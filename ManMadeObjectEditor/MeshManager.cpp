@@ -276,3 +276,7 @@ std::vector<std::vector<std::vector<Edge *> > > &MeshManager::getChains() {
 std::vector<std::vector<std::vector<Edge *> > > &MeshManager::getChains2() {
     return chains2;
 }
+void MeshManager::emitNewFloorPlan(){
+    emit newFloorPlan();
+}
+

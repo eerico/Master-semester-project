@@ -279,3 +279,63 @@ void Profile::writeXML(QXmlStreamWriter* xmlWriter){
     }
     xmlWriter->writeEndElement();
 }
+
+std::pair<QString, Profile*> Profile::readXML(QXmlStreamReader &xml){
+    /* Let's check that we're really getting an Edge. */
+    std::pair<QString, Profile*> pair;
+    if(xml.tokenType() != QXmlStreamReader::StartElement &&
+            xml.name() == "Profile") {
+        return pair;
+    }
+
+
+    Vertex* firstVertex=0;
+    Vertex* tempVertex;
+    Vertex* tempVertex2;
+
+    /* Let's get the attributes for person */
+    QXmlStreamAttributes attributes = xml.attributes();
+    /* Let's check that person has id attribute. */
+    if(attributes.hasAttribute("color")) {
+        pair.first = attributes.value("color").toString();
+    }
+    /* Next element... */
+    xml.readNext();
+    /*
+     * We're going to loop over the things because the order might change.
+     * We'll continue the loop until we hit an EndElement named person.
+     */
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement &&
+                xml.name() == "Profile")) {
+            if(xml.tokenType() == QXmlStreamReader::StartElement) {
+                /* We've found first name. */
+                if(xml.name() == "Vertex") {
+                    tempVertex2 = Vertex::readXML(xml);
+                    if(firstVertex == 0){
+                        firstVertex = tempVertex2;
+                        tempVertex = firstVertex;
+
+                    } else {
+
+                        tempVertex->setNeighbor2(tempVertex2);
+                        Edge* tedge = new Edge(tempVertex, tempVertex2);
+                        tempVertex->setEdge2(tedge);
+
+                        tempVertex2->setNeighbor1(tempVertex);
+                        tempVertex2->setEdge1(tedge);
+                        tempVertex = tempVertex2;
+                    }
+
+                }
+            }
+            xml.readNext();//read end element
+            xml.readNext();
+        }
+        pair.second = new Profile(true);
+        delete pair.second->pVertex;
+        pair.second->pVertex = firstVertex;
+        delete pair.second->profileColorIdentification;
+        pair.second->profileColorIdentification = new QColor(pair.first);
+
+    return pair;
+}

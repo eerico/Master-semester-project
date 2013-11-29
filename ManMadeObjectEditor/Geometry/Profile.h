@@ -7,6 +7,8 @@
 #include "../Utils.h"
 #include <QString>
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
+
 
 class Edge;
 
@@ -71,6 +73,8 @@ public:
     void printProfile();
 
     void writeXML(QXmlStreamWriter* xmlWriter);
+    static std::pair<QString, Profile*> readXML(QXmlStreamReader &xml);
+
 
 private:
 

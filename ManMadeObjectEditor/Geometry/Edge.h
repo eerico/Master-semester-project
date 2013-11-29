@@ -10,6 +10,7 @@
 #include <cmath>
 #include <QString>
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 
 
 class Plan;
@@ -133,6 +134,8 @@ public:
     friend std::ostream& operator<< (std::ostream& out, Edge& v);
 
     void writeXML(QXmlStreamWriter* xmlWriter);
+
+    static std::pair<QString, Edge*> readXML(QXmlStreamReader &xml);
 
 private:
 
