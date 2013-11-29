@@ -3,8 +3,8 @@
 //#define DEBUG
 
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles
-                                   , std::vector<std::vector< std::vector< Edge* >>>* chainsDebug
-                                   , std::vector<std::vector< std::vector< Edge* >>>* chainsDebug2)
+                                   , std::vector<std::vector< std::vector< Edge* > > >* chainsDebug
+                                   , std::vector<std::vector< std::vector< Edge* > > >* chainsDebug2)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles), minimumHeight(0.0f)
     , chainsDebug(chainsDebug), chainsDebug2(chainsDebug2)
 {

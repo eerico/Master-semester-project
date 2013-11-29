@@ -51,9 +51,9 @@ private:
 
     float minimumHeight;
 
-    std::vector< std::vector< std::vector< Edge* >>>* chainsDebug;
+    std::vector< std::vector< std::vector< Edge* > > >* chainsDebug;
 
-    std::vector< std::vector< std::vector< Edge* >>>* chainsDebug2;
+    std::vector< std::vector< std::vector< Edge* > > >* chainsDebug2;
 
 };
 
