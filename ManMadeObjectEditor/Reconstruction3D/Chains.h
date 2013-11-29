@@ -16,6 +16,7 @@ public:
     Chains(Intersection *intersection, std::vector<qglviewer::Vec *> *triangles, ActivePlan *activePlan);
     void intraChainHandling();
     bool interChainHandling();
+    void getChains(std::vector<std::vector<std::vector<Edge *> > > *chainsAllLevel);
 
 private:
     Intersection* intersection;

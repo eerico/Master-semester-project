@@ -17,7 +17,8 @@
 class Reconstruction3D
 {
 public:
-    Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector< qglviewer::Vec * >* triangles);
+    Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector< qglviewer::Vec * >* triangles, std::vector<std::vector<std::vector<Edge *> > > *chainsDebug, std::vector<std::vector<std::vector<Edge *> > > *chainsDebug2);
+
     ~Reconstruction3D();
     void reconstruct();
 private:
@@ -49,6 +50,10 @@ private:
     void addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3);
 
     float minimumHeight;
+
+    std::vector< std::vector< std::vector< Edge* >>>* chainsDebug;
+
+    std::vector< std::vector< std::vector< Edge* >>>* chainsDebug2;
 
 };
 

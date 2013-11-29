@@ -2,6 +2,7 @@
 
 CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
     QWidget(parent), meshManager(meshManager), allPlanView(0), allPlanScene(0), levelSelector(0)
+  , allChainScene(0), allChainView(0), levelChainSelector(0)
 {
     layout = new QGridLayout();
     
@@ -25,6 +26,24 @@ CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
     // by default, hide this view
     allPlanView->hide();
 
+
+
+
+    showChains = new QCheckBox("Show all chains");
+    layout->addWidget(showChains, 2, 0);
+
+    allChainScene = new AllChainScene(meshManager);
+    allChainView = new BasicQGraphicsView(allChainScene);
+    layout->addWidget(allChainView, 0, 3);
+
+    allChainAfterAlgorithmScene = new AllChainScene(meshManager);
+    allChainAfterAlgorithmView = new BasicQGraphicsView(allChainAfterAlgorithmScene);
+    layout->addWidget(allChainAfterAlgorithmView, 0, 4);
+
+    // by default, hide this view
+    allChainAfterAlgorithmView->hide();
+    allChainView->hide();
+
     // connect all signal and slot
     QObject::connect(floorScene, SIGNAL(newProfileSelected()), profileScene, SLOT(newProfileSelected()));
     QObject::connect(meshManager, SIGNAL(newFloorPlan()), floorScene, SLOT(loadFloorPlan()));
@@ -32,6 +51,7 @@ CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
     QObject::connect(floorScene, SIGNAL(newProfileSelected()), this, SLOT(changeProfileColorIndication()));
     QObject::connect(meshManager, SIGNAL(newFloorPlan()), this, SLOT(changeProfileColorIndication()));
     QObject::connect(showPlans, SIGNAL(clicked()), this, SLOT(allPlans()));
+    QObject::connect(showChains, SIGNAL(clicked()), this, SLOT(allChains()));
 
     this->setLayout(layout);
     this->setMinimumSize(QSize(300, 170));
@@ -57,6 +77,27 @@ CentralWidget::~CentralWidget()
     if(levelSelector != 0) {
         delete levelSelector;
         levelSelector = 0;
+    }
+
+    if(allChainScene != 0)  {
+        delete allChainScene;
+    }
+
+    if(allChainView != 0) {
+        delete allChainView;
+    }
+
+    if(allChainAfterAlgorithmScene != 0)  {
+        delete allChainAfterAlgorithmScene;
+    }
+
+    if(allChainAfterAlgorithmView != 0) {
+        delete allChainAfterAlgorithmView;
+    }
+
+    if(levelChainSelector != 0) {
+        delete levelChainSelector;
+        levelChainSelector = 0;
     }
 }
 
@@ -126,4 +167,64 @@ void CentralWidget::hideAllPlans() {
 
 void CentralWidget::uncheckShowPlans() {
     showPlans->setChecked(false);
+}
+
+
+
+//////////////////////////////////////////////////////////////
+
+
+void CentralWidget::valueSliderChainsChanged(int level) {
+    allChainScene->loadPlan(level, true);
+    allChainAfterAlgorithmScene->loadPlan(level, false);
+}
+
+void CentralWidget::allChains() {
+    if(showChains->isChecked()) {
+        showAllChains();
+    } else {
+        hideAllChains();
+    }
+
+    this->adjustSize();
+    this->parentWidget()->adjustSize();
+    this->repaint();
+}
+
+void CentralWidget::showAllChains() {
+    if (meshManager->getChains().size() == 0) {
+        return;
+    }
+
+    levelChainSelector = new QSlider(Qt::Horizontal);
+
+    levelChainSelector->setMinimum(0);
+    levelChainSelector->setMaximum(meshManager->getChains().size() - 1);
+    layout->addWidget(levelChainSelector, 1, 3);
+
+    allChainView->show();
+    allChainAfterAlgorithmView->show();
+    levelChainSelector->show();
+
+    allChainScene->loadPlan(levelChainSelector->value(), true);
+    allChainAfterAlgorithmScene->loadPlan(levelChainSelector->value(), false);
+
+    QObject::connect(levelChainSelector, SIGNAL(valueChanged(int)), this, SLOT(valueSliderChainsChanged(int)));
+}
+
+void CentralWidget::hideAllChains() {
+    allChainView->hide();
+    allChainAfterAlgorithmView->hide();
+
+    if(levelChainSelector != 0) {
+        levelChainSelector->hide();
+        QObject::disconnect(levelChainSelector, SIGNAL(valueChanged(int)), this, SLOT(valueSliderChainsChanged(int)));
+
+        delete levelChainSelector;
+        levelChainSelector = 0;
+    }
+}
+
+void CentralWidget::uncheckShowChains() {
+    showChains->setChecked(false);
 }

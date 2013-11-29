@@ -99,7 +99,9 @@ public:
      */
     std::vector<std::vector<Vertex * > > &getPlans();
 
-    std::vector<std::vector<Vertex * > > &getChains();
+    std::vector<std::vector<std::vector<Edge *> > > &getChains();
+
+    std::vector<std::vector<std::vector<Edge *> > > &getChains2();
 
 
     void emitNewFloorPlan();
@@ -142,7 +144,10 @@ private:
     std::vector< std::vector< Vertex* > > plans;
 
     // a vector that contain all chains for debugging
-    std::vector< std::vector< Vertex* > > chains;
+    std::vector< std::vector< std::vector< Edge* > > > chains;
+
+    // a vector that contain all chains adter intra adn inter chain handling for debugging
+    std::vector< std::vector< std::vector< Edge* > > > chains2;
 };
 
 #endif // MESH_H

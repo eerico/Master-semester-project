@@ -15,6 +15,7 @@
 #include "../MeshManager.h"
 #include "../GUI/BasicQGraphicsView.h"
 #include "../GUI/AllPlanScene.h"
+#include "AllChainScene.h"
 
 /**
  * @brief The CentralWidget class
@@ -55,11 +56,29 @@ public:
     // A slider used to choose which level the user want to see
     QSlider *levelSelector;
 
+
+    QCheckBox* showChains;
+
+    AllChainScene *allChainScene;
+
+    BasicQGraphicsView *allChainView;
+
+    AllChainScene *allChainAfterAlgorithmScene;
+
+    BasicQGraphicsView *allChainAfterAlgorithmView;
+
+    QSlider *levelChainSelector;
+
+
+
     /**
      * @brief hideAllPlans
      * Hide the scene that shows the floor plan at a selected level
      */
     void hideAllPlans();
+
+
+    void hideAllChains();
     
 public slots:
     /**
@@ -90,6 +109,15 @@ public slots:
      * at a specific level
      */
     void uncheckShowPlans();
+
+
+    void valueSliderChainsChanged(int level);
+
+    void allChains();
+
+    void uncheckShowChains();
+
+
     
 private:
 
@@ -101,6 +129,9 @@ private:
      * Show the scene that shows the floor plan at a selected level
      */
     void showAllPlans();
+
+
+    void showAllChains();
 };
 
 #endif // CENTRALWIDGET_H

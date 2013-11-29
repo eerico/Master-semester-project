@@ -210,7 +210,7 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
         // enforce the monotonicity constraints
         Vertex* neighbor1 = currentlyMovingVertex->getNeighbor1();
         if (neighbor1 != 0){
-            if (neighbor1->getEllipse()->rect().center().ry() <= y) {
+            if (neighbor1->getEllipse()->rect().center().ry() - 1 <= y) {
                 return;
             }
         }
@@ -218,7 +218,7 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
         // enforce the monotonicity constraints
         Vertex* neighbor2 = currentlyMovingVertex->getNeighbor2();
         if (neighbor2 != 0){
-            if (neighbor2->getEllipse()->rect().center().ry() >= y) {
+            if (neighbor2->getEllipse()->rect().center().ry() + 1 >= y) {
                 return;
             }
         }

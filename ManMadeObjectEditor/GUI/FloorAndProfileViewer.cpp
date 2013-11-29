@@ -129,6 +129,8 @@ void FloorAndProfileViewer::openFile() {
     // by default, we do not show all the floor plan
     centralWidget->hideAllPlans();
     centralWidget->uncheckShowPlans();
+    centralWidget->hideAllChains();
+    centralWidget->uncheckShowChains();
 
     // tells the mesh manager that a new mesh can be read
     meshManager->loadMesh(file);

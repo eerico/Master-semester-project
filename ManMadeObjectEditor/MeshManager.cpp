@@ -108,8 +108,11 @@ const std::vector<qglviewer::Vec * > *MeshManager::getTriangles() {
     }
     triangles->clear();
 
+    chains.clear();
+    chains.clear();
+
     // recompute the 3D reconstruction
-    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, triangles);
+    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, triangles, &chains, &chains2);
     reconstruction3D.reconstruct();
 
     // the update is done
@@ -132,8 +135,11 @@ const std::vector<qglviewer::Vec* >* MeshManager::getPoints() {
     }
     points->clear();
 
+    chains.clear();
+    chains2.clear();
+
     // recompute the 3D reconstruction
-    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, points);
+    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, points, &chains, &chains2);
     reconstruction3D.reconstruct();
 
     // the update is done
@@ -263,10 +269,13 @@ std::vector< std::vector< Vertex* > >& MeshManager::getPlans() {
     return plans;
 }
 
-std::vector< std::vector< Vertex* > >& MeshManager::getChains() {
+std::vector<std::vector<std::vector<Edge *> > > &MeshManager::getChains() {
     return chains;
 }
 
+std::vector<std::vector<std::vector<Edge *> > > &MeshManager::getChains2() {
+    return chains2;
+}
 void MeshManager::emitNewFloorPlan(){
     emit newFloorPlan();
 }

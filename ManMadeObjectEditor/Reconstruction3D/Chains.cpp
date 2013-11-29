@@ -83,6 +83,7 @@ Chains::Chains(Intersection* intersection, std::vector<qglviewer::Vec *> *triang
 }
 
 void Chains::intraChainHandling() {
+
     unsigned int chainsSize = chainList.size();
     for(unsigned int j(0); j < chainsSize; ++j) {
         std::vector< Edge* >* currentChain = chainList[j];
@@ -199,6 +200,7 @@ void Chains::intraChainHandling() {
             intersectionVertex->setNeighbor2(vertex2);
             intersectionVertex->setEdge1(firstEdge);
             intersectionVertex->setEdge2(lastEdge);
+
         }
     }
 }
@@ -211,6 +213,9 @@ bool Chains::interChainHandling() {
     if (chainsSize < 2) {
         return false;
     }
+
+    std::vector< std::vector< Edge* >* > allChainAfterAlgorithm;
+
     bool edgeSplitted = false;
     for(unsigned int i(0); i < chainsSize; i++) {
         std::vector< Edge* >* chain1 = chainList[i];
@@ -275,7 +280,16 @@ bool Chains::interChainHandling() {
         intersectionVertex->setNeighbor1(firstEdgeChain2->getVertex1());
         intersectionVertex->setEdge2(lastEdgeChain1);
         intersectionVertex->setNeighbor2(lastEdgeChain1->getVertex2());
+
+
+        std::vector< Edge* >* chainAfterAlgorithm = new std::vector< Edge* >;
+        chainAfterAlgorithm->push_back(lastEdgeChain1);
+        chainAfterAlgorithm->push_back(firstEdgeChain2);
+
+        allChainAfterAlgorithm.push_back(chainAfterAlgorithm);
     }
+
+    chainList = allChainAfterAlgorithm;
 
     return edgeSplitted;
 }
@@ -302,6 +316,24 @@ void Chains::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdg
 
     // we update the current active plan. We have to remove the old edge and insert the two new one
     activePlan->insert2Edges(edgeToSplit, newEdge1, newEdge2);
+}
+
+void Chains::getChains(std::vector< std::vector<std::vector<Edge *> > >* chainsAllLevel) {
+    std::vector< std::vector< Edge* >* > ;
+    std::vector<std::vector<Edge *> > chains;
+
+    foreach(std::vector< Edge* >* currentChain, chainList) {
+        std::vector< Edge* > edgeVector;
+        foreach(Edge* e, *currentChain) {
+            Vertex* vertex1 = e->getVertex1();
+            Vertex* vertex2 = e->getVertex2();
+
+            Edge* copy = new Edge(new Vertex(vertex1->getX(), vertex1->getY()), new Vertex(vertex2->getX(), vertex2->getY()));
+            edgeVector.push_back(copy);
+        }
+        chains.push_back(edgeVector);
+    }
+    chainsAllLevel->push_back(chains);
 }
 
 void Chains::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
