@@ -101,6 +101,9 @@ public:
 
     std::vector<std::vector<Vertex * > > &getChains();
 
+
+    void emitNewFloorPlan();
+
 signals:
     /**
      * @brief newFloorPlan

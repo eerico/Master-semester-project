@@ -13,6 +13,7 @@
 #include <QMessageBox>
 #include "../GUI/ObjectViewer.h"
 #include "../MeshManager.h"
+#include <QFileInfo>
 
 /**
  * @brief The FloorAndProfileViewer class

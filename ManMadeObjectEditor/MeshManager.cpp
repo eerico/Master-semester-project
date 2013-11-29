@@ -267,3 +267,7 @@ std::vector< std::vector< Vertex* > >& MeshManager::getChains() {
     return chains;
 }
 
+void MeshManager::emitNewFloorPlan(){
+    emit newFloorPlan();
+}
+

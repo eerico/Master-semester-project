@@ -6,6 +6,9 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
+#include <utility>
+#include <QMap>
 
 class Profile;
 class MeshManager;
@@ -113,6 +116,8 @@ public:
                              float& x, float& y, float& z);
 
     static void CreateXMLFile(MeshManager* meshmanager, QString &filename);
+    static void readXML(MeshManager* meshmanager, QString &filename);
+
 };
 
 #endif // UTILS_H

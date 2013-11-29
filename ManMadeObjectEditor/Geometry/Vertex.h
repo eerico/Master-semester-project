@@ -10,6 +10,8 @@
 #include <ostream>
 #include <QString>
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
+
 
 /**
  * @brief The Vertex class
@@ -96,6 +98,8 @@ public:
     friend std::ostream& operator<< (std::ostream& out, Vertex& v);
 
     void writeXML(QXmlStreamWriter* xmlWriter);
+    static Vertex* readXML(QXmlStreamReader &xml);
+
 
 private:
     float x;

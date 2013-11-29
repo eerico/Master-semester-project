@@ -368,3 +368,46 @@ void Edge::writeXML(QXmlStreamWriter* xmlWriter){
 
     xmlWriter->writeEndElement();
 }
+
+
+std::pair<QString, Edge*> Edge::readXML(QXmlStreamReader &xml){
+    std::pair<QString, Edge*> pair;
+
+    /* Let's check that we're really getting an Edge. */
+    if(xml.tokenType() != QXmlStreamReader::StartElement &&
+            xml.name() == "Edge") {
+        return pair;
+    }
+
+
+
+    Vertex* vertex1;
+    Vertex* vertex2;
+    /* Let's get the attributes for person */
+    QXmlStreamAttributes attributes = xml.attributes();
+    /* Let's check that person has id attribute. */
+    if(attributes.hasAttribute("profile")) {
+        pair.first = attributes.value("profile").toString();
+    }
+    /* Next element... */
+    xml.readNext();
+    /*
+     * We're going to loop over the things because the order might change.
+     * We'll continue the loop until we hit an EndElement named person.
+     */
+        if(xml.name() == "Vertex" && !(xml.tokenType() == QXmlStreamReader::EndElement &&
+             xml.name() == "Edge") && xml.tokenType() == QXmlStreamReader::StartElement) {
+                vertex1 = Vertex::readXML(xml);
+            }
+
+        xml.readNext();//read end element of first vertex
+        xml.readNext(); //read vertex 2
+
+        if(xml.name() == "Vertex" && !(xml.tokenType() == QXmlStreamReader::EndElement &&
+             xml.name() == "Edge") && xml.tokenType() == QXmlStreamReader::StartElement) {
+            vertex2 = Vertex::readXML(xml);
+            }
+        pair.second = new Edge(vertex1, vertex2, 0);
+
+    return pair;
+}

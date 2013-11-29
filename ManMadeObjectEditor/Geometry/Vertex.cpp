@@ -182,4 +182,19 @@ void Vertex::writeXML(QXmlStreamWriter* xmlWriter){
 
     xmlWriter->writeEndElement();
 }
+Vertex* Vertex::readXML(QXmlStreamReader &xml){
 
+    if(xml.tokenType() != QXmlStreamReader::StartElement &&
+            xml.name() == "Vertex") {
+        return 0;
+    }
+    float x;
+    float y;
+    QXmlStreamAttributes attributes = xml.attributes();
+
+    if(attributes.hasAttribute("X") && attributes.hasAttribute("Y")) {
+        return new Vertex(attributes.value("X").toString().toFloat(), attributes.value("Y").toString().toFloat(),false,true);
+    }
+    return 0;
+
+}
