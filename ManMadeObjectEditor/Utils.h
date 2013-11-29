@@ -2,6 +2,16 @@
 #define UTILS_H
 
 #include <cmath>
+#include <QSet>
+#include <QMessageBox>
+#include <QFile>
+#include <QXmlStreamWriter>
+
+class Profile;
+class MeshManager;
+class Edge;
+class Vertex;
+
 
 /**
  * @brief The Utils class
@@ -101,6 +111,8 @@ public:
     static void crossProduct(float x1, float y1, float z1,
                              float x2, float y2, float z2,
                              float& x, float& y, float& z);
+
+    static void CreateXMLFile(MeshManager* meshmanager, QString &filename);
 };
 
 #endif // UTILS_H

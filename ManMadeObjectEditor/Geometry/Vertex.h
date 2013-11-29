@@ -8,6 +8,8 @@
 #include "../Geometry/Edge.h"
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <ostream>
+#include <QString>
+#include <QXmlStreamWriter>
 
 /**
  * @brief The Vertex class
@@ -92,6 +94,8 @@ public:
     float distance(Vertex* vertex);
 
     friend std::ostream& operator<< (std::ostream& out, Vertex& v);
+
+    void writeXML(QXmlStreamWriter* xmlWriter);
 
 private:
     float x;

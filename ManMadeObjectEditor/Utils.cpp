@@ -1,4 +1,8 @@
 #include "Utils.h"
+#include "Geometry/Edge.h"
+#include "Geometry/Profile.h"
+#include "Geometry/Vertex.h"
+#include "MeshManager.h"
 
 Utils::Utils()
 {
@@ -69,4 +73,50 @@ void Utils::crossProduct(float x1, float y1, float z1, float x2, float y2, float
     x = y1 * z2 - z1 * y2;
     y = z1 * x2 - x1 * z2;
     z = x1 * y2 - y1 * x2;
+}
+
+void Utils::CreateXMLFile(MeshManager* meshmanager, QString &filename){
+
+    QFile file(filename);
+    //open a file
+    if (!file.open(QIODevice::WriteOnly))
+    {
+    //show wrror message if not able to open file
+    QMessageBox::warning(0, "Read only", "The file is in read only mode");
+    }
+    else
+    {
+        QXmlStreamWriter* xmlWriter = new QXmlStreamWriter();
+        xmlWriter->setDevice(&file);
+        xmlWriter->writeStartDocument();
+        //Writes a start element with name
+        xmlWriter->writeStartElement("3DExtrusionModel");
+
+
+        QSet<QColor*> profiles;
+        Vertex* firstVertex =  meshmanager->getFloorPlan();
+        Vertex* tempVertex = firstVertex;
+
+        //write all profiles
+        do {
+            if(!(profiles.contains( tempVertex->getEdge2()->getProfile()->getProfileColorIdentification()))){
+                     tempVertex->getEdge2()->getProfile()->writeXML(xmlWriter);
+                     profiles.insert( tempVertex->getEdge2()->getProfile()->getProfileColorIdentification());
+            }
+            tempVertex = tempVertex->getNeighbor2();
+        }while(tempVertex != firstVertex);
+
+        //write Edges
+        do {//tempVertex == firstVertex
+            tempVertex->getEdge2()->writeXML(xmlWriter);
+            tempVertex = tempVertex->getNeighbor2();
+        }while(tempVertex != firstVertex);
+
+
+        //end tag 3DExtrusionModel
+        xmlWriter->writeEndElement();
+
+        xmlWriter->writeEndDocument();
+        delete xmlWriter;
+    }
 }

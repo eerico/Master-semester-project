@@ -8,6 +8,9 @@
 #include <QBrush>
 #include <ostream>
 #include <cmath>
+#include <QString>
+#include <QXmlStreamWriter>
+
 
 class Plan;
 class Vertex;
@@ -128,6 +131,8 @@ public:
     bool existIntersection(Edge* edge);
 
     friend std::ostream& operator<< (std::ostream& out, Edge& v);
+
+    void writeXML(QXmlStreamWriter* xmlWriter);
 
 private:
 

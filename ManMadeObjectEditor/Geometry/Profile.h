@@ -5,6 +5,8 @@
 #include <QColor>
 #include "../Geometry/Vertex.h"
 #include "../Utils.h"
+#include <QString>
+#include <QXmlStreamWriter>
 
 class Edge;
 
@@ -67,7 +69,9 @@ public:
     Vertex* getProfileVertexIterator();
 
     void printProfile();
-    
+
+    void writeXML(QXmlStreamWriter* xmlWriter);
+
 private:
 
     // the vertex at the current direction plan

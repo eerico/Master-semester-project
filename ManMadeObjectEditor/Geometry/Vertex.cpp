@@ -1,6 +1,5 @@
 #include "Vertex.h"
 
-
 Vertex::Vertex(float x, float y, bool addFaces, bool valid)
     : x(x), y(y), z(0.0f), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0), valid(valid)
 {
@@ -171,3 +170,16 @@ std::ostream& operator<<(std::ostream& out, Vertex& v) {
     out << v.getX() << "\t" << v.getY() << "\t" << v.getZ();
     return out;
 }
+
+void Vertex::writeXML(QXmlStreamWriter* xmlWriter){
+    xmlWriter->writeStartElement("Vertex");
+    QString xString;
+    xString.setNum(x);
+    xmlWriter->writeAttribute("X", xString);
+    QString yString;
+    yString.setNum(y);
+    xmlWriter->writeAttribute("Y", yString);
+
+    xmlWriter->writeEndElement();
+}
+

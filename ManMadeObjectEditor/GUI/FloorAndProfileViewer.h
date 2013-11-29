@@ -76,6 +76,7 @@ public slots:
      */
     void aboutQtMessageBox();
 
+    void  saveXML();
 
 signals:
     /**
@@ -92,6 +93,7 @@ private:
     // the different menu and action
     QMenu* fileMenu;
     QAction* openAction;
+    QAction* saveAction;
     QAction* clearAction;
     QAction* exitAction;
 

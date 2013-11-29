@@ -359,3 +359,12 @@ bool Edge::existIntersection(Edge *edge) {
         }
     }
 }
+void Edge::writeXML(QXmlStreamWriter* xmlWriter){
+    xmlWriter->writeStartElement("Edge");
+    xmlWriter->writeAttribute("profile", profile->getProfileColorIdentification()->toRgb().name());
+
+    vertex1->writeXML(xmlWriter);
+    vertex2->writeXML(xmlWriter);
+
+    xmlWriter->writeEndElement();
+}

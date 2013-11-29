@@ -27,6 +27,7 @@ FloorAndProfileViewer::~FloorAndProfileViewer()
 {
     delete centralWidget;
     delete openAction;
+    delete saveAction;
     delete clearAction;
     delete exitAction;
     delete aboutQtAction;
@@ -58,6 +59,11 @@ void FloorAndProfileViewer::createFileMenu() {
     openAction->setShortcut(tr("Ctrl+O"));
     fileMenu->addAction(openAction);
     QObject::connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
+
+    saveAction = new QAction(tr("&Save"), this);
+    saveAction->setShortcut(tr("Ctrl+S"));
+    fileMenu->addAction(saveAction);
+    QObject::connect(saveAction, SIGNAL(triggered()), this, SLOT(saveXML()));
 
    //maybe more interesting to name it new....
     clearAction = new QAction(tr("&Clear"), this);
@@ -122,6 +128,13 @@ void FloorAndProfileViewer::openFile() {
 
     // tells the mesh manager that a new mesh can be read
     meshManager->loadMesh(file);
+}
+
+void FloorAndProfileViewer::saveXML() {
+    QString filename = QFileDialog::getSaveFileName(this,
+                                            tr("Save Xml"), ".",
+                                            tr("Xml files (*.xml)"));
+    Utils::CreateXMLFile(meshManager, filename);
 }
 
 void FloorAndProfileViewer::clearFile() {

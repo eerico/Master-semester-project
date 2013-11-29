@@ -269,3 +269,13 @@ void Profile::printProfile() {
     }
 
 }
+void Profile::writeXML(QXmlStreamWriter* xmlWriter){
+    xmlWriter->writeStartElement("Profile");
+    xmlWriter->writeAttribute("color", profileColorIdentification->toRgb().name());
+     Vertex* tempV = pVertex;
+    while(tempV!= 0){
+        tempV->writeXML(xmlWriter);
+        tempV = tempV->getNeighbor2();
+    }
+    xmlWriter->writeEndElement();
+}
