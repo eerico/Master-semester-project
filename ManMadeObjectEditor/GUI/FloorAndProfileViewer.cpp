@@ -121,6 +121,9 @@ void FloorAndProfileViewer::openFile() {
     if (file.isEmpty()) {
         return;
     }
+    //TODO maybe is better to ask if you want to save,... for now delete old file.
+    clearFile();
+
     QFileInfo fi(file);
     if(fi.suffix().toLower() =="xml"){
         Utils::readXML(meshManager, file);
