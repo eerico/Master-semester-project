@@ -154,7 +154,6 @@ void Utils::readXML(MeshManager* meshmanager, QString &filename){
 
         if(token == QXmlStreamReader::StartElement) {
             /* If it's named persons, we'll go to the next.*/
-            QString a = xml.name().toString();
             if(xml.name() == "ExtrusionModel") {
                 continue;
             } else if (xml.name() == "Profile") {
@@ -187,7 +186,7 @@ void Utils::readXML(MeshManager* meshmanager, QString &filename){
                    } else {
                        std::cerr << "bad xml, chaose what to do..."<< std::endl;
                    }
-                }
+               }
 
                 //add profile:
                 QMap<QString,Profile*>::const_iterator i = profiles.find(edgePair.first);
@@ -219,12 +218,15 @@ void Utils::readXML(MeshManager* meshmanager, QString &filename){
 
             delete firstEdge->getVertex1();
             firstEdge->setVertex1(tempEdge->getVertex2());
+            firstEdge->getVertex2()->setNeighbor1(firstEdge->getVertex1());
 
             tempEdge->getVertex2()->setNeighbor2(firstEdge->getVertex2());
             tempEdge->getVertex2()->setNeighbor1(tempEdge->getVertex1());
 
+
            tempEdge->getVertex2()->setEdge1(tempEdge);
            tempEdge->getVertex2()->setEdge2(firstEdge);
+
         } else {
             std::cerr << "bad xml, chaose what to do..."<< std::endl;
         }
@@ -234,6 +236,17 @@ void Utils::readXML(MeshManager* meshmanager, QString &filename){
     //and resets its internal state to the initial state.
         file.close();
         xml.clear();
+
+   //degug:
+        /*
+        int cc =0;
+        Vertex* firstVa =firstEdge->getVertex1();
+        Vertex*tempVa = firstVa;
+        do{
+            cc++;
+            std::cout << cc << " , " << tempVa->getX() << " " << tempVa->getNeighbor1() << " " << tempVa->getNeighbor2() << std::endl;
+            tempVa = tempVa->getNeighbor1();
+        }while(tempVa != firstVa);*/
 
     meshmanager->setFloorPlan(firstEdge->getVertex1());
 

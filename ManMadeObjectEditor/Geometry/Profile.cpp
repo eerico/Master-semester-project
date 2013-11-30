@@ -334,6 +334,7 @@ std::pair<QString, Profile*> Profile::readXML(QXmlStreamReader &xml){
         pair.second = new Profile(true);
         delete pair.second->pVertex;
         pair.second->pVertex = firstVertex;
+        pair.second->profileVertexIterator = firstVertex;
         delete pair.second->profileColorIdentification;
         pair.second->profileColorIdentification = new QColor(pair.first);
 
