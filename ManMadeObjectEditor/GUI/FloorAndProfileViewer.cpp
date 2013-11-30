@@ -36,6 +36,7 @@ FloorAndProfileViewer::~FloorAndProfileViewer()
     delete smoothAction;
     delete pointAction;
     delete noViewAction;
+    delete addNewProfileAction;
     delete meshManager;
     delete objViewer;
 }
@@ -48,6 +49,7 @@ void FloorAndProfileViewer::closeEvent(QCloseEvent *event) {
 void FloorAndProfileViewer::createMenuBar() {
     // create all menu in the menu bar
     createFileMenu();
+    createEditMenu();
     createViewMenu();
     createAboutMenu();
 }
@@ -108,6 +110,16 @@ void FloorAndProfileViewer::createViewMenu() {
     noViewAction = new QAction(tr("&No View"), this);
     viewMenu->addAction(noViewAction);
     QObject::connect(noViewAction, SIGNAL(triggered()), objViewer, SLOT(noViewMode()));
+}
+
+void FloorAndProfileViewer::createEditMenu() {
+    editMenu = this->menuBar()->addMenu(tr("&Edit"));
+
+    addNewProfileAction = new QAction(tr("&New Profile"), this);
+    addNewProfileAction->setShortcut(tr("Ctrl+E"));
+
+    editMenu->addAction(addNewProfileAction);
+    QObject::connect(addNewProfileAction, SIGNAL(triggered()), meshManager, SLOT(createNewProfileForSelectedEdge()));
 }
 
 void FloorAndProfileViewer::aboutQtMessageBox() {
@@ -178,6 +190,7 @@ void FloorAndProfileViewer::clearFile() {
     delete smoothAction;
     delete pointAction;
     delete noViewAction;
+    delete addNewProfileAction;
     createMenuBar();
 
     delete centralWidget;

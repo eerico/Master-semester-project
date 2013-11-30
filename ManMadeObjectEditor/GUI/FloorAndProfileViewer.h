@@ -57,6 +57,8 @@ public:
      */
     void createAboutMenu();
 
+    void createEditMenu();
+
 public slots:
     /**
      * @brief openFile
@@ -119,6 +121,10 @@ private:
 
     // tells the object viewer to do not show any 3D representation
     QAction* noViewAction;
+
+    QMenu* editMenu;
+
+    QAction* addNewProfileAction;
 };
 
 #endif // FLOORANDPROFILEVIEWER_H

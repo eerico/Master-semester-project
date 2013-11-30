@@ -103,8 +103,9 @@ public:
 
     std::vector<std::vector<std::vector<Edge *> > > &getChains2();
 
-
     void emitNewFloorPlan();
+
+    void setEdgeSelected(Edge* edge);
 
 signals:
     /**
@@ -112,6 +113,11 @@ signals:
      * Signal that a new floor plan has been loaded
      */
     void newFloorPlan();
+
+    void newProfileCreatedForSelectedEdge();
+
+public slots:
+    void createNewProfileForSelectedEdge();
 
 private:
 
@@ -148,6 +154,8 @@ private:
 
     // a vector that contain all chains adter intra adn inter chain handling for debugging
     std::vector< std::vector< std::vector< Edge* > > > chains2;
+
+    Edge* edgeSelected;
 };
 
 #endif // MESH_H

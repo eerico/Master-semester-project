@@ -2,7 +2,9 @@
 #include <QMessageBox>
 
 
-MeshManager::MeshManager(): inputMesh(0), floorPlan(0), updateOnMesh(false), longUpdateOnMesh(false), floorPlanSize(0)
+MeshManager::MeshManager()
+    : inputMesh(0), floorPlan(0), updateOnMesh(false), longUpdateOnMesh(false), floorPlanSize(0)
+    , edgeSelected(0)
 {
     points = new std::vector<qglviewer::Vec* >;
     triangles = new std::vector<qglviewer::Vec* >;
@@ -215,6 +217,8 @@ void MeshManager::loadMesh(QString fileName) {
     }
     plans.clear();
 
+    edgeSelected = 0;
+
     // we will delete the previous profiles after having loaded the new profiles
     ProfileDestructorManager::swap();
 
@@ -276,7 +280,22 @@ std::vector<std::vector<std::vector<Edge *> > > &MeshManager::getChains() {
 std::vector<std::vector<std::vector<Edge *> > > &MeshManager::getChains2() {
     return chains2;
 }
+
 void MeshManager::emitNewFloorPlan(){
     emit newFloorPlan();
 }
 
+void MeshManager::createNewProfileForSelectedEdge() {
+    if(edgeSelected != 0) {
+        Profile*  newProfileForSelectedEdge = new Profile(false);
+        edgeSelected->setProfile(newProfileForSelectedEdge);
+        ProfileDestructorManager::putProfile(newProfileForSelectedEdge);
+        currentProfile = newProfileForSelectedEdge;
+
+        emit newProfileCreatedForSelectedEdge();
+    }
+}
+
+void MeshManager::setEdgeSelected(Edge* edge) {
+    edgeSelected = edge;
+}

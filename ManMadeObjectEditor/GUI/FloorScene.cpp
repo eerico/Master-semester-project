@@ -4,7 +4,8 @@
 const int FloorScene::vertexRadius(6);
 
 FloorScene::FloorScene(MeshManager * meshManager)
-: QGraphicsScene(), meshManager(meshManager), currentlyMovingVertex(0), isVertexMoving(false)
+    : QGraphicsScene(), meshManager(meshManager), currentlyMovingVertex(0), isVertexMoving(false)
+    , edgeSelected(0)
 {
     // set the scene size
     this->setSceneRect(QRectF(0, 0, 400, 600));
@@ -62,6 +63,7 @@ void FloorScene::moveVertexOrLoadProfile() {
     Edge* currentEdge = currentVertex->getEdge2();
     for (unsigned int i(0); i < floorPlanSize; ++i) {
         if (currentEdge->getLineItem()->isUnderMouse()) {
+            setEdgeSelected(currentEdge);
             newProfileSelected(currentEdge->getProfile());
             return;
         }
@@ -341,6 +343,8 @@ void FloorScene::newProfileSelected(Profile * p) {
 void FloorScene::loadFloorPlan() {
     // remove the old floor plan
     this->clear();
+
+    setEdgeSelected(0);
     
     // get the new floor plan
     Vertex* floorplan = meshManager->getFloorPlan();
@@ -378,4 +382,21 @@ void FloorScene::loadFloorPlan() {
     
     // tell the meshManager to generate new point/triangle
     meshManager->setUpdateOnMesh();
+}
+
+Edge* FloorScene::getSelectedEdge() {
+    return edgeSelected;
+}
+
+void FloorScene::setEdgeSelected(Edge* edge) {
+    edgeSelected = edge;
+    meshManager->setEdgeSelected(edge);
+}
+
+void FloorScene::newProfileCreatedForSelectedEdge() {
+    QGraphicsLineItem* lineItem = edgeSelected->getLineItem();
+    if(lineItem != 0) {
+        delete lineItem;
+    }
+    this->addItem(edgeSelected->computeLineItem());
 }

@@ -32,6 +32,8 @@ void AllChainScene::loadPlan(int level, bool beforeChainAlgorithm) {
     float x(0.0f);
     float y(0.0f);
 
+    Vertex* neighbor;
+
     for(unsigned int chainIndex(0); chainIndex < numberChains; ++chainIndex) {
         std::vector< Edge* > currentChain = chains[chainIndex];
         QColor chainIdentification;
@@ -45,14 +47,15 @@ void AllChainScene::loadPlan(int level, bool beforeChainAlgorithm) {
             Utils::adjustCoordinates3DToScene(x, y, thisSize.width(), thisSize.height());
             QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(x - vertexRadius, y - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f);
             QPen pen;
+            pen.setColor(Qt::black);
             pen.setWidth(vertexRadius);
             ellipse->setPen(pen);
 
             // draw the current vertex
             this->addItem(ellipse);
 
-            // if the current vertex has a neighbor then we can draw the edge between them
-            Vertex* neighbor = edge->getVertex2();
+            // the current vertex has a neighbor, we can draw the edge between them
+            neighbor = edge->getVertex2();
 
             float xn = neighbor->getX();
             float yn = neighbor->getY();
@@ -64,6 +67,14 @@ void AllChainScene::loadPlan(int level, bool beforeChainAlgorithm) {
 
             // draw the edge
             this->addItem(lineItem);
+
+            QGraphicsEllipseItem* ellipseNeighbor = new QGraphicsEllipseItem(xn - vertexRadius, yn - vertexRadius, vertexRadius * 2.0f, vertexRadius * 2.0f);
+            pen.setColor(Qt::black);
+            pen.setWidth(vertexRadius);
+            ellipseNeighbor->setPen(pen);
+
+            // draw the vertex
+            this->addItem(ellipseNeighbor);
         }
     }
 }

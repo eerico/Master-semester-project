@@ -28,6 +28,8 @@ public:
     FloorScene(MeshManager* meshManager);
     ~FloorScene();
 
+    Edge* getSelectedEdge();
+
 signals:
     /**
      * @brief newProfileSelected
@@ -41,6 +43,8 @@ public slots:
      * Load and draw the first floor plan defined in the mesh manager
      */
     void loadFloorPlan();
+
+    void newProfileCreatedForSelectedEdge();
 
 private:
     /**
@@ -103,6 +107,10 @@ private:
      * @param p The new selected profile
      */
     void newProfileSelected(Profile* p);
+
+    void setEdgeSelected(Edge* edge);
+
+    Edge* edgeSelected;
 
     // Used to know if a vertex is currently being moved with the mouse, and thus using action
     // defined in the mouse move event

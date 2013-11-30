@@ -20,6 +20,11 @@ void Reconstruction3D::reconstruct()
 {
     //std::cerr << "RECONSTRUCT" << std::endl;
 
+    // there is nothing to reconstruct
+    if (floorPlanSize == 0) {
+        return;
+    }
+
     //set the current ActivePlan
     activePlan = new ActivePlan(floorPlan, floorPlanSize, triangles);
     //compute the current direction plan
@@ -146,7 +151,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         }
         case General:
         {
-
             /*std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             std::cerr << "with edges: " << std::endl;
             foreach(Edge* e, *intersection.edgeVector) {
@@ -161,7 +165,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             if(intersection.edgeVector->size() < 3) {
                 return;
             }
-
 
 
             /*std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
