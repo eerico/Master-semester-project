@@ -51,9 +51,9 @@ void Reconstruction3D::reconstruct()
     // we impose a maximum number of iteration
     //}while(activePlan->numberValidEdge() > 0 && numberIteration < numberMaxIteration);
 
-    if (activePlan->numberValidEdge() > 0) {
+    /*if (activePlan->numberValidEdge() > 0) {
         activePlan->fillHoles();
-    }
+    }*/
 
     //std::cerr << activePlan->numberValidEdge() << std::endl;
     //activePlan->print(true);
@@ -241,8 +241,10 @@ bool Reconstruction3D::generalEventClustering(Intersection& intersection)
 {
     float z(intersection.z);
 
-    float delta1(0.0001f);
-    float delta2(0.000001f);
+    //float delta1(0.0001f);
+    //float delta2(0.000001f);
+    float delta1(0.001f);
+    float delta2(0.00001f);
 
     bool stop(false);
 

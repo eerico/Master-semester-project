@@ -191,12 +191,13 @@ void FloorAndProfileViewer::clearFile() {
     delete pointAction;
     delete noViewAction;
     delete addNewProfileAction;
-    createMenuBar();
 
     delete centralWidget;
     delete meshManager;
     centralWidget = newCentralWidget;
     meshManager = meshManager2;
+
+    createMenuBar();
 
     this->show();
     QObject::connect(this, SIGNAL(closeSignal()), objViewer, SLOT(close()));

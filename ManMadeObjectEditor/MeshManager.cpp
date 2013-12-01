@@ -286,6 +286,7 @@ void MeshManager::emitNewFloorPlan(){
 }
 
 void MeshManager::createNewProfileForSelectedEdge() {
+    std::cerr << "asd" << std::endl;
     if(edgeSelected != 0) {
         Profile*  newProfileForSelectedEdge = currentProfile->copy();//new Profile(false);
         edgeSelected->setProfile(newProfileForSelectedEdge);
