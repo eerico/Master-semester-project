@@ -17,6 +17,7 @@ public:
     std::vector< Edge* >* getPlan();
     void computeDirectionPlan();
     bool filteringInvalidEvent(Intersection& intersection);
+    void filteringInvalidEvent2(Intersection& intersection);
     void insert2Edges(Edge* oldEdge, Edge* newEdge1, Edge* newEdge2);
     unsigned int numberValidEdge();
     void print(bool onlyValidEdge);

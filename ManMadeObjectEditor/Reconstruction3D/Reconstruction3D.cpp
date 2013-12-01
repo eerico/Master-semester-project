@@ -167,6 +167,8 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 return;
             }
 
+            activePlan->filteringInvalidEvent2(intersection);
+
             if(intersection.edgeVector->size() < 3) {
                 std::cerr << "---<3" << std::endl;
                 return;
@@ -267,7 +269,7 @@ bool Reconstruction3D::generalEventClustering(Intersection& intersection)
         }
 
         // if the current intersection (event) is invalid, we skip to the next one
-        if(!activePlan->filteringInvalidEvent(event)) {
+        /*if(!activePlan->filteringInvalidEvent(event)) {
             std::cerr << "  invalid event:" << std::endl;
             std::cerr << "  intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             std::cerr << "  with edges: " << std::endl;
@@ -276,7 +278,7 @@ bool Reconstruction3D::generalEventClustering(Intersection& intersection)
             }
             priorityQueue->pop();
             continue;
-        }
+        }*/
 
         if (std::abs(event.z - z) < delta1) {
             priorityQueue->pop();
