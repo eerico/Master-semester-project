@@ -70,6 +70,8 @@ public:
 
     Vertex* getProfileVertexIterator();
 
+    Profile* copy();
+
     void printProfile();
 
     void writeXML(QXmlStreamWriter* xmlWriter);

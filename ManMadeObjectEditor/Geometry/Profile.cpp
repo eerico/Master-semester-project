@@ -340,3 +340,18 @@ std::pair<QString, Profile*> Profile::readXML(QXmlStreamReader &xml){
 
     return pair;
 }
+
+
+Profile* Profile::copy() {
+    Profile* newProfile = new Profile(true);
+
+    Vertex* iterator = pVertex;
+    iterator = iterator->getNeighbor2();
+
+    while(iterator != 0) {
+        newProfile->addVertexEnd(new Vertex(iterator->getX(), iterator->getY()));
+        iterator = iterator->getNeighbor2();
+    }
+
+    return newProfile;
+}

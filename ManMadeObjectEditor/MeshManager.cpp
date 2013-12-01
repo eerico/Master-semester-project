@@ -287,7 +287,7 @@ void MeshManager::emitNewFloorPlan(){
 
 void MeshManager::createNewProfileForSelectedEdge() {
     if(edgeSelected != 0) {
-        Profile*  newProfileForSelectedEdge = new Profile(false);
+        Profile*  newProfileForSelectedEdge = currentProfile->copy();//new Profile(false);
         edgeSelected->setProfile(newProfileForSelectedEdge);
         ProfileDestructorManager::putProfile(newProfileForSelectedEdge);
         currentProfile = newProfileForSelectedEdge;
