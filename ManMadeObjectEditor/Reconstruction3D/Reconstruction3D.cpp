@@ -154,27 +154,30 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         }
         case General:
         {
-            /*std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            std::cerr << "before:" << std::endl;
+            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             std::cerr << "with edges: " << std::endl;
             foreach(Edge* e, *intersection.edgeVector) {
                 std::cerr << "    " << *e << std::endl;
-            }*/
+            }
 
 
             if(!generalEventClustering(intersection)) {
+                std::cerr << "---INVALID" << std::endl;
                 return;
             }
 
             if(intersection.edgeVector->size() < 3) {
+                std::cerr << "---<3" << std::endl;
                 return;
             }
 
-
-            /*std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            std::cerr << "after:" << std::endl;
+            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             std::cerr << "with edges: " << std::endl;
             foreach(Edge* e, *intersection.edgeVector) {
                 std::cerr << "    " << *e << std::endl;
-            }*/
+            }
 
 
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
@@ -241,16 +244,15 @@ bool Reconstruction3D::generalEventClustering(Intersection& intersection)
 {
     float z(intersection.z);
 
-    //float delta1(0.0001f);
-    //float delta2(0.000001f);
-    float delta1(0.001f);
-    float delta2(0.00001f);
+    float delta1(0.0001f);
+    float delta2(0.000001f);
 
     bool stop(false);
 
     std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
 
     if(!activePlan->filteringInvalidEvent(intersection)) {
+        std::cerr << "--FIltering invalid event" << std::endl;
         return false;
     }
 
@@ -266,6 +268,12 @@ bool Reconstruction3D::generalEventClustering(Intersection& intersection)
 
         // if the current intersection (event) is invalid, we skip to the next one
         if(!activePlan->filteringInvalidEvent(event)) {
+            std::cerr << "  invalid event:" << std::endl;
+            std::cerr << "  intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            std::cerr << "  with edges: " << std::endl;
+            foreach(Edge* e, *intersection.edgeVector) {
+                std::cerr << "      " << *e << std::endl;
+            }
             priorityQueue->pop();
             continue;
         }
@@ -278,8 +286,10 @@ bool Reconstruction3D::generalEventClustering(Intersection& intersection)
 
                 for(unsigned int i(0); i < eventEdges->size(); ++i) {
                     Edge* edgeToAdd = (*eventEdges)[i];
-                    if(!isEdgeInVector(edgeToAdd, intersectionEdges)) {
-                        intersectionEdges->push_back(edgeToAdd);
+                    if(edgeToAdd->isValid()) {
+                        if(!isEdgeInVector(edgeToAdd, intersectionEdges)) {
+                            intersectionEdges->push_back(edgeToAdd);
+                        }
                     }
                 }
             } else {
