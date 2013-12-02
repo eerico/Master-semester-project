@@ -39,6 +39,10 @@ void AllChainScene::drawChain(int level, Show show) {
         chainsList = meshManager->getChains2();
     }
 
+    if(level >= chainsList.size()) {
+        return;
+    }
+
     std::vector< std::vector< Edge* > > chains = chainsList[level];
 
     unsigned int numberChains = chains.size();
@@ -101,6 +105,10 @@ void AllChainScene::drawActivePlan(int level, Show show) {
     if(show == ActivePlan) {
         allActivePlan = meshManager->getActivePlanDebug();
     } else {
+        return;
+    }
+
+    if(level >= allActivePlan.size()) {
         return;
     }
 
