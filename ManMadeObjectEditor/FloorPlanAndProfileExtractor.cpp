@@ -2,8 +2,16 @@
 
 
 FloorPlanAndProfileExtractor::FloorPlanAndProfileExtractor()
-    :dy(0.1f), baseY(0.0f), levels(11), border(0.2f)
+    :dy(0.1f), baseY(0.0f), border(0.2f)
 {
+    bool ok = false;
+    int i=0;
+    do{
+    i = QInputDialog::getInt(0, "Reconstruction",
+                                      "Enter the sampling number:", 10, 1, 1000, 1, &ok);
+    }while (!ok && !i > 0);
+     levels = i;
+     levels++;
 
 }
 

@@ -6,6 +6,7 @@
 #include "Geometry/Profile.h"
 #include "ProfileDestructorManager.h"
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
+#include <QInputDialog>
 
 /**
  * @brief The FloorPlanAndProfileExtractor class
