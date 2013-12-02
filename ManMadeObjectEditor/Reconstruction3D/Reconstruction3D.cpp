@@ -4,9 +4,10 @@
 
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles
                                    , std::vector<std::vector< std::vector< Edge* > > >* chainsDebug
-                                   , std::vector<std::vector< std::vector< Edge* > > >* chainsDebug2)
+                                   , std::vector<std::vector< std::vector< Edge* > > >* chainsDebug2
+                                   , std::vector<std::vector<Edge *> > *activePlanDebug)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles), minimumHeight(0.0f)
-    , chainsDebug(chainsDebug), chainsDebug2(chainsDebug2)
+    , chainsDebug(chainsDebug), chainsDebug2(chainsDebug2), activePlanDebug(activePlanDebug)
 {
     priorityQueue = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
 }
@@ -185,6 +186,14 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
 
             chainList->getChains(chainsDebug);
+
+            /*std::vector< Edge* > tmp;
+            activePlan->getActivePlanCopy(tmp);
+            std::vector< std::vector< Edge* > > tmp2;
+            tmp2.push_back(tmp);
+            chainsDebug->push_back(tmp2);*/
+
+
 
             chainList->intraChainHandling();
 

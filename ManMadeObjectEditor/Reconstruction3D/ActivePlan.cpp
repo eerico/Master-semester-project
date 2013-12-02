@@ -86,7 +86,7 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vecto
 ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector< qglviewer::Vec * >* triangles)
     :triangles(triangles)
 {
-    #ifdef DEBUG
+    //#ifdef DEBUG
 
     activePlan = new std::vector< Edge* >;
 
@@ -112,13 +112,13 @@ ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector
         Edge* previousEdge = vertex1->getEdge1();
         Vertex* vertex0 = previousEdge->getVertex1();
 
-        Plan plan1(vertex0->getX(), vertex0->getY(), vertex0->getZ());
-        plan1.computePlanNormal(vertex0, vertex1, previousEdge->getProfile());
+        Plan* plan1 = previousEdge->getDirectionPlan();
+        plan1->computePlanNormal();
 
-        Plan plan2(vertex1->getX(), vertex1->getY(), vertex1->getZ());
-        plan2.computePlanNormal(vertex1, vertex2, currentEdge->getProfile());
+        Plan* plan2 = currentEdge->getDirectionPlan();
+        plan2->computePlanNormal();
 
-        Intersection newIntersection = horizontalPlan.intersect3Plans(&plan1, &plan2);
+        Intersection newIntersection = horizontalPlan.intersect3Plans(plan1, plan2);
 
         newVertex = new Vertex(newIntersection.x, newIntersection.y, newIntersection.z);
 
@@ -156,13 +156,13 @@ ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector
     activePlan->push_back(newEdge);
 
 
-    foreach(Edge* e, *activePlan) {
+    /*foreach(Edge* e, *activePlan) {
         Vertex* v1 = e->getVertex1();
         Vertex* v2 = e->getVertex2();
         Vertex* vv = new Vertex((v1->getX() + v2->getX()) / 2.0f + 0.002f, (v1->getY() + v2->getY()) / 2.0f + + 0.002f, v1->getZ());
         addNewTriangle(v1, v2, vv);
-    }
-#endif
+    }*/
+//#endif
 
 }
 
@@ -430,5 +430,13 @@ void ActivePlan::fillHoles() {
                 }
             }
         }
+    }
+}
+
+void ActivePlan::getActivePlanCopy(std::vector< Edge* >& copy) {
+    foreach(Edge* e, *activePlan) {
+        Vertex* v1 = e->getVertex1();
+        Vertex* v2 = e->getVertex2();
+        copy.push_back(new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ())));
     }
 }

@@ -103,6 +103,8 @@ public:
 
     std::vector<std::vector<std::vector<Edge *> > > &getChains2();
 
+    std::vector<std::vector<Edge *> > &getActivePlanDebug();
+
     void emitNewFloorPlan();
 
     void setEdgeSelected(Edge* edge);
@@ -152,8 +154,11 @@ private:
     // a vector that contain all chains for debugging
     std::vector< std::vector< std::vector< Edge* > > > chains;
 
-    // a vector that contain all chains adter intra adn inter chain handling for debugging
+    // a vector that contain all chains after intra and inter chain handling for debugging
     std::vector< std::vector< std::vector< Edge* > > > chains2;
+
+    // a vector that contain all activePlan during the 3d reconstruction
+    std::vector< std::vector< Edge* > > activePlandebug;
 
     Edge* edgeSelected;
 };

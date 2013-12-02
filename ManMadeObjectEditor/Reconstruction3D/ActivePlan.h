@@ -26,6 +26,8 @@ public:
 
     void fillHoles();
 
+    void getActivePlanCopy(std::vector< Edge* >& copy);
+
 private:
     std::vector< Edge* >* activePlan;
     std::vector<qglviewer::Vec * > *triangles;

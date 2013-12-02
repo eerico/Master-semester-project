@@ -114,7 +114,7 @@ const std::vector<qglviewer::Vec * > *MeshManager::getTriangles() {
     chains2.clear();
 
     // recompute the 3D reconstruction
-    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, triangles, &chains, &chains2);
+    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, triangles, &chains, &chains2, &activePlandebug);
     reconstruction3D.reconstruct();
 
     // the update is done
@@ -141,7 +141,7 @@ const std::vector<qglviewer::Vec* >* MeshManager::getPoints() {
     chains2.clear();
 
     // recompute the 3D reconstruction
-    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, points, &chains, &chains2);
+    Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, points, &chains, &chains2, &activePlandebug);
     reconstruction3D.reconstruct();
 
     // the update is done
@@ -279,6 +279,10 @@ std::vector<std::vector<std::vector<Edge *> > > &MeshManager::getChains() {
 
 std::vector<std::vector<std::vector<Edge *> > > &MeshManager::getChains2() {
     return chains2;
+}
+
+std::vector<std::vector<Edge *> > &MeshManager::getActivePlanDebug() {
+    return activePlandebug;
 }
 
 void MeshManager::emitNewFloorPlan(){
