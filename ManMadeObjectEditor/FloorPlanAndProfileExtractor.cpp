@@ -1,4 +1,5 @@
 #include "FloorPlanAndProfileExtractor.h"
+#include <queue>
 
 
 FloorPlanAndProfileExtractor::FloorPlanAndProfileExtractor()
@@ -7,12 +8,10 @@ FloorPlanAndProfileExtractor::FloorPlanAndProfileExtractor()
     bool ok = false;
     int i=0;
     do{
-    i = QInputDialog::getInt(0, "Reconstruction",
-                                      "Enter the sampling number:", 10, 1, 1000, 1, &ok);
+        i = QInputDialog::getInt(0, "Reconstruction", "Enter the sampling number:", 10, 1, 1000, 1, &ok);
     }while (!ok && !i > 0);
-     levels = i;
-     levels++;
-
+    levels = i;
+    levels++;
 }
 
 void FloorPlanAndProfileExtractor::recenter(std::vector< std::vector< Vertex* > >& plans) {
@@ -145,23 +144,30 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
     */
 
     std::vector<Vertex* > firstLevel = plans[0];
-    //For every edge on the first floor plan
-    for(unsigned int i(0); i < firstLevel.size(); ++i) {
-        Edge* currentFirstFloorEdge = firstLevel[i]->getEdge2();
-        OMMesh::Normal* currentFirstFloorEdgeNormal = currentFirstFloorEdge->getNormal();
-        
-        // we will add vertices into this profile associated with the current first floor edge
+
+    //add a profile to each edge in the floorplan
+    foreach (Vertex* floorVertex, firstLevel) {
+        Edge* currentFirstFloorEdge = floorVertex->getEdge2();
+
         Profile* currentProfile = new Profile(true);
         currentFirstFloorEdge->setProfile(currentProfile);
         ProfileDestructorManager::putProfile(currentProfile);
+    }
 
-        // we try to find a profile vertex at each level above
-        for(unsigned int j(1); j < plans.size(); ++j){
-            std::vector<Vertex* > level = plans[j];
 
-            unsigned int numberVertexAtLevel = level.size();
-            if (numberVertexAtLevel == 1) {
-                /*Vertex* aloneVertex = level[0];
+    //forach edge in the plan find the nearest edge in the previous floor
+    for(unsigned int j(1); j < plans.size(); ++j){
+        std::vector<Vertex* > level = plans[j];
+        unsigned int numberVertexAtLevel = level.size();
+
+
+        std::priority_queue<AssociateEdges, std::vector<AssociateEdges>, AssociateEdgesComparator> priorityQueue;
+
+
+        if (numberVertexAtLevel == 1) {
+
+
+            /*Vertex* aloneVertex = level[0];
                  std::vector< OMMesh::FaceHandle>* faces = aloneVertex->getFaces();
                  OMMesh::Normal aloneVertexNormal(0.0f, 0.0f, 0.0f);
                  foreach(OMMesh::FaceHandle face, (*faces)) {
@@ -176,49 +182,98 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
                  if (dotProduct >= 0.0f) {
                  currentProfile->addVertexEnd(new Vertex(currentFirstFloorEdge->distance(level[0]), dy * j));
                  }*/
-                
-                
-                // Maybe we should just do nothing
-            } else {
-                float minDistance = FLT_MAX;
-                float sign = 1.0f;
-                for(unsigned int k(0); k < numberVertexAtLevel; ++k) {
-                    // for every edge at this level
-                    Edge* currentFloorEdge = level[k]->getEdge2();
+
+
+            // Maybe we should just do nothing
+        } else //if(j>0) {
+        {
+            std::vector<Vertex* > previousLevel = plans[j-1];
+            unsigned int numberVertexAtPreviousLevel = previousLevel.size();
+
+            for(unsigned int k(0); k < numberVertexAtPreviousLevel; ++k) {
+                // for every edge at this level
+                Edge* previousFloorEdge = previousLevel[k]->getEdge2();
+                OMMesh::Normal* previousFloorEdgeNormal = previousFloorEdge->getNormal();
+
+                for(unsigned int i(0); i < level.size(); ++i) {
+                    Edge* currentFloorEdge = level[i]->getEdge2();
                     OMMesh::Normal* currentFloorEdgeNormal = currentFloorEdge->getNormal();
 
-                    if(currentFirstFloorEdge->isParallel(currentFloorEdge)) {
+
+                    if(currentFloorEdge->isParallel(previousFloorEdge)) {
+                        AssociateEdges associatedEdge;
                         //check also dot product between normals
-                        float dotProduct = (*currentFirstFloorEdgeNormal) | (*currentFloorEdgeNormal);
+                        float dotProduct = (*currentFloorEdgeNormal) | (*previousFloorEdgeNormal);
                         //if the dot product is negativ, then the two edges normals doesnt face toward the same direction
                         if (dotProduct >= 0.0f) {
-                            float x = currentFloorEdge->getVertex1()->getX() - currentFirstFloorEdge->getVertex1()->getX();
-                            float y = currentFloorEdge->getVertex1()->getY() - currentFirstFloorEdge->getVertex1()->getY();
-                            
-                            float distance = currentFirstFloorEdge->lineDistance(currentFloorEdge);
+                            float x = previousFloorEdge->getVertex1()->getX() - currentFloorEdge->getVertex1()->getX();
+                            float y = previousFloorEdge->getVertex1()->getY() - currentFloorEdge->getVertex1()->getY();
+
+                            associatedEdge.distance =  currentFloorEdge->lineDistance(previousFloorEdge);
                             // if two edge are parallel but should be connected with a profile, we can
                             // first check if there is not a better candidate (that is closer)
-                            if(distance < minDistance) {
-                                dotProduct = Utils::dotProduct(x, y, (*currentFirstFloorEdgeNormal)[0], (*currentFirstFloorEdgeNormal)[2]);
-                                minDistance = distance;
-                                if(dotProduct > 0){
-                                    sign = -1.0f;
-                                } else {
-                                    sign = 1.0f;
-                                }
+                            dotProduct = Utils::dotProduct(x, y, (*currentFloorEdgeNormal)[0], (*currentFloorEdgeNormal)[2]);
+
+                            associatedEdge.newVertex = new Vertex(associatedEdge.distance, dy *j);
+                            if(dotProduct < 0){
+                                 associatedEdge.newVertex->setX(associatedEdge.newVertex->getX()* -1.0f);
                             }
+
+                            //add to the queue: distance previousFloorEdge newVertex currentFloorEdgeNormal
+                             associatedEdge.currentFloorEdge = currentFloorEdge;
+                             associatedEdge.previousFloorEdge = previousFloorEdge;
+
+                             priorityQueue.push(associatedEdge);
                         }
                     }
                 }
-                if (minDistance < FLT_MAX) {
-                    currentProfile->addVertexEnd(new Vertex(sign * minDistance, dy * j));
-                }
             }
         }
-        //we can decimate the profile.
-        currentProfile->vertexDecimation();
+
+        //associate each edge of current floor to one of the previous one and add it to the profile.
+        std::vector< Edge* > alreadyAssociatedEdges;
+        while (!priorityQueue.empty()) {
+            AssociateEdges associatedEdge = priorityQueue.top();
+            priorityQueue.pop();
+            bool found = false;
+            foreach (Edge* edge, alreadyAssociatedEdges) {
+                if(edge == associatedEdge.currentFloorEdge
+                   || edge == associatedEdge.previousFloorEdge ){
+                    found = true;
+                    break;
+                }
+            }
+            //if not found in the alreadyAssociatedEdges means that is a valid min distance association hence, we actually associate the 2 edges in the profile
+            if(!found && associatedEdge.previousFloorEdge->getProfile() != 0){
+
+                //TODO what if previousFloorEdge profile = 0; (in previus step no association hence this profile doesn't exist anymore
+                Profile* currentProfile = associatedEdge.previousFloorEdge->getProfile();
+                currentProfile->addVertexEnd(associatedEdge.newVertex);
+                associatedEdge.currentFloorEdge->setProfile(currentProfile);
+
+                //adjust the distance of the new vertex to be add to the profile (the x coordinate until now is the x distance from the previous edge):
+                associatedEdge.newVertex->setX(associatedEdge.newVertex->getX() + associatedEdge.newVertex->getNeighbor1()->getX());
+
+                //add to the alreadyAssociatedEdges list this way we will never have 2 different edges associated to a single edge on another level.
+                alreadyAssociatedEdges.push_back(associatedEdge.currentFloorEdge);
+                alreadyAssociatedEdges.push_back(associatedEdge.previousFloorEdge);
+
+            }
+
+        }
+
     }
-    
+
+
+
+
+    //TODO find similar profile i.e 1profile is = to 2 but then al level 4 1 finish and 2 has other level we have to put 1 = 2 and remove 1
+
+
+    //we can decimate the profile.
+    foreach (Vertex* floorVertex, firstLevel) {
+        floorVertex->getEdge2()->getProfile()->vertexDecimation();
+    }
 }
 
 void FloorPlanAndProfileExtractor::planOrientation(std::vector<Vertex* > &level){

@@ -33,8 +33,16 @@ public:
      */
     bool extract(OMMesh* inputMesh, Vertex*& floorPlan, Profile*& currentProfile, unsigned int& floorPlanSize,
                  std::vector<std::vector<Vertex * > > &plansAbove);
+
+    struct AssociateEdges{
+        float distance;
+        Edge * previousFloorEdge;
+        Edge * currentFloorEdge;
+        Vertex* newVertex;
+    };
     
 private:
+
     /**
      * @brief profileDecimation
      * Each edge has a profile object, but two profile can be the same even if it is different object.
@@ -113,6 +121,15 @@ private:
     // variable used to control the scaling in the rescale method
     // it can be used to avoid the first floor plan to be exactly between [-1, 1]x[-1, 1]
     float border;
+};
+
+
+class AssociateEdgesComparator
+{
+public:
+    bool operator()(FloorPlanAndProfileExtractor::AssociateEdges& intersection1, FloorPlanAndProfileExtractor::AssociateEdges& intersection2){
+        return intersection1.distance > intersection2.distance;
+    }
 };
 
 #endif // FLOORPLANANDPROFILEEXTRACTOR_H
