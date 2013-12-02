@@ -2,7 +2,8 @@
 
 CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
     QWidget(parent), meshManager(meshManager), allPlanView(0), allPlanScene(0), levelSelector(0)
-  , allChainScene(0), allChainView(0), levelChainSelector(0)
+  , allChainScene(0), allChainView(0), levelChainSelector(0),  allActivePlanScene(0)
+  , allActivePlanView(0)
 {
     layout = new QGridLayout();
     
@@ -29,7 +30,7 @@ CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
 
 
 
-    showChains = new QCheckBox("Show all chains");
+    showChains = new QCheckBox("Show all chains and active plans");
     layout->addWidget(showChains, 2, 0);
 
     allChainScene = new AllChainScene(meshManager);
@@ -40,9 +41,14 @@ CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
     allChainAfterAlgorithmView = new BasicQGraphicsView(allChainAfterAlgorithmScene);
     layout->addWidget(allChainAfterAlgorithmView, 0, 4);
 
+    allActivePlanScene = new AllChainScene(meshManager);
+    allActivePlanView = new BasicQGraphicsView(allActivePlanScene);
+    layout->addWidget(allActivePlanView, 0, 5);
+
     // by default, hide this view
     allChainAfterAlgorithmView->hide();
     allChainView->hide();
+    allActivePlanView->hide();
 
     // connect all signal and slot
     QObject::connect(floorScene, SIGNAL(newProfileSelected()), profileScene, SLOT(newProfileSelected()));
@@ -97,6 +103,14 @@ CentralWidget::~CentralWidget()
 
     if(allChainAfterAlgorithmView != 0) {
         delete allChainAfterAlgorithmView;
+    }
+
+    if(allActivePlanScene != 0) {
+        delete allActivePlanScene;
+    }
+
+    if(allActivePlanView != 0) {
+        delete allActivePlanView;
     }
 
     if(levelChainSelector != 0) {
@@ -178,9 +192,10 @@ void CentralWidget::uncheckShowPlans() {
 //////////////////////////////////////////////////////////////
 
 
-void CentralWidget::valueSliderChainsChanged(int level) {
-    allChainScene->loadPlan(level, true);
-    allChainAfterAlgorithmScene->loadPlan(level, false);
+void CentralWidget::valueSliderChainsChanged(int level) {    
+    allChainScene->loadPlan(level, AllChainScene::Chain1);
+    allChainAfterAlgorithmScene->loadPlan(level, AllChainScene::Chain2);
+    allActivePlanScene->loadPlan(level, AllChainScene::ActivePlan);
 }
 
 void CentralWidget::allChains() {
@@ -208,10 +223,12 @@ void CentralWidget::showAllChains() {
 
     allChainView->show();
     allChainAfterAlgorithmView->show();
+    allActivePlanView->show();
     levelChainSelector->show();
 
-    allChainScene->loadPlan(levelChainSelector->value(), true);
-    allChainAfterAlgorithmScene->loadPlan(levelChainSelector->value(), false);
+    allChainScene->loadPlan(levelChainSelector->value(), AllChainScene::Chain1);
+    allChainAfterAlgorithmScene->loadPlan(levelChainSelector->value(), AllChainScene::Chain2);
+    allActivePlanScene->loadPlan(levelChainSelector->value(), AllChainScene::ActivePlan);
 
     QObject::connect(levelChainSelector, SIGNAL(valueChanged(int)), this, SLOT(valueSliderChainsChanged(int)));
 }

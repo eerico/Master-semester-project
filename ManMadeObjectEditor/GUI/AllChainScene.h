@@ -10,12 +10,23 @@ class AllChainScene : public QGraphicsScene
 public:
     AllChainScene(MeshManager* meshManager);
     ~AllChainScene();
-    void loadPlan(int level, bool beforeChainAlgorithm);
+
+
+    enum Show{
+        Chain1,
+        Chain2,
+        ActivePlan
+    };
+
+    void loadPlan(int level, Show show);
 
 private:
     MeshManager* meshManager;
 
     static const int vertexRadius;
+
+    void drawChain(int level, Show show);
+    void drawActivePlan(int level, Show show);
 };
 
 #endif // ALLCHAINSCENE_H

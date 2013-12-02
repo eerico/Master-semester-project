@@ -187,14 +187,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
             chainList->getChains(chainsDebug);
 
-            /*std::vector< Edge* > tmp;
-            activePlan->getActivePlanCopy(tmp);
-            std::vector< std::vector< Edge* > > tmp2;
-            tmp2.push_back(tmp);
-            chainsDebug->push_back(tmp2);*/
-
-
-
             chainList->intraChainHandling();
 
             activePlan->removeInvalidEdges();
@@ -239,11 +231,8 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
             chainList->getChains(chainsDebug2);
 
-            // juste pour debug
-            #ifdef DEBUG
-                activePlan = new ActivePlan(intersection.z, activePlan, triangles);
-            #endif
-            //std::cerr << "......................................................................." << std::endl;
+            activePlan->getActivePlanCopy(activePlanDebug);
+
             break;
         }
     }
