@@ -12,7 +12,6 @@ class ActivePlan
 {
 public:
     ActivePlan(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles);
-    ActivePlan(float height, ActivePlan* previousActivePlan, std::vector< qglviewer::Vec * >* triangles);
     ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Vec *> *triangles, bool &chainSizeOne);
     std::vector< Edge* >* getPlan();
     void computeDirectionPlan();
@@ -26,7 +25,7 @@ public:
 
     void fillHoles();
 
-    void getActivePlanCopy(std::vector< Edge* >& copy);
+    void getActivePlanCopy(std::vector<std::vector<Edge *> > *copy);
 
 private:
     std::vector< Edge* >* activePlan;

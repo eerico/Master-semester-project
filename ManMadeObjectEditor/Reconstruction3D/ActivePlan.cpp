@@ -82,90 +82,6 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vecto
 #endif
 }
 
-// Constructor only used for debugging
-ActivePlan::ActivePlan(float height, ActivePlan* previousActivePlan, std::vector< qglviewer::Vec * >* triangles)
-    :triangles(triangles)
-{
-    //#ifdef DEBUG
-
-    activePlan = new std::vector< Edge* >;
-
-    Plan horizontalPlan(0.0f, 0.0f, height, 0.0f, 0.0f, 1.0f);
-
-    std::vector< Edge* >* edges = previousActivePlan->getPlan();
-    unsigned int numberEdge = edges->size();
-
-    Vertex* firstNewVertex;
-    Vertex* previousNewVertex;
-    Profile* previousProfile;
-    Vertex* newVertex;
-    Edge* newEdge;
-    Edge* firstPreviousEdge;
-
-    for(unsigned int edgeIndex(0); edgeIndex < numberEdge; ++edgeIndex) {
-
-        Edge* currentEdge = (*edges)[edgeIndex];
-
-        Vertex* vertex1 = currentEdge->getVertex1();
-        Vertex* vertex2 = currentEdge->getVertex2();
-
-        Edge* previousEdge = vertex1->getEdge1();
-        Vertex* vertex0 = previousEdge->getVertex1();
-
-        Plan* plan1 = previousEdge->getDirectionPlan();
-        plan1->computePlanNormal();
-
-        Plan* plan2 = currentEdge->getDirectionPlan();
-        plan2->computePlanNormal();
-
-        Intersection newIntersection = horizontalPlan.intersect3Plans(plan1, plan2);
-
-        newVertex = new Vertex(newIntersection.x, newIntersection.y, newIntersection.z);
-
-        if (edgeIndex > 0) {
-            newEdge = new Edge(previousNewVertex, newVertex, previousProfile);
-
-            previousEdge->setChild1(newEdge);
-            newEdge->setParent(previousEdge);
-
-            previousNewVertex->setEdge2(newEdge);
-            previousNewVertex->setNeighbor2(newVertex);
-            newVertex->setEdge1(newEdge);
-            newVertex->setNeighbor1(previousNewVertex);
-
-
-            activePlan->push_back(newEdge);
-        } else {
-            firstNewVertex = newVertex;
-            firstPreviousEdge = previousEdge;
-        }
-
-        previousNewVertex = newVertex;
-        previousProfile = currentEdge->getProfile();
-    }
-
-    newEdge = new Edge(previousNewVertex, firstNewVertex, previousProfile);
-
-    firstPreviousEdge->setChild1(newEdge);
-    newEdge->setParent(firstPreviousEdge);
-
-    previousNewVertex->setEdge2(newEdge);
-    previousNewVertex->setNeighbor2(firstNewVertex);
-    firstNewVertex->setEdge1(newEdge);
-    firstNewVertex->setNeighbor1(previousNewVertex);
-    activePlan->push_back(newEdge);
-
-
-    /*foreach(Edge* e, *activePlan) {
-        Vertex* v1 = e->getVertex1();
-        Vertex* v2 = e->getVertex2();
-        Vertex* vv = new Vertex((v1->getX() + v2->getX()) / 2.0f + 0.002f, (v1->getY() + v2->getY()) / 2.0f + + 0.002f, v1->getZ());
-        addNewTriangle(v1, v2, vv);
-    }*/
-//#endif
-
-}
-
 ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Vec *> *triangles, bool& chainSizeOne)
     :triangles(triangles)
 {
@@ -433,10 +349,12 @@ void ActivePlan::fillHoles() {
     }
 }
 
-void ActivePlan::getActivePlanCopy(std::vector< Edge* >& copy) {
+void ActivePlan::getActivePlanCopy(std::vector< std::vector< Edge* > >* copy) {
+    std::vector< Edge* > currentLevel;
     foreach(Edge* e, *activePlan) {
         Vertex* v1 = e->getVertex1();
         Vertex* v2 = e->getVertex2();
-        copy.push_back(new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ())));
+        currentLevel.push_back(new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ())));
     }
+    copy->push_back(currentLevel);
 }

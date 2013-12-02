@@ -15,7 +15,7 @@
 #include "../MeshManager.h"
 #include "../GUI/BasicQGraphicsView.h"
 #include "../GUI/AllPlanScene.h"
-#include "AllChainScene.h"
+#include "../GUI/AllChainScene.h"
 
 /**
  * @brief The CentralWidget class
@@ -66,6 +66,10 @@ public:
     AllChainScene *allChainAfterAlgorithmScene;
 
     BasicQGraphicsView *allChainAfterAlgorithmView;
+
+    AllChainScene *allActivePlanScene;
+
+    BasicQGraphicsView *allActivePlanView;
 
     QSlider *levelChainSelector;
 
