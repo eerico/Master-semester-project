@@ -34,29 +34,19 @@ void Reconstruction3D::reconstruct()
     //main loop
     addEdgeDirectionEvent();
 
-    //unsigned int numberMaxIteration = 100;
-    //unsigned int numberIteration = 0;
-    //do{
-        computeIntersection();
-        while((priorityQueue->size() > 0)) {
-            Intersection event = priorityQueue->top();
-            priorityQueue->pop();
-            handleEvent(event);
-        }
-        //numberIteration++;
-
-        // TODO Bonne idee ou pas? c est pas mentionne dans le paper
-
-    // maybe after the algorithm we still have some holes thus the number of valid
-    // edges is more than 0 thus we can run again the algorithm. To be sure that it will terminate
-    // we impose a maximum number of iteration
-    //}while(activePlan->numberValidEdge() > 0 && numberIteration < numberMaxIteration);
+    computeIntersection();
+    while((priorityQueue->size() > 0)) {
+        Intersection event = priorityQueue->top();
+        priorityQueue->pop();
+        handleEvent(event);
+    }
 
     /*if (activePlan->numberValidEdge() > 0) {
         activePlan->fillHoles();
     }*/
 
     //std::cerr << activePlan->numberValidEdge() << std::endl;
+    //std::cerr << activePlan->getPlan()->size() << std::endl;
     //activePlan->print(true);
 
     //reset to inital state
