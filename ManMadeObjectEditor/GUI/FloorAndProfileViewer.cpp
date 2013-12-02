@@ -159,9 +159,16 @@ void FloorAndProfileViewer::openFile() {
 }
 
 void FloorAndProfileViewer::saveXML() {
+      if(meshManager->getFloorPlan() == 0){
+          QMessageBox::warning(0, "Empty file", "There is nothing to save");
+          return;
+      }
     QString filename = QFileDialog::getSaveFileName(this,
                                             tr("Save Xml"), ".",
                                             tr("Xml files (*.xml)"));
+    if (filename.isEmpty()) {
+        return;
+    }
     Utils::CreateXMLFile(meshManager, filename);
 }
 
