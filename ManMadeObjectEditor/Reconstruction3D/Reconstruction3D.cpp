@@ -145,6 +145,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         }
         case General:
         {
+            //return;
             std::cerr << "before:" << std::endl;
             std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             std::cerr << "with edges: " << std::endl;
@@ -201,21 +202,13 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
                 // the inter chain algorithm has inserted new edges. We thus have to recompute the active plan,
                 // recompute the intersection for this new active plan and handle these new intersections
-                std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>* priorityQueueTmp
-                        = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
 
                 //remove the old computed intersection
                 while(!priorityQueue->empty()) {
-                    Intersection intersection = priorityQueue->top();
-                    // we save the edge direction event
-                    if(intersection.eventType == EdgeDirection) {
-                        priorityQueueTmp->push(intersection);
-                    }
                     priorityQueue->pop();
                 }
-                delete priorityQueue;
-                priorityQueue = priorityQueueTmp;
 
+                addEdgeDirectionEvent();
                 computeIntersection();
             }
 
@@ -354,11 +347,13 @@ void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
         Vertex* currentProfileVertex = currentEdge->getProfile()->getProfileVertexIterator();
         currentProfileVertex = currentProfileVertex->getNeighbor2();
         while(currentProfileVertex != 0 && currentProfileVertex->getNeighbor2() != 0) {
-            Intersection edgeDirectionEvent;
-            edgeDirectionEvent.edge = currentEdge;
-            edgeDirectionEvent.eventType = EdgeDirection;
-            edgeDirectionEvent.z = currentProfileVertex->getY();
-            priorityQueue->push(edgeDirectionEvent);
+            if(currentProfileVertex->getY() > minimumHeight) {
+                Intersection edgeDirectionEvent;
+                edgeDirectionEvent.edge = currentEdge;
+                edgeDirectionEvent.eventType = EdgeDirection;
+                edgeDirectionEvent.z = currentProfileVertex->getY();
+                priorityQueue->push(edgeDirectionEvent);
+            }
             currentProfileVertex = currentProfileVertex->getNeighbor2();
         }
     }
