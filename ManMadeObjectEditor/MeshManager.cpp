@@ -112,6 +112,7 @@ const std::vector<qglviewer::Vec * > *MeshManager::getTriangles() {
 
     chains.clear();
     chains2.clear();
+    activePlandebug.clear();
 
     // recompute the 3D reconstruction
     Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, triangles, &chains, &chains2, &activePlandebug);
@@ -139,6 +140,7 @@ const std::vector<qglviewer::Vec* >* MeshManager::getPoints() {
 
     chains.clear();
     chains2.clear();
+    activePlandebug.clear();
 
     // recompute the 3D reconstruction
     Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, points, &chains, &chains2, &activePlandebug);
