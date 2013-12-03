@@ -201,7 +201,6 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
     Edge* neighbor2 = (*edges)[2];
 
     if(!edge->isValid() || !neighbor1->isValid() || !neighbor2->isValid()) {
-        std::cerr << "-- edge not valid" << std::endl;
         return false;
     }
 
@@ -238,7 +237,6 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
         #ifdef DEBUG_DISTANCE
             std::cerr << "distance: " << newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) << std::endl;
         #endif
-        std::cerr << "--distance: " << newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) << std::endl;
         return false;
     }
 }
