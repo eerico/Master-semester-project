@@ -145,40 +145,33 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         }
         case General:
         {
-            std::vector<Intersection> sameHeightIntersection;
-            if(!generalEventClustering(intersection, sameHeightIntersection)) {
+            //return;
+            std::cerr << "before:" << std::endl;
+            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            std::cerr << "with edges: " << std::endl;
+            foreach(Edge* e, *intersection.edgeVector) {
+                std::cerr << "    " << *e << std::endl;
+            }
+
+
+            if(!generalEventClustering(intersection)) {
+                std::cerr << "---INVALID" << std::endl;
                 return;
             }
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if(sameHeightIntersection.size() > 0) {
-                foreach(Intersection i, sameHeightIntersection) {
-                    std::cerr << "intersection: " << i.x << ", " << i.y << ", " << i.z << std::endl;
-                    std::cerr << "with edges: " << std::endl;
-                    foreach(Edge* e, *i.edgeVector) {
-                        std::cerr << "    " << *e << std::endl;
-                    }
-                }
-            }
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // a faire: si ya pas de edge split, alors ya pas de edge qui ont été inserer donc c est bon
-            // , ils suffit juste d enlever les edge invalid du vector (c est fait dans le filtering2)
-            // Et dans le cas si il y a eu un edge split, ben l edge correspondante dans les autres intersection
-            // est pas correct forcement donc faut ajouter ces 2 fils dedans et le filtering2 va enlever ceux qui sont faux je crois
-
-            //
 
             activePlan->filteringInvalidEvent2(intersection);
 
             if(intersection.edgeVector->size() < 3) {
+                std::cerr << "---<3" << std::endl;
                 return;
             }
 
-            /*std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            std::cerr << "after:" << std::endl;
+            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             std::cerr << "with edges: " << std::endl;
             foreach(Edge* e, *intersection.edgeVector) {
                 std::cerr << "    " << *e << std::endl;
-            }*/
+            }
 
 
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
@@ -230,8 +223,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
 
 // return false si l intersection n est pas valid
-// On doit traiter tous ceux qui sont a la meme hauteur en meme temps !
-bool Reconstruction3D::generalEventClustering(Intersection& intersection, std::vector< Intersection >& sameHeightIntersection)
+bool Reconstruction3D::generalEventClustering(Intersection& intersection)
 {
     float z(intersection.z);
 
@@ -243,6 +235,7 @@ bool Reconstruction3D::generalEventClustering(Intersection& intersection, std::v
     std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
 
     if(!activePlan->filteringInvalidEvent(intersection)) {
+        std::cerr << "--FIltering invalid event" << std::endl;
         return false;
     }
 
@@ -283,31 +276,7 @@ bool Reconstruction3D::generalEventClustering(Intersection& intersection, std::v
                     }
                 }
             } else {
-                if(activePlan->filteringInvalidEvent(event)) {
-                    unsigned int size = sameHeightIntersection.size();
-                    bool foundCluster = false;
-                    for(unsigned int i(0); (i < size) && !foundCluster; ++i) {
-                        Intersection clusterCenter =  sameHeightIntersection[i];
-                        if(Utils::distance(event.x, event.y, clusterCenter.x, clusterCenter.y) < delta2) {
-                            foundCluster = true;
-
-                            std::vector<Edge*>* clusterEdges = clusterCenter.edgeVector;
-                            std::vector<Edge*>* eventEdges = event.edgeVector;
-
-                            for(unsigned int i(0); i < eventEdges->size(); ++i) {
-                                Edge* edgeToAdd = (*eventEdges)[i];
-                                if(edgeToAdd->isValid()) {
-                                    if(!isEdgeInVector(edgeToAdd, clusterEdges)) {
-                                        clusterEdges->push_back(edgeToAdd);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if(!foundCluster) {
-                        sameHeightIntersection.push_back(event);
-                    }
-                }
+                eventVectorTmp.push_back(event);
             }
         } else {
             stop = true;
@@ -457,4 +426,3 @@ void Reconstruction3D::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *
     triangles->push_back(triangleVertex2);
     triangles->push_back(triangleVertex3);
 }
-
