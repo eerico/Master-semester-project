@@ -44,7 +44,7 @@ private:
 
     void edgeDirectionHandling(Intersection& intersection);
 
-    bool generalEventClustering(Intersection& intersection);
+    bool generalEventClustering(Intersection& intersection, std::vector<Intersection> &sameHeightIntersection);
 
     void edgeDirectionEventClustering(Intersection& intersection);
 
