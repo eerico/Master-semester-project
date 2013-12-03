@@ -203,6 +203,10 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
     if(!edge->isValid() || !neighbor1->isValid() || !neighbor2->isValid()) {
         return false;
     }
+    if(neighbor1->getVertex2()->distance(edge->getVertex1()) < 0.00001f
+            || neighbor1->getVertex2()->distance(edge->getVertex2()) < 0.00001f) {
+        return false;
+    }
 
     Plan horizontalPlan(0.0f, 0.0f, intersection.z, 0.0f, 0.0f, 1.0f);
 

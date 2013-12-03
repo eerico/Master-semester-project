@@ -74,7 +74,7 @@ void Reconstruction3D::computeIntersection()
             }
             Intersection intersection = intersect(edge1, edge2, edge3);
 
-            if(intersection.eventType != NoIntersection && intersection.z > minimumHeight) {
+            if(intersection.eventType != NoIntersection && intersection.z >= minimumHeight) {
                 priorityQueue->push(intersection);
             }
         }
@@ -137,7 +137,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
             delete priorityQueue;
             priorityQueue = priorityQueueTmp;
 
-            minimumHeight = intersection.z + 0.000001f;
+            minimumHeight = intersection.z/* + 0.000001f*/;
 
             computeIntersection();
 
@@ -194,7 +194,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 // It can happen that a chain of size 1 is created. We just ignore it.
                 if(!chainSizeOne) {
                     delete oldActivePlan;
-                    minimumHeight = intersection.z + 0.000001f; //we use a small delta to ensure that the next intersection will be above the current one
+                    minimumHeight = intersection.z /*+ 0.000001f*/; //we use a small delta to ensure that the next intersection will be above the current one
                 } else {
                     activePlan = oldActivePlan;
                     return;
