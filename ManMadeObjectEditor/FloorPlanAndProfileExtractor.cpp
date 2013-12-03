@@ -164,7 +164,7 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
         std::priority_queue<AssociateEdges, std::vector<AssociateEdges>, AssociateEdgesComparator> priorityQueue;
 
 
-        if (numberVertexAtLevel == 1) {
+        if (numberVertexAtLevel == 1) { //we can't know the edge normal
 
 
             /*Vertex* aloneVertex = level[0];
@@ -269,9 +269,10 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
 
     //TODO find similar profile i.e 1profile is = to 2 but then al level 4 1 finish and 2 has other level we have to put 1 = 2 and remove 1
 
-
+      profileDecimation(firstLevel);
     //we can decimate the profile.
-    foreach (Vertex* floorVertex, firstLevel) {
+
+      foreach (Vertex* floorVertex, firstLevel) {
         floorVertex->getEdge2()->getProfile()->vertexDecimation();
     }
 }
@@ -602,7 +603,7 @@ bool FloorPlanAndProfileExtractor::extract(OMMesh * inputMesh, Vertex*& floorPla
     std::vector<Vertex* > firstFloorPlanlevel = plans[0];
 
     //decimate the profiles
-    profileDecimation(firstFloorPlanlevel);
+  //  profileDecimation(firstFloorPlanlevel);
     
     floorPlanSize = firstFloorPlanlevel.size();
     floorPlan = firstFloorPlanlevel[0];
@@ -616,12 +617,31 @@ bool FloorPlanAndProfileExtractor::extract(OMMesh * inputMesh, Vertex*& floorPla
 }
 
 
-void FloorPlanAndProfileExtractor::profileDecimation(std::vector<Vertex * > &firstFloorPlanlevel) {
+/*void FloorPlanAndProfileExtractor::profileDecimation(std::vector<Vertex * > &firstFloorPlanlevel) {
     foreach (Vertex* vertexP, firstFloorPlanlevel) {
         foreach (Vertex* vertexC, firstFloorPlanlevel) {
             if(vertexC != vertexP && vertexC->getEdge2()->getProfile()!= vertexP->getEdge2()->getProfile()){
                 if(vertexC->getEdge2()->getProfile()->isEqual(vertexP->getEdge2()->getProfile())){
                     vertexC->getEdge2()->setProfile(vertexP->getEdge2()->getProfile());
+                }
+            }
+        }
+    }
+}*/
+
+void FloorPlanAndProfileExtractor::profileDecimation(std::vector<Vertex * > &firstFloorPlanlevel) {
+    foreach (Vertex* vertexP, firstFloorPlanlevel) {
+        foreach (Vertex* vertexC, firstFloorPlanlevel) {
+            if(vertexC != vertexP && vertexC->getEdge2()->getProfile()!= vertexP->getEdge2()->getProfile()){
+                Profile* finalP = vertexC->getEdge2()->getProfile()->isEquivalent(vertexP->getEdge2()->getProfile());
+                if(finalP != 0){
+                    if(finalP == vertexP->getEdge2()->getProfile() ){
+                        //TODO: delete the "old" profile delete vertexC->getEdge2()->getProfile();  --> remove form garbageCollector
+                        vertexC->getEdge2()->setProfile(finalP);
+                    } else {
+                        //TODO: delete the "old" profile delete vertexP->getEdge2()->getProfile();  --> remove form garbageCollector
+                        vertexP->getEdge2()->setProfile(finalP);
+                    }
                 }
             }
         }

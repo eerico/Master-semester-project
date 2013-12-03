@@ -236,6 +236,7 @@ void CentralWidget::showAllChains() {
 void CentralWidget::hideAllChains() {
     allChainView->hide();
     allChainAfterAlgorithmView->hide();
+    allActivePlanView->hide();
 
     if(levelChainSelector != 0) {
         levelChainSelector->hide();
