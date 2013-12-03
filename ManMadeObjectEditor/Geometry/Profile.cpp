@@ -248,6 +248,30 @@ bool Profile::isEqual(Profile* compareProfile) {
     return false;   
 }
 
+Profile* Profile::isEquivalent(Profile* compareProfile) {
+
+    Vertex* compare = compareProfile->getProfileVertex();
+    Vertex* current = pVertex;
+    while(current != 0 && compare!= 0) {
+        // test if the two vertices different
+        if((std::abs(compare->getX() - current->getX()) > 0.01f) || (std::abs(compare->getY() != current->getY())> 0.01f)){
+            break;
+        }
+        // they are the same, thus test the next one
+        compare = compare->getNeighbor2();
+        current = current->getNeighbor2();
+    }
+    if(current == 0 && compare == 0){
+        return this;
+    }else if(current == 0){
+        return compareProfile;
+    }else if(compare == 0){
+        return this;
+    } else {
+        return 0;
+    }
+}
+
 void Profile::nextDirectionPlan() {
     profileVertexIterator = profileVertexIterator->getNeighbor2();
 }
