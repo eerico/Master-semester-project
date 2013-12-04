@@ -146,33 +146,23 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         case General:
         {
             //return;
-            std::cerr << "before:" << std::endl;
+            /*std::cerr << "before:" << std::endl;
             std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
             std::cerr << "with edges: " << std::endl;
             foreach(Edge* e, *intersection.edgeVector) {
                 std::cerr << "    " << *e << std::endl;
-            }
+            }*/
 
 
             if(!generalEventClustering(intersection)) {
-                std::cerr << "---INVALID" << std::endl;
                 return;
             }
 
             activePlan->filteringInvalidEvent2(intersection);
 
             if(intersection.edgeVector->size() < 3) {
-                std::cerr << "---<3" << std::endl;
                 return;
             }
-
-            std::cerr << "after:" << std::endl;
-            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
-            std::cerr << "with edges: " << std::endl;
-            foreach(Edge* e, *intersection.edgeVector) {
-                std::cerr << "    " << *e << std::endl;
-            }
-
 
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
 
@@ -235,7 +225,6 @@ bool Reconstruction3D::generalEventClustering(Intersection& intersection)
     std::vector<Edge*>* intersectionEdges = intersection.edgeVector;
 
     if(!activePlan->filteringInvalidEvent(intersection)) {
-        std::cerr << "--FIltering invalid event" << std::endl;
         return false;
     }
 
@@ -248,18 +237,6 @@ bool Reconstruction3D::generalEventClustering(Intersection& intersection)
             eventVectorTmp.push_back(event);
             continue;
         }
-
-        // if the current intersection (event) is invalid, we skip to the next one
-        /*if(!activePlan->filteringInvalidEvent(event)) {
-            std::cerr << "  invalid event:" << std::endl;
-            std::cerr << "  intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
-            std::cerr << "  with edges: " << std::endl;
-            foreach(Edge* e, *intersection.edgeVector) {
-                std::cerr << "      " << *e << std::endl;
-            }
-            priorityQueue->pop();
-            continue;
-        }*/
 
         if (std::abs(event.z - z) < delta1) {
             priorityQueue->pop();
