@@ -17,6 +17,12 @@ ProfileScene::~ProfileScene()
 }
 
 void ProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
+    float tmpx = mouseEvent->lastScenePos().toPoint().x();
+    float tmpy = mouseEvent->lastScenePos().toPoint().y();
+    QRectF thisSize = this->sceneRect();
+    Utils::adjustCoordinatesSceneTo3D(tmpx, tmpy, thisSize.width(), thisSize.height());
+    std::cerr << "P: " << tmpx << ", " << tmpy << std::endl;
+
     if (!isProfileSelected) {
         return;
     }

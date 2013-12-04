@@ -17,6 +17,12 @@ FloorScene::~FloorScene()
 }
 
 void FloorScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
+    float tmpx = mouseEvent->lastScenePos().toPoint().x();
+    float tmpy = mouseEvent->lastScenePos().toPoint().y();
+    QRectF thisSize = this->sceneRect();
+    Utils::adjustCoordinatesSceneTo3D(tmpx, tmpy, thisSize.width(), thisSize.height());
+    std::cerr << "F: " << tmpx << ", " << tmpy << std::endl;
+
     if (mouseEvent->button() ==  Qt::RightButton){
         // if user use right click + ctrl
         if(mouseEvent->modifiers() == Qt::ControlModifier){
