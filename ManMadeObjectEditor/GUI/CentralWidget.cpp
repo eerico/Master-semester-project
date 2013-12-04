@@ -218,7 +218,7 @@ void CentralWidget::showAllChains() {
     levelChainSelector = new QSlider(Qt::Horizontal);
 
     levelChainSelector->setMinimum(0);
-    levelChainSelector->setMaximum(meshManager->getChains().size() - 1);
+    levelChainSelector->setMaximum(std::max(meshManager->getChains().size() - 1, meshManager->getActivePlanDebug().size() - 1));
     layout->addWidget(levelChainSelector, 1, 3);
 
     allChainView->show();
