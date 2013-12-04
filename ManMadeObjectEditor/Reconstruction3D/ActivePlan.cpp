@@ -51,6 +51,7 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vecto
         Edge* nextEdge = (*activePlan)[(i+1) % floorPlanSize];
 
         if (currentEdge->isParallel(nextEdge)) {
+            std::cerr << "PARALLEL" << std::endl;
             //Vertex* vertexToRemove = currentEdge->getVertex2();
             Vertex* vertex1 = currentEdge->getVertex1();
             Vertex* vertex2 = nextEdge->getVertex2();
@@ -245,7 +246,7 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
     }
 }
 
-void ActivePlan::filteringInvalidEvent2(Intersection &intersection) {
+void ActivePlan::filteringInvalidEvent2(Intersection &intersection, std::vector< std::vector< Edge* > >* activePlanDebug) {
     // sa test pour chaque edge, yen a pas que trois ici
     std::vector< Edge* >* edges = intersection.edgeVector;
 
@@ -271,8 +272,44 @@ void ActivePlan::filteringInvalidEvent2(Intersection &intersection) {
             Edge* newEdgeAtIntersectionHeight = new Edge(new Vertex(intersectionPreviousEdge.x, intersectionPreviousEdge.y, intersectionPreviousEdge.z)
                                                          , new Vertex(intersectionNextEdge.x, intersectionNextEdge.y, intersectionNextEdge.z));
 
-            if(newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) < /*0.00001f*/ 0.0005f) {
+            if(newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) < /*0.00001f*/ 0.025f) {
+
+
+
+
+
+                Edge* edge1 = edge;
+
+                std::vector< Edge* > tmp;
+                                Vertex* v1 = edge1->getVertex1();
+                                Vertex* v2 = edge1->getVertex2();
+                                Edge* edge11 = new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ()));
+                                tmp.push_back(edge11);
+
+                                tmp.push_back(edge11);
+                                activePlanDebug->push_back(tmp);
+
+
+
+
+
+
+
+
+
                 filtredEdges->push_back(edge);
+            } else {
+
+                Edge* edge1 = edge;
+
+                std::vector< Edge* > tmp;
+                                Vertex* v1 = edge1->getVertex1();
+                                Vertex* v2 = edge1->getVertex2();
+                                Edge* edge11 = new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ()));
+                                tmp.push_back(edge11);
+
+                                tmp.push_back(edge11);
+                                activePlanDebug->push_back(tmp);
             }
         }
     }

@@ -217,7 +217,7 @@ bool Chains::interChainHandling() {
     std::vector< std::vector< Edge* >* > allChainAfterAlgorithm;
 
     bool edgeSplitted = false;
-    for(unsigned int i(0); i < chainsSize; i++) {
+    for(unsigned int i(0); i < chainsSize ; i++) {
         std::vector< Edge* >* chain1 = chainList[i];
         std::vector< Edge* >* chain2 = chainList[(i+1) % chainsSize];
 

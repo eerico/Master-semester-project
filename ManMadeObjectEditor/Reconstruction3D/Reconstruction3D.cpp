@@ -59,7 +59,9 @@ void Reconstruction3D::reconstruct()
 
 void Reconstruction3D::computeIntersection()
 {
-
+    std::vector< Edge* > tmp;
+    activePlan->getActivePlanCopy(activePlanDebug);//////////////////////////////
+    activePlanDebug->push_back(tmp);
     std::vector< Edge* >* plans = activePlan->getPlan();
 
     unsigned int numberEdges = plans->size();
@@ -73,8 +75,26 @@ void Reconstruction3D::computeIntersection()
                 continue;
             }
             Intersection intersection = intersect(edge1, edge2, edge3);
-
             if(intersection.eventType != NoIntersection && intersection.z >= minimumHeight) {
+
+
+                /*std::vector< Edge* > tmp;
+                Vertex* v1 = edge1->getVertex1();
+                Vertex* v2 = edge1->getVertex2();
+                Edge* edge11 = new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ()));
+                tmp.push_back(edge11);
+                v1 = edge2->getVertex1();
+                v2 = edge2->getVertex2();
+                Edge* edge22 = new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ()));
+                tmp.push_back(edge22);
+                v1 = edge3->getVertex1();
+                v2 = edge3->getVertex2();
+                Edge* edge33 = new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ()));
+                tmp.push_back(edge33);
+                activePlanDebug->push_back(tmp);*/
+
+
+
                 priorityQueue->push(intersection);
             }
         }
@@ -158,11 +178,12 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 return;
             }
 
-            activePlan->filteringInvalidEvent2(intersection);
+            activePlan->filteringInvalidEvent2(intersection, activePlanDebug);
 
             if(intersection.edgeVector->size() < 3) {
                 return;
             }
+
 
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
 
@@ -204,7 +225,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
             chainList->getChains(chainsDebug2);
 
-            activePlan->getActivePlanCopy(activePlanDebug);
+            //activePlan->getActivePlanCopy(activePlanDebug);
 
             break;
         }
