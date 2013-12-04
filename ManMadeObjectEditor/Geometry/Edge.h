@@ -80,8 +80,6 @@ public:
     float lineDistance(Vertex* vertex);
 
 
-
-
     void setNormal(OMMesh::Normal* n);
     OMMesh::Normal* getNormal();
 
@@ -97,27 +95,6 @@ public:
      * Set the edge to be invalid
      */
     void invalid();
-
-    /**
-     * @brief revert
-     * Replace the current vertices by the old vetices and re valid the edge
-     */
-    void revert();
-
-    /**
-     * @brief hasChild
-     * @return True if the edge has 2 child because it has been splitted
-     */
-    bool hasChild();
-
-    Edge* getChild1();
-    void setChild1(Edge* child);
-
-    Edge* getChild2();
-    void setChild2(Edge* child);
-
-    Edge* getParent();
-    void setParent(Edge* parent);
 
     Plan* getDirectionPlan();
     void setDirectionPlan(Plan* plan);
@@ -144,20 +121,6 @@ private:
 
     // The second vertex
     Vertex* vertex2;
-
-    // The old vertex1
-    Vertex* oldVertex1;
-
-    // The old vertex2
-    Vertex* oldVertex2;
-
-    // first child if the edge is splitted
-    Edge* child1;
-
-    // second child if the edge is splitted
-    Edge* child2;
-
-    Edge* parent;
 
     // The associated profile
     Profile* profile;

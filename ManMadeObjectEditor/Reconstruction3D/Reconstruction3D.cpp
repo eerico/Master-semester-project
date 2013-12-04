@@ -27,7 +27,7 @@ void Reconstruction3D::reconstruct()
     }
 
     //set the current ActivePlan
-    activePlan = new ActivePlan(floorPlan, floorPlanSize, triangles);
+    activePlan = new ActivePlan(floorPlan, floorPlanSize, triangles, true);
     //compute the current direction plan
     activePlan->computeDirectionPlan();
 
@@ -59,9 +59,9 @@ void Reconstruction3D::reconstruct()
 
 void Reconstruction3D::computeIntersection()
 {
-    std::vector< Edge* > tmp;
+    /*std::vector< Edge* > tmp;
     activePlan->getActivePlanCopy(activePlanDebug);//////////////////////////////
-    activePlanDebug->push_back(tmp);
+    activePlanDebug->push_back(tmp);*/
     std::vector< Edge* >* plans = activePlan->getPlan();
 
     unsigned int numberEdges = plans->size();
@@ -178,7 +178,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 return;
             }
 
-            activePlan->filteringInvalidEvent2(intersection, activePlanDebug);
+            activePlan->filteringInvalidEvent2(intersection);
 
             if(intersection.edgeVector->size() < 3) {
                 return;
@@ -225,7 +225,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
             chainList->getChains(chainsDebug2);
 
-            //activePlan->getActivePlanCopy(activePlanDebug);
+            activePlan->getActivePlanCopy(activePlanDebug);
 
             break;
         }

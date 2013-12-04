@@ -5,7 +5,7 @@
 
 Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
     :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
-    , oldVertex1(vertex1), oldVertex2(vertex2), child1(0), child2(0), parent(0), directionPlan(0)
+    , directionPlan(0)
 {
     edgePen.setWidth(3);
 }
@@ -31,7 +31,6 @@ Vertex* Edge::getVertex1() {
 }
 
 void Edge::setVertex1(Vertex* vertex) {
-    oldVertex1 = vertex1;
     vertex1 = vertex;
 }
 
@@ -40,7 +39,6 @@ Vertex* Edge::getVertex2() {
 }
 
 void Edge::setVertex2(Vertex* vertex) {
-    oldVertex2 = vertex2;
     vertex2 = vertex;
 }
 
@@ -266,44 +264,6 @@ void Edge::invalid() {
 std::ostream& operator<<(std::ostream& out, Edge& e) {
     out << *e.getVertex1() << " - " << *e.getVertex2();
     return out;
-}
-
-void Edge::revert() {
-    vertex1 = oldVertex1;
-    vertex2 = oldVertex2;
-
-    child1 = 0;
-    child2 = 0;
-
-    valid = true;
-}
-
-Edge* Edge::getChild1() {
-    return child1;
-}
-
-void Edge::setChild1(Edge *child) {
-    child1 = child;
-}
-
-Edge* Edge::getChild2() {
-    return child2;
-}
-
-void Edge::setChild2(Edge *child) {
-    child2 = child;
-}
-
-bool Edge::hasChild() {
-    return child1 != 0 || child2 != 0;
-}
-
-Edge* Edge::getParent() {
-     return parent;
-}
-
-void Edge::setParent(Edge *parent) {
-    this->parent = parent;
 }
 
 Plan* Edge::getDirectionPlan() {

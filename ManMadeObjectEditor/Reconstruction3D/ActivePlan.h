@@ -11,12 +11,12 @@
 class ActivePlan
 {
 public:
-    ActivePlan(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles);
+    ActivePlan(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles, bool parallelTest);
     ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Vec *> *triangles, bool &chainSizeOne);
     std::vector< Edge* >* getPlan();
     void computeDirectionPlan();
     bool filteringInvalidEvent(Intersection& intersection);
-    void filteringInvalidEvent2(Intersection& intersection, std::vector<std::vector<Edge *> > *activePlanDebug);
+    void filteringInvalidEvent2(Intersection& intersection);
     void insert2Edges(Edge* oldEdge, Edge* newEdge1, Edge* newEdge2);
     unsigned int numberValidEdge();
     void print(bool onlyValidEdge);
