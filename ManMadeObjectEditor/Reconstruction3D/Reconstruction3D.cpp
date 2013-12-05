@@ -178,7 +178,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 return;
             }
 
-            activePlan->filteringInvalidEvent2(intersection);
+            activePlan->filteringInvalidEvent2(intersection, activePlanDebug);
 
             if(intersection.edgeVector->size() < 3) {
                 return;

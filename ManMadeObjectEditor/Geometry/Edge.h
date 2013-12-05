@@ -73,7 +73,7 @@ public:
      * @param vertex
      * @return The distance between the edge and the vertex
      */
-    float distance(Vertex* vertex);
+    float distanceXY(Vertex* vertex);
 
     float lineDistance(Edge* edge);
 

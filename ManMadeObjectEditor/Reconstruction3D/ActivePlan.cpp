@@ -62,9 +62,6 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vecto
                 nextEdge->setVertex1(vertex1);
                 vertex1->setEdge2(nextEdge);
 
-                std::cerr <<  (*currentEdge->getVertex1()) << " v2: " << (*currentEdge->getVertex2())<< std::endl;
-                std::cerr <<  (*nextEdge->getVertex1()) << " v2: "  <<(*nextEdge->getVertex2())<< std::endl;
-
                 activePlan->erase(activePlan->begin() + i);
                 floorPlanSize--;
                 i--;
@@ -222,6 +219,13 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
 
     // compute the intersection between the two neighbor and get the point at the corresponding height
     Intersection intersectionBetweenNeighbor = horizontalPlan.intersect3Plans(plan1, plan2);
+    if(intersectionBetweenNeighbor.eventType == NoIntersection) {
+        Vertex* v = neighbor1->getVertex2();
+        intersectionBetweenNeighbor.x = v->getX();
+        intersectionBetweenNeighbor.y = v->getY();
+        intersectionBetweenNeighbor.z = v->getZ();
+    }
+
     Vertex* vertexAtCurrentHeight = new Vertex(intersectionBetweenNeighbor.x, intersectionBetweenNeighbor.y, intersectionBetweenNeighbor.z);
 
     //now we compute the edge at the height and find if the distance is small
@@ -233,15 +237,27 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
     plan1 = previousEdge->getDirectionPlan();
     plan2 = edge->getDirectionPlan();
     Intersection intersectionPreviousEdge = horizontalPlan.intersect3Plans(plan1, plan2);
+    if(intersectionPreviousEdge.eventType == NoIntersection) {
+        Vertex* v = edge->getVertex1();
+        intersectionPreviousEdge.x = v->getX();
+        intersectionPreviousEdge.y = v->getY();
+        intersectionPreviousEdge.z = v->getZ();
+    }
 
     plan1 = edge->getDirectionPlan();
     plan2 = nextEdge->getDirectionPlan();
     Intersection intersectionNextEdge = horizontalPlan.intersect3Plans(plan1, plan2);
+    if(intersectionNextEdge.eventType == NoIntersection) {
+        Vertex* v = edge->getVertex2();
+        intersectionNextEdge.x = v->getX();
+        intersectionNextEdge.y = v->getY();
+        intersectionNextEdge.z = v->getZ();
+    }
 
     Edge* newEdgeAtIntersectionHeight = new Edge(new Vertex(intersectionPreviousEdge.x, intersectionPreviousEdge.y, intersectionPreviousEdge.z)
                                                  , new Vertex(intersectionNextEdge.x, intersectionNextEdge.y, intersectionNextEdge.z));
 
-    if(newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) < /*0.00001f*/ 0.0005f) {
+    if(newEdgeAtIntersectionHeight->distanceXY(vertexAtCurrentHeight) < /*0.00001f*/ 0.0005f) {
         return true;
     } else {
         #ifdef DEBUG_DISTANCE
@@ -251,7 +267,7 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
     }
 }
 
-void ActivePlan::filteringInvalidEvent2(Intersection &intersection) {
+void ActivePlan::filteringInvalidEvent2(Intersection &intersection, std::vector< std::vector< Edge* > >* activePlanDebug) {
     // sa test pour chaque edge, yen a pas que trois ici
     std::vector< Edge* >* edges = intersection.edgeVector;
 
@@ -269,15 +285,27 @@ void ActivePlan::filteringInvalidEvent2(Intersection &intersection) {
             Plan* plan1 = previousEdge->getDirectionPlan();
             Plan* plan2 = edge->getDirectionPlan();
             Intersection intersectionPreviousEdge = horizontalPlan.intersect3Plans(plan1, plan2);
+            if(intersectionPreviousEdge.eventType == NoIntersection) {
+                Vertex* v1 = edge->getVertex1();
+                intersectionPreviousEdge.x = v1->getX();
+                intersectionPreviousEdge.y = v1->getY();
+                intersectionPreviousEdge.z = v1->getZ();
+            }
 
             plan1 = edge->getDirectionPlan();
             plan2 = nextEdge->getDirectionPlan();
             Intersection intersectionNextEdge = horizontalPlan.intersect3Plans(plan1, plan2);
+            if(intersectionNextEdge.eventType == NoIntersection) {
+                Vertex* v2 = edge->getVertex2();
+                intersectionNextEdge.x = v2->getX();
+                intersectionNextEdge.y = v2->getY();
+                intersectionNextEdge.z = v2->getZ();
+            }
 
             Edge* newEdgeAtIntersectionHeight = new Edge(new Vertex(intersectionPreviousEdge.x, intersectionPreviousEdge.y, intersectionPreviousEdge.z)
                                                          , new Vertex(intersectionNextEdge.x, intersectionNextEdge.y, intersectionNextEdge.z));
 
-            if(newEdgeAtIntersectionHeight->distance(vertexAtCurrentHeight) < /*0.00001f*/ 0.025f) {
+            if(newEdgeAtIntersectionHeight->distanceXY(vertexAtCurrentHeight) < /*0.00001f*/ 0.0005f) {
                 filtredEdges->push_back(edge);
             }
         }

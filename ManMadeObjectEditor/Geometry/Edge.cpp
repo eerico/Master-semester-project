@@ -111,10 +111,10 @@ bool Edge::isParallel(Edge* edge) {
 float Edge::distance(Edge* edge) {
     // the two edges must be parallel to use this method
     // if they are, the distance between them is the distance between one edge and a vertex on the other edge
-    return distance(edge->getVertex2());
+    return distanceXY(edge->getVertex2());
 }
 
-float Edge::distance(Vertex* vertex) {
+float Edge::distanceXY(Vertex* vertex) {
     // compute the edge vertex distance
     // only on X and Y coordinates
 

@@ -434,12 +434,12 @@ chain 2
 
     Edge* e = new Edge(new Vertex(0.6332f, -0.6652f, 0.3348f), new Vertex(0.5098f, 0.6859f, 0.3348f));
     Vertex* v = new Vertex(0.5667f, 0.0623f, 0.3348f);
-    std::cerr << "--> " << e->distance(v) << std::endl;
+    std::cerr << "--> " << e->distanceXY(v) << std::endl;
 
 
     e = new Edge(new Vertex(0.0f, 0.0f, 0.0f), new Vertex(1.0f, 0.0f, 0.0f));
     v = new Vertex(2.0f, 0.0f, 0.0f);
-    std::cerr << "--> " << e->distance(v) << std::endl;
+    std::cerr << "--> " << e->distanceXY(v) << std::endl;
 
     exit(EXIT_SUCCESS);
 }
