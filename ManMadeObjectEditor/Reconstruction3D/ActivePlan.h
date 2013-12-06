@@ -23,8 +23,6 @@ public:
 
     void removeInvalidEdges();
 
-    void fillHoles();
-
     void getActivePlanCopy(std::vector<std::vector<Edge *> > *copy);
 
 private:
