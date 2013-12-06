@@ -19,8 +19,6 @@ Reconstruction3D::~Reconstruction3D()
 
 void Reconstruction3D::reconstruct()
 {
-    //std::cerr << "RECONSTRUCT" << std::endl;
-
     // there is nothing to reconstruct
     if (floorPlanSize == 0) {
         return;
@@ -35,19 +33,11 @@ void Reconstruction3D::reconstruct()
     addEdgeDirectionEvent();
 
     computeIntersection();
-    while((priorityQueue->size() > 0)) {
+    while(priorityQueue->size() > 0) {
         Intersection event = priorityQueue->top();
         priorityQueue->pop();
         handleEvent(event);
     }
-
-    /*if (activePlan->numberValidEdge() > 0) {
-        activePlan->fillHoles();
-    }*/
-
-    //std::cerr << activePlan->numberValidEdge() << std::endl;
-    //std::cerr << activePlan->getPlan()->size() << std::endl;
-    //activePlan->print(true);
 
     //reset to inital state
     Vertex* currentVertex = floorPlan;
@@ -59,9 +49,6 @@ void Reconstruction3D::reconstruct()
 
 void Reconstruction3D::computeIntersection()
 {
-    /*std::vector< Edge* > tmp;
-    activePlan->getActivePlanCopy(activePlanDebug);//////////////////////////////
-    activePlanDebug->push_back(tmp);*/
     std::vector< Edge* >* plans = activePlan->getPlan();
 
     unsigned int numberEdges = plans->size();
@@ -76,25 +63,6 @@ void Reconstruction3D::computeIntersection()
             }
             Intersection intersection = intersect(edge1, edge2, edge3);
             if(intersection.eventType != NoIntersection && intersection.z >= minimumHeight) {
-
-
-                /*std::vector< Edge* > tmp;
-                Vertex* v1 = edge1->getVertex1();
-                Vertex* v2 = edge1->getVertex2();
-                Edge* edge11 = new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ()));
-                tmp.push_back(edge11);
-                v1 = edge2->getVertex1();
-                v2 = edge2->getVertex2();
-                Edge* edge22 = new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ()));
-                tmp.push_back(edge22);
-                v1 = edge3->getVertex1();
-                v2 = edge3->getVertex2();
-                Edge* edge33 = new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ()));
-                tmp.push_back(edge33);
-                activePlanDebug->push_back(tmp);*/
-
-
-
                 priorityQueue->push(intersection);
             }
         }
@@ -122,17 +90,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
     switch(intersection.eventType){
         case EdgeDirection:
         {
-
-            /*
-             * TODO: Le probleme ici c est que un profil peut etre le meme sur different edge
-             * et donc on doit pas faire le nextDirectionPlan pour chaque edge qui on le meme profile
-             * mais pour que ceux qui ont des profiles differents. Une idée serait de prendre tous les edges
-             * qui on le meme profiles et d appliquer les changement une seul fois et des creer pour chacun de ses edges
-             * les triangles
-             *
-             *
-             * Attention, il faut update le direction plan
-             */
 
             if(!intersection.edge->isValid()) {
                 return;
@@ -165,14 +122,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
         }
         case General:
         {
-            //return;
-            /*std::cerr << "before:" << std::endl;
-            std::cerr << "intersection: " << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
-            std::cerr << "with edges: " << std::endl;
-            foreach(Edge* e, *intersection.edgeVector) {
-                std::cerr << "    " << *e << std::endl;
-            }*/
-
 
             if(!generalEventClustering(intersection)) {
                 return;
@@ -205,7 +154,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 // It can happen that a chain of size 1 is created. We just ignore it.
                 if(!chainSizeOne) {
                     delete oldActivePlan;
-                    minimumHeight = intersection.z; //+ 0.000001f; //we use a small delta to ensure that the next intersection will be above the current one
+                    minimumHeight = intersection.z;
                 } else {
                     activePlan = oldActivePlan;
                     return;
@@ -338,7 +287,7 @@ void Reconstruction3D::edgeDirectionEventClustering(Intersection& intersection)
 }
 
 
-void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
+void Reconstruction3D::addEdgeDirectionEvent()
 {
     std::vector< Edge* >* edges = activePlan->getPlan();
     foreach(Edge* currentEdge, *edges) {
@@ -357,7 +306,7 @@ void Reconstruction3D::addEdgeDirectionEvent() ////////////////////////
     }
 }
 
-void Reconstruction3D::edgeDirectionHandling(Intersection &intersection) //////////////////
+void Reconstruction3D::edgeDirectionHandling(Intersection &intersection)
 {
     std::vector< Edge* >* edges = intersection.edgeVector;
     Plan horizontalPlan(0.0f, 0.0f, intersection.z, 0.0f, 0.0f, 1.0f);

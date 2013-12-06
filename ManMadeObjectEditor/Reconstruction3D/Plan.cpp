@@ -20,7 +20,6 @@ Plan::Plan(float vertexX, float vertexY, float vertexZ,
 
 Intersection Plan::intersect3Plans(Plan* plan2, Plan* plan3)
 {
-    //std::cerr << "intersect3 plan: " << std::endl;
     Intersection intersection;
     intersection.eventType = General;
 
@@ -32,8 +31,6 @@ Intersection Plan::intersect3Plans(Plan* plan2, Plan* plan3)
     float n2 = normalY;
     float n3 = normalZ;
 
-    //std::cerr << p1 << ", " << p2 << ", " << p3 << ", " << normalX << ", " << normalY << ", " << normalZ << std::endl;
-
     float p1_p = plan2->vertex->getX();
     float p2_p = plan2->vertex->getY();
     float p3_p = plan2->vertex->getZ();
@@ -41,16 +38,12 @@ Intersection Plan::intersect3Plans(Plan* plan2, Plan* plan3)
     float n2_p = plan2->normalY;
     float n3_p = plan2->normalZ;
 
-    //std::cerr << p1_p << ", " << p2_p << ", " << p3_p << ", " << n1_p << ", " << n2_p << ", " << n3_p << std::endl;
-
     float p1_pp = plan3->vertex->getX();
     float p2_pp = plan3->vertex->getY();
     float p3_pp = plan3->vertex->getZ();
     float n1_pp = plan3->normalX;
     float n2_pp = plan3->normalY;
     float n3_pp = plan3->normalZ;
-
-    //std::cerr << p1_pp << ", " << p2_pp << ", " << p3_pp << ", " << n1_pp << ", " << n2_pp << ", " << n3_pp << std::endl;
 
     // we can write the plan equation like (xVector - pVector) * nVector = 0,
     // but we can also write it: x * nx + y * ny + z * nz = px * nx + py * ny + pz * nz = pn
@@ -137,8 +130,8 @@ void Plan::computePlanNormal()
     float ny(0.0f);
     float nz(0.0f);
 
-    float a = pointX2 - pointX;//vertex2->getX() - vertex1->getX();
-    float b = pointY2 - pointY; //vertex2->getY() - vertex1->getY();
+    float a = pointX2 - pointX;
+    float b = pointY2 - pointY;
     float c = 0.0f;
 
     Utils::normalize(a, b);
@@ -148,8 +141,6 @@ void Plan::computePlanNormal()
 
     float w = nextProfileVertex->getX() - profileVertex->getX();
     float z = nextProfileVertex->getY() - profileVertex->getY();
-
-    //std::cerr << "angle: " << std::abs(std::atan(z / w) * 360.0f / (M_PI * 2.0f)) << std::endl;
 
     //est ce correct ou bien sa joue pas avec orientation des edges ?
     float wx = b;
@@ -165,21 +156,4 @@ void Plan::computePlanNormal()
     normalX = nx;
     normalY = ny;
     normalZ = nz;
-
-
-    //std::cerr << "normal: " << normalX << ", " << normalY << ", " << normalZ << std::endl;
-    // show the profile orientation
-    //////////////////////////////////////////////////////////////////////////////////////
-
-    /*float aa = vertex2->getX() + vertex1->getX();
-    float bb = vertex2->getY() + vertex1->getY();
-    float cc = 0.0f;
-
-    Vertex* v3  = new Vertex(d+ 0.5f*aa, e + 0.5f*bb);
-    v3->setZ(f + 0.5f*cc);
-    Vertex* v  = new Vertex(0.5f*aa, 0.5f*bb);
-    v->setZ(cc);
-    addNewTriangle(v, v3, v);*/
-
-    //////////////////////////////////////////////////////////////////////////////////////
 }

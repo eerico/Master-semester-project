@@ -1,8 +1,5 @@
 #include "Chains.h"
 
-//#define DEBUG
-//#define NOCHAIN
-
 // Cette classe doit creer la chaines en faisant le truc des orientation ET implementer le inter et intra chain handling
 // qui va update l active plan ET ceer des triangles (? ou pas ?)
 Chains::Chains(Intersection* intersection, std::vector<qglviewer::Vec *> *triangles, ActivePlan* activePlan)
@@ -62,24 +59,6 @@ Chains::Chains(Intersection* intersection, std::vector<qglviewer::Vec *> *triang
     // sort the list of chain around the intersection
     ChainOrientationComparator chainOrientationComparator;
     std::sort(chainList.begin(), chainList.end(), chainOrientationComparator);
-
-
-#ifdef DEBUG
-    int chainIndex = 0;
-    foreach(std::vector< Edge* >* v, chainList) {
-        chainIndex++;
-        std::cerr << "chain no: " << chainIndex << std::endl;
-        foreach(Edge* e, *v) {
-            Vertex* v1 = e->getVertex1();
-            v1->setZ(intersection->z);
-            Vertex* v2 = e->getVertex2();
-            v2->setZ(intersection->z);
-            Vertex* vv = new Vertex((v1->getX() + v2->getX()) / 2.0f + 0.002f, (v1->getY() + v2->getY()) / 2.0f + + 0.002f, v1->getZ());
-            addNewTriangle(v1, v2, vv);
-            std::cerr << *v1 << ", " << *v2 << std::endl;
-        }
-    }
-#endif
 }
 
 void Chains::intraChainHandling() {
@@ -111,18 +90,14 @@ void Chains::intraChainHandling() {
                     currentChain->pop_back();
                     edgeInvalid->invalid();
 
-                    #ifndef DEBUG
-                        addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
-                    #endif
+                    addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
                 }
                 chainList.erase(chainList.begin() + j);
                 continue;
             }
 
-            #ifndef DEBUG
-                addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
-                addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
-            #endif
+            addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
+            addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
 
             //reassign the vertices
             Vertex* vertex1 = firstEdge->getVertex1();
@@ -234,9 +209,7 @@ bool Chains::interChainHandling() {
             splitEdgeAtCorner(chainEdge, newEdge1, newEdge2);
 
             chainEdge->invalid();
-            #ifndef DEBUG
-                addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
-            #endif
+            addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
 
             chain1->pop_back();
             chain1->push_back(newEdge1);
@@ -256,9 +229,7 @@ bool Chains::interChainHandling() {
             splitEdgeAtCorner(chainEdge, newEdge1, newEdge2);
 
             chainEdge->invalid();
-            #ifndef DEBUG
-                addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
-            #endif
+            addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
 
             chain2->pop_back();
             chain2->push_back(newEdge1);
@@ -337,7 +308,6 @@ void Chains::getChains(std::vector< std::vector<std::vector<Edge *> > >* chainsA
 }
 
 void Chains::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
-#ifndef NOCHAIN
     qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
     qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());
     qglviewer::Vec* triangleVertex3 = new qglviewer::Vec(vertex3->getX(), vertex3->getY(), vertex3->getZ());
@@ -345,5 +315,4 @@ void Chains::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
     triangles->push_back(triangleVertex1);
     triangles->push_back(triangleVertex2);
     triangles->push_back(triangleVertex3);
-#endif
 }
