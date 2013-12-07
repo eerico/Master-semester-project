@@ -98,7 +98,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
 
             edgeDirectionEventClustering(intersection);
 
-            foreach(Edge* e, *intersection.edgeVector) {
+            /*foreach(Edge* e, *intersection.edgeVector) {
                 Plan* p = e->getDirectionPlan();
                 float x; float y; float z;
                 p->getNormal(x, y, z);
@@ -106,11 +106,11 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
                 std::cerr << "EDGE" << vp->getX() << ", " << vp->getY() << ", " << vp->getZ() << " :: ";
                 //std::cerr << x << ", " << y << ", " << z << " :: ";
             }
-            std::cerr << std::endl;
+            std::cerr << std::endl;*/
 
             edgeDirectionHandling(intersection);
 
-            foreach(Edge* e, *intersection.edgeVector) {
+            /*foreach(Edge* e, *intersection.edgeVector) {
                 Plan* p = e->getDirectionPlan();
                 float x; float y; float z;
                 p->getNormal(x, y, z);
@@ -118,7 +118,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
                 std::cerr << "EDGE" << vp->getX() << ", " << vp->getY() << ", " << vp->getZ() << " :: ";
                 //std::cerr << x << ", " << y << ", " << z << " :: ";
             }
-            std::cerr << std::endl;
+            std::cerr << std::endl;*/
 
             /*foreach(Edge* e, *intersection.edgeVector) {
                 Plan* p = e->getDirectionPlan();
@@ -146,7 +146,6 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
 
             minimumHeight = intersection.z;
 
-            //activePlan->getActivePlanCopy(activePlanDebug);
             activePlan->updateHeight(minimumHeight);
 
             computeIntersection();
@@ -196,14 +195,14 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             activePlanDebug->push_back(tmp);*/
             ///////////////////////////////////////////////////////////////////////////////////
 
-            foreach(Edge* e, *intersection.edgeVector) {
+            /*foreach(Edge* e, *intersection.edgeVector) {
                 Plan* p = e->getDirectionPlan();
                 float x; float y; float z;
                 p->getNormal(x, y, z);
                 Vertex* vp = p->getVertex();
                 std::cerr << x << ", " << y << ", " << z << " ( " << vp->getX() << ", " << vp->getY() << ", " << vp->getZ() << ")" << " :: ";
             }
-            std::cerr << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;
+            std::cerr << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;*/
 
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
 
