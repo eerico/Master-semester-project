@@ -21,15 +21,6 @@ public:
 
     void setVertex(Vertex* vertex);
 
-
-
-
-    ///////////////////////////////////////////////////
-    Vertex* getVertex() {
-        return vertex;
-    }
-    /////////////////////////////////////////////////////
-
 private:
     // a plan is defined by a point and a normal
     Vertex* vertex;

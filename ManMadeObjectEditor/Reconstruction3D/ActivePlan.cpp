@@ -374,7 +374,7 @@ void ActivePlan::updateHeight(float height) {
         Plan* plan2 = vertex2->getEdge2()->getDirectionPlan();
 
         if(vertex1->getZ() + 0.00001f < height) {
-            std::cerr << vertex1->getZ() << ", " << height << std::endl;
+            //std::cerr << vertex1->getZ() << ", " << height << std::endl;
             Intersection newIntersection1 = horizontalPlan.intersect3Plans(plan1, currentPlan);
 
             Vertex newIntersectionVertex1(newIntersection1.x, newIntersection1.y, newIntersection1.z);
@@ -389,7 +389,7 @@ void ActivePlan::updateHeight(float height) {
         }
 
         if(vertex2->getZ() + 0.00001f < height) {
-            std::cerr << vertex2->getZ() << ", " << height << std::endl;
+            //std::cerr << vertex2->getZ() << ", " << height << std::endl;
             Intersection newIntersection2 = horizontalPlan.intersect3Plans(currentPlan, plan2);
 
             Vertex newIntersectionVertex2(newIntersection2.x, newIntersection2.y, newIntersection2.z);
