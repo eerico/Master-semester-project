@@ -19,6 +19,8 @@ public:
     void getNormal(float& nx, float& ny, float& nz);
     void computePlanNormal();
 
+    void setVertex(Vertex* vertex);
+
 private:
     // a plan is defined by a point and a normal
     Vertex* vertex;

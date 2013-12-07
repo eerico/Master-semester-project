@@ -33,6 +33,7 @@ void Reconstruction3D::reconstruct()
     addEdgeDirectionEvent();
 
     computeIntersection();
+
     while(priorityQueue->size() > 0) {
         Intersection event = priorityQueue->top();
         priorityQueue->pop();
@@ -85,7 +86,7 @@ Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edgeNeighbor1, Edge 
     return intersection;
 }
 
-void Reconstruction3D::handleEvent(Intersection& intersection) ////////////////////////////////
+void Reconstruction3D::handleEvent(Intersection& intersection)
 {
     switch(intersection.eventType){
         case EdgeDirection:
@@ -97,31 +98,69 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
             edgeDirectionEventClustering(intersection);
 
+            /*foreach(Edge* e, *intersection.edgeVector) {
+                Plan* p = e->getDirectionPlan();
+                float x; float y; float z;
+                p->getNormal(x, y, z);
+                std::cerr << x << ", " << y << ", " << z << " :: ";
+            }
+            std::cerr << std::endl;
+*/
             edgeDirectionHandling(intersection);
+
+            /*foreach(Edge* e, *intersection.edgeVector) {
+                Plan* p = e->getDirectionPlan();
+                float x; float y; float z;
+                p->getNormal(x, y, z);
+                std::cerr << x << ", " << y << ", " << z << " :: ";
+            }
+            std::cerr << std::endl;*/
 
             std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>* priorityQueueTmp
                     = new std::priority_queue<Intersection, std::vector<Intersection>, IntersectionComparator>;
 
             //remove the old computed intersection
             while(!priorityQueue->empty()) {
-                Intersection intersection = priorityQueue->top();
+                Intersection event = priorityQueue->top();
                 // we save the edge direction event
-                if(intersection.eventType == EdgeDirection) {
-                    priorityQueueTmp->push(intersection);
+                if(event.eventType == EdgeDirection) {
+                    priorityQueueTmp->push(event);
                 }
+
                 priorityQueue->pop();
             }
             delete priorityQueue;
             priorityQueue = priorityQueueTmp;
 
-            minimumHeight = intersection.z/* + 0.000001f*/;
+            minimumHeight = intersection.z;
+
+            activePlan->getActivePlanCopy(activePlanDebug);
+            //activePlan->updateHeight(minimumHeight);
 
             computeIntersection();
+
+
+
+            ///////////////////////////////////////////////////////////
+            /*std::vector< Edge* > tmp;
+            foreach(Edge* e, *intersection.edgeVector) {
+                Vertex* v1;
+                        Vertex* v2;
+                v1 = e->getVertex1(); v2 = e->getVertex2();
+                Edge* ee = new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ()));
+                tmp.push_back(ee);
+            }
+            std::vector< Edge* > tmp2;
+            activePlanDebug->push_back(tmp2);*/
+            //activePlanDebug->push_back(tmp);
+            activePlan->getActivePlanCopy(activePlanDebug);
+            ///////////////////////////////////////////////////////////
 
             break;
         }
         case General:
         {
+
 
             if(!generalEventClustering(intersection)) {
                 return;
@@ -133,6 +172,26 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
                 return;
             }
 
+
+            //////////////////////////////////////////////////////////////////////////////
+            /*std::vector< Edge* > tmp;
+            foreach(Edge* e, *intersection.edgeVector) {
+                Vertex* v1;
+                        Vertex* v2;
+                v1 = e->getVertex1(); v2 = e->getVertex2();
+                Edge* ee = new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ()));
+                tmp.push_back(ee);
+            }
+            activePlanDebug->push_back(tmp);*/
+            ///////////////////////////////////////////////////////////////////////////////////
+
+            /*foreach(Edge* e, *intersection.edgeVector) {
+                Plan* p = e->getDirectionPlan();
+                float x; float y; float z;
+                p->getNormal(x, y, z);
+                std::cerr << x << ", " << y << ", " << z << " :: ";
+            }
+            std::cerr << intersection.x << ", " << intersection.y << ", " << intersection.z << std::endl;*/
 
             Chains* chainList = new Chains(&intersection, triangles, activePlan);
 
@@ -174,7 +233,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection) /////////////////
 
             chainList->getChains(chainsDebug2);
 
-            activePlan->getActivePlanCopy(activePlanDebug);
+            //activePlan->getActivePlanCopy(activePlanDebug);
 
             break;
         }

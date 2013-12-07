@@ -60,6 +60,10 @@ private:
 
     std::vector< std::vector< Edge* > >* activePlanDebug;
 
+
+
+
+
 };
 
 #endif // RECONSTRUCTION3D_H

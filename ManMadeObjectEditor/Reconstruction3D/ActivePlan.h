@@ -25,6 +25,8 @@ public:
 
     void getActivePlanCopy(std::vector<std::vector<Edge *> > *copy);
 
+    void updateHeight(float height);
+
 private:
     std::vector< Edge* >* activePlan;
     std::vector<qglviewer::Vec * > *triangles;

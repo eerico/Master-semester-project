@@ -18,7 +18,11 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vecto
 
         cloneVertex1->setEdge2(cloneEdge);
         cloneEdge->setVertex1(cloneVertex1);
-        cloneEdge->setDirectionPlan(currentEdge->getDirectionPlan());
+        Plan* plan = currentEdge->getDirectionPlan();
+        if(plan != 0) {
+            plan->setVertex(cloneVertex1);
+        }
+        cloneEdge->setDirectionPlan(plan);
 
         if(i > 0) {
             cloneVertex1->setEdge1(previousEdge);
@@ -355,4 +359,48 @@ void ActivePlan::getActivePlanCopy(std::vector< std::vector< Edge* > >* copy) {
         currentLevel.push_back(new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ())));
     }
     copy->push_back(currentLevel);
+}
+
+void ActivePlan::updateHeight(float height) {
+    Plan horizontalPlan(0.0f, 0.0f, height, 0.0f, 0.0f, 1.0f);
+
+    foreach(Edge* edge, *activePlan) {
+        // previousEdge(plan1) - currentEdge(currentPlan) - nextEdge(plan2)
+        Vertex* vertex1 = edge->getVertex1();
+        Vertex* vertex2 = edge->getVertex2();
+
+        Plan* plan1 = vertex1->getEdge1()->getDirectionPlan();
+        Plan* currentPlan = edge->getDirectionPlan();
+        Plan* plan2 = vertex2->getEdge2()->getDirectionPlan();
+
+        if(vertex1->getZ() + 0.00001f < height) {
+            std::cerr << vertex1->getZ() << ", " << height << std::endl;
+            Intersection newIntersection1 = horizontalPlan.intersect3Plans(plan1, currentPlan);
+
+            Vertex newIntersectionVertex1(newIntersection1.x, newIntersection1.y, newIntersection1.z);
+            if (std::abs(vertex1->distance(&newIntersectionVertex1)) > 0.0001f) {
+                addNewTriangle(vertex1, vertex2, &newIntersectionVertex1);
+                addNewTriangle(vertex1->getEdge1()->getVertex1(), vertex1, &newIntersectionVertex1);
+            }
+
+            vertex1->setX(newIntersection1.x);
+            vertex1->setY(newIntersection1.y);
+            vertex1->setZ(newIntersection1.z);
+        }
+
+        if(vertex2->getZ() + 0.00001f < height) {
+            std::cerr << vertex2->getZ() << ", " << height << std::endl;
+            Intersection newIntersection2 = horizontalPlan.intersect3Plans(currentPlan, plan2);
+
+            Vertex newIntersectionVertex2(newIntersection2.x, newIntersection2.y, newIntersection2.z);
+            if (std::abs(vertex2->distance(&newIntersectionVertex2)) > 0.0001f) {
+                addNewTriangle(vertex1, vertex2, &newIntersectionVertex2);
+                addNewTriangle(vertex2, vertex2->getEdge2()->getVertex2(), &newIntersectionVertex2);
+            }
+
+            vertex2->setX(newIntersection2.x);
+            vertex2->setY(newIntersection2.y);
+            vertex2->setZ(newIntersection2.z);
+        }
+    }
 }

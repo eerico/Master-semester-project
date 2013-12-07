@@ -157,3 +157,7 @@ void Plan::computePlanNormal()
     normalY = ny;
     normalZ = nz;
 }
+
+void Plan::setVertex(Vertex *vertex) {
+    this->vertex = vertex;
+}
