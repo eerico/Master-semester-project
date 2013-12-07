@@ -10,6 +10,14 @@ Plan::Plan(Vertex *vertex1, Vertex *vertex2, Profile *profile)
 
 }
 
+Plan::Plan(Plan* oldPlan, Vertex* vertex1, Profile* profile)
+    :normalX(0.0f), normalY(0.0f), normalZ(1.0f)
+    , profile(profile), vertex(vertex1), pointX(oldPlan->pointX), pointY(oldPlan->pointY), pointZ(oldPlan->pointZ),
+      pointX2(oldPlan->pointX2), pointY2(oldPlan->pointY2), pointZ2(oldPlan->pointZ2)
+{
+
+}
+
 Plan::Plan(float vertexX, float vertexY, float vertexZ,
            float normalX, float normalY, float normalZ)
     :normalX(normalX), normalY(normalY), normalZ(normalZ)

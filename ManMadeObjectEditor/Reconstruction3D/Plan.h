@@ -13,6 +13,8 @@ public:
     Plan(float vertexX, float vertexY, float vertexZ,
          float normalX = 0.0f, float normalY = 0.0f, float normalZ = 1.0f);
 
+    Plan(Plan *oldPlan, Vertex* vertex1, Profile* profile);
+
     Intersection intersect3Plans(Plan *plan2, Plan *plan3);
 
     void setNormal(float nx, float ny, float nz);

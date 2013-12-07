@@ -146,6 +146,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
 
             minimumHeight = intersection.z;
 
+            // TODO: usefull or not ?
             activePlan->updateHeight(minimumHeight);
 
             computeIntersection();

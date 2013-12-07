@@ -272,8 +272,14 @@ void Chains::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdg
     newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
     newEdge2 = new Edge(cornerVertex, edgeToSplit->getVertex2(), edgeToSplit->getProfile());
 
-    newEdge1->setDirectionPlan(edgeToSplit->getDirectionPlan());
-    newEdge2->setDirectionPlan(edgeToSplit->getDirectionPlan());
+    Plan* oldPlan = edgeToSplit->getDirectionPlan();
+    Plan* plan1 = new Plan(oldPlan, newEdge1->getVertex1(), newEdge1->getProfile());
+    plan1->computePlanNormal();
+    Plan* plan2 = new Plan(oldPlan, newEdge2->getVertex1(), newEdge2->getProfile());
+    plan2->computePlanNormal();
+
+    newEdge1->setDirectionPlan(plan1);
+    newEdge2->setDirectionPlan(plan2);
 
     cornerVertex->setEdge1(newEdge1);
     cornerVertex->setEdge2(newEdge2);
