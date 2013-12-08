@@ -55,8 +55,6 @@ CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
     QObject::connect(meshManager, SIGNAL(newFloorPlan()), floorScene, SLOT(loadFloorPlan()));
     QObject::connect(meshManager, SIGNAL(newFloorPlan()), profileScene, SLOT(newProfileSelected()));
     QObject::connect(floorScene, SIGNAL(newProfileSelected()), this, SLOT(changeProfileColorIndication()));
-    QObject::connect(meshManager, SIGNAL(newProfileSelected()), profileScene, SLOT(newProfileSelected()));
-    QObject::connect(meshManager, SIGNAL(newProfileSelected()), this, SLOT(changeProfileColorIndication()));
     QObject::connect(meshManager, SIGNAL(newFloorPlan()), this, SLOT(changeProfileColorIndication()));
     QObject::connect(showPlans, SIGNAL(clicked()), this, SLOT(allPlans()));
     QObject::connect(showChains, SIGNAL(clicked()), this, SLOT(allChains()));
@@ -64,6 +62,8 @@ CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
                      SLOT(newProfileCreatedForSelectedEdge()));
     QObject::connect(meshManager, SIGNAL(newProfileCreatedForSelectedEdge()), profileScene, SLOT(newProfileSelected()));
     QObject::connect(meshManager, SIGNAL(newProfileCreatedForSelectedEdge()), this, SLOT(changeProfileColorIndication()));
+    QObject::connect(meshManager, SIGNAL(drawWithoutDeleteOldProfile()), profileScene, SLOT(drawWithoutDeleteOldProfile()));
+
 
     this->setLayout(layout);
     this->setMinimumSize(QSize(300, 170));

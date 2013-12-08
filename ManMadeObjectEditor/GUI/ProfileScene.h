@@ -36,6 +36,8 @@ public slots:
      */
     void newProfileSelected();
 
+    void drawWithoutDeleteOldProfile();
+
 private:
 
     /**
@@ -82,7 +84,7 @@ private:
      * @brief loadProfile
      * Load and draw the profile that the user has selected
      */
-    void loadProfile();
+    void loadProfile(bool removeOldProfileData);
 
     // boolean used to know if a profile is selected or not
     bool isProfileSelected;

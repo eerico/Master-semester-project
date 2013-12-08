@@ -3,6 +3,8 @@
 #include <QDialog>
 #include "BasicQGraphicsView.h"
 #include "SimplificationScene.h"
+#include "SimplificationFloorPlanScene.h"
+#include "SimplificationProfileScene.h"
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -16,7 +18,7 @@ class SimplificationWindow: public QDialog
 {
     Q_OBJECT
 public:
-    SimplificationWindow(MeshManager* meshManager);
+    SimplificationWindow(MeshManager* meshManager, bool floorPlanSimplification);
     ~SimplificationWindow();
 
 public slots:
@@ -44,6 +46,8 @@ private:
 
     QDoubleSpinBox* thresholdBox;
     QLabel* thresholdLabel;
+
+    bool floorPlanSimplification;
 };
 
 #endif // SIMPLIFICATIONWINDOW_H

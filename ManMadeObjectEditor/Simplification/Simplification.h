@@ -14,14 +14,16 @@ class Simplification
 public:
     Simplification(std::vector< Curve* >* curveArray, MeshManager* meshManager, float threshold);
 
-    void simplify();
+    void simplifyFloorPlan();
+    void simplifyProfile();
 
 private:
     std::vector< Curve* >* curveArray;
     float threshold;
     MeshManager* meshManager;
 
-    void simplify(Curve* curve);
+    void simplifyFloorPlan(Curve* curve);
+    void simplifyProfile(Curve* curve);
 };
 
 #endif // SIMPLIFICATION_H

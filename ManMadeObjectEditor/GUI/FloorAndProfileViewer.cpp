@@ -38,6 +38,7 @@ FloorAndProfileViewer::~FloorAndProfileViewer()
     delete noViewAction;
     delete addNewProfileAction;
     delete floorPlanSimplificationAction;
+    delete profileSimplificationAction;
     delete meshManager;
     delete objViewer;
 }
@@ -124,7 +125,11 @@ void FloorAndProfileViewer::createEditMenu() {
 
     floorPlanSimplificationAction = new QAction(tr("&Floor Plan Simplification"), this);
     editMenu->addAction(floorPlanSimplificationAction);
-    QObject::connect(floorPlanSimplificationAction, SIGNAL(triggered()), this, SLOT(createSimplificationWindow()));
+    QObject::connect(floorPlanSimplificationAction, SIGNAL(triggered()), this, SLOT(createSimplificationFloorPlanWindow()));
+
+    profileSimplificationAction = new QAction(tr("&Profile Simplification"), this);
+    editMenu->addAction(profileSimplificationAction);
+    QObject::connect(profileSimplificationAction, SIGNAL(triggered()), this, SLOT(createSimplificationProfileWindow()));
 }
 
 void FloorAndProfileViewer::aboutQtMessageBox() {
@@ -163,10 +168,20 @@ void FloorAndProfileViewer::openFile() {
     }
 }
 
-void FloorAndProfileViewer::createSimplificationWindow() {
+void FloorAndProfileViewer::createSimplificationFloorPlanWindow() {
     if(simplificationWindow == 0) {
         if(meshManager->getFloorPlanSize() > 0) {
-            simplificationWindow = new SimplificationWindow(meshManager);
+            simplificationWindow = new SimplificationWindow(meshManager, true);
+            simplificationWindow->show();
+            QObject::connect(simplificationWindow, SIGNAL(closeSignal()), this, SLOT(closeSimplificationWindow()));
+        }
+    }
+}
+
+void FloorAndProfileViewer::createSimplificationProfileWindow() {
+    if(simplificationWindow == 0) {
+        if(meshManager->getCurrentProfile() != 0) {
+            simplificationWindow = new SimplificationWindow(meshManager, false);
             simplificationWindow->show();
             QObject::connect(simplificationWindow, SIGNAL(closeSignal()), this, SLOT(closeSimplificationWindow()));
         }
@@ -225,6 +240,7 @@ void FloorAndProfileViewer::clearFile() {
     delete noViewAction;
     delete addNewProfileAction;
     delete floorPlanSimplificationAction;
+    delete profileSimplificationAction;
 
     delete centralWidget;
     delete meshManager;

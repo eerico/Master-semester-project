@@ -1,10 +1,14 @@
 #include "SimplificationWindow.h"
 
-SimplificationWindow::SimplificationWindow(MeshManager* meshManager)
+SimplificationWindow::SimplificationWindow(MeshManager* meshManager, bool floorPlanSimplification)
     :QDialog(0, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint )
-    , meshManager(meshManager)
+    , meshManager(meshManager), floorPlanSimplification(floorPlanSimplification)
 {
-    scene = new SimplificationScene(meshManager, &curveArray);
+    if(floorPlanSimplification) {
+        scene = new SimplificationFloorPlanScene(meshManager, &curveArray);
+    } else {
+        scene = new SimplificationProfileScene(meshManager, &curveArray);
+    }
     view = new BasicQGraphicsView(scene);
 
     gridLayout = new QGridLayout;
@@ -55,17 +59,24 @@ void SimplificationWindow::ok(){
     scene->revertColor();
 
     Simplification simplification(&curveArray, meshManager, thresholdBox->value());
-    simplification.simplify();
 
-
-    meshManager->emitNewFloorPlan();
+    if(floorPlanSimplification) {
+        simplification.simplifyFloorPlan();
+    } else {
+        simplification.simplifyProfile();
+    }
     close();
 }
 
 void SimplificationWindow::cancel(){
 
     scene->revertColor();
-    meshManager->emitNewFloorPlan();
+
+    if(floorPlanSimplification) {
+        meshManager->emitNewFloorPlan();
+    } else {
+        meshManager->emitDrawWithoutDeleteOldProfile();
+    }
     close();
 }
 

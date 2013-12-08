@@ -256,20 +256,26 @@ void ProfileScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
 void ProfileScene::newProfileSelected() {
     isProfileSelected = true;
-    loadProfile();
+    loadProfile(true);
 }
 
-void ProfileScene::loadProfile() {
-    // remove the old loaded profile
-    if (currentProfile != 0) {
-        Vertex* currentVertex = currentProfile->getProfileVertex();
-        while(currentVertex != 0){
-            this->removeItem(currentVertex->getEllipse());
-            if (currentVertex->getNeighbor2() != 0) {
-                this->removeItem(currentVertex->getEdge2()->getLineItem());
-            }
+void ProfileScene::drawWithoutDeleteOldProfile() {
+    loadProfile(false);
+}
 
-            currentVertex = currentVertex->getNeighbor2();
+void ProfileScene::loadProfile(bool removeOldProfileData) {
+    if(removeOldProfileData){
+        // remove the old loaded profile
+        if (currentProfile != 0) {
+            Vertex* currentVertex = currentProfile->getProfileVertex();
+            while(currentVertex != 0){
+                this->removeItem(currentVertex->getEllipse());
+                if (currentVertex->getNeighbor2() != 0) {
+                    this->removeItem(currentVertex->getEdge2()->getLineItem());
+                }
+
+                currentVertex = currentVertex->getNeighbor2();
+            }
         }
     }
 

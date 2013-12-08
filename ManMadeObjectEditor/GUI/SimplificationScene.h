@@ -1,24 +1,21 @@
 #ifndef SIMPLIFICATIONSCENE_H
 #define SIMPLIFICATIONSCENE_H
 
-#include <QGraphicsScene>
 #include "../MeshManager.h"
 #include "../Simplification/Curve.h"
 #include <vector>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
+#include <QGraphicsScene>
 
 class SimplificationScene : public QGraphicsScene
 {
 public:
     SimplificationScene(MeshManager* meshManager, std::vector< Curve* >* curveArray);
-    ~SimplificationScene();
+    virtual ~SimplificationScene();
+    virtual void revertColor() = 0;
 
-    void revertColor();
-
-private:
-    void loadFloorPlan();
-
+protected:
     MeshManager* meshManager;
 
     std::vector< QPen > oldPenEllipse;
@@ -29,12 +26,8 @@ private:
 
     std::vector< Curve* >* curveArray;
 
-    // used to allow the user to make a closed curve
-    Vertex* firstVertexSelected;
-
-    void mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent);
-    void updateSceneEllipseAndLineColor();
-
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) = 0;
+    virtual void updateSceneEllipseAndLineColor() = 0;
 };
 
 #endif // SIMPLIFICATIONSCENE_H

@@ -4,7 +4,7 @@
 
 MeshManager::MeshManager()
     : inputMesh(0), floorPlan(0), updateOnMesh(false), longUpdateOnMesh(false), floorPlanSize(0)
-    , edgeSelected(0)
+    , edgeSelected(0), currentProfile(0)
 {
     points = new std::vector<qglviewer::Vec* >;
     triangles = new std::vector<qglviewer::Vec* >;
@@ -305,6 +305,10 @@ void MeshManager::setEdgeSelected(Edge* edge) {
 
 void MeshManager::emitNewProfileSelected() {
     emit newProfileSelected();
+}
+
+void MeshManager::emitDrawWithoutDeleteOldProfile() {
+    emit drawWithoutDeleteOldProfile();
 }
 
 void MeshManager::deleteOldDebugData() {

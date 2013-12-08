@@ -80,7 +80,9 @@ public slots:
      */
     void aboutQtMessageBox();
 
-    void createSimplificationWindow();
+    void createSimplificationFloorPlanWindow();
+
+    void createSimplificationProfileWindow();
 
     void closeSimplificationWindow();
 
@@ -130,6 +132,7 @@ private:
     QMenu* editMenu;
     QAction* addNewProfileAction;
     QAction* floorPlanSimplificationAction;
+    QAction* profileSimplificationAction;
 
     SimplificationWindow* simplificationWindow;
 };

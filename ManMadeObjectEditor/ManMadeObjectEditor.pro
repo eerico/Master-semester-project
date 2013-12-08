@@ -35,9 +35,11 @@ SOURCES +=\
     Reconstruction3D/Chains.cpp \
     GUI/AllChainScene.cpp \
     GarbageCollector/GeneralDestructorManager.cpp \
-    GUI/SimplificationScene.cpp \
     GUI/SimplificationWindow.cpp \
-    Simplification/Simplification.cpp
+    Simplification/Simplification.cpp \
+    GUI/SimplificationFloorPlanScene.cpp \
+    GUI/SimplificationProfileScene.cpp \
+    GUI/SimplificationScene.cpp
     #Reconstruction3D_old/Reconstruction3D.cpp \
     #Reconstruction3D_old/Plan.cpp \
     #Reconstruction3D_old/Chain.cpp \
@@ -71,7 +73,6 @@ HEADERS  += \
     GUI/AllChainScene.h \
     GarbageCollector/GarbageCollectorObject.h \
     GarbageCollector/GeneralDestructorManager.h \
-    GUI/SimplificationScene.h \
     GUI/SimplificationWindow.h \
     #Reconstruction3D_old/Reconstruction3D.h \
     #Reconstruction3D_old/Plan.h \
@@ -84,7 +85,10 @@ HEADERS  += \
     #Reconstruction3D_old_Tom_Kelly/Intersection.h \
     #Reconstruction3D_old_Tom_Kelly/Chain.h
     Simplification/Curve.h \
-    Simplification/Simplification.h
+    Simplification/Simplification.h \
+    GUI/SimplificationFloorPlanScene.h \
+    GUI/SimplificationProfileScene.h \
+    GUI/SimplificationScene.h
 
 #QT *= xml opengl
 

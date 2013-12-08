@@ -111,6 +111,8 @@ public:
 
     void emitNewProfileSelected();
 
+    void emitDrawWithoutDeleteOldProfile();
+
 signals:
     /**
      * @brief newFloorPlan
@@ -121,6 +123,8 @@ signals:
     void newProfileCreatedForSelectedEdge();
 
     void newProfileSelected();
+
+    void drawWithoutDeleteOldProfile();
 
 public slots:
     void createNewProfileForSelectedEdge();
