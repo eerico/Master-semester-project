@@ -110,9 +110,7 @@ const std::vector<qglviewer::Vec * > *MeshManager::getTriangles() {
     }
     triangles->clear();
 
-    chains.clear();
-    chains2.clear();
-    activePlandebug.clear();
+    deleteOldDebugData();
 
     // recompute the 3D reconstruction
     Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, triangles, &chains, &chains2, &activePlandebug);
@@ -138,9 +136,7 @@ const std::vector<qglviewer::Vec* >* MeshManager::getPoints() {
     }
     points->clear();
 
-    chains.clear();
-    chains2.clear();
-    activePlandebug.clear();
+    deleteOldDebugData();
 
     // recompute the 3D reconstruction
     Reconstruction3D reconstruction3D(floorPlan, floorPlanSize, points, &chains, &chains2, &activePlandebug);
@@ -304,4 +300,42 @@ void MeshManager::createNewProfileForSelectedEdge() {
 
 void MeshManager::setEdgeSelected(Edge* edge) {
     edgeSelected = edge;
+}
+
+
+void MeshManager::emitNewProfileSelected() {
+    emit newProfileSelected();
+}
+
+void MeshManager::deleteOldDebugData() {
+    foreach(std::vector< std::vector< Edge* > > level, chains) {
+        foreach(std::vector< Edge* > currentChain, level) {
+            foreach(Edge* edge, currentChain) {
+                delete edge->getVertex1();
+                delete edge->getVertex2();
+                delete edge;
+            }
+        }
+    }
+    chains.clear();
+
+    foreach(std::vector< std::vector< Edge* > > level, chains2) {
+        foreach(std::vector< Edge* > currentChain, level) {
+            foreach(Edge* edge, currentChain) {
+                delete edge->getVertex1();
+                delete edge->getVertex2();
+                delete edge;
+            }
+        }
+    }
+    chains2.clear();
+
+    foreach(std::vector< Edge* > level, activePlandebug) {
+        foreach(Edge* edge, level) {
+            delete edge->getVertex1();
+            delete edge->getVertex2();
+            delete edge;
+        }
+    }
+    activePlandebug.clear();
 }

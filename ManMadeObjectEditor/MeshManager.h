@@ -109,6 +109,8 @@ public:
 
     void setEdgeSelected(Edge* edge);
 
+    void emitNewProfileSelected();
+
 signals:
     /**
      * @brief newFloorPlan
@@ -118,10 +120,14 @@ signals:
 
     void newProfileCreatedForSelectedEdge();
 
+    void newProfileSelected();
+
 public slots:
     void createNewProfileForSelectedEdge();
 
 private:
+
+    void deleteOldDebugData();
 
     // a vector that contain the triangles obtain with the 3D reconstruction
     std::vector< qglviewer::Vec * >* triangles;

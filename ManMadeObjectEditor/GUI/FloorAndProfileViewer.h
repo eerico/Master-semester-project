@@ -14,6 +14,7 @@
 #include "../GUI/ObjectViewer.h"
 #include "../MeshManager.h"
 #include <QFileInfo>
+#include "SimplificationWindow.h"
 
 /**
  * @brief The FloorAndProfileViewer class
@@ -79,6 +80,10 @@ public slots:
      */
     void aboutQtMessageBox();
 
+    void createSimplificationWindow();
+
+    void closeSimplificationWindow();
+
     void  saveXML();
 
 signals:
@@ -123,8 +128,10 @@ private:
     QAction* noViewAction;
 
     QMenu* editMenu;
-
     QAction* addNewProfileAction;
+    QAction* floorPlanSimplificationAction;
+
+    SimplificationWindow* simplificationWindow;
 };
 
 #endif // FLOORANDPROFILEVIEWER_H

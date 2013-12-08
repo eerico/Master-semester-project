@@ -34,7 +34,10 @@ SOURCES +=\
     Reconstruction3D/ActivePlan.cpp \
     Reconstruction3D/Chains.cpp \
     GUI/AllChainScene.cpp \
-    GarbageCollector/GeneralDestructorManager.cpp
+    GarbageCollector/GeneralDestructorManager.cpp \
+    GUI/SimplificationScene.cpp \
+    GUI/SimplificationWindow.cpp \
+    Simplification/Simplification.cpp
     #Reconstruction3D_old/Reconstruction3D.cpp \
     #Reconstruction3D_old/Plan.cpp \
     #Reconstruction3D_old/Chain.cpp \
@@ -67,7 +70,9 @@ HEADERS  += \
     Reconstruction3D/ChainOrientationComparator.h \
     GUI/AllChainScene.h \
     GarbageCollector/GarbageCollectorObject.h \
-    GarbageCollector/GeneralDestructorManager.h
+    GarbageCollector/GeneralDestructorManager.h \
+    GUI/SimplificationScene.h \
+    GUI/SimplificationWindow.h \
     #Reconstruction3D_old/Reconstruction3D.h \
     #Reconstruction3D_old/Plan.h \
     #Reconstruction3D_old/Intersection.h \
@@ -78,6 +83,8 @@ HEADERS  += \
     #Reconstruction3D_old_Tom_Kelly/IntersectionComparator.h \
     #Reconstruction3D_old_Tom_Kelly/Intersection.h \
     #Reconstruction3D_old_Tom_Kelly/Chain.h
+    Simplification/Curve.h \
+    Simplification/Simplification.h
 
 #QT *= xml opengl
 

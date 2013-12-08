@@ -371,7 +371,8 @@ void FloorScene::loadFloorPlan() {
             currentVertex->setEllipse(ellipse);
             this->addItem(currentVertex->getEllipse());
         } else {
-            std::cerr << "something strange happen, try to reload an already loaded floorplan maybe is ok and i shouldn't do anything";
+            //std::cerr << "something strange happen, try to reload an already loaded floorplan maybe is ok and i shouldn't do anything";
+            this->addItem(currentVertex->getEllipse());
         }
         
         currentVertex = currentVertex->getNeighbor2();
@@ -382,6 +383,8 @@ void FloorScene::loadFloorPlan() {
     for (unsigned int i(0); i < floorPlanSize; ++i) {
         if (currentVertex->getEdge2()->getLineItem() == 0) {
             this->addItem(currentVertex->getEdge2()->computeLineItem());
+        } else {
+            this->addItem(currentVertex->getEdge2()->getLineItem());
         }
         currentVertex = currentVertex->getNeighbor2();
     }
