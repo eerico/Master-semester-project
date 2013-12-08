@@ -38,6 +38,9 @@ ActivePlan::ActivePlan(Vertex *floorPlan, unsigned int floorPlanSize, std::vecto
 
         activePlan->push_back(cloneEdge);
         currentVertex = currentVertex->getNeighbor2();
+
+        GeneralDestructorManager::putObject(cloneEdge);
+        GeneralDestructorManager::putObject(cloneVertex1);
     }
 
     firstCloneVertex->setEdge1(previousEdge);
@@ -99,7 +102,15 @@ ActivePlan::ActivePlan(ActivePlan* previousActivePlan, std::vector<qglviewer::Ve
         ActivePlan activePlanTmp(edgeTmp->getVertex1(), size, triangles, false);
         std::vector< Edge* >* plansTmp = activePlanTmp.getPlan();
         activePlan->insert(activePlan->end(), plansTmp->begin(), plansTmp->end());
+
+        delete currentChain;
     }
+
+    delete chains;
+}
+
+ActivePlan::~ActivePlan() {
+    delete activePlan;
 }
 
 void ActivePlan::removeInvalidEdges() {
@@ -177,6 +188,7 @@ void ActivePlan::computeDirectionPlan() {
         Plan* plan = new Plan( vertex1, edge->getVertex2(), edge->getProfile());
         plan->computePlanNormal();
         edge->setDirectionPlan(plan);
+        GeneralDestructorManager::putObject(plan);
     }
 }
 
@@ -246,11 +258,19 @@ bool ActivePlan::filteringInvalidEvent(Intersection &intersection) {
                                                  , new Vertex(intersectionNextEdge.x, intersectionNextEdge.y, intersectionNextEdge.z));
 
     if(newEdgeAtIntersectionHeight->distanceXY(vertexAtCurrentHeight) < /*0.00001f*/ 0.0005f) {
+        delete vertexAtCurrentHeight;
+        delete newEdgeAtIntersectionHeight;
+
         return true;
+    } else {
+        delete vertexAtCurrentHeight;
+        delete newEdgeAtIntersectionHeight;
+
+        return false;
     }
 }
 
-void ActivePlan::filteringInvalidEvent2(Intersection &intersection, std::vector< std::vector< Edge* > >* activePlanDebug) {
+void ActivePlan::filteringInvalidEvent2(Intersection &intersection) {
     // sa test pour chaque edge, yen a pas que trois ici
     std::vector< Edge* >* edges = intersection.edgeVector;
 
@@ -291,8 +311,12 @@ void ActivePlan::filteringInvalidEvent2(Intersection &intersection, std::vector<
             if(newEdgeAtIntersectionHeight->distanceXY(vertexAtCurrentHeight) < /*0.00001f*/ 0.0005f) {
                 filtredEdges->push_back(edge);
             }
+
+            delete newEdgeAtIntersectionHeight;
         }
     }
+
+    delete vertexAtCurrentHeight;
 
     intersection.edgeVector = filtredEdges;
 }

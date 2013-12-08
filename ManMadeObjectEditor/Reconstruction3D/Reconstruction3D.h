@@ -12,6 +12,7 @@
 #include <vector>
 #include <QGLViewer/qglviewer.h>
 #include <queue>
+#include "../GarbageCollector/GeneralDestructorManager.h"
 
 
 class Reconstruction3D

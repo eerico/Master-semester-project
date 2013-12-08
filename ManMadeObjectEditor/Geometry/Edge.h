@@ -11,6 +11,7 @@
 #include <QString>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
+#include "../GarbageCollector/GarbageCollectorObject.h"
 
 
 class Plan;
@@ -23,7 +24,7 @@ class Profile;
  * (in the case this edge is a floor plan edge) or not (if this edge is a profile edge).
  * The Edge class also stored information used to draw this edge.
  */
-class Edge
+class Edge: public GarbageCollectorObject
 {
     // Used to use OpenMesh data
     typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;

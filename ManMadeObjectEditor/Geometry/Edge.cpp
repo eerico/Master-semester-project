@@ -5,7 +5,7 @@
 
 Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
     :vertex1(vertex1), vertex2(vertex2), profile(p), lineItem(0), normal(0), valid(true)
-    , directionPlan(0)
+    , directionPlan(0), GarbageCollectorObject()
 {
     edgePen.setWidth(3);
 }

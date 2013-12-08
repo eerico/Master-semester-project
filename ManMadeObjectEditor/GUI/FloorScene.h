@@ -12,7 +12,7 @@
 #include <QColor>
 #include "../Geometry/Vertex.h"
 #include "../MeshManager.h"
-#include "../ProfileDestructorManager.h"
+#include "../GarbageCollector/ProfileDestructorManager.h"
 #include "../Utils.h"
 #include "../Geometry/Edge.h"
 

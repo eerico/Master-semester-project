@@ -61,6 +61,12 @@ Chains::Chains(Intersection* intersection, std::vector<qglviewer::Vec *> *triang
     std::sort(chainList.begin(), chainList.end(), chainOrientationComparator);
 }
 
+Chains::~Chains() {
+    foreach(std::vector< Edge* >* currentChain, chainList) {
+        delete currentChain;
+    }
+}
+
 void Chains::intraChainHandling() {
 
     unsigned int chainsSize = chainList.size();
@@ -81,6 +87,7 @@ void Chains::intraChainHandling() {
             }
 
             Vertex* intersectionVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+            GeneralDestructorManager::putObject(intersectionVertex);
 
             // first check if the chain is circular. If it is the case, all edges are interior edges that will shrink to 0
             if (firstEdge->getVertex1() == lastEdge->getVertex2()) {
@@ -153,6 +160,7 @@ void Chains::intraChainHandling() {
             }
 
             Vertex* intersectionVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+            GeneralDestructorManager::putObject(intersectionVertex);
 
             addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
             addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
@@ -197,6 +205,7 @@ bool Chains::interChainHandling() {
         std::vector< Edge* >* chain2 = chainList[(i+1) % chainsSize];
 
         Vertex* intersectionVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+        GeneralDestructorManager::putObject(intersectionVertex);
 
         Edge* lastEdgeChain1(0);
         Edge* firstEdgeChain2(0);
@@ -260,6 +269,10 @@ bool Chains::interChainHandling() {
         allChainAfterAlgorithm.push_back(chainAfterAlgorithm);
     }
 
+    foreach(std::vector< Edge* >* currentChain, chainList) {
+        delete currentChain;
+    }
+
     chainList = allChainAfterAlgorithm;
 
     return edgeSplitted;
@@ -268,14 +281,20 @@ bool Chains::interChainHandling() {
 void Chains::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2)
 {
     Vertex* cornerVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+    GeneralDestructorManager::putObject(cornerVertex);
 
     newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
     newEdge2 = new Edge(cornerVertex, edgeToSplit->getVertex2(), edgeToSplit->getProfile());
+    GeneralDestructorManager::putObject(newEdge1);
+    GeneralDestructorManager::putObject(newEdge2);
 
     Plan* oldPlan = edgeToSplit->getDirectionPlan();
     Plan* plan1 = new Plan(oldPlan, newEdge1->getVertex1(), newEdge1->getProfile());
+    GeneralDestructorManager::putObject(plan1);
     plan1->computePlanNormal();
+
     Plan* plan2 = new Plan(oldPlan, newEdge2->getVertex1(), newEdge2->getProfile());
+    GeneralDestructorManager::putObject(plan2);
     plan2->computePlanNormal();
 
     newEdge1->setDirectionPlan(plan1);

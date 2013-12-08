@@ -11,6 +11,7 @@
 #include <QString>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
+#include "../GarbageCollector/GarbageCollectorObject.h"
 
 
 /**
@@ -19,7 +20,7 @@
  * edge between itself and the neighbors. The vertex class also stored information
  * used to draw this vertex
  */
-class Vertex
+class Vertex: public GarbageCollectorObject
 {
     // Used to use OpenMesh data
     typedef OpenMesh::PolyMesh_ArrayKernelT<>  OMMesh;

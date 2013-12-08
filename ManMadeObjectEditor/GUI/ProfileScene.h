@@ -14,7 +14,7 @@
 #include "../MeshManager.h"
 #include "../Utils.h"
 #include "../Geometry/Edge.h"
-#include "../ProfileDestructorManager.h"
+#include "../GarbageCollector/ProfileDestructorManager.h"
 
 /**
  * @brief The ProfileScene class

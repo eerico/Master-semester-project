@@ -4,8 +4,10 @@
 #include "Intersection.h"
 #include "../Geometry/Vertex.h"
 #include "../Geometry/Profile.h"
+#include "../GarbageCollector/GarbageCollectorObject.h"
+#include "../GarbageCollector/GeneralDestructorManager.h"
 
-class Plan
+class Plan: public GarbageCollectorObject
 {
 public:
     Plan(Vertex* vertex1, Vertex* vertex2, Profile* profile);
@@ -14,6 +16,8 @@ public:
          float normalX = 0.0f, float normalY = 0.0f, float normalZ = 1.0f);
 
     Plan(Plan *oldPlan, Vertex* vertex1, Profile* profile);
+
+    ~Plan();
 
     Intersection intersect3Plans(Plan *plan2, Plan *plan3);
 

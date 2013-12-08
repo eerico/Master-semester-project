@@ -1,7 +1,7 @@
 #include "Vertex.h"
 
 Vertex::Vertex(float x, float y, bool addFaces, bool valid)
-    : x(x), y(y), z(0.0f), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0), valid(valid)
+    : x(x), y(y), z(0.0f), neighbor1(0), neighbor2(0), edge1(0), edge2(0), ellipse(0), valid(valid), GarbageCollectorObject()
 {
     vertexPen.setWidth(5);
     vertexPen.setColor(Qt::white);
@@ -15,7 +15,7 @@ Vertex::Vertex(float x, float y, bool addFaces, bool valid)
 }
 
 Vertex::Vertex(float x, float y, float z)
-    : x(x), y(y), z(z), bFaces(false)
+    : x(x), y(y), z(z), bFaces(false), GarbageCollectorObject()
 {
 
 }

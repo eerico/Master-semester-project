@@ -14,6 +14,8 @@ class Chains
 {
 public:
     Chains(Intersection *intersection, std::vector<qglviewer::Vec *> *triangles, ActivePlan *activePlan);
+    ~Chains();
+
     void intraChainHandling();
     bool interChainHandling();
     void getChains(std::vector<std::vector<std::vector<Edge *> > > *chainsAllLevel);

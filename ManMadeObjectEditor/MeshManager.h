@@ -10,7 +10,7 @@
 #include "Geometry/Vertex.h"
 #include "FloorPlanAndProfileExtractor.h"
 #include "Utils.h"
-#include "ProfileDestructorManager.h"
+#include "GarbageCollector/ProfileDestructorManager.h"
 #include "Reconstruction3D/Reconstruction3D.h"
 
 #include <OpenMesh/Core/IO/MeshIO.hh>

@@ -2,7 +2,7 @@
 #include <cmath>
 
 Plan::Plan(Vertex *vertex1, Vertex *vertex2, Profile *profile)
-    :pointX(vertex1->getX()), pointY(vertex1->getY()), pointZ(vertex1->getZ())
+    :pointX(vertex1->getX()), pointY(vertex1->getY()), pointZ(vertex1->getZ()), GarbageCollectorObject()
     , normalX(0.0f), normalY(0.0f), normalZ(1.0f)
     , pointX2(vertex2->getX()), pointY2(vertex2->getY()), pointZ2(vertex2->getZ())
     , profile(profile), vertex(vertex1)
@@ -13,17 +13,22 @@ Plan::Plan(Vertex *vertex1, Vertex *vertex2, Profile *profile)
 Plan::Plan(Plan* oldPlan, Vertex* vertex1, Profile* profile)
     :normalX(0.0f), normalY(0.0f), normalZ(1.0f)
     , profile(profile), vertex(vertex1), pointX(oldPlan->pointX), pointY(oldPlan->pointY), pointZ(oldPlan->pointZ),
-      pointX2(oldPlan->pointX2), pointY2(oldPlan->pointY2), pointZ2(oldPlan->pointZ2)
+      pointX2(oldPlan->pointX2), pointY2(oldPlan->pointY2), pointZ2(oldPlan->pointZ2), GarbageCollectorObject()
 {
 
 }
 
 Plan::Plan(float vertexX, float vertexY, float vertexZ,
            float normalX, float normalY, float normalZ)
-    :normalX(normalX), normalY(normalY), normalZ(normalZ)
+    :normalX(normalX), normalY(normalY), normalZ(normalZ), GarbageCollectorObject()
 
 {
     vertex = new Vertex(vertexX, vertexY, vertexZ);
+    GeneralDestructorManager::putObject(vertex);
+}
+
+Plan::~Plan() {
+
 }
 
 Intersection Plan::intersect3Plans(Plan* plan2, Plan* plan3)

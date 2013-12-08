@@ -15,7 +15,7 @@ TEMPLATE = app
 SOURCES +=\
     Main.cpp \
     FloorPlanAndProfileExtractor.cpp \
-    ProfileDestructorManager.cpp \
+    GarbageCollector/ProfileDestructorManager.cpp \
     Utils.cpp \
     MeshManager.cpp \
     Test.cpp \
@@ -33,7 +33,8 @@ SOURCES +=\
     Reconstruction3D/Plan.cpp \
     Reconstruction3D/ActivePlan.cpp \
     Reconstruction3D/Chains.cpp \
-    GUI/AllChainScene.cpp
+    GUI/AllChainScene.cpp \
+    GarbageCollector/GeneralDestructorManager.cpp
     #Reconstruction3D_old/Reconstruction3D.cpp \
     #Reconstruction3D_old/Plan.cpp \
     #Reconstruction3D_old/Chain.cpp \
@@ -43,7 +44,7 @@ SOURCES +=\
 
 HEADERS  += \
     FloorPlanAndProfileExtractor.h \
-    ProfileDestructorManager.h \
+    GarbageCollector/ProfileDestructorManager.h \
     Utils.h \
     MeshManager.h \
     Test.h \
@@ -64,7 +65,9 @@ HEADERS  += \
     Reconstruction3D/ActivePlan.h \
     Reconstruction3D/Chains.h \
     Reconstruction3D/ChainOrientationComparator.h \
-    GUI/AllChainScene.h
+    GUI/AllChainScene.h \
+    GarbageCollector/GarbageCollectorObject.h \
+    GarbageCollector/GeneralDestructorManager.h
     #Reconstruction3D_old/Reconstruction3D.h \
     #Reconstruction3D_old/Plan.h \
     #Reconstruction3D_old/Intersection.h \

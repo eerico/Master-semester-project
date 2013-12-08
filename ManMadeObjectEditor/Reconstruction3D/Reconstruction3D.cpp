@@ -15,6 +15,7 @@ Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize
 Reconstruction3D::~Reconstruction3D()
 {
     delete priorityQueue;
+    GeneralDestructorManager::deleteObject();
 }
 
 void Reconstruction3D::reconstruct()
@@ -32,13 +33,17 @@ void Reconstruction3D::reconstruct()
     //main loop
     addEdgeDirectionEvent();
 
-    computeIntersection();
-
-    while(priorityQueue->size() > 0) {
-        Intersection event = priorityQueue->top();
-        priorityQueue->pop();
-        handleEvent(event);
-    }
+    int numberIteration(0);
+    int numberMaxIteration = 10;
+    do{
+        computeIntersection();
+        while(priorityQueue->size() > 0) {
+            Intersection event = priorityQueue->top();
+            priorityQueue->pop();
+            handleEvent(event);
+        }
+        numberIteration++;
+    }while((numberIteration < numberMaxIteration) && (activePlan->numberValidEdge() > 0));
 
     //reset to inital state
     Vertex* currentVertex = floorPlan;
@@ -46,6 +51,8 @@ void Reconstruction3D::reconstruct()
         currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
         currentVertex = currentVertex->getNeighbor2();
     }
+
+    delete activePlan;
 }
 
 void Reconstruction3D::computeIntersection()
@@ -68,7 +75,6 @@ void Reconstruction3D::computeIntersection()
             }
         }
     }
-
 }
 
 Intersection Reconstruction3D::intersect(Edge *edge1, Edge *edgeNeighbor1, Edge *edgeNeighbor2) ////////////////////////
@@ -152,6 +158,7 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
             computeIntersection();
 
 
+            delete intersection.edgeVector;
 
             ///////////////////////////////////////////////////////////
             /*std::vector< Edge* > tmp;
@@ -175,12 +182,14 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
 
 
             if(!generalEventClustering(intersection)) {
+                delete intersection.edgeVector;
                 return;
             }
 
-            activePlan->filteringInvalidEvent2(intersection, activePlanDebug);
+            activePlan->filteringInvalidEvent2(intersection);
 
             if(intersection.edgeVector->size() < 3) {
+                delete intersection.edgeVector;
                 return;
             }
 
@@ -245,7 +254,11 @@ void Reconstruction3D::handleEvent(Intersection& intersection)
 
             chainList->getChains(chainsDebug2);
 
+            delete chainList;
+
             activePlan->getActivePlanCopy(activePlanDebug);
+
+            delete intersection.edgeVector;
 
             break;
         }
