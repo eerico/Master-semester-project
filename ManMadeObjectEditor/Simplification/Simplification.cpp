@@ -2,8 +2,8 @@
 
 // Simplification algorithm based on the Ramer–Douglas–Peucker algorithm
 
-Simplification::Simplification(std::vector<Curve *> *curveArray, MeshManager* meshManager)
-    :curveArray(curveArray), epsilon(0.01f), meshManager(meshManager)
+Simplification::Simplification(std::vector<Curve *> *curveArray, MeshManager* meshManager, float threshold)
+    :curveArray(curveArray), threshold(threshold), meshManager(meshManager)
 {
 
 }
@@ -42,7 +42,7 @@ void Simplification::simplify(Curve* curve) {
         iterator = iterator->getNeighbor2();
     }
 
-    if((maxDistance > epsilon) && (farthestVertex != 0)) {
+    if((maxDistance > threshold) && (farthestVertex != 0)) {
         Edge* previousEdge = farthestVertex->getEdge1();
         Edge* nextEdge = farthestVertex->getEdge2();
         Vertex* vertex1 = farthestVertex->getNeighbor1();

@@ -12,13 +12,13 @@
 class Simplification
 {
 public:
-    Simplification(std::vector< Curve* >* curveArray, MeshManager* meshManager);
+    Simplification(std::vector< Curve* >* curveArray, MeshManager* meshManager, float threshold);
 
     void simplify();
 
 private:
     std::vector< Curve* >* curveArray;
-    float epsilon;
+    float threshold;
     MeshManager* meshManager;
 
     void simplify(Curve* curve);

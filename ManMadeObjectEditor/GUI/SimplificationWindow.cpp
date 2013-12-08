@@ -9,9 +9,21 @@ SimplificationWindow::SimplificationWindow(MeshManager* meshManager)
 
     gridLayout = new QGridLayout;
     hBoxLayout = new QHBoxLayout;
+    formLayout = new QFormLayout;
+
     this->setLayout(gridLayout);
     gridLayout->addWidget(view, 0, 0);
-    gridLayout->addLayout(hBoxLayout, 1, 0);
+
+    thresholdBox = new QDoubleSpinBox;
+    thresholdBox->setRange(0.0, 2.0);
+    thresholdBox->setSingleStep(0.01);
+    thresholdBox->setValue(0.01);
+    thresholdBox->setDecimals(2);
+
+    formLayout->addRow("Threshold: ", thresholdBox);
+
+    gridLayout->addLayout(formLayout, 1, 0);
+    gridLayout->addLayout(hBoxLayout, 2, 0);
 
     okButton = new QPushButton("Ok");
     cancelButton = new QPushButton("Cancel");
@@ -30,21 +42,19 @@ SimplificationWindow::~SimplificationWindow(){
     delete view;
     delete gridLayout;
     delete hBoxLayout;
+    delete formLayout;
 
     delete okButton;
     delete cancelButton;
+
+    delete thresholdBox;
+    delete thresholdLabel;
 }
 
 void SimplificationWindow::ok(){
-    // Do/call the simplification algorithm
-    // on met l algo dans mesh manager et il va faire comme si un nouveau
-    // floorplan a été load. Bien plus simple.
-    // On va modifier le floorplan a traver la view et ensuite la reload
-
     scene->revertColor();
 
-    std::cerr << "array size: " << curveArray.size() << std::endl;
-    Simplification simplification(&curveArray, meshManager);
+    Simplification simplification(&curveArray, meshManager, thresholdBox->value());
     simplification.simplify();
 
 

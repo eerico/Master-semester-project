@@ -110,17 +110,28 @@ void SimplificationScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) 
                     }
                 } else {
                     if(iterator != currentCurve->begin) {
-                        //we finish the current curve
-                        currentCurve->end = iterator;
-                        curveArray->push_back(currentCurve);
+                        //check validity of the curve
+                        Vertex* iterator2 = currentCurve->begin->getNeighbor2();
+                        bool curveValid = true;
+                        // check if all vertices between the begining and the end are valid
+                        while(iterator2 != iterator) {
+                            if(!iterator2->isValid()) {
+                                curveValid = false;
+                            }
+                            iterator2 = iterator2->getNeighbor2();
+                        }
 
-                        //update the color indication between the begin vertex and the end vertex
-                        updateSceneEllipseAndLineColor();
+                        if(curveValid) {
+                            //we finish the current curve
+                            currentCurve->end = iterator;
+                            curveArray->push_back(currentCurve);
 
-                        // construct the next curve
-                        currentCurve = new Curve;
-                        currentCurve->begin = iterator;
-                        currentCurve->color.setRgb(std::rand()%256, std::rand()%256, std::rand()%256);
+                            //update the color indication between the begin vertex and the end vertex
+                            updateSceneEllipseAndLineColor();
+
+                            // construct the next curve
+                            currentCurve = new Curve;
+                        }
                     }
                 }
                 break;

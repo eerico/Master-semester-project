@@ -8,6 +8,9 @@
 #include <QPushButton>
 #include "../Simplification/Curve.h"
 #include "../Simplification/Simplification.h"
+#include <QDoubleSpinBox>
+#include <QLabel>
+#include <QFormLayout>
 
 class SimplificationWindow: public QDialog
 {
@@ -28,6 +31,7 @@ private:
     BasicQGraphicsView* view;
     QGridLayout* gridLayout;
     QHBoxLayout* hBoxLayout;
+    QFormLayout* formLayout;
 
     QPushButton* okButton;
     QPushButton* cancelButton;
@@ -37,6 +41,9 @@ private:
     void closeEvent(QCloseEvent* event);
 
     std::vector< Curve* > curveArray;
+
+    QDoubleSpinBox* thresholdBox;
+    QLabel* thresholdLabel;
 };
 
 #endif // SIMPLIFICATIONWINDOW_H
