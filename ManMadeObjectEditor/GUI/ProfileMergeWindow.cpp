@@ -78,16 +78,20 @@ void ProfileMergeWindow::merge(){
 
             if(currentProfile == profileToMerge1 || currentProfile == profileToMerge2) {
                 currentEdge->setProfile(newMergedProfile);
+
+                QGraphicsLineItem* lineItem = currentEdge->getLineItem();
+                QPen linePen = lineItem->pen();
+                linePen.setColor(*newMergedProfile->getProfileColorIdentification());
+                lineItem->setPen(linePen);
             }
 
             iterator = iterator->getNeighbor2();
         }
 
+        meshManager->setCurrentProfile(newMergedProfile);
         meshManager->emitDrawWithoutDeleteOldProfile();
-
-        /*meshManager->setCurrentProfile(newMergedProfile);
-        meshManager->emitNewFloorPlan();
-        meshManager->setUpdateOnMesh();*/
+        meshManager->emitUpdateColorIndicationGUI();
+        meshManager->setUpdateOnMesh();
     } else if(profileToMerge1 != 0 || profileToMerge2 != 0) {
         if(meshManager->getCurrentProfile() != 0) {
             meshManager->emitDrawWithoutDeleteOldProfile();

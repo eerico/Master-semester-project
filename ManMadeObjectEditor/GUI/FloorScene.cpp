@@ -360,7 +360,7 @@ void FloorScene::loadFloorPlan() {
     float x(0.0f);
     float y(0.0f);
     Vertex* currentVertex = floorplan;
-    
+
     // go through the vertices of the floor plan, create and draw their ellipse
     for (unsigned int i(0); i < floorPlanSize; ++i) {
         x = currentVertex->getX();

@@ -370,3 +370,7 @@ void MeshManager::setMergeOptionRunning(bool running) {
 bool MeshManager::isMergeOptionRunning() {
     return mergeOptionRunning;
 }
+
+void MeshManager::emitUpdateColorIndicationGUI()  {
+    emit updateColorIndicationGUI();
+}

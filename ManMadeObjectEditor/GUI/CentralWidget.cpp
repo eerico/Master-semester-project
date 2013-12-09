@@ -66,6 +66,8 @@ CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
 
     QObject::connect(meshManager, SIGNAL(newProfileSelected()), profileScene, SLOT(newProfileSelected()));
 
+    QObject::connect(meshManager, SIGNAL(updateColorIndicationGUI()), this, SLOT(changeProfileColorIndication()));
+
     this->setLayout(layout);
     this->setMinimumSize(QSize(300, 170));
 }

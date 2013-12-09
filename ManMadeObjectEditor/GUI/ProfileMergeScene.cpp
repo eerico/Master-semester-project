@@ -36,30 +36,31 @@ void ProfileMergeScene::loadProfile() {
     Edge* currentEdgeSelected = meshManager->getEdgeSelected();
     Edge* previousEdgeSelected = meshManager->getPreviousEdgeSelected();
 
+    if(currentEdgeSelected != 0 && previousEdgeSelected != 0) {
+        // we dont want to merge the same profiles
+        if(currentEdgeSelected->getProfile() == previousEdgeSelected->getProfile()) {
+            return;
+        }
+    }
+
     if(firstScene) {
         if(currentEdgeSelected != 0) {
             profile = currentEdgeSelected ->getProfile();
-            // we dont want to merge the same profiles
-            /*if(previousEdgeSelected != 0) {
-                if(profile == previousEdgeSelected->getProfile()) {
-                    return;
-                }
-            } else {
-                return;
-            }*/
         } else {
             return;
         }
     } else {
         if(previousEdgeSelected != 0 && currentEdgeSelected != 0) {
             profile = previousEdgeSelected->getProfile();
-            /*// we dont want to merge the same profiles
-            if(profile == currentEdgeSelected->getProfile()){
-                return;
-            }*/
         } else {
             return;
         }
+    }
+
+    if(firstScene) {
+        std::cerr << "load 1" << std::endl;
+    } else {
+        std::cerr << "load 2" << std::endl;
     }
 
     profileToRevertColor.push_back(profile);

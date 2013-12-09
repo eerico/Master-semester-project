@@ -119,6 +119,8 @@ public:
     void setMergeOptionRunning(bool running);
     bool isMergeOptionRunning();
 
+    void emitUpdateColorIndicationGUI();
+
 signals:
     /**
      * @brief newFloorPlan
@@ -133,6 +135,8 @@ signals:
     void drawWithoutDeleteOldProfile();
 
     void newEdgeSelected();
+
+    void updateColorIndicationGUI();
 
 public slots:
     void createNewProfileForSelectedEdge();
