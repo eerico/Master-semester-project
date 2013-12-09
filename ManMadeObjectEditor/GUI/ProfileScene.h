@@ -104,8 +104,6 @@ private:
 
     // The vertex that is currently being moved
     Vertex* currentlyMovingVertex;
-
-    float sceneScaling;
 };
 
 #endif // PROFILESCENE_H
