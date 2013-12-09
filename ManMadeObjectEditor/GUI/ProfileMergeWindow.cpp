@@ -79,9 +79,6 @@ void ProfileMergeWindow::closeEvent(QCloseEvent *event) {
 }
 
 void ProfileMergeWindow::updateScenes() {
-    scene->revert();
-    scene2->revert();
-
     scene->updateProfileSelected();
     scene2->updateProfileSelected();
 }

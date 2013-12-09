@@ -28,6 +28,8 @@ private:
     QPen oldEllipsePen;
     QBrush oldEllipseBrush;
     QPen oldLinePen;
+
+    std::vector<Profile*> profileToRevertColor;
 };
 
 #endif // PROFILEMERGESCENE_H

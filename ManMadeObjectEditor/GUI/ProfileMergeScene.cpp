@@ -15,18 +15,17 @@ ProfileMergeScene::ProfileMergeScene(std::vector<Vertex *> *newProfile, MeshMana
 }
 
 void ProfileMergeScene::revert() {
-    // revert color if needed
-    if(profile != 0) {
+    foreach(Profile* profile, profileToRevertColor) {
         Vertex* iterator = profile->getProfileVertex();
         while(iterator != 0) {
             QGraphicsEllipseItem* ellipse = iterator->getEllipse();
-            this->removeItem(ellipse);
+            //this->removeItem(ellipse);
             ellipse->setPen(oldEllipsePen);
             ellipse->setBrush(oldEllipseBrush);
 
             if(iterator->getNeighbor2() != 0) {
                 QGraphicsLineItem* lineItem = iterator->getEdge2()->getLineItem();
-                this->removeItem(lineItem);
+                //this->removeItem(lineItem);
                 lineItem->setPen(oldLinePen);
             }
 
@@ -62,6 +61,8 @@ void ProfileMergeScene::loadProfile() {
             return;
         }
     }
+
+    profileToRevertColor.push_back(profile);
 
     Vertex* iterator = profile->getProfileVertex();
     while(iterator != 0) {
@@ -116,56 +117,50 @@ void ProfileMergeScene::loadProfile() {
 }
 
 void ProfileMergeScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
+    Edge* currentEdgeSelected = meshManager->getEdgeSelected();
+    Edge* previousEdgeSelected = meshManager->getPreviousEdgeSelected();
+
+    if(currentEdgeSelected == 0 || previousEdgeSelected == 0) {
+        return;
+    } else if (currentEdgeSelected->getProfile() == previousEdgeSelected->getProfile()) {
+        return;
+    }
+
+
     if (mouseEvent->button() ==  Qt::RightButton){
-        /*Profile* profile = meshManager->getCurrentProfile();
+        Profile* profile = meshManager->getCurrentProfile();
         Vertex* iterator = profile->getProfileVertex();
 
         // find on which vertex we have clicked
         while(iterator != 0){
             QGraphicsEllipseItem* ellipse = iterator->getEllipse();
             if (ellipse->isUnderMouse() && iterator->isValid()){
-                if(currentCurve->begin == 0) {
-                    // we start a new curve
-                    currentCurve->begin = iterator;
-                    currentCurve->color.setRgb(std::rand()%256, std::rand()%256, std::rand()%256);
-
-                    QPen pen = ellipse->pen();
-                    pen.setColor(currentCurve->color);
-                    ellipse->setPen(pen);
-
-                    iterator->invalid();
-                } else {
-                    //check validity of the curve
-                    Vertex* iterator2 = currentCurve->begin->getNeighbor2();
-                    bool curveValid = true;
-                    // check if all vertices between the begining and the end are valid
-                    while(iterator2 != iterator && iterator2 != 0) {
-                        if(!iterator2->isValid()) {
-                            curveValid = false;
-                        }
-                        iterator2 = iterator2->getNeighbor2();
-                    }
-                    if(iterator2 == 0) {
-                        // we didnt find the end
-                        curveValid = false;
-                    }
-
-                    if(curveValid) {
-                        //we finish the current curve
-                        currentCurve->end = iterator;
-                        curveArray->push_back(currentCurve);
-
-                        //update the color indication between the begin vertex and the end vertex
-                        updateSceneEllipseAndLineColor();
-
-                        // construct the next curve
-                        currentCurve = new Curve;
+                //check validity (monotonicity => nothing at the same height)
+                bool valid = true;
+                foreach(Vertex* vertex, *newProfile) {
+                    if(vertex->getY() == iterator->getY()) {
+                        valid = false;
+                        break;
                     }
                 }
+
+                if(valid) {
+                    newProfile->push_back(iterator);
+                    iterator->invalid();
+
+                    QPen pen = ellipse->pen();
+                    pen.setColor(Qt::blue);
+                    ellipse->setPen(pen);
+
+                    QBrush brush = ellipse->brush();
+                    brush.setColor(Qt::white);
+                    ellipse->setBrush(brush);
+                }
+
                 break;
             }
             iterator = iterator->getNeighbor2();
-        }*/
+        }
     }
 }
 
