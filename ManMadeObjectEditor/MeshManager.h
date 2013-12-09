@@ -113,6 +113,12 @@ public:
 
     void emitDrawWithoutDeleteOldProfile();
 
+    Edge* getEdgeSelected();
+    Edge* getPreviousEdgeSelected();
+
+    void setMergeOptionRunning(bool running);
+    bool isMergeOptionRunning();
+
 signals:
     /**
      * @brief newFloorPlan
@@ -125,6 +131,8 @@ signals:
     void newProfileSelected();
 
     void drawWithoutDeleteOldProfile();
+
+    void newEdgeSelected();
 
 public slots:
     void createNewProfileForSelectedEdge();
@@ -171,6 +179,10 @@ private:
     std::vector< std::vector< Edge* > > activePlandebug;
 
     Edge* edgeSelected;
+
+    Edge* previousEdgeSelected;
+
+    bool mergeOptionRunning;
 };
 
 #endif // MESH_H

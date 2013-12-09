@@ -1,5 +1,6 @@
 #ifndef SIMPLIFICATIONWINDOW_H
 #define SIMPLIFICATIONWINDOW_H
+
 #include <QDialog>
 #include "BasicQGraphicsView.h"
 #include "SimplificationScene.h"

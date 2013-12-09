@@ -39,7 +39,9 @@ SOURCES +=\
     Simplification/Simplification.cpp \
     GUI/SimplificationFloorPlanScene.cpp \
     GUI/SimplificationProfileScene.cpp \
-    GUI/SimplificationScene.cpp
+    GUI/SimplificationScene.cpp \
+    GUI/ProfileMergeWindow.cpp \
+    GUI/ProfileMergeScene.cpp
     #Reconstruction3D_old/Reconstruction3D.cpp \
     #Reconstruction3D_old/Plan.cpp \
     #Reconstruction3D_old/Chain.cpp \
@@ -88,7 +90,9 @@ HEADERS  += \
     Simplification/Simplification.h \
     GUI/SimplificationFloorPlanScene.h \
     GUI/SimplificationProfileScene.h \
-    GUI/SimplificationScene.h
+    GUI/SimplificationScene.h \
+    GUI/ProfileMergeWindow.h \
+    GUI/ProfileMergeScene.h
 
 #QT *= xml opengl
 

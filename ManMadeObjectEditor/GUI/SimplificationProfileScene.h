@@ -6,7 +6,6 @@
 #include "../Simplification/Curve.h"
 #include <vector>
 #include <QGraphicsSceneMouseEvent>
-#include <QKeyEvent>
 
 class SimplificationProfileScene : public SimplificationScene
 {

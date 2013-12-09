@@ -342,8 +342,10 @@ void FloorScene::basicCircle(QPoint * mousePos, int numSample) {
 }
 
 void FloorScene::newProfileSelected(Profile * p) {
-    meshManager->setCurrentProfile(p);
-    emit newProfileSelected();
+    if(!meshManager->isMergeOptionRunning()) {
+        meshManager->setCurrentProfile(p);
+        emit newProfileSelected();
+    }
 }
 
 void FloorScene::loadFloorPlan() {

@@ -15,6 +15,7 @@
 #include "../MeshManager.h"
 #include <QFileInfo>
 #include "SimplificationWindow.h"
+#include "ProfileMergeWindow.h"
 
 /**
  * @brief The FloorAndProfileViewer class
@@ -86,6 +87,10 @@ public slots:
 
     void closeSimplificationWindow();
 
+    void createProfileMergeWindow();
+
+    void closeProfileMergeWindow();
+
     void  saveXML();
 
 signals:
@@ -133,8 +138,10 @@ private:
     QAction* addNewProfileAction;
     QAction* floorPlanSimplificationAction;
     QAction* profileSimplificationAction;
+    QAction* profileMergeAction;
 
     SimplificationWindow* simplificationWindow;
+    ProfileMergeWindow* profileMergeWindow;
 };
 
 #endif // FLOORANDPROFILEVIEWER_H

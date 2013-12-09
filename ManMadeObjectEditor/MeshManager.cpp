@@ -4,7 +4,7 @@
 
 MeshManager::MeshManager()
     : inputMesh(0), floorPlan(0), updateOnMesh(false), longUpdateOnMesh(false), floorPlanSize(0)
-    , edgeSelected(0), currentProfile(0)
+    , edgeSelected(0), previousEdgeSelected(0), currentProfile(0), mergeOptionRunning(false)
 {
     points = new std::vector<qglviewer::Vec* >;
     triangles = new std::vector<qglviewer::Vec* >;
@@ -216,6 +216,7 @@ void MeshManager::loadMesh(QString fileName) {
     plans.clear();
 
     edgeSelected = 0;
+    previousEdgeSelected = 0;
 
     // we will delete the previous profiles after having loaded the new profiles
     ProfileDestructorManager::swap();
@@ -299,7 +300,12 @@ void MeshManager::createNewProfileForSelectedEdge() {
 }
 
 void MeshManager::setEdgeSelected(Edge* edge) {
+    previousEdgeSelected = edgeSelected;
     edgeSelected = edge;
+
+    if(mergeOptionRunning) {
+        emit newEdgeSelected();
+    }
 }
 
 
@@ -342,4 +348,20 @@ void MeshManager::deleteOldDebugData() {
         }
     }
     activePlandebug.clear();
+}
+
+Edge* MeshManager::getEdgeSelected() {
+    return edgeSelected;
+}
+
+Edge* MeshManager::getPreviousEdgeSelected() {
+    return previousEdgeSelected;
+}
+
+void MeshManager::setMergeOptionRunning(bool running) {
+    mergeOptionRunning = running;
+}
+
+bool MeshManager::isMergeOptionRunning() {
+    return mergeOptionRunning;
 }

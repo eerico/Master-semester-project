@@ -64,6 +64,7 @@ CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
     QObject::connect(meshManager, SIGNAL(newProfileCreatedForSelectedEdge()), this, SLOT(changeProfileColorIndication()));
     QObject::connect(meshManager, SIGNAL(drawWithoutDeleteOldProfile()), profileScene, SLOT(drawWithoutDeleteOldProfile()));
 
+    QObject::connect(meshManager, SIGNAL(newProfileSelected()), profileScene, SLOT(newProfileSelected()));
 
     this->setLayout(layout);
     this->setMinimumSize(QSize(300, 170));

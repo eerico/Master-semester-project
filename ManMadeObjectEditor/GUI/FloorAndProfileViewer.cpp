@@ -1,7 +1,7 @@
 #include "FloorAndProfileViewer.h"
 
 FloorAndProfileViewer::FloorAndProfileViewer()
-    : QMainWindow(), simplificationWindow(0)
+    : QMainWindow(), simplificationWindow(0), profileMergeWindow(0)
 {
     // all main data will be computed and accessed through this object
     meshManager = new MeshManager();
@@ -39,6 +39,7 @@ FloorAndProfileViewer::~FloorAndProfileViewer()
     delete addNewProfileAction;
     delete floorPlanSimplificationAction;
     delete profileSimplificationAction;
+    delete profileMergeAction;
     delete meshManager;
     delete objViewer;
 }
@@ -130,6 +131,12 @@ void FloorAndProfileViewer::createEditMenu() {
     profileSimplificationAction = new QAction(tr("&Profile Simplification"), this);
     editMenu->addAction(profileSimplificationAction);
     QObject::connect(profileSimplificationAction, SIGNAL(triggered()), this, SLOT(createSimplificationProfileWindow()));
+
+    profileMergeAction = new QAction(tr("&Merge Profiles"), this);
+    editMenu->addAction(profileMergeAction);
+    QObject::connect(profileMergeAction, SIGNAL(triggered()), this, SLOT(createProfileMergeWindow()));
+
+
 }
 
 void FloorAndProfileViewer::aboutQtMessageBox() {
@@ -169,7 +176,7 @@ void FloorAndProfileViewer::openFile() {
 }
 
 void FloorAndProfileViewer::createSimplificationFloorPlanWindow() {
-    if(simplificationWindow == 0) {
+    if(simplificationWindow == 0 && profileMergeWindow == 0) {
         if(meshManager->getFloorPlanSize() > 0) {
             simplificationWindow = new SimplificationWindow(meshManager, true);
             simplificationWindow->show();
@@ -179,7 +186,7 @@ void FloorAndProfileViewer::createSimplificationFloorPlanWindow() {
 }
 
 void FloorAndProfileViewer::createSimplificationProfileWindow() {
-    if(simplificationWindow == 0) {
+    if(simplificationWindow == 0 && profileMergeWindow == 0) {
         if(meshManager->getCurrentProfile() != 0) {
             simplificationWindow = new SimplificationWindow(meshManager, false);
             simplificationWindow->show();
@@ -191,6 +198,23 @@ void FloorAndProfileViewer::createSimplificationProfileWindow() {
 void FloorAndProfileViewer::closeSimplificationWindow() {
     QObject::disconnect(simplificationWindow, SIGNAL(closeSignal()), this, SLOT(closeSimplificationWindow()));
     simplificationWindow = 0;
+}
+
+void FloorAndProfileViewer::createProfileMergeWindow() {
+    if(profileMergeWindow == 0 && simplificationWindow == 0) {
+        if(meshManager->getFloorPlanSize() > 0) {
+            meshManager->setMergeOptionRunning(true);
+            profileMergeWindow = new ProfileMergeWindow(meshManager);
+            profileMergeWindow->show();
+            QObject::connect(profileMergeWindow, SIGNAL(closeSignal()), this, SLOT(closeProfileMergeWindow()));
+        }
+    }
+}
+
+void FloorAndProfileViewer::closeProfileMergeWindow() {
+    QObject::disconnect(profileMergeWindow, SIGNAL(closeSignal()), this, SLOT(closeProfileMergeWindow()));
+    profileMergeWindow = 0;
+    meshManager->setMergeOptionRunning(false);
 }
 
 void FloorAndProfileViewer::saveXML() {
@@ -228,6 +252,12 @@ void FloorAndProfileViewer::clearFile() {
         simplificationWindow = 0;
     }
 
+    if(profileMergeWindow != 0) {
+        profileMergeWindow->hide();;
+        delete profileMergeWindow;
+        profileMergeWindow = 0;
+    }
+
     this->menuBar()->clear();
     delete openAction;
     delete clearAction;
@@ -241,6 +271,7 @@ void FloorAndProfileViewer::clearFile() {
     delete addNewProfileAction;
     delete floorPlanSimplificationAction;
     delete profileSimplificationAction;
+    delete profileMergeAction;
 
     delete centralWidget;
     delete meshManager;
