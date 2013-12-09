@@ -57,12 +57,6 @@ void ProfileMergeScene::loadProfile() {
         }
     }
 
-    if(firstScene) {
-        std::cerr << "load 1" << std::endl;
-    } else {
-        std::cerr << "load 2" << std::endl;
-    }
-
     profileToRevertColor.push_back(profile);
 
     Vertex* iterator = profile->getProfileVertex();
