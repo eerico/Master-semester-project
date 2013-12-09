@@ -9,6 +9,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include "../MeshManager.h"
+#include "../GarbageCollector/ProfileDestructorManager.h"
 
 
 class ProfileMergeWindow: public QDialog
@@ -45,6 +46,14 @@ private:
     std::vector<Vertex* > newProfile;
 
     void closeEvent(QCloseEvent* event);
+
+
+    struct VertexComparator
+    {
+        bool operator()(Vertex* vertex1, Vertex* vertex2){
+            return vertex1->getY() < vertex2->getY();
+        }
+    };
 };
 
 #endif // PROFILEMERGEWINDOW_H

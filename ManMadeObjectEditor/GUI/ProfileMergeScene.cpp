@@ -19,13 +19,11 @@ void ProfileMergeScene::revert() {
         Vertex* iterator = profile->getProfileVertex();
         while(iterator != 0) {
             QGraphicsEllipseItem* ellipse = iterator->getEllipse();
-            //this->removeItem(ellipse);
             ellipse->setPen(oldEllipsePen);
             ellipse->setBrush(oldEllipseBrush);
 
             if(iterator->getNeighbor2() != 0) {
                 QGraphicsLineItem* lineItem = iterator->getEdge2()->getLineItem();
-                //this->removeItem(lineItem);
                 lineItem->setPen(oldLinePen);
             }
 
@@ -42,21 +40,23 @@ void ProfileMergeScene::loadProfile() {
         if(currentEdgeSelected != 0) {
             profile = currentEdgeSelected ->getProfile();
             // we dont want to merge the same profiles
-            if(previousEdgeSelected != 0) {
+            /*if(previousEdgeSelected != 0) {
                 if(profile == previousEdgeSelected->getProfile()) {
                     return;
                 }
-            }
+            } else {
+                return;
+            }*/
         } else {
             return;
         }
     } else {
         if(previousEdgeSelected != 0 && currentEdgeSelected != 0) {
             profile = previousEdgeSelected->getProfile();
-            // we dont want to merge the same profiles
+            /*// we dont want to merge the same profiles
             if(profile == currentEdgeSelected->getProfile()){
                 return;
-            }
+            }*/
         } else {
             return;
         }
@@ -128,9 +128,7 @@ void ProfileMergeScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
 
 
     if (mouseEvent->button() ==  Qt::RightButton){
-        Profile* profile = meshManager->getCurrentProfile();
         Vertex* iterator = profile->getProfileVertex();
-
         // find on which vertex we have clicked
         while(iterator != 0){
             QGraphicsEllipseItem* ellipse = iterator->getEllipse();
@@ -142,6 +140,9 @@ void ProfileMergeScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
                         valid = false;
                         break;
                     }
+                }
+                if(iterator->getY() == 0) {
+                    valid = false;
                 }
 
                 if(valid) {
@@ -168,3 +169,6 @@ void ProfileMergeScene::updateProfileSelected() {
     loadProfile();
 }
 
+Profile* ProfileMergeScene::getProfileToMerge() {
+    return profile;
+}

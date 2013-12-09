@@ -13,6 +13,7 @@ public:
 
     void updateProfileSelected();
     void revert();
+    Profile* getProfileToMerge();
 private:
     void loadProfile();
     void mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent);

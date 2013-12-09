@@ -55,9 +55,43 @@ void ProfileMergeWindow::merge(){
     scene->revert();
     scene2->revert();
 
-    // TODO
-    if(meshManager->getCurrentProfile() != 0) {
+    Profile* profileToMerge1 = scene->getProfileToMerge();
+    Profile* profileToMerge2 = scene2->getProfileToMerge();
+
+    if(profileToMerge1 != 0 && profileToMerge2 != 0) {
+        Profile* newMergedProfile = new Profile(true);
+        ProfileDestructorManager::putProfile(newMergedProfile);
+
+        VertexComparator vertexComparator;
+        std::sort(newProfile.begin(), newProfile.end(), vertexComparator);
+
+        foreach(Vertex* vertex, newProfile) {
+            Vertex* vertexCopy = new Vertex(vertex->getX(), vertex->getY());
+            newMergedProfile->addVertexEnd(vertexCopy);
+        }
+
+        Vertex* iterator = meshManager->getFloorPlan();
+        unsigned int size = meshManager->getFloorPlanSize();
+        for(unsigned int i(0); i < size; ++i) {
+            Edge* currentEdge = iterator->getEdge2();
+            Profile* currentProfile = currentEdge->getProfile();
+
+            if(currentProfile == profileToMerge1 || currentProfile == profileToMerge2) {
+                currentEdge->setProfile(newMergedProfile);
+            }
+
+            iterator = iterator->getNeighbor2();
+        }
+
         meshManager->emitDrawWithoutDeleteOldProfile();
+
+        /*meshManager->setCurrentProfile(newMergedProfile);
+        meshManager->emitNewFloorPlan();
+        meshManager->setUpdateOnMesh();*/
+    } else if(profileToMerge1 != 0 || profileToMerge2 != 0) {
+        if(meshManager->getCurrentProfile() != 0) {
+            meshManager->emitDrawWithoutDeleteOldProfile();
+        }
     }
     close();
 }
@@ -66,8 +100,10 @@ void ProfileMergeWindow::cancel(){
     scene->revert();
     scene2->revert();
 
-    // TODO
-    if(meshManager->getCurrentProfile() != 0) {
+    Profile* profileToMerge1 = scene->getProfileToMerge();
+    Profile* profileToMerge2 = scene2->getProfileToMerge();
+
+    if(meshManager->getCurrentProfile() != 0 && (profileToMerge1 != 0 || profileToMerge2 != 0)) {
         meshManager->emitDrawWithoutDeleteOldProfile();
     }
     close();

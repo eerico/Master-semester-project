@@ -300,12 +300,14 @@ void MeshManager::createNewProfileForSelectedEdge() {
 }
 
 void MeshManager::setEdgeSelected(Edge* edge) {
-    previousEdgeSelected = edgeSelected;
-    edgeSelected = edge;
-
     if(mergeOptionRunning) {
+        previousEdgeSelected = edgeSelected;
+        edgeSelected = edge;
         emit newEdgeSelected();
+    } else {
+        edgeSelected = edge;
     }
+
 }
 
 
@@ -360,6 +362,9 @@ Edge* MeshManager::getPreviousEdgeSelected() {
 
 void MeshManager::setMergeOptionRunning(bool running) {
     mergeOptionRunning = running;
+    if(!running) {
+        previousEdgeSelected = 0;
+    }
 }
 
 bool MeshManager::isMergeOptionRunning() {
