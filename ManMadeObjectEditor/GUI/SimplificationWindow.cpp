@@ -2,8 +2,9 @@
 
 SimplificationWindow::SimplificationWindow(MeshManager* meshManager, bool floorPlanSimplification)
     :QDialog(0, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint )
-    , meshManager(meshManager), floorPlanSimplification(floorPlanSimplification)
+    , meshManager(meshManager), floorPlanSimplification(floorPlanSimplification), buttonPressed(false)
 {
+
     if(floorPlanSimplification) {
         scene = new SimplificationFloorPlanScene(meshManager, &curveArray);
     } else {
@@ -65,6 +66,7 @@ void SimplificationWindow::ok(){
     } else {
         simplification.simplifyProfile();
     }
+    buttonPressed = true;
     close();
 }
 
@@ -77,16 +79,22 @@ void SimplificationWindow::cancel(){
     } else {
         meshManager->emitDrawWithoutDeleteOldProfile();
     }
+    buttonPressed = true;
     close();
 }
 
 void SimplificationWindow::closeEvent(QCloseEvent *event) {
+
+    if(!buttonPressed){
+        scene->revertColor();
+
+        if(floorPlanSimplification) {
+            meshManager->emitNewFloorPlan();
+        } else {
+            meshManager->emitDrawWithoutDeleteOldProfile();
+        }
+    }
+
     emit closeSignal();
     event->accept();
-}
-
-void SimplificationWindow::keyPressEvent(QKeyEvent *e){
-    if(e->key() != Qt::Key_Escape){
-        QDialog::keyPressEvent(e);
-    }
 }

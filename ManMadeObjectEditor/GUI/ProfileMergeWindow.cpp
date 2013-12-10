@@ -2,7 +2,7 @@
 
 ProfileMergeWindow::ProfileMergeWindow(MeshManager *meshManager)
     :QDialog(0, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint )
-    , meshManager(meshManager)
+    , meshManager(meshManager), buttonPressed(false)
 {
     scene = new ProfileMergeScene(&newProfile, meshManager, true);
     scene2 = new ProfileMergeScene(&newProfile, meshManager, false);
@@ -97,6 +97,7 @@ void ProfileMergeWindow::merge(){
             meshManager->emitDrawWithoutDeleteOldProfile();
         }
     }
+    buttonPressed = true;
     close();
 }
 
@@ -110,10 +111,23 @@ void ProfileMergeWindow::cancel(){
     if(meshManager->getCurrentProfile() != 0 && (profileToMerge1 != 0 || profileToMerge2 != 0)) {
         meshManager->emitDrawWithoutDeleteOldProfile();
     }
+    buttonPressed = true;
     close();
 }
 
 void ProfileMergeWindow::closeEvent(QCloseEvent *event) {
+    if(!buttonPressed) {
+        scene->revert();
+        scene2->revert();
+
+        Profile* profileToMerge1 = scene->getProfileToMerge();
+        Profile* profileToMerge2 = scene2->getProfileToMerge();
+
+        if(meshManager->getCurrentProfile() != 0 && (profileToMerge1 != 0 || profileToMerge2 != 0)) {
+            meshManager->emitDrawWithoutDeleteOldProfile();
+        }
+    }
+
     emit closeSignal();
     event->accept();
 }
@@ -121,10 +135,4 @@ void ProfileMergeWindow::closeEvent(QCloseEvent *event) {
 void ProfileMergeWindow::updateScenes() {
     scene->updateProfileSelected();
     scene2->updateProfileSelected();
-}
-
-void ProfileMergeWindow::keyPressEvent(QKeyEvent *e){
-    if(e->key() != Qt::Key_Escape){
-        QDialog::keyPressEvent(e);
-    }
 }

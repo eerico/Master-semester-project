@@ -55,7 +55,7 @@ private:
         }
     };
 
-    void keyPressEvent(QKeyEvent *e);
+    bool buttonPressed;
 };
 
 #endif // PROFILEMERGEWINDOW_H

@@ -50,7 +50,7 @@ private:
 
     bool floorPlanSimplification;
 
-    void keyPressEvent(QKeyEvent *e);
+    bool buttonPressed;
 };
 
 #endif // SIMPLIFICATIONWINDOW_H
