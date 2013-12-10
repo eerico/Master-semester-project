@@ -49,6 +49,8 @@ private:
     QLabel* thresholdLabel;
 
     bool floorPlanSimplification;
+
+    void keyPressEvent(QKeyEvent *e);
 };
 
 #endif // SIMPLIFICATIONWINDOW_H

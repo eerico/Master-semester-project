@@ -54,6 +54,8 @@ private:
             return vertex1->getY() < vertex2->getY();
         }
     };
+
+    void keyPressEvent(QKeyEvent *e);
 };
 
 #endif // PROFILEMERGEWINDOW_H
