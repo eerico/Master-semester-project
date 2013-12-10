@@ -45,41 +45,47 @@ void Simplification::simplifyFloorPlan(Curve* curve) {
         iterator = iterator->getNeighbor2();
     }
 
-    if((maxDistance > threshold) && (farthestVertex != 0)) {
-        Edge* previousEdge = farthestVertex->getEdge1();
-        Edge* nextEdge = farthestVertex->getEdge2();
-        Vertex* vertex1 = farthestVertex->getNeighbor1();
-        Vertex* vertex2 = farthestVertex->getNeighbor2();
-
-        Edge* newEdge = new Edge(vertex1, vertex2, previousEdge->getProfile());
-        vertex1->setNeighbor2(vertex2);
-        vertex2->setNeighbor1(vertex1);
-        vertex1->setEdge2(newEdge);
-        vertex2->setEdge1(newEdge);
-
-        delete previousEdge;
-        delete nextEdge;
-        delete farthestVertex;
-
-        meshManager->decrementFloorPlanSize();
-        meshManager->setFloorPlan(vertex2);
-        meshManager->setCurrentProfile(nextEdge->getProfile());
+    if(maxDistance > threshold) {
 
         Curve* leftCurve = new Curve;
         leftCurve->begin = curve->begin;
-        leftCurve->end = vertex1;
-        leftCurve->size = index;
+        leftCurve->end = farthestVertex;
+        leftCurve->size = index + 1;
 
         Curve* rightCurve = new Curve;
-        rightCurve->begin = vertex2;
+        rightCurve->begin = farthestVertex;
         rightCurve->end = curve->end;
-        rightCurve->size = curve->size - 1 - index;
+        rightCurve->size = curve->size - index;
 
         simplifyFloorPlan(leftCurve);
         simplifyFloorPlan(rightCurve);
 
         delete leftCurve;
         delete rightCurve;
+    } else {
+        Profile* oldProfile = curve->begin->getEdge2()->getProfile();
+        delete curve->begin->getEdge2();
+        Vertex* iterator = curve->begin->getNeighbor2();
+        for(int i(0); i < curve->size - 2; ++i) {
+            Vertex* toDelete = iterator;
+            iterator = iterator->getNeighbor2();
+
+            delete toDelete->getEdge2();
+            delete toDelete;
+
+            meshManager->decrementFloorPlanSize();
+        }
+
+        Vertex* vertex1 = curve->begin;
+        Vertex* vertex2 = curve->end;
+        Edge* edge = new Edge(vertex1, vertex2, oldProfile);
+        vertex1->setEdge2(edge);
+        vertex2->setEdge1(edge);
+        vertex1->setNeighbor2(vertex2);
+        vertex2->setNeighbor1(vertex1);
+
+        meshManager->setFloorPlan(curve->begin);
+        meshManager->setCurrentProfile(oldProfile);
     }
 
     meshManager->setEdgeSelected(0);
@@ -121,39 +127,41 @@ void Simplification::simplifyProfile(Curve* curve) {
         iterator = iterator->getNeighbor2();
     }
 
-    if((maxDistance > threshold) && (farthestVertex != 0)) {
-        Edge* previousEdge = farthestVertex->getEdge1();
-        Edge* nextEdge = farthestVertex->getEdge2();
-        Vertex* vertex1 = farthestVertex->getNeighbor1();
-        Vertex* vertex2 = farthestVertex->getNeighbor2();
-
-        Edge* newEdge = new Edge(vertex1, vertex2);
-        vertex1->setNeighbor2(vertex2);
-        vertex2->setNeighbor1(vertex1);
-        vertex1->setEdge2(newEdge);
-        vertex2->setEdge1(newEdge);
-
-        newEdge->computeLineItem();
-
-        delete previousEdge;
-        delete nextEdge;
-        delete farthestVertex;
-
+    if(maxDistance > threshold) {
         Curve* leftCurve = new Curve;
         leftCurve->begin = curve->begin;
-        leftCurve->end = vertex1;
-        leftCurve->size = index;
+        leftCurve->end = farthestVertex;
+        leftCurve->size = index + 1;
 
         Curve* rightCurve = new Curve;
-        rightCurve->begin = vertex2;
+        rightCurve->begin = farthestVertex;
         rightCurve->end = curve->end;
-        rightCurve->size = curve->size - 1 - index;
+        rightCurve->size = curve->size - index;
 
         simplifyProfile(leftCurve);
         simplifyProfile(rightCurve);
 
         delete leftCurve;
         delete rightCurve;
+    } else {
+        delete curve->begin->getEdge2();
+        Vertex* iterator = curve->begin->getNeighbor2();
+        for(int i(0); i < curve->size - 2; ++i) {
+            Vertex* toDelete = iterator;
+            iterator = iterator->getNeighbor2();
+
+            delete toDelete->getEdge2();
+            delete toDelete;
+        }
+
+        Vertex* vertex1 = curve->begin;
+        Vertex* vertex2 = curve->end;
+        Edge* edge = new Edge(vertex1, vertex2);
+        vertex1->setEdge2(edge);
+        vertex2->setEdge1(edge);
+        vertex1->setNeighbor2(vertex2);
+        vertex2->setNeighbor1(vertex1);
+        edge->computeLineItem();
     }
 }
 
