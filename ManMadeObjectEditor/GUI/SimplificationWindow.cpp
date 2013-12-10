@@ -84,7 +84,6 @@ void SimplificationWindow::cancel(){
 }
 
 void SimplificationWindow::closeEvent(QCloseEvent *event) {
-
     if(!buttonPressed){
         scene->revertColor();
 
@@ -97,4 +96,10 @@ void SimplificationWindow::closeEvent(QCloseEvent *event) {
 
     emit closeSignal();
     event->accept();
+}
+
+void SimplificationWindow::keyPressEvent(QKeyEvent *e){
+    if(e->key() != Qt::Key_Escape){
+        QDialog::keyPressEvent(e);
+    }
 }

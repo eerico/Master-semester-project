@@ -132,6 +132,12 @@ void ProfileMergeWindow::closeEvent(QCloseEvent *event) {
     event->accept();
 }
 
+void ProfileMergeWindow::keyPressEvent(QKeyEvent *e){
+    if(e->key() != Qt::Key_Escape){
+        QDialog::keyPressEvent(e);
+    }
+}
+
 void ProfileMergeWindow::updateScenes() {
     scene->updateProfileSelected();
     scene2->updateProfileSelected();
