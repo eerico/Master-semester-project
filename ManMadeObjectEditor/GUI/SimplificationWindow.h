@@ -14,6 +14,8 @@
 #include <QDoubleSpinBox>
 #include <QLabel>
 #include <QFormLayout>
+#include <QSlider>
+#include "PreviewScene.h"
 
 class SimplificationWindow: public QDialog
 {
@@ -25,14 +27,18 @@ public:
 public slots:
     void ok();
     void cancel();
+    void valueSliderChanged(int thresholdValue);
 
 signals:
     void closeSignal();
 
 private:
     SimplificationScene* scene;
+    PreviewScene* previewScene;
     BasicQGraphicsView* view;
+    BasicQGraphicsView* previewView;
     QGridLayout* gridLayout;
+    QHBoxLayout* hBoxLayoutScene;
     QHBoxLayout* hBoxLayout;
     QFormLayout* formLayout;
 
@@ -45,8 +51,9 @@ private:
 
     std::vector< Curve* > curveArray;
 
-    QDoubleSpinBox* thresholdBox;
-    QLabel* thresholdLabel;
+    //QDoubleSpinBox* thresholdBox;
+
+    QSlider* thresholdSlider;
 
     bool floorPlanSimplification;
 

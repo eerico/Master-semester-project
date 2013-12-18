@@ -12,20 +12,33 @@ SimplificationWindow::SimplificationWindow(MeshManager* meshManager, bool floorP
     }
     view = new BasicQGraphicsView(scene);
 
+    previewScene = new PreviewScene;
+    previewView = new BasicQGraphicsView(previewScene);
+
     gridLayout = new QGridLayout;
+    hBoxLayoutScene = new QHBoxLayout;
     hBoxLayout = new QHBoxLayout;
     formLayout = new QFormLayout;
 
     this->setLayout(gridLayout);
-    gridLayout->addWidget(view, 0, 0);
+    gridLayout->addLayout(hBoxLayoutScene, 0, 0);
+    hBoxLayoutScene->addWidget(view);
+    hBoxLayoutScene->addWidget(previewView);
 
-    thresholdBox = new QDoubleSpinBox;
+    /*thresholdBox = new QDoubleSpinBox;
     thresholdBox->setRange(0.0, 2.0);
     thresholdBox->setSingleStep(0.01);
     thresholdBox->setValue(0.01);
-    thresholdBox->setDecimals(2);
+    thresholdBox->setDecimals(2);*/
 
-    formLayout->addRow("Threshold: ", thresholdBox);
+    thresholdSlider = new QSlider(Qt::Horizontal);
+    thresholdSlider->setRange(0, 200);
+    thresholdSlider->setSingleStep(1);
+    thresholdSlider->setValue(1);
+
+    QObject::connect(thresholdSlider, SIGNAL(valueChanged(int)), this, SLOT(valueSliderChanged(int)));
+
+    formLayout->addRow("Threshold: ", thresholdSlider);
 
     gridLayout->addLayout(formLayout, 1, 0);
     gridLayout->addLayout(hBoxLayout, 2, 0);
@@ -44,22 +57,24 @@ SimplificationWindow::SimplificationWindow(MeshManager* meshManager, bool floorP
 
 SimplificationWindow::~SimplificationWindow(){
     delete scene;
+    delete previewScene;
     delete view;
+    delete previewView;
     delete gridLayout;
+    delete hBoxLayoutScene;
     delete hBoxLayout;
     delete formLayout;
 
     delete okButton;
     delete cancelButton;
 
-    delete thresholdBox;
-    delete thresholdLabel;
+    delete thresholdSlider;
 }
 
 void SimplificationWindow::ok(){
     scene->revertColor();
 
-    Simplification simplification(&curveArray, meshManager, thresholdBox->value());
+    Simplification simplification(&curveArray, meshManager, (float)thresholdSlider->value() / 100.0f);
 
     if(floorPlanSimplification) {
         simplification.simplifyFloorPlan();
@@ -102,4 +117,22 @@ void SimplificationWindow::keyPressEvent(QKeyEvent *e){
     if(e->key() != Qt::Key_Escape){
         QDialog::keyPressEvent(e);
     }
+}
+
+void SimplificationWindow::valueSliderChanged(int thresholdValue) {
+    if(curveArray.size() == 0) {
+        return;
+    }
+
+    float threshold = (float)thresholdValue / 100.0f;
+
+    Simplification simplification(&curveArray, meshManager, threshold);
+
+    std::vector<Vertex*>* preview;
+    if(floorPlanSimplification) {
+        preview = simplification.simplifyFloorPlanPreview();
+    } else {
+        preview = simplification.simplifyProfilePreview();
+    }
+    previewScene->loadPreview(preview);
 }

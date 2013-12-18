@@ -11,7 +11,7 @@ Simplification::Simplification(std::vector<Curve *> *curveArray, MeshManager* me
 void Simplification::simplifyFloorPlan() {
     foreach(Curve* curve, *curveArray) {
         if (curve->size > 2) {
-            simplifyFloorPlan(curve);
+            simplifyFloorPlan(curve, false);
         }
     }
 
@@ -19,7 +19,7 @@ void Simplification::simplifyFloorPlan() {
     meshManager->emitNewProfileSelected();
 }
 
-void Simplification::simplifyFloorPlan(Curve* curve) {
+void Simplification::simplifyFloorPlan(Curve* curve, bool forPreview) {
     if (curve->size < 3 || meshManager->getFloorPlanSize() == 3) {
         return;
     }
@@ -57,8 +57,8 @@ void Simplification::simplifyFloorPlan(Curve* curve) {
         rightCurve->end = curve->end;
         rightCurve->size = curve->size - index;
 
-        simplifyFloorPlan(leftCurve);
-        simplifyFloorPlan(rightCurve);
+        simplifyFloorPlan(leftCurve, forPreview);
+        simplifyFloorPlan(rightCurve, forPreview);
 
         delete leftCurve;
         delete rightCurve;
@@ -73,7 +73,9 @@ void Simplification::simplifyFloorPlan(Curve* curve) {
             delete toDelete->getEdge2();
             delete toDelete;
 
-            meshManager->decrementFloorPlanSize();
+            if(!forPreview) {
+                meshManager->decrementFloorPlanSize();
+            }
         }
 
         Vertex* vertex1 = curve->begin;
@@ -84,24 +86,28 @@ void Simplification::simplifyFloorPlan(Curve* curve) {
         vertex1->setNeighbor2(vertex2);
         vertex2->setNeighbor1(vertex1);
 
-        meshManager->setFloorPlan(curve->begin);
-        meshManager->setCurrentProfile(oldProfile);
+        if(!forPreview) {
+            meshManager->setFloorPlan(curve->begin);
+            meshManager->setCurrentProfile(oldProfile);
+        }
     }
 
-    meshManager->setEdgeSelected(0);
+    if(!forPreview) {
+        meshManager->setEdgeSelected(0);
+    }
 }
 
 void Simplification::simplifyProfile() {
     foreach(Curve* curve, *curveArray) {
         if (curve->size > 2) {
-            simplifyProfile(curve);
+            simplifyProfile(curve, false);
         }
     }
     meshManager->emitDrawWithoutDeleteOldProfile();
     meshManager->setUpdateOnMesh();
 }
 
-void Simplification::simplifyProfile(Curve* curve) {
+void Simplification::simplifyProfile(Curve* curve, bool forPreview) {
     if (curve->size < 3) {
         return;
     }
@@ -138,8 +144,8 @@ void Simplification::simplifyProfile(Curve* curve) {
         rightCurve->end = curve->end;
         rightCurve->size = curve->size - index;
 
-        simplifyProfile(leftCurve);
-        simplifyProfile(rightCurve);
+        simplifyProfile(leftCurve, forPreview);
+        simplifyProfile(rightCurve, forPreview);
 
         delete leftCurve;
         delete rightCurve;
@@ -161,7 +167,171 @@ void Simplification::simplifyProfile(Curve* curve) {
         vertex2->setEdge1(edge);
         vertex1->setNeighbor2(vertex2);
         vertex2->setNeighbor1(vertex1);
-        edge->computeLineItem();
+
+        if(!forPreview) {
+            edge->computeLineItem();
+        }
     }
 }
 
+std::vector<Vertex*>* Simplification::simplifyFloorPlanPreview() {
+
+    //first clone the curveArray
+    std::vector<Curve*> curveArrayTmp;
+    foreach(Curve* curve, *curveArray) {
+        Curve* clone = new Curve;
+        clone->begin = curve->begin;
+        clone->end = curve->end;
+        clone->size = curve->size;
+        curveArrayTmp.push_back(clone);
+    }
+
+    // then clone the floor plan
+    // and update the vertex stored in the curveArray
+
+    Vertex* iterator = meshManager->getFloorPlan();
+    unsigned int size = meshManager->getFloorPlanSize();
+
+    Vertex* previousVertex;
+    Vertex* firstVertex;
+
+    for(unsigned int i(0); i < size; ++i) {
+        Vertex* clone = new Vertex(iterator->getX(), iterator->getY(), iterator->getZ());
+
+        updateCurveArray(&curveArrayTmp, iterator, clone);
+
+        if(i == 0) {
+            firstVertex = clone;
+        } else {
+            clone->setNeighbor1(previousVertex);
+            previousVertex->setNeighbor2(clone);
+
+            Edge* cloneEdge = new Edge(previousVertex, clone);
+            clone->setEdge1(cloneEdge);
+            previousVertex->setEdge2(cloneEdge);
+        }
+
+        previousVertex = clone;
+        iterator = iterator->getNeighbor2();
+    }
+    firstVertex->setNeighbor1(previousVertex);
+    previousVertex->setNeighbor2(firstVertex);
+    Edge* cloneEdge = new Edge(previousVertex, firstVertex);
+    firstVertex->setEdge1(cloneEdge);
+    previousVertex->setEdge2(cloneEdge);
+
+    //now do the simplification on the copy
+    foreach(Curve* curve, curveArrayTmp) {
+        if (curve->size > 2) {
+            simplifyFloorPlan(curve, true);
+        }
+    }
+
+    Curve* curveTmp = curveArrayTmp[0];
+    iterator = curveTmp->begin;
+
+    //clean the data
+    foreach(Curve* curve, curveArrayTmp) {
+        delete curve;
+    }
+
+    //contruct the returned value
+    std::vector<Vertex*>* preview = new std::vector<Vertex*>;
+
+    firstVertex = iterator;
+    do{
+        preview->push_back(iterator);
+        iterator = iterator->getNeighbor2();
+    }while(iterator != firstVertex);
+
+    return preview;
+}
+
+std::vector<Vertex*>* Simplification::simplifyProfilePreview() {
+
+    //first clone the curveArray
+    std::vector<Curve*> curveArrayTmp;
+    foreach(Curve* curve, *curveArray) {
+        Curve* clone = new Curve;
+        clone->begin = curve->begin;
+        clone->end = curve->end;
+        clone->size = curve->size;
+        curveArrayTmp.push_back(clone);
+    }
+
+    // then clone the profile
+    // and update the vertex stored in the curveArray
+
+    Profile* profile = meshManager->getCurrentProfile();
+    Vertex* iterator = profile->getProfileVertex();
+
+    Vertex* previousVertex = new Vertex(iterator->getX(), iterator->getY(), iterator->getZ());
+    updateCurveArray(&curveArrayTmp, iterator, previousVertex);
+    previousVertex->setEdge1(0);
+    previousVertex->setNeighbor1(0);
+
+    iterator = iterator->getNeighbor2();
+    while(iterator != 0) {
+        Vertex* clone = new Vertex(iterator->getX(), iterator->getY(), iterator->getZ());
+
+        updateCurveArray(&curveArrayTmp, iterator, clone);
+
+        clone->setNeighbor1(previousVertex);
+        previousVertex->setNeighbor2(clone);
+
+        Edge* cloneEdge = new Edge(previousVertex, clone);
+        clone->setEdge1(cloneEdge);
+        previousVertex->setEdge2(cloneEdge);
+
+
+        previousVertex = clone;
+        iterator = iterator->getNeighbor2();
+    }
+    previousVertex->setEdge2(0);
+    previousVertex->setNeighbor2(0);
+
+    //now do the simplification on the copy
+    foreach(Curve* curve, curveArrayTmp) {
+        if (curve->size > 2) {
+            simplifyProfile(curve, true);
+        }
+    }
+
+    Curve* curveTmp = curveArrayTmp[0];
+    iterator = curveTmp->begin;
+
+    //clean the data
+    foreach(Curve* curve, curveArrayTmp) {
+        delete curve;
+    }
+
+    //contruct the returned value
+    std::vector<Vertex*>* preview = new std::vector<Vertex*>;
+
+    Vertex* firstVertex = iterator;
+    while(iterator != 0){
+        preview->push_back(iterator);
+        iterator = iterator->getNeighbor2();
+    }
+
+    iterator = firstVertex->getNeighbor1();
+    while(iterator != 0){
+        preview->push_back(iterator);
+        iterator = iterator->getNeighbor1();
+    }
+
+    return preview;
+}
+
+void Simplification::updateCurveArray(std::vector<Curve *> *curveArrayUpdated, Vertex* original, Vertex* clone) {
+    unsigned int size = curveArrayUpdated->size();
+    for(unsigned int i(0); i < size; ++i) {
+        Curve* currentCurve = (*curveArrayUpdated)[i];
+        if(currentCurve->begin == original) {
+            currentCurve->begin = clone;
+        }
+        if(currentCurve->end == original) {
+            currentCurve->end = clone;
+        }
+    }
+}

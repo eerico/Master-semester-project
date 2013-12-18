@@ -17,13 +17,18 @@ public:
     void simplifyFloorPlan();
     void simplifyProfile();
 
+    std::vector<Vertex*>* simplifyFloorPlanPreview();
+    std::vector<Vertex*>* simplifyProfilePreview();
+
 private:
     std::vector< Curve* >* curveArray;
     float threshold;
     MeshManager* meshManager;
 
-    void simplifyFloorPlan(Curve* curve);
-    void simplifyProfile(Curve* curve);
+    void simplifyFloorPlan(Curve* curve, bool forPreview);
+    void simplifyProfile(Curve* curve, bool forPreview);
+
+    void updateCurveArray(std::vector<Curve *> *curveArrayUpdated, Vertex *original, Vertex *clone);
 };
 
 #endif // SIMPLIFICATION_H
