@@ -60,6 +60,8 @@ private:
     bool buttonPressed;
 
     void keyPressEvent(QKeyEvent *e);
+
+    unsigned int previewSize;
 };
 
 #endif // SIMPLIFICATIONWINDOW_H

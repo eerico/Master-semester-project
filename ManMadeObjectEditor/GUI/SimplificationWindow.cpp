@@ -3,6 +3,7 @@
 SimplificationWindow::SimplificationWindow(MeshManager* meshManager, bool floorPlanSimplification)
     :QDialog(0, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint )
     , meshManager(meshManager), floorPlanSimplification(floorPlanSimplification), buttonPressed(false)
+    , previewSize(0)
 {
 
     if(floorPlanSimplification) {
@@ -34,7 +35,7 @@ SimplificationWindow::SimplificationWindow(MeshManager* meshManager, bool floorP
     thresholdSlider = new QSlider(Qt::Horizontal);
     thresholdSlider->setRange(0, 200);
     thresholdSlider->setSingleStep(1);
-    thresholdSlider->setValue(1);
+    thresholdSlider->setValue(0);
 
     QObject::connect(thresholdSlider, SIGNAL(valueChanged(int)), this, SLOT(valueSliderChanged(int)));
 
@@ -72,13 +73,18 @@ SimplificationWindow::~SimplificationWindow(){
 }
 
 void SimplificationWindow::ok(){
-    scene->revertColor();
-
     Simplification simplification(&curveArray, meshManager, (float)thresholdSlider->value() / 100.0f);
 
     if(floorPlanSimplification) {
-        simplification.simplifyFloorPlan();
+        if(previewSize >= 3) {
+            scene->revertColor();
+            simplification.simplifyFloorPlan();
+        } else {
+            QMessageBox::warning(0, "Warning", "The floor plan must have at least 3 edges !");
+            return;
+        }
     } else {
+        scene->revertColor();
         simplification.simplifyProfile();
     }
     buttonPressed = true;
@@ -134,5 +140,6 @@ void SimplificationWindow::valueSliderChanged(int thresholdValue) {
     } else {
         preview = simplification.simplifyProfilePreview();
     }
+    previewSize = preview->size();
     previewScene->loadPreview(preview);
 }
