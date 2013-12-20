@@ -33,6 +33,7 @@ void Reconstruction3D::reconstruct()
         priorityQueue->pop();
         float currentHeight = event->getZ();
         event->handle();
+
         delete event;
 
         if(!priorityQueue->empty()) {

@@ -5,6 +5,7 @@
 //#include "Reconstruction3D.h"
 #include "Plan.h"
 #include "GeneralEvent.h"
+#include <vector>
 
 class Reconstruction3D;
 
@@ -21,8 +22,7 @@ public:
 
 private:
     Reconstruction3D* reconstruction3d;
-    Vertex* planVertex;
-    int planSize;
+    std::vector<Edge*> activePlan;
 
     bool isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3);
 
