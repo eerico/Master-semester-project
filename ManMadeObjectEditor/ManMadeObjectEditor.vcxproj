@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C4B33939-03DD-3C61-B5A7-118E30401D1D}</ProjectGuid>
+    <ProjectGuid>{446FF491-054F-31CB-81C1-E7D5CF6AFB43}</ProjectGuid>
     <RootNamespace>ManMadeObjectEditor</RootNamespace>
     <Keyword>Qt4VSv1.0</Keyword>
   </PropertyGroup>
@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>"..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0";"..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore";"release";..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources";"..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore";"release";..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm200 -w34100 -w34189 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>release\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -71,8 +71,8 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>glu32.lib;opengl32.lib;gdi32.lib;user32.lib;qtmain.lib;"C:\Program Files (x86)\libQGLViewer-2.4.0\QGLViewer\QGLViewer2.lib";"C:\Program Files (x86)\OpenMesh\lib\OpenMeshCore.lib";"C:\Program Files (x86)\OpenMesh\lib\OpenMeshTools.lib";$(QTDIR)\lib\Qt5OpenGL.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Xml.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;"C:\Program Files (x86)\libQGLViewer-2.4.0\QGLViewer";"C:\Program Files (x86)\OpenMesh\lib";C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;gdi32.lib;user32.lib;qtmain.lib;"C:\Program Files (x86)\libQGLViewer\lib\QGLViewer\QGLViewer2.lib";"C:\Program Files (x86)\OpenMesh\lib\OpenMeshCore.lib";"C:\Program Files (x86)\OpenMesh\lib\OpenMeshTools.lib";$(QTDIR)\lib\Qt5OpenGL.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Xml.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;"C:\Program Files (x86)\libQGLViewer\lib\QGLViewer";"C:\Program Files (x86)\OpenMesh\lib";C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -94,7 +94,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>"..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0";"..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore";"debug";..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources";"..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui";"..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore";"debug";..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm200 -w34100 -w34189 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -112,8 +112,8 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>glu32.lib;opengl32.lib;gdi32.lib;user32.lib;qtmaind.lib;"C:\Program Files (x86)\libQGLViewer-2.4.0\QGLViewer\QGLViewer2.lib";"C:\Program Files (x86)\OpenMesh\lib\OpenMeshCored.lib";"C:\Program Files (x86)\OpenMesh\lib\OpenMeshToolsd.lib";$(QTDIR)\lib\Qt5OpenGLd.lib;$(QTDIR)\lib\Qt5Widgetsd.lib;$(QTDIR)\lib\Qt5Xmld.lib;$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;"C:\Program Files (x86)\libQGLViewer-2.4.0\QGLViewer";"C:\Program Files (x86)\OpenMesh\lib";C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;gdi32.lib;user32.lib;qtmaind.lib;"C:\Program Files (x86)\libQGLViewer\lib\QGLViewer\QGLViewerd2.lib";"C:\Program Files (x86)\OpenMesh\lib\OpenMeshCore.lib";"C:\Program Files (x86)\OpenMesh\lib\OpenMeshTools.lib";$(QTDIR)\lib\Qt5OpenGLd.lib;$(QTDIR)\lib\Qt5Widgetsd.lib;$(QTDIR)\lib\Qt5Xmld.lib;$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;"C:\Program Files (x86)\libQGLViewer\lib\QGLViewer";"C:\Program Files (x86)\OpenMesh\lib";C:\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -133,8 +133,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BasicQGraphicsView.cpp" />
-    <ClCompile Include="CentralWidget.cpp" />
     <ClCompile Include="Debug\moc_CentralWidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -144,25 +142,46 @@
     <ClCompile Include="Debug\moc_FloorScene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Debug\moc_Mesh.cpp">
+    <ClCompile Include="Debug\moc_MeshManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Debug\moc_ObjectViewer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Debug\moc_ProfileMergeWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Debug\moc_ProfileScene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Edge.cpp" />
-    <ClCompile Include="FloorAndProfileViewer.cpp" />
+    <ClCompile Include="Debug\moc_SimplificationWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Reconstruction3D\ActivePlan.cpp" />
+    <ClCompile Include="GUI\AllChainScene.cpp" />
+    <ClCompile Include="GUI\AllPlanScene.cpp" />
+    <ClCompile Include="GUI\BasicQGraphicsView.cpp" />
+    <ClCompile Include="GUI\CentralWidget.cpp" />
+    <ClCompile Include="Reconstruction3D\Chain.cpp" />
+    <ClCompile Include="Geometry\Edge.cpp" />
+    <ClCompile Include="Reconstruction3D\EdgeEvent.cpp" />
+    <ClCompile Include="Reconstruction3D\Event.cpp" />
+    <ClCompile Include="GUI\FloorAndProfileViewer.cpp" />
     <ClCompile Include="FloorPlanAndProfileExtractor.cpp" />
-    <ClCompile Include="FloorScene.cpp" />
+    <ClCompile Include="GUI\FloorScene.cpp" />
+    <ClCompile Include="GarbageCollector\GeneralDestructorManager.cpp" />
+    <ClCompile Include="Reconstruction3D\GeneralEvent.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="ObjectViewer.cpp" />
-    <ClCompile Include="Profile.cpp" />
-    <ClCompile Include="ProfileDestructorManager.cpp" />
-    <ClCompile Include="ProfileScene.cpp" />
+    <ClCompile Include="MeshManager.cpp" />
+    <ClCompile Include="GUI\ObjectViewer.cpp" />
+    <ClCompile Include="Reconstruction3D\Plan.cpp" />
+    <ClCompile Include="GUI\PreviewScene.cpp" />
+    <ClCompile Include="Geometry\Profile.cpp" />
+    <ClCompile Include="GarbageCollector\ProfileDestructorManager.cpp" />
+    <ClCompile Include="GUI\ProfileMergeScene.cpp" />
+    <ClCompile Include="GUI\ProfileMergeWindow.cpp" />
+    <ClCompile Include="GUI\ProfileScene.cpp" />
+    <ClCompile Include="Reconstruction3D\Reconstruction3D.cpp" />
     <ClCompile Include="Release\moc_CentralWidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -172,86 +191,138 @@
     <ClCompile Include="Release\moc_FloorScene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Release\moc_Mesh.cpp">
+    <ClCompile Include="Release\moc_MeshManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Release\moc_ObjectViewer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Release\moc_ProfileMergeWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Release\moc_ProfileScene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Release\moc_SimplificationWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Simplification\Simplification.cpp" />
+    <ClCompile Include="GUI\SimplificationFloorPlanScene.cpp" />
+    <ClCompile Include="GUI\SimplificationProfileScene.cpp" />
+    <ClCompile Include="GUI\SimplificationScene.cpp" />
+    <ClCompile Include="GUI\SimplificationWindow.cpp" />
+    <ClCompile Include="Test.cpp" />
     <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="Geometry\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BasicQGraphicsView.h" />
-    <CustomBuild Include="CentralWidget.h">
+    <ClInclude Include="Reconstruction3D\ActivePlan.h" />
+    <ClInclude Include="GUI\AllChainScene.h" />
+    <ClInclude Include="GUI\AllPlanScene.h" />
+    <ClInclude Include="GUI\BasicQGraphicsView.h" />
+    <CustomBuild Include="GUI\CentralWidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing CentralWidget.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing CentralWidget.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
-    <ClInclude Include="Edge.h" />
-    <CustomBuild Include="FloorAndProfileViewer.h">
+    <ClInclude Include="Reconstruction3D\Chain.h" />
+    <ClInclude Include="Simplification\Curve.h" />
+    <ClInclude Include="Geometry\Edge.h" />
+    <ClInclude Include="Reconstruction3D\EdgeEvent.h" />
+    <ClInclude Include="Reconstruction3D\Event.h" />
+    <ClInclude Include="Reconstruction3D\EventComparator.h" />
+    <CustomBuild Include="GUI\FloorAndProfileViewer.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing FloorAndProfileViewer.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing FloorAndProfileViewer.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="FloorPlanAndProfileExtractor.h" />
-    <CustomBuild Include="FloorScene.h">
+    <CustomBuild Include="GUI\FloorScene.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing FloorScene.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing FloorScene.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
-    <CustomBuild Include="Mesh.h">
+    <ClInclude Include="GarbageCollector\GarbageCollectorObject.h" />
+    <ClInclude Include="GarbageCollector\GeneralDestructorManager.h" />
+    <ClInclude Include="Reconstruction3D\GeneralEvent.h" />
+    <CustomBuild Include="MeshManager.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing Mesh.h...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing MeshManager.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing Mesh.h...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing MeshManager.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
-    <CustomBuild Include="ObjectViewer.h">
+    <CustomBuild Include="GUI\ObjectViewer.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing ObjectViewer.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ObjectViewer.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
-    <ClInclude Include="Profile.h" />
-    <ClInclude Include="ProfileDestructorManager.h" />
-    <CustomBuild Include="ProfileScene.h">
+    <ClInclude Include="Reconstruction3D\Plan.h" />
+    <ClInclude Include="GUI\PreviewScene.h" />
+    <ClInclude Include="Geometry\Profile.h" />
+    <ClInclude Include="GarbageCollector\ProfileDestructorManager.h" />
+    <ClInclude Include="GUI\ProfileMergeScene.h" />
+    <CustomBuild Include="GUI\ProfileMergeWindow.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing ProfileMergeWindow.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ProfileMergeWindow.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="GUI\ProfileScene.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing ProfileScene.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer-2.4.0" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ProfileScene.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
+    <ClInclude Include="Reconstruction3D\Reconstruction3D.h" />
+    <ClInclude Include="Simplification\Simplification.h" />
+    <ClInclude Include="GUI\SimplificationFloorPlanScene.h" />
+    <ClInclude Include="GUI\SimplificationProfileScene.h" />
+    <ClInclude Include="GUI\SimplificationScene.h" />
+    <CustomBuild Include="GUI\SimplificationWindow.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\release" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing SimplificationWindow.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -D_USE_MATH_DEFINES -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I.\..\..\..\..\..\..\..\Program Files (x86)\libQGLViewer\sources" "-I.\..\..\..\..\..\..\..\Program Files (x86)\OpenMesh\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtOpenGL" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtWidgets" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtXml" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtGui" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\include\QtCore" "-I.\debug" "-I.\..\..\..\..\..\..\..\Qt\Qt5.1.1\5.1.1\msvc2010_opengl\mkspecs\win32-msvc2010"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing SimplificationWindow.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="Test.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="Vertex.h" />
+    <ClInclude Include="Geometry\Vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

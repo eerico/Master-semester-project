@@ -26,57 +26,114 @@
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{471f831d-5df5-4e3f-9962-75a6cae8d262}</UniqueIdentifier>
+      <UniqueIdentifier>{f2e044b7-7cec-48e2-a5c9-f952c5c11e10}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{3285cfc6-9556-4170-ac4d-69056dd9ef18}</UniqueIdentifier>
+      <UniqueIdentifier>{1b7e579c-8375-4de9-9117-df7b3cd45ce4}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BasicQGraphicsView.cpp">
+    <ClCompile Include="Reconstruction3D\ActivePlan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CentralWidget.cpp">
+    <ClCompile Include="GUI\AllChainScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Edge.cpp">
+    <ClCompile Include="GUI\AllPlanScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FloorAndProfileViewer.cpp">
+    <ClCompile Include="GUI\BasicQGraphicsView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\CentralWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Reconstruction3D\Chain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Edge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Reconstruction3D\EdgeEvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Reconstruction3D\Event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\FloorAndProfileViewer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FloorPlanAndProfileExtractor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FloorScene.cpp">
+    <ClCompile Include="GUI\FloorScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GarbageCollector\GeneralDestructorManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Reconstruction3D\GeneralEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="MeshManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectViewer.cpp">
+    <ClCompile Include="GUI\ObjectViewer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Profile.cpp">
+    <ClCompile Include="Reconstruction3D\Plan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProfileDestructorManager.cpp">
+    <ClCompile Include="GUI\PreviewScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProfileScene.cpp">
+    <ClCompile Include="Geometry\Profile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GarbageCollector\ProfileDestructorManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\ProfileMergeScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\ProfileMergeWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\ProfileScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Reconstruction3D\Reconstruction3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Simplification\Simplification.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\SimplificationFloorPlanScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\SimplificationProfileScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\SimplificationScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\SimplificationWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vertex.cpp">
+    <ClCompile Include="Geometry\Vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_CentralWidget.cpp">
@@ -97,10 +154,10 @@
     <ClCompile Include="Debug\moc_FloorScene.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Release\moc_Mesh.cpp">
+    <ClCompile Include="Release\moc_MeshManager.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_Mesh.cpp">
+    <ClCompile Include="Debug\moc_MeshManager.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_ObjectViewer.cpp">
@@ -109,51 +166,129 @@
     <ClCompile Include="Debug\moc_ObjectViewer.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Release\moc_ProfileMergeWindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_ProfileMergeWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
     <ClCompile Include="Release\moc_ProfileScene.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_ProfileScene.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Release\moc_SimplificationWindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_SimplificationWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BasicQGraphicsView.h">
+    <ClInclude Include="Reconstruction3D\ActivePlan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="CentralWidget.h">
+    <ClInclude Include="GUI\AllChainScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\AllPlanScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\BasicQGraphicsView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="GUI\CentralWidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <ClInclude Include="Edge.h">
+    <ClInclude Include="Reconstruction3D\Chain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="FloorAndProfileViewer.h">
+    <ClInclude Include="Simplification\Curve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Edge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Reconstruction3D\EdgeEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Reconstruction3D\Event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Reconstruction3D\EventComparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="GUI\FloorAndProfileViewer.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <ClInclude Include="FloorPlanAndProfileExtractor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="FloorScene.h">
+    <CustomBuild Include="GUI\FloorScene.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="Mesh.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ObjectViewer.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <ClInclude Include="Profile.h">
+    <ClInclude Include="GarbageCollector\GarbageCollectorObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProfileDestructorManager.h">
+    <ClInclude Include="GarbageCollector\GeneralDestructorManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="ProfileScene.h">
+    <ClInclude Include="Reconstruction3D\GeneralEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="MeshManager.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="GUI\ObjectViewer.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="Reconstruction3D\Plan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\PreviewScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Profile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GarbageCollector\ProfileDestructorManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\ProfileMergeScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="GUI\ProfileMergeWindow.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\ProfileScene.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="Reconstruction3D\Reconstruction3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Simplification\Simplification.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\SimplificationFloorPlanScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\SimplificationProfileScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\SimplificationScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="GUI\SimplificationWindow.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="Test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vertex.h">
+    <ClInclude Include="Geometry\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
