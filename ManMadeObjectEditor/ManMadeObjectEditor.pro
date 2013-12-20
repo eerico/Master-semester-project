@@ -30,9 +30,9 @@ SOURCES +=\
     Geometry/Edge.cpp \
     GUI/ProfileScene.cpp \
     Reconstruction3D/Reconstruction3D.cpp \
-    Reconstruction3D/Plan.cpp \
-    Reconstruction3D/ActivePlan.cpp \
-    Reconstruction3D/Chains.cpp \
+    #Reconstruction3D/Plan.cpp \
+    #Reconstruction3D/ActivePlan.cpp \
+    #Reconstruction3D/Chains.cpp \
     GUI/AllChainScene.cpp \
     GarbageCollector/GeneralDestructorManager.cpp \
     GUI/SimplificationWindow.cpp \
@@ -67,12 +67,12 @@ HEADERS  += \
     Geometry/Edge.h \
     GUI/ProfileScene.h \
     Reconstruction3D/Reconstruction3D.h \
-    Reconstruction3D/Plan.h \
-    Reconstruction3D/IntersectionComparator.h \
-    Reconstruction3D/Intersection.h \
-    Reconstruction3D/ActivePlan.h \
-    Reconstruction3D/Chains.h \
-    Reconstruction3D/ChainOrientationComparator.h \
+    #Reconstruction3D/Plan.h \
+    #Reconstruction3D/IntersectionComparator.h \
+    #Reconstruction3D/Intersection.h \
+    #Reconstruction3D/ActivePlan.h \
+    #Reconstruction3D/Chains.h \
+    #Reconstruction3D/ChainOrientationComparator.h \
     GUI/AllChainScene.h \
     GarbageCollector/GarbageCollectorObject.h \
     GarbageCollector/GeneralDestructorManager.h \
