@@ -3,6 +3,8 @@
 
 #include "../Geometry/Vertex.h"
 #include "Reconstruction3D.h"
+#include "Plan.h"
+#include "GeneralEvent.h"
 
 class ActivePlan
 {
@@ -11,13 +13,14 @@ public:
 
     void computeIntersections();
 
-    bool isIntersectionCorrect();
-
 
 private:
     Reconstruction3D* reconstruction3d;
     Vertex* planVertex;
     int planSize;
+
+    bool isIntersectionCorrect(GeneralEvent * intersection);
+
 };
 
 #endif // ACTIVEPLAN_H
