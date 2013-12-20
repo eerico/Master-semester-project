@@ -42,7 +42,8 @@ SOURCES +=\
     GUI/SimplificationScene.cpp \
     GUI/ProfileMergeWindow.cpp \
     GUI/ProfileMergeScene.cpp \
-    GUI/PreviewScene.cpp
+    GUI/PreviewScene.cpp \
+    Reconstruction3D/ActivePlan.cpp
     #Reconstruction3D_old/Reconstruction3D.cpp \
     #Reconstruction3D_old/Plan.cpp \
     #Reconstruction3D_old/Chain.cpp \
@@ -94,7 +95,8 @@ HEADERS  += \
     GUI/SimplificationScene.h \
     GUI/ProfileMergeWindow.h \
     GUI/ProfileMergeScene.h \
-    GUI/PreviewScene.h
+    GUI/PreviewScene.h \
+    Reconstruction3D/ActivePlan.h
 
 #QT *= xml opengl
 
