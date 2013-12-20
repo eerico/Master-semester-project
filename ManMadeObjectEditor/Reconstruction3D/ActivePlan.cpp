@@ -41,5 +41,5 @@ void ActivePlan::computeIntersections()
 
 bool ActivePlan::isIntersectionCorrect()
 {
-
+    return false;
 }

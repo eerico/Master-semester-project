@@ -1,6 +1,7 @@
 #include "EdgeEvent.h"
 
 EdgeEvent::EdgeEvent()
+    :Event(0)
 {
 }
 

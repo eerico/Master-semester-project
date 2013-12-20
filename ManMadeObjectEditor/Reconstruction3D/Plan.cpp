@@ -2,7 +2,7 @@
 #include <cmath>
 
 Plan::Plan(Vertex *vertex1, Vertex *vertex2, Profile *profile)
-    :pointX(vertex1->getX()), pointY(vertex1->getY()), pointZ(vertex1->getZ()), GarbageCollectorObject()
+    : GarbageCollectorObject(), pointX(vertex1->getX()), pointY(vertex1->getY()), pointZ(vertex1->getZ())
     , normalX(0.0f), normalY(0.0f), normalZ(1.0f)
     , pointX2(vertex2->getX()), pointY2(vertex2->getY()), pointZ2(vertex2->getZ())
     , profile(profile), vertex(vertex1)
@@ -25,9 +25,7 @@ Plan::~Plan() {
 
 GeneralEvent* Plan::intersect3Plans(Plan* plan2, Plan* plan3)
 {
-    GeneralEvent* intersection;
-    intersection.eventType = General;
-
+    GeneralEvent* intersection(0);
 
     float p1 = vertex->getX();
     float p2 = vertex->getY();
@@ -68,7 +66,6 @@ GeneralEvent* Plan::intersect3Plans(Plan* plan2, Plan* plan3)
     float det = n1 * c11 + n2 * c21 + n3 * c31;
 
     if(std::abs(det) < 0.0001f) {
-        intersection.eventType = NoIntersection;
         return intersection;
     }
 
@@ -105,14 +102,12 @@ GeneralEvent* Plan::intersect3Plans(Plan* plan2, Plan* plan3)
     float x2 = invDet * (c21 * pn1 + c22 * pn2 + c23 * pn3);
     float x3 = invDet * (c31 * pn1 + c32 * pn2 + c33 * pn3);
 
-    intersection.x = x1;
-    intersection.y = x2;
-    intersection.z = x3;
-
     // the height must not be below the floor
     if (x3 < 0.0f) {
-        intersection.eventType = NoIntersection;
+        return intersection;
     }
+
+    intersection = new GeneralEvent(x1, x2, x3);
 
     return intersection;
 }
