@@ -1,12 +1,13 @@
 #ifndef ACTIVEPLAN_H
 #define ACTIVEPLAN_H
 
-#include "Geometry/Vertex.h"
+#include "../Geometry/Vertex.h"
+#include "Reconstruction3D.h"
 
 class ActivePlan
 {
 public:
-    ActivePlan(Vertex* planVertex, int planSize);
+    ActivePlan(Vertex* planVertex, int planSize, Reconstruction3D* reconstruction3d);
 
     void computeIntersections();
 
@@ -14,6 +15,7 @@ public:
 
 
 private:
+    Reconstruction3D* reconstruction3d;
     Vertex* planVertex;
     int planSize;
 };
