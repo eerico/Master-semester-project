@@ -8,7 +8,8 @@
 #include <QGLViewer/qglviewer.h>
 #include <queue>
 #include "../GarbageCollector/GeneralDestructorManager.h"
-
+#include "Event.h"
+#include "EventComparator.h"
 
 class Reconstruction3D
 {
@@ -20,7 +21,7 @@ public:
 
     ~Reconstruction3D();
     void reconstruct();
-private:
+
     Vertex* floorPlan;
     unsigned int floorPlanSize;
     std::vector< qglviewer::Vec * >* triangles;
@@ -30,6 +31,7 @@ private:
     std::vector< std::vector< std::vector< Edge* > > >* chainsDebug2;
     std::vector< std::vector< Edge* > >* activePlanDebug;
 
+    std::priority_queue<Event*, std::vector<Event*>, EventComparator>* priorityQueue;
 };
 
 #endif // RECONSTRUCTION3D_H

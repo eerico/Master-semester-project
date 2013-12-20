@@ -3,6 +3,7 @@
 
 #include "../Geometry/Vertex.h"
 #include "Reconstruction3D.h"
+#include "Plan.h"
 
 class ActivePlan
 {
