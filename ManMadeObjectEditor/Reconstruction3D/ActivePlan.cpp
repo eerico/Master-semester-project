@@ -45,56 +45,55 @@ ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* recon
 
 void ActivePlan::computeIntersections()
 {
-Vertex * firstVertex = planVertex;
-Vertex * iterator = planVertex->getNeighbor2();
+    Vertex * firstVertex = planVertex;
+    Vertex * iterator = planVertex->getNeighbor2();
 
+    while (iterator !=firstVertex){
+        Vertex*  thirdVertex = iterator->getNeighbor2()->getNeighbor2();
 
-while (iterator !=firstVertex){
-
-    Vertex*  thirdVertex = iterator->neighbor2->getNeighbor2();
-
-    Plan * plan1 = iterator->getEdge2()->getDirectionPlan();
-    Plan * plan2 = iterator->getNeighbor2()->getEdge2()->getDirectionPlan();
-    Plan * plan3 = thirdVertex->getEdge2()->getDirectionPlan();
-    for(int i(0); i < (planSize -2 -1); i++){//plansize -2 = number of edges left -1 since we don't want to compute multipel times the same intersections
-
-            //compute intersection:
-           GeneralEvent * intersection = plan1->intersect3Plans(plan2, plan3);
-
-            //test if intersection is correct
-           if(intersection != 0){
-               if(isIntersectionCorrect(intersection)){
-                    Reconstruction3D.queue.add intersection
-               }
-
-           }
-            //for next intersection:
-            thirdVertex = thirdVertex->getNeighbor2();
-            plan3 = thirdVertex->getEdge2()->getDirectionPlan();
-    }
-
-}
-// iterator is the first vertex
-        Vertex*  thirdVertex = iterator->neighbor2->getNeighbor2();
         Plan * plan1 = iterator->getEdge2()->getDirectionPlan();
         Plan * plan2 = iterator->getNeighbor2()->getEdge2()->getDirectionPlan();
         Plan * plan3 = thirdVertex->getEdge2()->getDirectionPlan();
-        for(int i(0); i < (planSize -2); i++){//plansize -2 = number of edges left this time we must compute all intersection hence there is no -1
 
-                //compute intersection:
-               GeneralEvent * intersection = plan1->intersect3Plans(plan2, plan3);
+        for(int i(0); i < (planSize -2 -1); i++){//plansize -2 = number of edges left -1 since we don't want to compute multiple times the same intersections
 
-                //test if intersection is correct
-               if(intersection != 0){
-                   if(isIntersectionCorrect(intersection)){
-                        Reconstruction3D.queue.add intersection
-                   }
+            //compute intersection:
+            GeneralEvent* intersection = plan1->intersect3Plans(plan2, plan3);
 
-               }
-                //for next intersection:
-                thirdVertex = thirdVertex->getNeighbor2();
-                plan3 = thirdVertex->getEdge2()->getDirectionPlan();
+            //test if intersection is correct
+            if(intersection != 0){
+                if(isIntersectionCorrect(intersection)){
+                    reconstruction3d->priorityQueue->push(intersection);
+                }
+
+            }
+            //for next intersection:
+            thirdVertex = thirdVertex->getNeighbor2();
+            plan3 = thirdVertex->getEdge2()->getDirectionPlan();
         }
+    }
+
+    // iterator is the first vertex
+    Vertex*  thirdVertex = iterator->getNeighbor2()->getNeighbor2();
+    Plan * plan1 = iterator->getEdge2()->getDirectionPlan();
+    Plan * plan2 = iterator->getNeighbor2()->getEdge2()->getDirectionPlan();
+    Plan * plan3 = thirdVertex->getEdge2()->getDirectionPlan();
+
+    for(int i(0); i < (planSize -2); i++){//plansize -2 = number of edges left this time we must compute all intersection hence there is no -1
+        //compute intersection:
+        GeneralEvent * intersection = plan1->intersect3Plans(plan2, plan3);
+
+        //test if intersection is correct
+        if(intersection != 0){
+            if(isIntersectionCorrect(intersection)){
+                reconstruction3d->priorityQueue->push(intersection);
+            }
+
+        }
+        //for next intersection:
+        thirdVertex = thirdVertex->getNeighbor2();
+        plan3 = thirdVertex->getEdge2()->getDirectionPlan();
+    }
 
 }
 
