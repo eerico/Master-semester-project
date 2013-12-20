@@ -36,9 +36,12 @@ void Reconstruction3D::reconstruct()
 
         if(!priorityQueue->empty()) {
             Event* nextEvent = priorityQueue->top();
-            while(std::abs(nextEvent->getZ() - currentHeight) < deltaHeight) {
+            while((std::abs(nextEvent->getZ() - currentHeight) < deltaHeight) && !priorityQueue->empty()) {
                 priorityQueue->pop();
                 nextEvent->handle();
+                if(!priorityQueue->empty()) {
+                    nextEvent = priorityQueue->top();
+                }
             }
         }
     }
