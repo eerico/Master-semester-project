@@ -13,6 +13,7 @@ public:
 
     void computeIntersections();
 
+    bool isIntersectionCorrect();
 
 private:
     Reconstruction3D* reconstruction3d;

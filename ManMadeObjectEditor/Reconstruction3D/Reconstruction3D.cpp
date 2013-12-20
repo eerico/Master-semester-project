@@ -9,10 +9,12 @@ Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
     , chainsDebug(chainsDebug), chainsDebug2(chainsDebug2), activePlanDebug(activePlanDebug)
 {
+    priorityQueue = new std::priority_queue<Event*, std::vector<Event*>, EventComparator>;
 }
 
 Reconstruction3D::~Reconstruction3D()
 {
+    delete priorityQueue;
     GeneralDestructorManager::deleteObject();
 }
 

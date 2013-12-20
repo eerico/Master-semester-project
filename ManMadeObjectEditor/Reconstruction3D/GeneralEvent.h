@@ -14,7 +14,6 @@ public:
 private:
     float x;
     float y;
-    float z;
 };
 
 #endif // GENERALEVENT_H

@@ -18,7 +18,11 @@ ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* recon
             clone->setNeighbor1(previousVertex);
             previousVertex->setNeighbor2(clone);
 
-            Edge* cloneEdge = new Edge(previousVertex, clone);
+            Profile* profile = clone->getEdge1()->getProfile();
+            Edge* cloneEdge = new Edge(previousVertex, clone, profile);
+            Plan* plan = new Plan(cloneEdge->getVertex1(), cloneEdge->getVertex2(), profile);
+            cloneEdge->setDirectionPlan(plan);
+
             clone->setEdge1(cloneEdge);
             previousVertex->setEdge2(cloneEdge);
         }
@@ -28,7 +32,12 @@ ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* recon
     }
     this->planVertex->setNeighbor1(previousVertex);
     previousVertex->setNeighbor2(this->planVertex);
+
+    Profile* profile = this->planVertex->getEdge1()->getProfile();
     Edge* cloneEdge = new Edge(previousVertex, this->planVertex);
+    Plan* plan = new Plan(cloneEdge->getVertex1(), cloneEdge->getVertex2(), profile);
+    cloneEdge->setDirectionPlan(plan);
+
     this->planVertex->setEdge1(cloneEdge);
     previousVertex->setEdge2(cloneEdge);
 
