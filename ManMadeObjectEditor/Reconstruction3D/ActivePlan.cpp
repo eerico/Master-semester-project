@@ -1,4 +1,5 @@
 #include "ActivePlan.h"
+#include "Reconstruction3D.h"
 
 ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* reconstruction3d): planSize(planSize), reconstruction3d(reconstruction3d)
 {

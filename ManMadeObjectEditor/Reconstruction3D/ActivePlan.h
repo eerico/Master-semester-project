@@ -2,9 +2,11 @@
 #define ACTIVEPLAN_H
 
 #include "../Geometry/Vertex.h"
-#include "Reconstruction3D.h"
+//#include "Reconstruction3D.h"
 #include "Plan.h"
 #include "GeneralEvent.h"
+
+class Reconstruction3D;
 
 class ActivePlan
 {

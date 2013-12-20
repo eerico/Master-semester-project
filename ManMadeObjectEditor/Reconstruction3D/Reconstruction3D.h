@@ -10,6 +10,7 @@
 #include "../GarbageCollector/GeneralDestructorManager.h"
 #include "Event.h"
 #include "EventComparator.h"
+#include "ActivePlan.h"
 
 class Reconstruction3D
 {

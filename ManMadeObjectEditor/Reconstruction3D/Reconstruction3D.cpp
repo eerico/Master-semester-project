@@ -25,5 +25,6 @@ void Reconstruction3D::reconstruct()
         return;
     }
 
-
+    ActivePlan activePlan(floorPlan, floorPlanSize, this);
+    activePlan.computeIntersections();
 }
