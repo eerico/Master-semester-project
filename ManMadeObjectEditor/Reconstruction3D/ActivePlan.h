@@ -17,6 +17,8 @@ public:
 
     bool isIntersectionCorrect();
 
+    void updateAtCurrentHeight();
+
 private:
     Reconstruction3D* reconstruction3d;
     Vertex* planVertex;

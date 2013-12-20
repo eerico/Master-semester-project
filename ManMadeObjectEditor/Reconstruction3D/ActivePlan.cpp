@@ -4,6 +4,9 @@
 ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* reconstruction3d): planSize(planSize), reconstruction3d(reconstruction3d)
 {
 
+    // faire une arraylist de edge pour representer sa.
+    // changer comment on detecte les intersection
+
     //build a copy of the received plan:
     Vertex* iterator = planVertex;
     unsigned int size = planSize;
@@ -121,4 +124,9 @@ bool ActivePlan::isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3)
 
     Vertex intersectionVertex(intersection->getX(),intersection1->getY(), intersection->getZ());
     return (edge.distanceXY(&intersectionVertex) < 0.001);
+}
+
+void ActivePlan::updateAtCurrentHeight()
+{
+
 }
