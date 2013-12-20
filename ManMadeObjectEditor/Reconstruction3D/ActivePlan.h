@@ -22,7 +22,7 @@ private:
     Vertex* planVertex;
     int planSize;
 
-    bool isIntersectionCorrect(GeneralEvent * intersection);
+    bool isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3);
 
 };
 

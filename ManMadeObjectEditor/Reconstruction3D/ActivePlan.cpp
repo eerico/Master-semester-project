@@ -3,6 +3,7 @@
 
 ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* reconstruction3d): planSize(planSize), reconstruction3d(reconstruction3d)
 {
+
     //build a copy of the received plan:
     Vertex* iterator = planVertex;
     unsigned int size = planSize;
@@ -23,6 +24,7 @@ ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* recon
             Profile* profile = iterator->getEdge1()->getProfile();
             Edge* cloneEdge = new Edge(previousVertex, clone, profile);
             Plan* plan = new Plan(cloneEdge->getVertex1(), cloneEdge->getVertex2(), profile);
+            plan->computePlanNormal();
             cloneEdge->setDirectionPlan(plan);
 
             clone->setEdge1(cloneEdge);
@@ -37,6 +39,7 @@ ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* recon
 
     Edge* cloneEdge = new Edge(previousVertex, this->planVertex, firstProfile);
     Plan* plan = new Plan(cloneEdge->getVertex1(), cloneEdge->getVertex2(), firstProfile);
+    plan->computePlanNormal();
     cloneEdge->setDirectionPlan(plan);
 
     this->planVertex->setEdge1(cloneEdge);
@@ -63,7 +66,7 @@ void ActivePlan::computeIntersections()
 
             //test if intersection is correct
             if(intersection != 0){
-                if(isIntersectionCorrect(intersection)){
+                if(isIntersectionCorrect(intersection, thirdVertex->getEdge2())){
                     reconstruction3d->priorityQueue->push(intersection);
                 }
 
@@ -72,6 +75,9 @@ void ActivePlan::computeIntersections()
             thirdVertex = thirdVertex->getNeighbor2();
             plan3 = thirdVertex->getEdge2()->getDirectionPlan();
         }
+
+
+    iterator = iterator->getNeighbor2();
     }
 
     // iterator is the first vertex
@@ -86,7 +92,7 @@ void ActivePlan::computeIntersections()
 
         //test if intersection is correct
         if(intersection != 0){
-            if(isIntersectionCorrect(intersection)){
+            if(isIntersectionCorrect(intersection, thirdVertex->getEdge2())){
                 reconstruction3d->priorityQueue->push(intersection);
             }
 
@@ -98,7 +104,17 @@ void ActivePlan::computeIntersections()
 
 }
 
-bool ActivePlan::isIntersectionCorrect(GeneralEvent* intersection)
+bool ActivePlan::isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3)
 {
-    return false;
+    Plan horizontalPlan (0.f,0.f,intersection->getZ());
+    GeneralEvent * intersection1 = horizontalPlan.intersect3Plans(edge3->getDirectionPlan(), edge3->getVertex1()->getEdge1()->getDirectionPlan());
+    GeneralEvent * intersection2 = horizontalPlan.intersect3Plans(edge3->getDirectionPlan(), edge3->getVertex2()->getEdge2()->getDirectionPlan());
+
+    Vertex v1(intersection1->getX(),intersection1->getY(),intersection1->getZ());
+    Vertex v2(intersection2->getX(),intersection2->getY(),intersection2->getZ());
+
+    Edge edge(&v1,&v2);
+
+    Vertex intersectionVertex(intersection->getX(),intersection1->getY(), intersection->getZ());
+    return (edge.distanceXY(&intersectionVertex) < 0.001);
 }

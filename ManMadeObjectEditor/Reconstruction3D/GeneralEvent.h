@@ -6,6 +6,8 @@
 class GeneralEvent: public Event
 {
 public:
+    float getX();
+    float getY();
     GeneralEvent(float x, float y, float z);
     ~GeneralEvent();
 
