@@ -43,12 +43,12 @@ SOURCES +=\
     GUI/ProfileMergeWindow.cpp \
     GUI/ProfileMergeScene.cpp \
     GUI/PreviewScene.cpp \
-    Reconstruction3D/ActivePlan.cpp
-    GUI/PreviewScene.cpp \
-    Reconstruction3D/Event.cpp \
+    Reconstruction3D/ActivePlan.cpp \
+    Reconstruction3D/Plan.cpp \
     Reconstruction3D/GeneralEvent.cpp \
-    Reconstruction3D/EdgeEvent.cpp \
-    Reconstruction3D/Plan.cpp
+    Reconstruction3D/Event.cpp \
+    Reconstruction3D/EdgeEvent.cpp
+    GUI/PreviewScene.cpp \
     #Reconstruction3D_old/Reconstruction3D.cpp \
     #Reconstruction3D_old/Plan.cpp \
     #Reconstruction3D_old/Chain.cpp \
@@ -101,12 +101,12 @@ HEADERS  += \
     GUI/ProfileMergeWindow.h \
     GUI/ProfileMergeScene.h \
     GUI/PreviewScene.h \
-    Reconstruction3D/ActivePlan.h
-    GUI/PreviewScene.h \
-    Reconstruction3D/Event.h \
+    Reconstruction3D/ActivePlan.h \
+    Reconstruction3D/Plan.h \
     Reconstruction3D/GeneralEvent.h \
-    Reconstruction3D/EdgeEvent.h \
-    Reconstruction3D/Plan.h
+    Reconstruction3D/Event.h \
+    Reconstruction3D/EdgeEvent.h
+    GUI/PreviewScene.h \
 
 #QT *= xml opengl
 
