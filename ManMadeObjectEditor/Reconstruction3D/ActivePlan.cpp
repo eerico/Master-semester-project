@@ -110,6 +110,10 @@ bool ActivePlan::isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3)
     GeneralEvent * intersection1 = horizontalPlan.intersect3Plans(edge3->getDirectionPlan(), edge3->getVertex1()->getEdge1()->getDirectionPlan());
     GeneralEvent * intersection2 = horizontalPlan.intersect3Plans(edge3->getDirectionPlan(), edge3->getVertex2()->getEdge2()->getDirectionPlan());
 
+    if(intersection1 == 0 || intersection2 == 0){
+        return false;
+    }
+
     Vertex v1(intersection1->getX(),intersection1->getY(),intersection1->getZ());
     Vertex v2(intersection2->getX(),intersection2->getY(),intersection2->getZ());
 
