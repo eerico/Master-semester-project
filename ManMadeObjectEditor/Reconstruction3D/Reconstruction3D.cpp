@@ -1,6 +1,6 @@
 #include "Reconstruction3D.h"
 
-//#define DEBUG
+const float Reconstruction3D::deltaHeight(0.0001f);
 
 Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize, std::vector<qglviewer::Vec * > *triangles
                                    , std::vector<std::vector< std::vector< Edge* > > >* chainsDebug
@@ -27,4 +27,19 @@ void Reconstruction3D::reconstruct()
 
     ActivePlan activePlan(floorPlan, floorPlanSize, this);
     activePlan.computeIntersections();
+
+    while(!priorityQueue->empty()) {
+        Event* event = priorityQueue->top();
+        priorityQueue->pop();
+        float currentHeight = event->getZ();
+        event->handle();
+
+        if(!priorityQueue->empty()) {
+            Event* nextEvent = priorityQueue->top();
+            while(std::abs(nextEvent->getZ() - currentHeight) < deltaHeight) {
+                priorityQueue->pop();
+                nextEvent->handle();
+            }
+        }
+    }
 }

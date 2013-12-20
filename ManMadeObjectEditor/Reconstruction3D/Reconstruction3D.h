@@ -26,13 +26,16 @@ public:
     Vertex* floorPlan;
     unsigned int floorPlanSize;
     std::vector< qglviewer::Vec * >* triangles;
+    std::priority_queue<Event*, std::vector<Event*>, EventComparator>* priorityQueue;
+
+    static const float deltaHeight;
 
     // debug information
     std::vector< std::vector< std::vector< Edge* > > >* chainsDebug;
     std::vector< std::vector< std::vector< Edge* > > >* chainsDebug2;
     std::vector< std::vector< Edge* > >* activePlanDebug;
 
-    std::priority_queue<Event*, std::vector<Event*>, EventComparator>* priorityQueue;
+
 };
 
 #endif // RECONSTRUCTION3D_H
