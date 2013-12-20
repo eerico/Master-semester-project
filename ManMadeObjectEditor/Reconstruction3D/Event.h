@@ -4,10 +4,13 @@
 class Event
 {
 public:
-    Event();
+    Event(float y);
     virtual ~Event();
 
     virtual void handle() = 0;
+
+protected:
+    float y;
 };
 
 #endif // EVENT_H

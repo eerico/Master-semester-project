@@ -1,7 +1,7 @@
 #include "GeneralEvent.h"
 
-GeneralEvent::GeneralEvent()
-    :Event()
+GeneralEvent::GeneralEvent(float x, float y, float z)
+    :Event(y), x(x), z(z)
 {
 }
 

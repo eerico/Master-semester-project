@@ -7,7 +7,7 @@
 #include "../GarbageCollector/GarbageCollectorObject.h"
 #include "../GarbageCollector/GeneralDestructorManager.h"
 
-class Plan
+class Plan: public GarbageCollectorObject
 {
 public:
     Plan(Vertex* vertex1, Vertex* vertex2, Profile* profile);
