@@ -13,39 +13,104 @@ TEMPLATE = app
 
 
 SOURCES +=\
-        ObjectViewer.cpp \
     Main.cpp \
-    Mesh.cpp \
-    FloorVertex.cpp \
-    Profile.cpp \
-    FloorAndProfileViewer.cpp \
-    CentralWidget.cpp \
-    FloorScene.cpp \
-    ProfileScene.cpp \
-    Vertex.cpp \
-<<<<<<< HEAD
-    FloorPlanAndProfileExtractor.cpp
-=======
     FloorPlanAndProfileExtractor.cpp \
-    BasicQGraphicsView.cpp
->>>>>>> Erico
+    GarbageCollector/ProfileDestructorManager.cpp \
+    Utils.cpp \
+    MeshManager.cpp \
+    Test.cpp \
+    GUI/ObjectViewer.cpp \
+    GUI/FloorScene.cpp \
+    GUI/FloorAndProfileViewer.cpp \
+    GUI/CentralWidget.cpp \
+    GUI/BasicQGraphicsView.cpp \
+    GUI/AllPlanScene.cpp \
+    Geometry/Vertex.cpp \
+    Geometry/Profile.cpp \
+    Geometry/Edge.cpp \
+    GUI/ProfileScene.cpp \
+    Reconstruction3D/Reconstruction3D.cpp \
+    #Reconstruction3D/Plan.cpp \
+    #Reconstruction3D/ActivePlan.cpp \
+    #Reconstruction3D/Chains.cpp \
+    GUI/AllChainScene.cpp \
+    GarbageCollector/GeneralDestructorManager.cpp \
+    GUI/SimplificationWindow.cpp \
+    Simplification/Simplification.cpp \
+    GUI/SimplificationFloorPlanScene.cpp \
+    GUI/SimplificationProfileScene.cpp \
+    GUI/SimplificationScene.cpp \
+    GUI/ProfileMergeWindow.cpp \
+    GUI/ProfileMergeScene.cpp \
+    GUI/PreviewScene.cpp \
+<<<<<<< HEAD
+    Reconstruction3D/ActivePlan.cpp
+=======
+    Reconstruction3D/Event.cpp \
+    Reconstruction3D/GeneralEvent.cpp \
+    Reconstruction3D/EdgeEvent.cpp \
+    Reconstruction3D/Plan.cpp
+>>>>>>> 6f8935af48ab5caf561b7f9dd1af2ae261d2c7a1
+    #Reconstruction3D_old/Reconstruction3D.cpp \
+    #Reconstruction3D_old/Plan.cpp \
+    #Reconstruction3D_old/Chain.cpp \
+    #Reconstruction3D_old_Tom_Kelly/Reconstruction3D.cpp \
+    #Reconstruction3D_old_Tom_Kelly/Plan.cpp \
+    #Reconstruction3D_old_Tom_Kelly/Chain.cpp
 
 HEADERS  += \
-    Mesh.h \
-    ObjectViewer.h \
-    FloorVertex.h \
-    Profile.h \
-    FloorAndProfileViewer.h \
-    CentralWidget.h \
-    FloorScene.h \
-    ProfileScene.h \
-    Vertex.h \
-<<<<<<< HEAD
-    FloorPlanAndProfileExtractor.h
-=======
     FloorPlanAndProfileExtractor.h \
-    BasicQGraphicsView.h
->>>>>>> Erico
+    GarbageCollector/ProfileDestructorManager.h \
+    Utils.h \
+    MeshManager.h \
+    Test.h \
+    GUI/ObjectViewer.h \
+    GUI/FloorScene.h \
+    GUI/FloorAndProfileViewer.h \
+    GUI/CentralWidget.h \
+    GUI/BasicQGraphicsView.h \
+    GUI/AllPlanScene.h \
+    Geometry/Vertex.h \
+    Geometry/Profile.h \
+    Geometry/Edge.h \
+    GUI/ProfileScene.h \
+    Reconstruction3D/Reconstruction3D.h \
+    #Reconstruction3D/Plan.h \
+    #Reconstruction3D/IntersectionComparator.h \
+    #Reconstruction3D/Intersection.h \
+    #Reconstruction3D/ActivePlan.h \
+    #Reconstruction3D/Chains.h \
+    #Reconstruction3D/ChainOrientationComparator.h \
+    GUI/AllChainScene.h \
+    GarbageCollector/GarbageCollectorObject.h \
+    GarbageCollector/GeneralDestructorManager.h \
+    GUI/SimplificationWindow.h \
+    #Reconstruction3D_old/Reconstruction3D.h \
+    #Reconstruction3D_old/Plan.h \
+    #Reconstruction3D_old/Intersection.h \
+    #Reconstruction3D_old/IntersectionComparator.h \
+    #Reconstruction3D_old/Chain.h \
+    #Reconstruction3D_old_Tom_Kelly/Reconstruction3D.h \
+    #Reconstruction3D_old_Tom_Kelly/Plan.h \
+    #Reconstruction3D_old_Tom_Kelly/IntersectionComparator.h \
+    #Reconstruction3D_old_Tom_Kelly/Intersection.h \
+    #Reconstruction3D_old_Tom_Kelly/Chain.h
+    Simplification/Curve.h \
+    Simplification/Simplification.h \
+    GUI/SimplificationFloorPlanScene.h \
+    GUI/SimplificationProfileScene.h \
+    GUI/SimplificationScene.h \
+    GUI/ProfileMergeWindow.h \
+    GUI/ProfileMergeScene.h \
+    GUI/PreviewScene.h \
+<<<<<<< HEAD
+    Reconstruction3D/ActivePlan.h
+=======
+    Reconstruction3D/Event.h \
+    Reconstruction3D/GeneralEvent.h \
+    Reconstruction3D/EdgeEvent.h \
+    Reconstruction3D/Plan.h
+>>>>>>> 6f8935af48ab5caf561b7f9dd1af2ae261d2c7a1
 
 #QT *= xml opengl
 
@@ -53,17 +118,30 @@ HEADERS  += \
 
 
 win32{
-    INCLUDEPATH *= D:\Qt\libQGLViewer-2.4.0
-    LIBS *= -LD:\Qt\libQGLViewer-2.4.0/QGLViewer -lQGLViewer2
+    #path to where is the libqglviewer root
+    LIBQGL_PATH = "C:/Program Files (x86)/libQGLViewer"
 
-    win32:CONFIG(release, debug|release): LIBS += -LD:\OpenMesh\lib\ -lOpenMeshCore
-    else:win32:CONFIG(debug, debug|release): LIBS += -LD:\OpenMesh\lib\ -lOpenMeshCored
+    win32:INCLUDEPATH += $$LIBQGL_PATH/sources
+    win32:DEPENDPATH += $$LIBQGL_PATH/sources
 
-    INCLUDEPATH += D:\OpenMesh\include
-    DEPENDPATH += D:\OpenMesh\include
 
-    win32:CONFIG(release, debug|release): LIBS += -LD:\OpenMesh\lib\ -lOpenMeshTools
-    else:win32:CONFIG(debug, debug|release): LIBS += -LD:\OpenMesh\lib\ -lOpenMeshToolsd
+    # LIB_NAME
+
+    LIB_NAME = QGLViewer
+    build_pass:CONFIG(debug, debug|release) {
+        LIB_NAME = $$join(LIB_NAME,,,d)
+    }
+    LIB_NAME = $$join(LIB_NAME,,,2)
+
+    win32:LIBS += -L$$LIBQGL_PATH/lib/QGLViewer -l$$LIB_NAME
+
+
+    win32:LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshCore
+
+    INCLUDEPATH += "C:\Program Files (x86)\OpenMesh\include"
+    DEPENDPATH += "C:\Program Files (x86)\OpenMesh\include"
+
+    win32:LIBS += -L"C:\Program Files (x86)\OpenMesh\lib" -lOpenMeshTools
 
     DEFINES +=  _USE_MATH_DEFINES
 }

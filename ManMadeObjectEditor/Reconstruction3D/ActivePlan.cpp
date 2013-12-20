@@ -2,6 +2,7 @@
 
 ActivePlan::ActivePlan(Vertex *planVertex, int planSize): planSize(planSize)
 {
+    //build a copy of the received plan:
     Vertex* iterator = planVertex;
     unsigned int size = planSize;
 
