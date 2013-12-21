@@ -21,6 +21,7 @@ void GeneralEvent::handle(Reconstruction3D* reconstruction3D)
     if(edges.size() < 3) {
         return;
     }
+
 }
 
 bool GeneralEvent::isGeneralEvent() {
@@ -82,15 +83,25 @@ void GeneralEvent::clustering(Reconstruction3D* reconstruction3D)
 }
 
 void GeneralEvent::filteringInvalidEdges() {
-    std::set<Edge*, EdgePointerComparator>* copy = new std::set<Edge*, EdgePointerComparator>;
+    std::set<Edge*, EdgePointerComparator> copy;
     for (std::set<Edge*, EdgePointerComparator>::iterator it = edges.begin(); it != edges.end(); ++it) {
         Edge* edge = *it;
         if(edge->isValid()) {
-            copy->insert(edge);
+            copy.insert(edge);
         }
+    }
+
+    for (std::set<Edge*, EdgePointerComparator>::iterator it = copy.begin(); it != copy.end(); ++it) {
+        Edge* edge = *it;
+        edges.insert(edge);
     }
 }
 
 std::set<Edge*, GeneralEvent::EdgePointerComparator>* GeneralEvent::getEdges() {
     return &edges;
+}
+
+void GeneralEvent::addEdge(Edge *edge)
+{
+    edges.insert(edge);
 }
