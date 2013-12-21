@@ -24,8 +24,11 @@ void GeneralEvent::handle(Reconstruction3D* reconstruction3D)
     }
 
     Chains chains(this, reconstruction3D->triangles, reconstruction3D->activePlan);
-    /*chains.inter...
-            chains.intra...;*/
+    chains.getChains(reconstruction3D->chainsDebug);
+    chains.intraChainHandling();
+    chains.interChainHandling();
+    chains.getChains(reconstruction3D->chainsDebug2);
+
 }
 
 bool GeneralEvent::isGeneralEvent() {
