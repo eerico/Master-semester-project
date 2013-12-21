@@ -23,6 +23,8 @@ public:
     void getActivePlanCopy(std::vector< std::vector< Edge* > >* copy);
     void removeInvalidEdges();
 
+    void eliminateParallelNeighbor();
+
 private:
     Reconstruction3D* reconstruction3d;
     std::vector<Edge*> activePlan;
@@ -30,7 +32,7 @@ private:
     bool isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3);
     Edge* isIntersectionWithChildCorrect(GeneralEvent* intersection, Edge* old, Edge* child1, Edge* child2);
 
-
+    void addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3);
 };
 
 #endif // ACTIVEPLAN_H

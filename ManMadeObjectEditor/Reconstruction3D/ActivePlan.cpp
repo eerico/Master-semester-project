@@ -59,6 +59,9 @@ void ActivePlan::computeIntersections()
         if(edge1->isValid()) {
             Edge* edge2 = edge1->getVertex2()->getEdge2();
             if(edge2->isValid()) {//reste bloque ici mais bon avec error devrait pas etre possible mais... edges child must intersect eh
+// Comme on calcul a chaque etage, on peut alors avoir 2 voisins parallele et donc
+                // sa crash car il trouve pas d intersection
+
 
                 foreach(Edge* edge3, activePlan) {
                     if(edge3->isValid()) {
@@ -109,43 +112,28 @@ bool ActivePlan::isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3)
 }
 
 Edge *ActivePlan::isIntersectionWithChildCorrect(GeneralEvent *intersection, Edge *old, Edge *child1, Edge *child2)
-{
-    Plan horizontalPlan (0.f,0.f,intersection->getZ());
+{  
+    Plan horizontalPlan (0.f,0.f, intersection->getZ());
     GeneralEvent * intersection1 = horizontalPlan.intersect3Plans(old->getDirectionPlan(), old->getVertex1()->getEdge1()->getDirectionPlan());
     GeneralEvent * intersection2 = horizontalPlan.intersect3Plans(old->getDirectionPlan(), old->getVertex2()->getEdge2()->getDirectionPlan());
 
-    if(intersection1 == 0 || intersection2 == 0){
-        return 0;
-    }
-    float oldLength = old->getVertex1()->distance(old->getVertex2());
-    float child1Length =  child1->getVertex1()->distance(child1->getVertex2());
-    float ratio = child1Length/oldLength;
-
-    float x = intersection2->getX() - intersection1->getX() ;
-    x= x*ratio;
-    float y = intersection2->getY() - intersection1->getY();
-    y = y* ratio;
-
-    Vertex newVertex(intersection1->getX()+x,intersection1->getY()+y,intersection1->getZ());
 
     Vertex v1(intersection1->getX(),intersection1->getY(),intersection1->getZ());
     Vertex v2(intersection2->getX(),intersection2->getY(),intersection2->getZ());
 
     Vertex intersectionVertex(intersection->getX(),intersection->getY(), intersection->getZ());
 
-
-    Edge edge(&v1,&newVertex);
+    Edge edge(&v1, child1->getVertex2());
     if(edge.distanceXY(&intersectionVertex) < 0.001){
         return child1;
     }else{
-        edge= Edge(&newVertex, &v2);
+        edge= Edge(child2->getVertex1(), &v2);
         if(edge.distanceXY(&intersectionVertex) < 0.001){
             return child2;
         }
 
     }
     return 0;
-
 }
 
 void ActivePlan::addEdgeDirectionEvent() {
@@ -155,14 +143,41 @@ void ActivePlan::addEdgeDirectionEvent() {
 void ActivePlan::updateAtCurrentHeight(float currentHeight)
 {
     foreach(Edge* edge, activePlan) {
+        if(!edge->isValid()) {
+            continue;
+        }
+
         Vertex* v1 = edge->getVertex1();
         Vertex* v2 = edge->getVertex2();
+        Plan horizontalPlan (0.f, 0.f, currentHeight);
 
         if(v1->getZ() < currentHeight) {
-            std::cerr << "TODO";
+            Plan* plan1 = v1->getEdge1()->getDirectionPlan();
+            Plan* plan2 = edge->getDirectionPlan();
+
+            GeneralEvent* intersection = horizontalPlan.intersect3Plans(plan1, plan2);
+
+            Vertex vertex(intersection->getX(), intersection->getY(), intersection->getZ());
+            addNewTriangle(v1, v2, &vertex);
+            addNewTriangle(v1->getEdge1()->getVertex1(), v1, &vertex);
+
+            v1->setX(vertex.getX());
+            v1->setY(vertex.getY());
+            v1->setZ(currentHeight);
         }
         if(v2->getZ() < currentHeight) {
-            std::cerr << "TODO";
+            Plan* plan1 = edge->getDirectionPlan();
+            Plan* plan2 = v2->getEdge2()->getDirectionPlan();
+
+            GeneralEvent* intersection = horizontalPlan.intersect3Plans(plan1, plan2);
+
+            Vertex vertex(intersection->getX(), intersection->getY(), intersection->getZ());
+            addNewTriangle(v1, v2, &vertex);
+            addNewTriangle(v2, v2->getEdge2()->getVertex2(), &vertex);
+
+            v2->setX(vertex.getX());
+            v2->setY(vertex.getY());
+            v2->setZ(currentHeight);
         }
     }
 }
@@ -241,3 +256,52 @@ void ActivePlan::removeInvalidEdges() {
         }
     }
 }
+
+// a utiliser quand tout est au meme niveau !!
+// il faudrait faire une check de sureter histoire d etre bien sure que quand on l appele c est effectivement le cas..
+void ActivePlan::eliminateParallelNeighbor()
+{
+    float currentLevel = (activePlan[0])->getVertex1()->getZ();
+    foreach(Edge* edge, activePlan) {
+        Vertex* v2 = edge->getVertex2();
+        if(std::abs(v2->getZ() - currentLevel) > 2.1f * reconstruction3d->deltaHeight) {
+            std::cerr << "Error FloorPlan not flat: " << std::abs(v2->getZ() - currentLevel) << std::endl;
+        }
+    }
+
+    unsigned int size = activePlan.size();
+    for(unsigned int i(0); i < size; ++i) {
+        Edge* currentEdge = activePlan[i];
+        Edge* nextEdge = currentEdge->getVertex2()->getEdge2();
+
+        if(currentEdge->isParallel(nextEdge)) {
+            activePlan.erase(activePlan.begin() + i);
+            i--;
+            size--;
+            Vertex* nextV1 = nextEdge->getVertex1();
+            Vertex* currentV1 = currentEdge->getVertex1();
+
+            nextV1->setX(currentV1->getX());
+            nextV1->setY(currentV1->getY());
+            nextV1->setZ(currentV1->getZ());
+
+            nextV1->setEdge1(currentV1->getEdge1());
+            nextV1->setNeighbor1(currentV1->getNeighbor1());
+
+            currentV1->getNeighbor1()->setNeighbor2(nextV1);
+            currentV1->getNeighbor1()->setEdge2(nextEdge);
+        }
+    }
+}
+
+void ActivePlan::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
+    qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
+    qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());
+    qglviewer::Vec* triangleVertex3 = new qglviewer::Vec(vertex3->getX(), vertex3->getY(), vertex3->getZ());
+
+    reconstruction3d->triangles->push_back(triangleVertex1);
+    reconstruction3d->triangles->push_back(triangleVertex2);
+    reconstruction3d->triangles->push_back(triangleVertex3);
+}
+
+
