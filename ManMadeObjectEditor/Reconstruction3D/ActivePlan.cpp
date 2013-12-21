@@ -59,9 +59,6 @@ void ActivePlan::computeIntersections()
         if(edge1->isValid()) {
             Edge* edge2 = edge1->getVertex2()->getEdge2();
             if(edge2->isValid()) {//reste bloque ici mais bon avec error devrait pas etre possible mais... edges child must intersect eh
-// Comme on calcul a chaque etage, on peut alors avoir 2 voisins parallele et donc
-                // sa crash car il trouve pas d intersection
-
 
                 foreach(Edge* edge3, activePlan) {
                     if(edge3->isValid()) {
@@ -274,7 +271,17 @@ void ActivePlan::eliminateParallelNeighbor()
         Edge* currentEdge = activePlan[i];
         Edge* nextEdge = currentEdge->getVertex2()->getEdge2();
 
-        if(currentEdge->isParallel(nextEdge)) {
+        Plan* p1 = currentEdge->getDirectionPlan();
+        Plan* p2 = nextEdge->getDirectionPlan();
+
+        float nx1, ny1, nz1;
+        float nx2, ny2, nz2;
+        p1->getNormal(nx1, ny1, nz1);
+        p2->getNormal(nx2, ny2, nz2);
+
+        float dotProduct = nx1*nx2 + ny1*ny2 + nz1*nz2;
+
+        if(currentEdge->isParallel(nextEdge) || std::abs(std::abs(dotProduct) - 1.0f) < 0.0001f) {
             activePlan.erase(activePlan.begin() + i);
             i--;
             size--;
