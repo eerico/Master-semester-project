@@ -28,6 +28,7 @@ private:
     std::vector<Edge*> activePlan;
 
     bool isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3);
+    Edge* isIntersectionWithChildCorrect(GeneralEvent* intersection, Edge* old, Edge* child1, Edge* child2);
 
 
 };
