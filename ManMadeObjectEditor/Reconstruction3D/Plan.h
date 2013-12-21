@@ -12,6 +12,8 @@ class Plan: public GarbageCollectorObject
 public:
     Plan(Vertex* vertex1, Vertex* vertex2, Profile* profile);
 
+    Plan(Plan* oldPlan, Vertex* vertex1, Profile* profile);
+
     Plan(float vertexX, float vertexY, float vertexZ,
          float normalX = 0.0f, float normalY = 0.0f, float normalZ = 1.0f);
 

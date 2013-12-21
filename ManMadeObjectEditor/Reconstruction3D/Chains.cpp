@@ -160,7 +160,7 @@ void Chains::intraChainHandling() {
                 continue;
             }
 
-            Vertex* intersectionVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+            Vertex* intersectionVertex = new Vertex(intersection->getX(), intersection->getY(), intersection->getZ());
             GeneralDestructorManager::putObject(intersectionVertex);
 
             addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
@@ -205,7 +205,7 @@ bool Chains::interChainHandling() {
         std::vector< Edge* >* chain1 = chainList[i];
         std::vector< Edge* >* chain2 = chainList[(i+1) % chainsSize];
 
-        Vertex* intersectionVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+        Vertex* intersectionVertex = new Vertex(intersection->getX(), intersection->getY(), intersection->getZ());
         GeneralDestructorManager::putObject(intersectionVertex);
 
         Edge* lastEdgeChain1(0);
@@ -281,7 +281,7 @@ bool Chains::interChainHandling() {
 
 void Chains::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2)
 {
-    Vertex* cornerVertex = new Vertex(intersection->x, intersection->y, intersection->z);
+    Vertex* cornerVertex = new Vertex(intersection->getX(), intersection->getY(), intersection->getZ());
     GeneralDestructorManager::putObject(cornerVertex);
 
     newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
@@ -292,11 +292,11 @@ void Chains::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdg
     Plan* oldPlan = edgeToSplit->getDirectionPlan();
     Plan* plan1 = new Plan(oldPlan, newEdge1->getVertex1(), newEdge1->getProfile());
     GeneralDestructorManager::putObject(plan1);
-    plan1->computePlanNormal();
+    //plan1->computePlanNormal();
 
     Plan* plan2 = new Plan(oldPlan, newEdge2->getVertex1(), newEdge2->getProfile());
     GeneralDestructorManager::putObject(plan2);
-    plan2->computePlanNormal();
+    //plan2->computePlanNormal();
 
     newEdge1->setDirectionPlan(plan1);
     newEdge2->setDirectionPlan(plan2);

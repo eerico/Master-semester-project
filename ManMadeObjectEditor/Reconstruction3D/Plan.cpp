@@ -19,6 +19,16 @@ Plan::Plan(float vertexX, float vertexY, float vertexZ,
     GeneralDestructorManager::putObject(vertex);
 }
 
+Plan::Plan(Plan* oldPlan, Vertex* vertex1, Profile* profile)
+    :vertex(vertex1), profile(profile)
+{
+    float nxTmp;
+    float nyTmp;
+    float nzTmp;
+    oldPlan->getNormal(nxTmp, nyTmp, nzTmp);
+    this->setNormal(nxTmp, nyTmp, nzTmp);
+}
+
 Plan::~Plan() {
 
 }
