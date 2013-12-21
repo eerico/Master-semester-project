@@ -21,11 +21,14 @@ public:
 
     void updateAtCurrentHeight();
 
+    void insert2Edges(Edge* old, Edge* new1, Edge* new2);
+
 private:
     Reconstruction3D* reconstruction3d;
     std::vector<Edge*> activePlan;
 
     bool isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3);
+
 
 };
 

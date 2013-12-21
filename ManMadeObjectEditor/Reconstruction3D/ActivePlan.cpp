@@ -109,3 +109,19 @@ void ActivePlan::updateAtCurrentHeight()
 {
 
 }
+
+void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
+{
+    bool found = false;
+    for(std::vector<Edge*>::iterator i= activePlan.begin(); !found && i!= activePlan.end(); i++){
+        if(*i==old){
+            activePlan.insert(i,new1);
+            activePlan.insert(i,new2);
+            activePlan.erase(i);
+            found = true;
+        }
+    }
+    if(!found){
+        std::cerr << " - old edge not found!!!" << std::endl;
+    }
+}
