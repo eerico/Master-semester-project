@@ -36,7 +36,7 @@ void Reconstruction3D::reconstruct()
 
         delete event;
 
-       /*if(!priorityQueue->empty()) {
+       if(!priorityQueue->empty()) {
             Event* nextEvent = priorityQueue->top();
             while((std::abs(nextEvent->getZ() - currentHeight) < deltaHeight) && !priorityQueue->empty()) {
                 priorityQueue->pop();
@@ -48,6 +48,7 @@ void Reconstruction3D::reconstruct()
                 }
             }
         }
+       //return;
 
         //clear the piority queue
         while(!priorityQueue->empty()) {
@@ -57,6 +58,6 @@ void Reconstruction3D::reconstruct()
         }
 
         activePlan->updateAtCurrentHeight();
-        activePlan->computeIntersections();*/
+        activePlan->computeIntersections();
     }
 }

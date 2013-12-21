@@ -189,9 +189,6 @@ void Chains::intraChainHandling() {
     }
 }
 
-// return true si il y a eu un split lors de l'algorithme car
-// si c est le cas, il faut recompute le active plan ET les intersection!
-// (voir paper page 5, paragraphe Outline, la fin)
 bool Chains::interChainHandling() {
     unsigned int chainsSize = chainList.size();
     if (chainsSize < 2) {

@@ -127,6 +127,8 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
             activePlan.push_back(new1);
             activePlan.push_back(new2);
             found = true;
+            
+            
         }
     }
     if(!found){

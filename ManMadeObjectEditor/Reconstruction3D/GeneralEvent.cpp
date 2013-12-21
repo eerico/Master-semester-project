@@ -26,6 +26,7 @@ void GeneralEvent::handle(Reconstruction3D* reconstruction3D)
     Chains chains(this, reconstruction3D->triangles, reconstruction3D->activePlan);
     chains.getChains(reconstruction3D->chainsDebug);
     chains.intraChainHandling();
+
     chains.interChainHandling();
     chains.getChains(reconstruction3D->chainsDebug2);
 
@@ -99,6 +100,7 @@ void GeneralEvent::filteringInvalidEdges() {
             copy.insert(edge);
         }
     }
+    edges.clear();
 
     for (std::set<Edge*, EdgePointerComparator>::iterator it = copy.begin(); it != copy.end(); ++it) {
         Edge* edge = *it;
