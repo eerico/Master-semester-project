@@ -32,7 +32,7 @@ void Reconstruction3D::reconstruct()
         Event* event = priorityQueue->top();
         priorityQueue->pop();
         float currentHeight = event->getZ();
-        event->handle();
+        event->handle(this);
 
         delete event;
 
@@ -40,7 +40,7 @@ void Reconstruction3D::reconstruct()
             Event* nextEvent = priorityQueue->top();
             while((std::abs(nextEvent->getZ() - currentHeight) < deltaHeight) && !priorityQueue->empty()) {
                 priorityQueue->pop();
-                nextEvent->handle();
+                nextEvent->handle(this);
                 delete nextEvent;
 
                 if(!priorityQueue->empty()) {

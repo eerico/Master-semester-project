@@ -9,7 +9,8 @@ public:
     EdgeEvent();
     ~EdgeEvent();
 
-    void handle();
+    void handle(Reconstruction3D* reconstruction3D);
+    bool isGeneralEvent();
 };
 
 #endif // EDGEEVENT_H

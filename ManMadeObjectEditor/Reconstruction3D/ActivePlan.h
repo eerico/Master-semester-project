@@ -15,6 +15,7 @@ public:
     ActivePlan(Vertex* planVertex, int planSize, Reconstruction3D* reconstruction3d);
 
     void computeIntersections();
+    void addEdgeDirectionEvent();
 
     bool isIntersectionCorrect();
 

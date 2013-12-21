@@ -98,6 +98,10 @@ bool ActivePlan::isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3)
     return (edge.distanceXY(&intersectionVertex) < 0.001);
 }
 
+void ActivePlan::addEdgeDirectionEvent() {
+
+}
+
 void ActivePlan::updateAtCurrentHeight()
 {
 
