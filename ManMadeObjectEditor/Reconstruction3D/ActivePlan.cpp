@@ -58,7 +58,8 @@ void ActivePlan::computeIntersections()
     foreach(Edge* edge1, activePlan) {
         if(edge1->isValid()) {
             Edge* edge2 = edge1->getVertex2()->getEdge2();
-            if(edge2->isValid()) {
+            if(edge2->isValid()) {//reste bloque ici mais bon avec error devrait pas etre possible mais... edges child must intersect eh
+
                 foreach(Edge* edge3, activePlan) {
                     if(edge3->isValid()) {
                         if(edge3 == edge1 || edge3 == edge2) {
@@ -121,12 +122,44 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
     bool found = false;
     for(std::vector<Edge*>::iterator i= activePlan.begin(); !found && i!= activePlan.end(); i++){
         if(*i==old){
+            found = true;
             activePlan.erase(i);
             //activePlan.insert(i,new1);
             //activePlan.insert(i,new2);
             activePlan.push_back(new1);
             activePlan.push_back(new2);
-            found = true;
+
+
+            std::priority_queue<Event*, std::vector<Event*>, EventComparator>* priorityQueue = reconstruction3d->priorityQueue;
+            std::vector<Event*> tempVector;
+            while(!priorityQueue->empty()){
+                Event* event = priorityQueue->top();
+                priorityQueue->pop();
+
+                if(event->isGeneralEvent()){
+                    GeneralEvent* e = (GeneralEvent*) event;
+                    for( std::set<Edge*, GeneralEvent::EdgePointerComparator>::iterator it= e->getEdges()->begin() ; it != e->getEdges()->end(); it++){
+                        if(*it == old){
+                            if(isIntersectionCorrect(e, new1)){
+                                e->getEdges()->erase(it);
+                                e->getEdges()->insert(new1);
+                            } else if(isIntersectionCorrect(e,new2)){
+                                e->getEdges()->erase(it);
+                                e->getEdges()->insert(new2);
+                            } else {
+                                std::cerr << "devrait pas etre possible mais... edges child must intersect eh"<< std::endl;
+                            }
+                        }
+                    }
+                }
+
+                tempVector.push_back(event);
+            }
+
+            foreach (Event* event, tempVector) {
+                priorityQueue->push(event);
+            }
+
         }
     }
     if(!found){
