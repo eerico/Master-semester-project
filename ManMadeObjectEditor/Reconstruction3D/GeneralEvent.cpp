@@ -29,6 +29,8 @@ void GeneralEvent::handle(Reconstruction3D* reconstruction3D)
     chains.interChainHandling();
     chains.getChains(reconstruction3D->chainsDebug2);
 
+    reconstruction3D->activePlan->removeInvalidEdges();
+    reconstruction3D->activePlan->getActivePlanCopy(reconstruction3D->activePlanDebug);
 }
 
 bool GeneralEvent::isGeneralEvent() {

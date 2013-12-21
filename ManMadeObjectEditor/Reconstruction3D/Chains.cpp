@@ -6,7 +6,6 @@ Chains::Chains(GeneralEvent* intersection, std::vector<qglviewer::Vec *> *triang
 {
     std::set<Edge*, GeneralEvent::EdgePointerComparator>* edgesSet = intersection->getEdges();
     std::vector<Edge*> edges(edgesSet->begin(), edgesSet->end());
-    delete edgesSet;
 
     unsigned int size = edges.size();
 

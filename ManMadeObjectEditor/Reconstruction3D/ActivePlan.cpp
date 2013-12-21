@@ -115,13 +115,37 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
     bool found = false;
     for(std::vector<Edge*>::iterator i= activePlan.begin(); !found && i!= activePlan.end(); i++){
         if(*i==old){
-            activePlan.insert(i,new1);
-            activePlan.insert(i,new2);
             activePlan.erase(i);
+            //activePlan.insert(i,new1);
+            //activePlan.insert(i,new2);
+            activePlan.push_back(new1);
+            activePlan.push_back(new2);
             found = true;
         }
     }
     if(!found){
         std::cerr << " - old edge not found!!!" << std::endl;
+    }
+}
+
+void ActivePlan::getActivePlanCopy(std::vector< std::vector< Edge* > >* copy) {
+    std::vector< Edge* > currentLevel;
+    foreach(Edge* e, activePlan) {
+        Vertex* v1 = e->getVertex1();
+        Vertex* v2 = e->getVertex2();
+        currentLevel.push_back(new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ())));
+    }
+    copy->push_back(currentLevel);
+}
+
+void ActivePlan::removeInvalidEdges() {
+    unsigned int size = activePlan.size();
+    for(unsigned int i(0); i < size; ++i) {
+        Edge* currentEdge = activePlan[i];
+        if(!currentEdge->isValid()) {
+            activePlan.erase(activePlan.begin() + i);
+            i--;
+            size--;
+        }
     }
 }
