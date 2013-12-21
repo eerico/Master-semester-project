@@ -1,4 +1,5 @@
 #include "Chains.h"
+#include "GeneralEvent.h"
 
 Chains::Chains(GeneralEvent* intersection, std::vector<qglviewer::Vec *> *triangles, ActivePlan* activePlan)
     :intersection(intersection), triangles(triangles), activePlan(activePlan)

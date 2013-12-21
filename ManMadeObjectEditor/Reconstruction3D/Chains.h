@@ -6,11 +6,12 @@
 #include "../Geometry/Edge.h"
 #include "../Geometry/Profile.h"
 #include "ChainOrientationComparator.h"
-#include "GeneralEvent.h"
 #include "ActivePlan.h"
 #include <algorithm>
 #include <cmath>
 #include <set>
+
+class GeneralEvent;
 
 class Chains
 {

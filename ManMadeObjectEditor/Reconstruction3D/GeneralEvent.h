@@ -8,6 +8,8 @@
 #include <set>
 #include "../Geometry/Edge.h"
 
+class Chains;
+
 class GeneralEvent: public Event
 {
 

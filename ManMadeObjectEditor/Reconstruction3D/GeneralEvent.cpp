@@ -1,4 +1,5 @@
 #include "GeneralEvent.h"
+#include "Chains.h"
 #include "Reconstruction3D.h"
 
 
@@ -22,8 +23,8 @@ void GeneralEvent::handle(Reconstruction3D* reconstruction3D)
         return;
     }
 
-    /*Chains chains(this, reconstruction3D->triangles, reconstruction3D->activePlan);
-    chains.inter...
+    Chains chains(this, reconstruction3D->triangles, reconstruction3D->activePlan);
+    /*chains.inter...
             chains.intra...;*/
 }
 
