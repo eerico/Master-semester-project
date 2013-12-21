@@ -108,6 +108,46 @@ bool ActivePlan::isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3)
     return (edge.distanceXY(&intersectionVertex) < 0.001);
 }
 
+Edge *ActivePlan::isIntersectionWithChildCorrect(GeneralEvent *intersection, Edge *old, Edge *child1, Edge *child2)
+{
+    Plan horizontalPlan (0.f,0.f,intersection->getZ());
+    GeneralEvent * intersection1 = horizontalPlan.intersect3Plans(old->getDirectionPlan(), old->getVertex1()->getEdge1()->getDirectionPlan());
+    GeneralEvent * intersection2 = horizontalPlan.intersect3Plans(old->getDirectionPlan(), old->getVertex2()->getEdge2()->getDirectionPlan());
+
+    if(intersection1 == 0 || intersection2 == 0){
+        return 0;
+    }
+    float oldLength = old->getVertex1()->distance(old->getVertex2());
+    float child1Length =  child1->getVertex1()->distance(child1->getVertex2());
+    float ratio = child1Length/oldLength;
+
+    float x = intersection2->getX() - intersection1->getX() ;
+    x= x*ratio;
+    float y = intersection2->getY() - intersection1->getY();
+    y = y* ratio;
+
+    Vertex newVertex(intersection1->getX()+x,intersection1->getY()+y,intersection1->getZ());
+
+    Vertex v1(intersection1->getX(),intersection1->getY(),intersection1->getZ());
+    Vertex v2(intersection2->getX(),intersection2->getY(),intersection2->getZ());
+
+    Vertex intersectionVertex(intersection->getX(),intersection->getY(), intersection->getZ());
+
+
+    Edge edge(&v1,&newVertex);
+    if(edge.distanceXY(&intersectionVertex) < 0.001){
+        return child1;
+    }else{
+        edge= Edge(&newVertex, &v2);
+        if(edge.distanceXY(&intersectionVertex) < 0.001){
+            return child2;
+        }
+
+    }
+    return 0;
+
+}
+
 void ActivePlan::addEdgeDirectionEvent() {
 
 }
@@ -140,14 +180,17 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
                     GeneralEvent* e = (GeneralEvent*) event;
                     for( std::set<Edge*, GeneralEvent::EdgePointerComparator>::iterator it= e->getEdges()->begin() ; it != e->getEdges()->end(); it++){
                         if(*it == old){
-                            if(isIntersectionCorrect(e, new1)){
-                                e->getEdges()->erase(it);
-                                e->getEdges()->insert(new1);
-                            } else if(isIntersectionCorrect(e,new2)){
-                                e->getEdges()->erase(it);
-                                e->getEdges()->insert(new2);
-                            } else {
-                                std::cerr << "devrait pas etre possible mais... edges child must intersect eh"<< std::endl;
+
+                           Edge * intersectingEdge = isIntersectionWithChildCorrect(e, old, new1, new2);
+                           if(intersectingEdge!= 0){
+                               e->getEdges()->erase(old);
+                               e->getEdges()->insert(intersectingEdge);
+                           } else {
+                                if(!old->isValid()){
+                                    std::cerr << " devrait pas etre possible mais... edges child must intersect eh"<< std::endl;
+                                } else {
+                                    std::cerr <<  "doevrait pas arriver grrrrr"<< std::endl;
+                                }
                             }
                         }
                     }
