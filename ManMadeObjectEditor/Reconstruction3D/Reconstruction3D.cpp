@@ -25,8 +25,8 @@ void Reconstruction3D::reconstruct()
         return;
     }
 
-    ActivePlan activePlan(floorPlan, floorPlanSize, this);
-    activePlan.computeIntersections(); // mettre seulement ceux qui sont a la bonne heuteur
+    activePlan = new ActivePlan(floorPlan, floorPlanSize, this);
+    activePlan->computeIntersections(); // mettre seulement ceux qui sont a la bonne heuteur
 
     while(!priorityQueue->empty()) {
         Event* event = priorityQueue->top();
@@ -36,7 +36,7 @@ void Reconstruction3D::reconstruct()
 
         delete event;
 
-        if(!priorityQueue->empty()) {
+       /*if(!priorityQueue->empty()) {
             Event* nextEvent = priorityQueue->top();
             while((std::abs(nextEvent->getZ() - currentHeight) < deltaHeight) && !priorityQueue->empty()) {
                 priorityQueue->pop();
@@ -56,7 +56,7 @@ void Reconstruction3D::reconstruct()
             delete event;
         }
 
-        activePlan.updateAtCurrentHeight();
-        activePlan.computeIntersections();
+        activePlan->updateAtCurrentHeight();
+        activePlan->computeIntersections();*/
     }
 }

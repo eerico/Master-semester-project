@@ -17,8 +17,6 @@ public:
     void computeIntersections();
     void addEdgeDirectionEvent();
 
-    bool isIntersectionCorrect();
-
     void updateAtCurrentHeight();
 
     void insert2Edges(Edge* old, Edge* new1, Edge* new2);

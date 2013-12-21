@@ -27,6 +27,7 @@ public:
     unsigned int floorPlanSize;
     std::vector< qglviewer::Vec * >* triangles;
     std::priority_queue<Event*, std::vector<Event*>, EventComparator>* priorityQueue;
+    ActivePlan* activePlan;
 
     static const float deltaHeight;
 
