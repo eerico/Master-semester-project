@@ -10,17 +10,17 @@
 
 class GeneralEvent: public Event
 {
-private:
+
+public:
+    GeneralEvent(float x, float y, float z);
+    ~GeneralEvent();
+
     struct EdgePointerComparator {
         bool operator() (Edge* e1, Edge* e2) const
         {
             return e1 < e2;
         }
     };
-
-public:
-    GeneralEvent(float x, float y, float z);
-    ~GeneralEvent();
 
     void handle(Reconstruction3D* reconstruction3D);
     bool isGeneralEvent();

@@ -22,6 +22,10 @@ void GeneralEvent::handle(Reconstruction3D* reconstruction3D)
         return;
     }
 
+    // ensuite faire les truc avec les chaines et update le active plan via les edges
+    // Si ya un edge split, la priority queue est alors invalid et on doit la vider et refaire les calcul
+    // mais après avoir finit de traiter cette étage la (?) => de toute facon, quand on a fini l etage, on recalcul
+    // donc on doit juste s occuper des edge direction event qui pourrait ne pas etre a jours
 }
 
 bool GeneralEvent::isGeneralEvent() {

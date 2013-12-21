@@ -48,7 +48,7 @@ SOURCES +=\
     Reconstruction3D/GeneralEvent.cpp \
     Reconstruction3D/Event.cpp \
     Reconstruction3D/EdgeEvent.cpp \
-    Reconstruction3D/Chain.cpp
+    Reconstruction3D/Chains.cpp
     GUI/PreviewScene.cpp \
     #Reconstruction3D_old/Reconstruction3D.cpp \
     #Reconstruction3D_old/Plan.cpp \
@@ -108,7 +108,8 @@ HEADERS  += \
     Reconstruction3D/Event.h \
     Reconstruction3D/EdgeEvent.h \
     Reconstruction3D/EventComparator.h \
-    Reconstruction3D/Chain.h
+    Reconstruction3D/ChainOrientationComparator.h \
+    Reconstruction3D/Chains.h
     GUI/PreviewScene.h \
 
 #QT *= xml opengl
