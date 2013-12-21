@@ -72,6 +72,9 @@ void ActivePlan::computeIntersections()
             //test if intersection is correct
             if(intersection != 0){
                 if(isIntersectionCorrect(intersection, edge3)){
+                    intersection->addEdge(edge1);
+                    intersection->addEdge(edge2);
+                    intersection->addEdge(edge3);
                     reconstruction3d->priorityQueue->push(intersection);
                 }
             }

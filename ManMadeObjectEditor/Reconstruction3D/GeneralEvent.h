@@ -29,6 +29,7 @@ public:
     float getY();
 
     std::set<Edge*, EdgePointerComparator>* getEdges();
+    void addEdge(Edge* edge);
 
 private:
     float x;
