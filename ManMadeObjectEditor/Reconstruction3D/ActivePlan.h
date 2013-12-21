@@ -17,7 +17,7 @@ public:
     void computeIntersections();
     void addEdgeDirectionEvent();
 
-    void updateAtCurrentHeight();
+    void updateAtCurrentHeight(float currentHeight);
 
     void insert2Edges(Edge* old, Edge* new1, Edge* new2);
     void getActivePlanCopy(std::vector< std::vector< Edge* > >* copy);

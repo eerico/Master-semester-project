@@ -57,7 +57,7 @@ void Reconstruction3D::reconstruct()
             delete event;
         }
 
-        activePlan->updateAtCurrentHeight();
+        activePlan->updateAtCurrentHeight(currentHeight);
         activePlan->computeIntersections();
     }
 }

@@ -112,9 +112,19 @@ void ActivePlan::addEdgeDirectionEvent() {
 
 }
 
-void ActivePlan::updateAtCurrentHeight()
+void ActivePlan::updateAtCurrentHeight(float currentHeight)
 {
+    foreach(Edge* edge, activePlan) {
+        Vertex* v1 = edge->getVertex1();
+        Vertex* v2 = edge->getVertex2();
 
+        if(v1->getZ() < currentHeight) {
+            std::cerr << "TODO";
+        }
+        if(v2->getZ() < currentHeight) {
+            std::cerr << "TODO";
+        }
+    }
 }
 
 void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
