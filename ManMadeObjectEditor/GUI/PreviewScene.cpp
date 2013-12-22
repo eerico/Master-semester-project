@@ -35,12 +35,12 @@ void PreviewScene::loadPreview(std::vector<Vertex*>* vertexToShow) {
         Vertex* neighbor = currentVertex->getNeighbor2();
 
         if (neighbor == 0) {
-            delete currentVertex;
+            //delete currentVertex;
             continue;
         }
 
-        delete currentVertex->getEdge2();
-        delete currentVertex;
+        //delete currentVertex->getEdge2();
+        //delete currentVertex;
 
         float xn = neighbor->getX();
         float yn = neighbor->getY();
@@ -54,5 +54,11 @@ void PreviewScene::loadPreview(std::vector<Vertex*>* vertexToShow) {
         this->addItem(lineItem);
     }
 
+    for (unsigned int i(0); i < vertexToShow->size(); ++i) {
+        Vertex* v = (*vertexToShow)[i];
+
+        delete v->getEdge2();
+        delete v;
+    }
     delete vertexToShow;
 }

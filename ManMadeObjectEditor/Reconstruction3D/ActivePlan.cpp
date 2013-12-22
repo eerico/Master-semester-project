@@ -129,16 +129,21 @@ Edge *ActivePlan::isIntersectionWithChildCorrect(GeneralEvent *intersection, Edg
     GeneralEvent * intersection2 = horizontalPlan.intersect3Plans(old->getDirectionPlan(), old->getVertex2()->getEdge2()->getDirectionPlan());
 
 
-    Vertex v1(intersection1->getX(),intersection1->getY(),intersection1->getZ());
-    Vertex v2(intersection2->getX(),intersection2->getY(),intersection2->getZ());
 
     Vertex intersectionVertex(intersection->getX(),intersection->getY(), intersection->getZ());
 
-    Edge edge(&v1, child1->getVertex2());
-    if(edge.distanceXY(&intersectionVertex) < 0.001){
+
+
+    if(intersection1!=0){
+        Vertex v1(intersection1->getX(),intersection1->getY(),intersection1->getZ());
+        Edge edge(&v1, child1->getVertex2());
+        if(edge.distanceXY(&intersectionVertex) < 0.001){
         return child1;
-    }else{
-        edge= Edge(child2->getVertex1(), &v2);
+        }
+    }
+    if(intersection2!= 0){
+        Vertex v2(intersection2->getX(),intersection2->getY(),intersection2->getZ());
+        Edge edge(child2->getVertex1(), &v2);
         if(edge.distanceXY(&intersectionVertex) < 0.001){
             return child2;
         }
@@ -168,7 +173,10 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
 
             GeneralEvent* intersection = horizontalPlan.intersect3Plans(plan1, plan2);
             if(intersection== 0) {
-                std::cerr << "merde!" << std::endl;
+                if(edge->isParallel(v1->getEdge2())){
+                    std::cerr << "parallel!! ";
+                }
+                std::cerr << "merde!"<< std::endl;
                 if(plan1 == plan2) {
                     std::cerr << "merde encore plus!" << std::endl;
                     std::cerr << activePlan.size() << std::endl;
@@ -190,7 +198,10 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
 
             GeneralEvent* intersection = horizontalPlan.intersect3Plans(plan1, plan2);
             if(intersection== 0) {
-                std::cerr << "merde!" << std::endl;
+                if(edge->isParallel(v2->getEdge2())){
+                    std::cerr << "parallel!! ";
+                }
+                std::cerr << "merde!"  << std::endl;
                 if(plan1 == plan2) {
                     std::cerr << "merde encore plus!" << std::endl;
                     std::cerr << activePlan.size() << std::endl;

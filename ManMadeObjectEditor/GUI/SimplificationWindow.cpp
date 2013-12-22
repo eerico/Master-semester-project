@@ -39,6 +39,10 @@ SimplificationWindow::SimplificationWindow(MeshManager* meshManager, bool floorP
 
     QObject::connect(thresholdSlider, SIGNAL(valueChanged(int)), this, SLOT(valueSliderChanged(int)));
 
+    formLayout->setRowWrapPolicy(QFormLayout::WrapLongRows);
+    formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    formLayout->setFormAlignment(Qt::AlignLeft);
+    formLayout->setLabelAlignment(Qt::AlignLeft);
     formLayout->addRow("Threshold: ", thresholdSlider);
 
     gridLayout->addLayout(formLayout, 1, 0);
