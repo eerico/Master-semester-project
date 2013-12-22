@@ -198,16 +198,21 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
                 Event* event = priorityQueue->top();
                 priorityQueue->pop();
 
+                bool toPush = true;
+
+
                 if(event->isGeneralEvent()){
                     GeneralEvent* e = (GeneralEvent*) event;
                     for( std::set<Edge*, GeneralEvent::EdgePointerComparator>::iterator it= e->getEdges()->begin() ; it != e->getEdges()->end(); it++){
                         if(*it == old){
 
-                           Edge * intersectingEdge = isIntersectionWithChildCorrect(e, old, new1, new2);
-                           if(intersectingEdge!= 0){
-                               e->getEdges()->erase(old);
-                               e->getEdges()->insert(intersectingEdge);
-                           } else {
+                            Edge * intersectingEdge = isIntersectionWithChildCorrect(e, old, new1, new2);
+                            if(intersectingEdge!= 0){
+                                e->getEdges()->erase(old);
+                                e->getEdges()->insert(intersectingEdge);
+                                break;
+                            } else {
+                                toPush = false;
                                 if(!old->isValid()){
                                     std::cerr << " devrait pas etre possible mais... edges child must intersect eh"<< std::endl;
                                 } else {
@@ -217,10 +222,10 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
                         }
                     }
                 }
-
-                tempVector.push_back(event);
+                if(toPush){
+                    tempVector.push_back(event);
+                }
             }
-
             foreach (Event* event, tempVector) {
                 priorityQueue->push(event);
             }
