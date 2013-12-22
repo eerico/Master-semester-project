@@ -23,12 +23,15 @@ void GeneralEvent::handle(Reconstruction3D* reconstruction3D)
         return;
     }
 
+    reconstruction3D->activePlan->checkConsistency();
     Chains chains(this, reconstruction3D->triangles, reconstruction3D->activePlan);
     chains.getChains(reconstruction3D->chainsDebug);
     chains.intraChainHandling();
+    reconstruction3D->activePlan->checkConsistency();
 
     chains.interChainHandling();
     chains.getChains(reconstruction3D->chainsDebug2);
+    reconstruction3D->activePlan->checkConsistency();
 
     reconstruction3D->activePlan->removeInvalidEdges();
     reconstruction3D->activePlan->getActivePlanCopy(reconstruction3D->activePlanDebug);

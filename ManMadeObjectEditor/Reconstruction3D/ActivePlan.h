@@ -27,6 +27,8 @@ public:
 
     float size();
 
+    void checkConsistency();
+
 private:
     Reconstruction3D* reconstruction3d;
     std::vector<Edge*> activePlan;

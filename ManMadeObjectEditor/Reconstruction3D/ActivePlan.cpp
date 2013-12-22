@@ -340,6 +340,52 @@ float ActivePlan::size()
     return activePlan.size();
 }
 
+void ActivePlan::checkConsistency()
+{
+    foreach(Edge* edge, activePlan) {
+        Vertex* v = edge->getVertex1();
+        Vertex* n1 = v->getNeighbor1();
+        Vertex* n2 = v->getNeighbor2();
+        Edge* e1 = v->getEdge1();
+        Edge* e2 = v->getEdge2();
+
+        if(n1 != e1->getVertex1()) {
+            std::cerr << "Error 1" << std::endl;
+        }
+        if(n2 != e2->getVertex2()) {
+            std::cerr << "Error 2" << std::endl;
+        }
+        if(edge != e2) {
+            std::cerr << "Error 3" << std::endl;
+        }
+        if(e2 != v->getEdge2()) {
+            std::cerr << "Error 4" << std::endl;
+        }
+        if(e2 != n2->getEdge1()) {
+            std::cerr << "Error 5" << std::endl;
+        }
+        if(e2->getVertex1() != v) {
+            std::cerr << "Error 6" << std::endl;
+        }
+        if(e2->getVertex2() != n2) {
+            std::cerr << "Error 7" << std::endl;
+        }
+
+        if(e1 != v->getEdge1()) {
+            std::cerr << "Error 8" << std::endl;
+        }
+        if(e1 != n1->getEdge2()) {
+            std::cerr << "Error 10" << std::endl;
+        }
+        if(e1->getVertex1() != n1) {
+            std::cerr << "Error 11" << std::endl;
+        }
+        if(e1->getVertex2() != v) {
+            std::cerr << "Error 12" << std::endl;
+        }
+    }
+}
+
 void ActivePlan::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
     qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
     qglviewer::Vec* triangleVertex2 = new qglviewer::Vec(vertex2->getX(), vertex2->getY(), vertex2->getZ());
