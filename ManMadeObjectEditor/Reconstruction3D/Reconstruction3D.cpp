@@ -7,7 +7,7 @@ Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize
                                    , std::vector<std::vector< std::vector< Edge* > > >* chainsDebug2
                                    , std::vector<std::vector<Edge *> > *activePlanDebug)
     :floorPlan(floorPlan), floorPlanSize(floorPlanSize), triangles(triangles)
-    , chainsDebug(chainsDebug), chainsDebug2(chainsDebug2), activePlanDebug(activePlanDebug)
+    , chainsDebug(chainsDebug), chainsDebug2(chainsDebug2), activePlanDebug(activePlanDebug), currentHeight(0.0f)
 {
     priorityQueue = new std::priority_queue<Event*, std::vector<Event*>, EventComparator>;
 }
@@ -32,7 +32,7 @@ void Reconstruction3D::reconstruct()
     while(!priorityQueue->empty()) {
         Event* event = priorityQueue->top();
         priorityQueue->pop();
-        float currentHeight = event->getZ();
+        currentHeight = event->getZ();
         event->handle(this);
 
         delete event;

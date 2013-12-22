@@ -75,11 +75,25 @@ void ActivePlan::computeIntersections()
 
                         //test if intersection is correct
                         if(intersection != 0){
-                            if(isIntersectionCorrect(intersection, edge3)){
-                                intersection->addEdge(edge1);
-                                intersection->addEdge(edge2);
-                                intersection->addEdge(edge3);
-                                reconstruction3d->priorityQueue->push(intersection);
+                            if(intersection->getZ() > reconstruction3d->currentHeight) {
+                                if(reconstruction3d->priorityQueue->empty()) {
+                                    if(isIntersectionCorrect(intersection, edge3)){
+                                        intersection->addEdge(edge1);
+                                        intersection->addEdge(edge2);
+                                        intersection->addEdge(edge3);
+                                        reconstruction3d->priorityQueue->push(intersection);
+                                    }
+                                } else {
+                                    float currentLowestHeight = reconstruction3d->priorityQueue->top()->getZ();
+                                    if(currentLowestHeight - intersection->getZ() < reconstruction3d->deltaHeight) {
+                                        if(isIntersectionCorrect(intersection, edge3)){
+                                            intersection->addEdge(edge1);
+                                            intersection->addEdge(edge2);
+                                            intersection->addEdge(edge3);
+                                            reconstruction3d->priorityQueue->push(intersection);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -258,7 +272,7 @@ void ActivePlan::removeInvalidEdges() {
 // il faudrait faire une check de sureter histoire d etre bien sure que quand on l appele c est effectivement le cas..
 void ActivePlan::eliminateParallelNeighbor()
 {
-    float currentLevel = (activePlan[0])->getVertex1()->getZ();
+    float currentLevel = reconstruction3d->currentHeight;
     foreach(Edge* edge, activePlan) {
         Vertex* v2 = edge->getVertex2();
         if(std::abs(v2->getZ() - currentLevel) > 2.1f * reconstruction3d->deltaHeight) {
