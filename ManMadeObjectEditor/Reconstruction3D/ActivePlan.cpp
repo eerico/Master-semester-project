@@ -280,7 +280,7 @@ void ActivePlan::removeInvalidEdges() {
     unsigned int size = activePlan.size();
     for(unsigned int i(0); i < size; ++i) {
         Edge* currentEdge = activePlan[i];
-        if(!currentEdge->isValid()) {
+        if(!currentEdge->isValid() || (currentEdge->getVertex1() == currentEdge->getVertex2())) {
             activePlan.erase(activePlan.begin() + i);
             i--;
             size--;
@@ -387,6 +387,9 @@ void ActivePlan::checkConsistency()
         }
         if(e1->getVertex2() != v) {
             std::cerr << "Error 12" << std::endl;
+        }
+        if(n1 == n2) {
+            std::cerr << "Error 13" << std::endl;
         }
     }
 }
