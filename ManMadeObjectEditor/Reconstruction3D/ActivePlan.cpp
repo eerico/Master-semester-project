@@ -167,6 +167,14 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
             Plan* plan2 = edge->getDirectionPlan();
 
             GeneralEvent* intersection = horizontalPlan.intersect3Plans(plan1, plan2);
+            if(intersection== 0) {
+                std::cerr << "merde!" << std::endl;
+                if(plan1 == plan2) {
+                    std::cerr << "merde encore plus!" << std::endl;
+                    std::cerr << activePlan.size() << std::endl;
+                }
+            }
+
 
             Vertex vertex(intersection->getX(), intersection->getY(), intersection->getZ());
             addNewTriangle(v1, v2, &vertex);
@@ -181,6 +189,13 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
             Plan* plan2 = v2->getEdge2()->getDirectionPlan();
 
             GeneralEvent* intersection = horizontalPlan.intersect3Plans(plan1, plan2);
+            if(intersection== 0) {
+                std::cerr << "merde!" << std::endl;
+                if(plan1 == plan2) {
+                    std::cerr << "merde encore plus!" << std::endl;
+                    std::cerr << activePlan.size() << std::endl;
+                }
+            }
 
             Vertex vertex(intersection->getX(), intersection->getY(), intersection->getZ());
             addNewTriangle(v1, v2, &vertex);
@@ -318,6 +333,11 @@ void ActivePlan::eliminateParallelNeighbor()
             currentV1->getNeighbor1()->setEdge2(nextEdge);
         }
     }
+}
+
+float ActivePlan::size()
+{
+    return activePlan.size();
 }
 
 void ActivePlan::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {

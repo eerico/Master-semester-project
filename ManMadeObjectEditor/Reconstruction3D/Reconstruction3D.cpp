@@ -58,8 +58,10 @@ void Reconstruction3D::reconstruct()
             delete event;
         }
 
-        activePlan->updateAtCurrentHeight(currentHeight);
-        activePlan->eliminateParallelNeighbor();
-        activePlan->computeIntersections();
+        //if(activePlan->size() > 2){
+            activePlan->updateAtCurrentHeight(currentHeight);
+            activePlan->eliminateParallelNeighbor();
+            activePlan->computeIntersections();
+        //}
     }
 }

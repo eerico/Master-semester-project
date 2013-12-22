@@ -25,6 +25,8 @@ public:
 
     void eliminateParallelNeighbor();
 
+    float size();
+
 private:
     Reconstruction3D* reconstruction3d;
     std::vector<Edge*> activePlan;
