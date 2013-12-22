@@ -28,6 +28,7 @@ void Reconstruction3D::reconstruct()
     activePlan = new ActivePlan(floorPlan, floorPlanSize, this);
     activePlan->eliminateParallelNeighbor();
     activePlan->computeIntersections(); // mettre seulement ceux qui sont a la bonne heuteur
+    activePlan->checkConsistency();
 
     while(!priorityQueue->empty()) {
         Event* event = priorityQueue->top();
@@ -58,10 +59,10 @@ void Reconstruction3D::reconstruct()
             delete event;
         }
 
-        //if(activePlan->size() > 2){
+        if(activePlan->size() > 2){
             activePlan->updateAtCurrentHeight(currentHeight);
             activePlan->eliminateParallelNeighbor();
             activePlan->computeIntersections();
-        //}
+        }
     }
 }

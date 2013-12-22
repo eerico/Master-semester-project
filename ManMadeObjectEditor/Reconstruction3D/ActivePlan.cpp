@@ -319,6 +319,7 @@ void ActivePlan::eliminateParallelNeighbor()
             activePlan.erase(activePlan.begin() + i);
             i--;
             size--;
+
             Vertex* nextV1 = nextEdge->getVertex1();
             Vertex* currentV1 = currentEdge->getVertex1();
 
@@ -330,7 +331,8 @@ void ActivePlan::eliminateParallelNeighbor()
             nextV1->setNeighbor1(currentV1->getNeighbor1());
 
             currentV1->getNeighbor1()->setNeighbor2(nextV1);
-            currentV1->getNeighbor1()->setEdge2(nextEdge);
+
+            currentV1->getEdge1()->setVertex2(nextV1);
         }
     }
 }
@@ -378,7 +380,7 @@ void ActivePlan::checkConsistency()
             std::cerr << "Error 8" << std::endl;
         }
         if(e1 != n1->getEdge2()) {
-            std::cerr << "Error 10" << std::endl;
+            std::cerr << "Error 10 " << std::endl;
         }
         if(e1->getVertex1() != n1) {
             std::cerr << "Error 11" << std::endl;
