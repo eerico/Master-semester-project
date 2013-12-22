@@ -343,6 +343,9 @@ float ActivePlan::size()
 void ActivePlan::checkConsistency()
 {
     foreach(Edge* edge, activePlan) {
+        if(!edge->isValid()) {
+            continue;
+        }
         Vertex* v = edge->getVertex1();
         Vertex* n1 = v->getNeighbor1();
         Vertex* n2 = v->getNeighbor2();
