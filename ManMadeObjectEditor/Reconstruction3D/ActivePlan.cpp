@@ -85,7 +85,7 @@ void ActivePlan::computeIntersections()
                                     }
                                 } else {
                                     float currentLowestHeight = reconstruction3d->priorityQueue->top()->getZ();
-                                    if(currentLowestHeight - intersection->getZ() < reconstruction3d->deltaHeight) {
+                                    if((intersection->getZ() - currentLowestHeight) < reconstruction3d->deltaHeight) {
                                         if(isIntersectionCorrect(intersection, edge3)){
                                             intersection->addEdge(edge1);
                                             intersection->addEdge(edge2);
