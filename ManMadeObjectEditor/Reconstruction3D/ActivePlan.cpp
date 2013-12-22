@@ -75,7 +75,7 @@ void ActivePlan::computeIntersections()
 
                         //test if intersection is correct
                         if(intersection != 0){
-                            if(intersection->getZ() > reconstruction3d->currentHeight) {
+                            if(intersection->getZ() > reconstruction3d->currentHeight + reconstruction3d->deltaHeight) {
                                 if(reconstruction3d->priorityQueue->empty()) {
                                     if(isIntersectionCorrect(intersection, edge3)){
                                         intersection->addEdge(edge1);
