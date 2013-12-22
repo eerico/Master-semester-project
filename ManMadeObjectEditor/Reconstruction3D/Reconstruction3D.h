@@ -30,6 +30,7 @@ public:
     ActivePlan* activePlan;
 
     static const float deltaHeight;
+    float currentHeight;
 
     // debug information
     std::vector< std::vector< std::vector< Edge* > > >* chainsDebug;
