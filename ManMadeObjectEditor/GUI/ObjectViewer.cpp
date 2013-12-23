@@ -70,54 +70,105 @@ void ObjectViewer::draw() {
 }
 
 void ObjectViewer::drawTriangles() {
-     glBegin(GL_TRIANGLES);
+    GLfloat light0_position[] = { -0.5f, 1.0f, 1.0f, 0.0f };
+    GLfloat light1_position[] = { -0.5f, 0.0f, 1.0f, 0.0f };
+    GLfloat light_term[] = { /*0.6f, 0.6f, 0.6f*/ 0.8f, 0.8f, 0.8f};
+    GLfloat ambient_term[] = { /*0.5f, 0.5f, 0.5f,*/ 0.7f, 0.7f, 0.7f, 1.0f };
+    glShadeModel(GL_SMOOTH);
 
-     const std::vector<qglviewer::Vec * >* triangles = meshManager->getTriangles();
-     unsigned int size = triangles->size();
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_term );
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_term );
+    /*glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, light_term );
+    glLightfv(GL_LIGHT1, GL_SPECULAR, light_term );*/
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_term);
 
-     float normalX(0.0f);
-     float normalY(0.0f);
-     float normalZ(0.0f);
 
-     for( unsigned int i(0); i < size; i = i + 3) {
+    glEnable(GL_LIGHT0);
+    //glEnable(GL_LIGHT1);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
 
-         // get the three vertices needed to draw a triangle
-         // and compute the normal of the triangle
-         qglviewer::Vec vertex1 = *(*triangles)[i];
-         qglviewer::Vec vertex2 = *(*triangles)[i+1];
-         qglviewer::Vec vertex3 = *(*triangles)[i+2];
+    glBegin(GL_TRIANGLES);
 
-         if(((vertex1 - vertex2).norm() > 0.0001f)
-                 && ((vertex1 - vertex3).norm() > 0.0001f)
-                 && ((vertex2 - vertex3).norm() > 0.0001f)) {
+    //draw the floor of the scene
+    qglviewer::Vec floorColor(0.12f, 0.42f, 0.23f);
 
-             qglviewer::Vec vector1 = vertex3 - vertex1;
-             qglviewer::Vec vector2 = vertex2 - vertex1;
+    GLfloat ambient_material_term[] = { floorColor[0], floorColor[1], floorColor[2], 1.0 };
+    GLfloat diffuse_material_term[] = { floorColor[0], floorColor[1], floorColor[2], 1.0 };
+    GLfloat specular_term[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-             // compute the normal
-             Utils::crossProduct(vector1[0], vector1[1], vector1[2],
-                     vector2[0], vector2[1], vector2[2],
-                     normalX, normalY, normalZ);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_material_term);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_material_term);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, specular_term);
 
-             qglviewer::Vec normal(normalX, normalY, normalZ);
-             normal.normalize();
+    qglviewer::Vec normalFloor(0.0f, 0.0f, 1.0f);
 
-             // draw the triangle
-             glNormal3fv(normal);
-             glColor3fv(color);
-             glVertex3fv(vertex1);
+    glNormal3fv(normalFloor);
+    glVertex3fv(qglviewer::Vec(-10, 10, 0));
+    glVertex3fv(qglviewer::Vec(-10, -10, 0));
+    glVertex3fv(qglviewer::Vec(10, -10, 0));
 
-             glNormal3fv(normal);
-             glColor3fv(color);
-             glVertex3fv(vertex2);
+    glNormal3fv(normalFloor);
+    glVertex3fv(qglviewer::Vec(100, -100, 0));
+    glVertex3fv(qglviewer::Vec(100, 100, 0));
+    glVertex3fv(qglviewer::Vec(-100, 100, 0));
 
-             glNormal3fv(normal);
-             glColor3fv(color);
-             glVertex3fv(vertex3);
-         }
-     }
 
-     glEnd();
+    // draw the triangle
+    const std::vector<qglviewer::Vec * >* triangles = meshManager->getTriangles();
+    unsigned int size = triangles->size();
+
+    float normalX(0.0f);
+    float normalY(0.0f);
+    float normalZ(0.0f);
+
+    ambient_material_term[0] = color[0]; ambient_material_term[1] =  color[1]; ambient_material_term[2] =  color[2];
+    diffuse_material_term[0] = color[0]; diffuse_material_term[1] = color[1]; diffuse_material_term[2] = color[2];
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_material_term);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_material_term);
+
+    for( unsigned int i(0); i < size; i = i + 3) {
+
+        // get the three vertices needed to draw a triangle
+        // and compute the normal of the triangle
+        qglviewer::Vec vertex1 = *(*triangles)[i];
+        qglviewer::Vec vertex2 = *(*triangles)[i+1];
+        qglviewer::Vec vertex3 = *(*triangles)[i+2];
+
+        if(((vertex1 - vertex2).norm() > 0.0001f)
+                && ((vertex1 - vertex3).norm() > 0.0001f)
+                && ((vertex2 - vertex3).norm() > 0.0001f)) {
+
+            qglviewer::Vec vector1 = vertex3 - vertex1;
+            qglviewer::Vec vector2 = vertex2 - vertex1;
+
+            // compute the normal
+            Utils::crossProduct(vector1[0], vector1[1], vector1[2],
+                    vector2[0], vector2[1], vector2[2],
+                    normalX, normalY, normalZ);
+
+            qglviewer::Vec normal(normalX, normalY, normalZ);
+            normal.normalize();
+
+            // draw the triangle
+            glNormal3fv(normal);
+            glVertex3fv(vertex1); //Utiliser color
+
+            glNormal3fv(normal);
+            glVertex3fv(vertex2);
+
+            glNormal3fv(normal);
+            glVertex3fv(vertex3);
+        }
+    }
+
+    glEnd();
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_COLOR_MATERIAL);
 }
 
 void ObjectViewer::drawPoints() {
