@@ -371,6 +371,7 @@ void ActivePlan::eliminateParallelNeighbor()
 
             nextEdge->setDirectionPlan(currentEdge->getDirectionPlan());
             nextEdge->getDirectionPlan()->setVertex(nextEdge->getVertex1());
+            nextEdge->setProfile(currentEdge->getProfile());
 
             currentV1->getNeighbor1()->setNeighbor2(nextV1);
 

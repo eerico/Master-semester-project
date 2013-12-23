@@ -31,6 +31,7 @@ void Reconstruction3D::reconstruct()
     activePlan->addEdgeDirectionEvent();
     activePlan->checkConsistency();
 
+
     while(!priorityQueue->empty()) {
         Event* event = priorityQueue->top();
         priorityQueue->pop();
