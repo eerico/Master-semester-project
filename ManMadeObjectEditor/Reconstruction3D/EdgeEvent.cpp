@@ -45,10 +45,11 @@ void EdgeEvent::handle(Reconstruction3D *reconstruction3D)
         if(vertex2->getZ() < z){
             GeneralEvent* newIntersection2 = horizontalPlan.intersect3Plans(currentPlan, plan2);
 
-            Vertex newIntersectionVertex2(newIntersection2->getX(), newIntersection2->getY(), newIntersection2->getZ());
             if(newIntersection2 == 0 ) {
                 std::cerr << "Error 15" << std::endl;
             }
+            Vertex newIntersectionVertex2(newIntersection2->getX(), newIntersection2->getY(), newIntersection2->getZ());
+
             addNewTriangle(reconstruction3D, vertex1, vertex2, &newIntersectionVertex2);
             addNewTriangle(reconstruction3D, vertex2, vertex2->getEdge2()->getVertex2(), &newIntersectionVertex2);
 
