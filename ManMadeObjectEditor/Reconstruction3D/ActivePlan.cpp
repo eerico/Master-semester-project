@@ -213,6 +213,17 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
             v2->setZ(currentHeight);
         }
     }
+
+    // check if the plans are really at the correct height
+    foreach(Edge* edge, activePlan) {
+        if(!edge->isValid()) {
+            continue;
+        }
+        if(edge->getVertex1() != edge->getDirectionPlan()->getVertex()) {
+            std::cerr << "plan Error" << std::endl;
+            std::cerr << *edge->getVertex1() << " -> " << *edge->getDirectionPlan()->getVertex() << std::endl;
+        }
+    }
 }
 
 void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)

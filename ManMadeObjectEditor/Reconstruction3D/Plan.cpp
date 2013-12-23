@@ -178,3 +178,8 @@ void Plan::computePlanNormal()
 void Plan::setVertex(Vertex *vertex) {
     this->vertex = vertex;
 }
+
+Vertex *Plan::getVertex()
+{
+    return vertex;
+}

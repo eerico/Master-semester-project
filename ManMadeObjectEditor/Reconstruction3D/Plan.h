@@ -27,6 +27,8 @@ public:
 
     void setVertex(Vertex* vertex);
 
+    Vertex* getVertex();
+
 private:
     // a plan is defined by a point and a normal
     Vertex* vertex;

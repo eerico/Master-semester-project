@@ -122,6 +122,7 @@ void Chains::intraChainHandling() {
             Vertex* vertex2 = lastEdge->getVertex2();
             if ((vertex2 != lastNeighbor->getVertex1()) && (vertex2 != lastNeighbor->getVertex2())) {
                 lastEdge->setVertex1(intersectionVertex);
+                lastEdge->getDirectionPlan()->setVertex(lastEdge->getVertex1());
                 vertex2->setNeighbor1(intersectionVertex);
                 intersectionVertex->setEdge2(lastEdge);
                 intersectionVertex->setNeighbor2(vertex2);
@@ -180,6 +181,7 @@ void Chains::intraChainHandling() {
             firstEdge->setVertex2(intersectionVertex);
             vertex2->setNeighbor1(intersectionVertex);
             lastEdge->setVertex1(intersectionVertex);
+            lastEdge->getDirectionPlan()->setVertex(lastEdge->getVertex1());
             intersectionVertex->setNeighbor1(vertex1);
             intersectionVertex->setNeighbor2(vertex2);
             intersectionVertex->setEdge1(firstEdge);
@@ -250,6 +252,7 @@ bool Chains::interChainHandling() {
 
         // set the edge and vertex information
         lastEdgeChain1->setVertex1(intersectionVertex);
+        lastEdgeChain1->getDirectionPlan()->setVertex(lastEdgeChain1->getVertex1());
         firstEdgeChain2->setVertex2(intersectionVertex);
         lastEdgeChain1->getVertex2()->setNeighbor1(intersectionVertex);
         firstEdgeChain2->getVertex1()->setNeighbor2(intersectionVertex);

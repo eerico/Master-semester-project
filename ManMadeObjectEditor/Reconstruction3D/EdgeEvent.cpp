@@ -56,6 +56,7 @@ void EdgeEvent::handle(Reconstruction3D *reconstruction3D)
             vertex2->setX(newIntersection2->getX());
             vertex2->setY(newIntersection2->getY());
             vertex2->setZ(newIntersection2->getZ());
+            plan2->setVertex(vertex2);
         }
     }
 
