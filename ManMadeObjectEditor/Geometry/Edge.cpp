@@ -267,6 +267,7 @@ std::ostream& operator<<(std::ostream& out, Edge& e) {
 }
 
 Plan* Edge::getDirectionPlan() {
+    directionPlan->setVertex(vertex1);
     return directionPlan;
 }
 
