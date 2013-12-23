@@ -71,7 +71,7 @@ void ObjectViewer::draw() {
 
 void ObjectViewer::drawTriangles() {
     GLfloat light0_position[] = { -0.5f, 1.0f, 1.0f, 0.0f };
-    GLfloat light1_position[] = { -0.5f, 0.0f, 1.0f, 0.0f };
+    //GLfloat light1_position[] = { -0.5f, 0.0f, 1.0f, 0.0f };
     GLfloat light_term[] = { /*0.6f, 0.6f, 0.6f*/ 0.8f, 0.8f, 0.8f};
     GLfloat ambient_term[] = { /*0.5f, 0.5f, 0.5f,*/ 0.7f, 0.7f, 0.7f, 1.0f };
     glShadeModel(GL_SMOOTH);
