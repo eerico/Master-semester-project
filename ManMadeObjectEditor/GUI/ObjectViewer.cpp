@@ -86,29 +86,35 @@ void ObjectViewer::drawTriangles() {
          qglviewer::Vec vertex1 = *(*triangles)[i];
          qglviewer::Vec vertex2 = *(*triangles)[i+1];
          qglviewer::Vec vertex3 = *(*triangles)[i+2];
-         qglviewer::Vec vector1 = vertex3 - vertex1;
-         qglviewer::Vec vector2 = vertex2 - vertex1;
 
-         // compute the normal
-         Utils::crossProduct(vector1[0], vector1[1], vector1[2],
-                            vector2[0], vector2[1], vector2[2],
-                            normalX, normalY, normalZ);
+         if(((vertex1 - vertex2).norm() > 0.0001f)
+                 && ((vertex1 - vertex3).norm() > 0.0001f)
+                 && ((vertex2 - vertex3).norm() > 0.0001f)) {
 
-         qglviewer::Vec normal(normalX, normalY, normalZ);
-         normal.normalize();
+             qglviewer::Vec vector1 = vertex3 - vertex1;
+             qglviewer::Vec vector2 = vertex2 - vertex1;
 
-         // draw the triangle
-         glNormal3fv(normal);
-         glColor3fv(color);
-         glVertex3fv(vertex1);
+             // compute the normal
+             Utils::crossProduct(vector1[0], vector1[1], vector1[2],
+                     vector2[0], vector2[1], vector2[2],
+                     normalX, normalY, normalZ);
 
-         glNormal3fv(normal);
-         glColor3fv(color);
-         glVertex3fv(vertex2);
+             qglviewer::Vec normal(normalX, normalY, normalZ);
+             normal.normalize();
 
-         glNormal3fv(normal);
-         glColor3fv(color);
-         glVertex3fv(vertex3);
+             // draw the triangle
+             glNormal3fv(normal);
+             glColor3fv(color);
+             glVertex3fv(vertex1);
+
+             glNormal3fv(normal);
+             glColor3fv(color);
+             glVertex3fv(vertex2);
+
+             glNormal3fv(normal);
+             glColor3fv(color);
+             glVertex3fv(vertex3);
+         }
      }
 
      glEnd();
