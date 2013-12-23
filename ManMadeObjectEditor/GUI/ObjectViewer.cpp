@@ -20,7 +20,7 @@ void ObjectViewer::init() {
     glCullFace(GL_BACK);
     glFrontFace(GL_CW); // front face -> clock wise enumeration*/
 
-    this->camera()->setPosition(qglviewer::Vec(0.0f, -2.5f, 2.0f));
+    this->camera()->setPosition(qglviewer::Vec(0.0533285f, 2.13141f, 0.707263f));
     this->camera()->setUpVector(qglviewer::Vec(0.0f, 0.0f, 1.0f));
     this->camera()->lookAt(qglviewer::Vec(0.0f, 0.0f, 0.0f));
 
