@@ -27,6 +27,13 @@ Plan::Plan(Plan* oldPlan, Vertex* vertex1, Profile* profile)
     float nzTmp;
     oldPlan->getNormal(nxTmp, nyTmp, nzTmp);
     this->setNormal(nxTmp, nyTmp, nzTmp);
+
+    pointX = oldPlan->pointX;
+    pointX2 = oldPlan->pointX2;
+    pointY = oldPlan->pointY;
+    pointY2 = oldPlan->pointY2;
+    pointZ = oldPlan->pointZ;
+    pointZ2 = oldPlan->pointZ2;
 }
 
 Plan::~Plan() {

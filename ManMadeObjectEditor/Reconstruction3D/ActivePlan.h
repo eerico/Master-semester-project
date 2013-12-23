@@ -5,6 +5,7 @@
 //#include "Reconstruction3D.h"
 #include "Plan.h"
 #include "GeneralEvent.h"
+#include "EdgeEvent.h"
 #include <vector>
 
 class Reconstruction3D;

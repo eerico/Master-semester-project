@@ -28,6 +28,7 @@ void Reconstruction3D::reconstruct()
     activePlan = new ActivePlan(floorPlan, floorPlanSize, this);
     activePlan->eliminateParallelNeighbor();
     activePlan->computeIntersections(); // mettre seulement ceux qui sont a la bonne heuteur
+    activePlan->addEdgeDirectionEvent();
     activePlan->checkConsistency();
 
     while(!priorityQueue->empty()) {
@@ -63,6 +64,14 @@ void Reconstruction3D::reconstruct()
             activePlan->updateAtCurrentHeight(currentHeight);
             activePlan->eliminateParallelNeighbor();
             activePlan->computeIntersections();
+            activePlan->addEdgeDirectionEvent();
         }
+    }
+
+    //reset to inital state
+    Vertex* currentVertex = floorPlan;
+    for(unsigned int i(0); i < floorPlanSize ; ++i) {
+        currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
+        currentVertex = currentVertex->getNeighbor2();
     }
 }

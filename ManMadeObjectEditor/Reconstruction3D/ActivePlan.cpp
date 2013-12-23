@@ -152,10 +152,6 @@ Edge *ActivePlan::isIntersectionWithChildCorrect(GeneralEvent *intersection, Edg
     return 0;
 }
 
-void ActivePlan::addEdgeDirectionEvent() {
-
-}
-
 void ActivePlan::updateAtCurrentHeight(float currentHeight)
 {
     foreach(Edge* edge, activePlan) {
@@ -259,6 +255,19 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
                                     std::cerr <<  "doevrait pas arriver grrrrr"<< std::endl;
                                 }
                             }
+                        }
+                    }
+                } else {
+                    EdgeEvent* e = (EdgeEvent*) event;
+                    std::vector<Edge*>* edges = e->getEdges();
+                    unsigned int size = edges->size();
+                    for(unsigned int i(0); i < size; ++i) {
+                        Edge* edgeInVector = (*edges)[i];
+                        if(edgeInVector == old) {
+                            edges->erase(edges->begin() + i);
+                            edges->push_back(new1);
+                            edges->push_back(new2);
+                            break;
                         }
                     }
                 }
@@ -404,6 +413,42 @@ void ActivePlan::checkConsistency()
         }
     }
 }
+
+void ActivePlan::addEdgeDirectionEvent()
+{
+    std::vector<EdgeEvent*> edgeEvents;
+    foreach(Edge* currentEdge, activePlan) {
+        Vertex* currentProfileVertex = currentEdge->getProfile()->getProfileVertexIterator();
+        currentProfileVertex = currentProfileVertex->getNeighbor2();
+        while(currentProfileVertex != 0 && currentProfileVertex->getNeighbor2() != 0) {
+            if(currentProfileVertex->getY() > reconstruction3d->currentHeight + reconstruction3d->deltaHeight) {
+
+                bool found = false;
+                foreach(EdgeEvent* event, edgeEvents) {
+                    if(event->getFirstEdge()->getProfile() == currentEdge->getProfile()) {
+                        if(std::abs(event->getZ() - currentProfileVertex->getY()) < 0.000001f ) {
+                            event->addEdge(currentEdge);
+                            found = true;
+                            break;
+                        }
+                        // on peut eviter de mettre les event trop haut
+                    }
+                }
+
+                if(!found) {
+                    EdgeEvent* edgeDirectionEvent = new EdgeEvent(currentProfileVertex->getY(), currentEdge);
+                    edgeEvents.push_back(edgeDirectionEvent);
+                }
+            }
+            currentProfileVertex = currentProfileVertex->getNeighbor2();
+        }
+    }
+
+    foreach(EdgeEvent* event, edgeEvents) {
+        reconstruction3d->priorityQueue->push(event);
+    }
+}
+
 
 void ActivePlan::addNewTriangle(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3) {
     qglviewer::Vec* triangleVertex1 = new qglviewer::Vec(vertex1->getX(), vertex1->getY(), vertex1->getZ());
