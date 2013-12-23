@@ -39,7 +39,7 @@ void EdgeEvent::handle(Reconstruction3D *reconstruction3D)
             vertex1->setY(newIntersection1->getY());
             vertex1->setZ(newIntersection1->getZ());
 
-            plan1->setVertex(vertex1);
+            currentPlan->setVertex(vertex1);
         }
 
         if(vertex2->getZ() < z){

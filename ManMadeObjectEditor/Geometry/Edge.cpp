@@ -267,11 +267,6 @@ std::ostream& operator<<(std::ostream& out, Edge& e) {
 }
 
 Plan* Edge::getDirectionPlan() {
-    if(directionPlan != 0) {
-        if(vertex1 != directionPlan->getVertex()) {
-            std::cerr << "coollll" << std::endl;
-        }
-    }
     return directionPlan;
 }
 
