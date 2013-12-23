@@ -343,12 +343,23 @@ void ActivePlan::eliminateParallelNeighbor()
             Vertex* nextV1 = nextEdge->getVertex1();
             Vertex* currentV1 = currentEdge->getVertex1();
 
+            //add a triangle to avoir holes because of precision problem
+            Vertex* nextV2 = nextEdge->getVertex2();
+            if((nextV1->distance(currentV1) > 0.00001f)
+                    && (nextV1->distance(nextV2) > 0.00001f)
+                    && (currentV1->distance(nextV2) > 0.00001f)) {
+                addNewTriangle(currentV1, nextV1, nextV2);
+            }
+
             nextV1->setX(currentV1->getX());
             nextV1->setY(currentV1->getY());
             nextV1->setZ(currentV1->getZ());
 
             nextV1->setEdge1(currentV1->getEdge1());
             nextV1->setNeighbor1(currentV1->getNeighbor1());
+
+            nextEdge->setDirectionPlan(currentEdge->getDirectionPlan());
+            nextEdge->getDirectionPlan()->setVertex(nextEdge->getVertex1());
 
             currentV1->getNeighbor1()->setNeighbor2(nextV1);
 
@@ -408,9 +419,9 @@ void ActivePlan::checkConsistency()
         if(e1->getVertex2() != v) {
             std::cerr << "Error 12" << std::endl;
         }
-        if(n1 == n2) {
+        /*if(n1 == n2) {
             std::cerr << "Error 13" << std::endl;
-        }
+        }*/
     }
 }
 
