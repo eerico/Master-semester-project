@@ -104,12 +104,6 @@ const std::vector<qglviewer::Vec * > *MeshManager::getTriangles() {
     }
 
     // first clear the old data
-    unsigned int trianglesSize = triangles->size();
-    for(unsigned int i(0); i < trianglesSize; ++i) {
-        delete (*triangles)[i];
-    }
-    triangles->clear();
-
     deleteOldDebugData();
 
     // recompute the 3D reconstruction
@@ -130,12 +124,6 @@ const std::vector<qglviewer::Vec* >* MeshManager::getPoints() {
     }
 
     // first clear the old data
-    unsigned int pointsSize = points->size();
-    for(unsigned int i(0); i < pointsSize; ++i) {
-        delete (*points)[i];
-    }
-    points->clear();
-
     deleteOldDebugData();
 
     // recompute the 3D reconstruction

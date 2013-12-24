@@ -26,6 +26,7 @@ public:
     Vertex* floorPlan;
     unsigned int floorPlanSize;
     std::vector< qglviewer::Vec * >* triangles;
+    std::vector< qglviewer::Vec * >* trianglesToShow;
     std::priority_queue<Event*, std::vector<Event*>, EventComparator>* priorityQueue;
     ActivePlan* activePlan;
 
@@ -37,7 +38,11 @@ public:
     std::vector< std::vector< std::vector< Edge* > > >* chainsDebug2;
     std::vector< std::vector< Edge* > >* activePlanDebug;
 
+    // variable used to stop the 3D reconstruction in case of errors
+    bool* error;
 
+private:
+    void errorHandling();
 };
 
 #endif // RECONSTRUCTION3D_H

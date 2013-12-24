@@ -58,7 +58,7 @@ void ActivePlan::computeIntersections()
     foreach(Edge* edge1, activePlan) {
         if(edge1->isValid()) {
             Edge* edge2 = edge1->getVertex2()->getEdge2();
-            if(edge2->isValid()) {//reste bloque ici mais bon avec error devrait pas etre possible mais... edges child must intersect eh
+            if(edge2->isValid()) {
 
                 foreach(Edge* edge3, activePlan) {
                     if(edge3->isValid()) {
@@ -128,17 +128,13 @@ Edge *ActivePlan::isIntersectionWithChildCorrect(GeneralEvent *intersection, Edg
     GeneralEvent * intersection1 = horizontalPlan.intersect3Plans(old->getDirectionPlan(), old->getVertex1()->getEdge1()->getDirectionPlan());
     GeneralEvent * intersection2 = horizontalPlan.intersect3Plans(old->getDirectionPlan(), old->getVertex2()->getEdge2()->getDirectionPlan());
 
-
-
     Vertex intersectionVertex(intersection->getX(),intersection->getY(), intersection->getZ());
-
-
 
     if(intersection1!=0){
         Vertex v1(intersection1->getX(),intersection1->getY(),intersection1->getZ());
         Edge edge(&v1, child1->getVertex2());
         if(edge.distanceXY(&intersectionVertex) < 0.001){
-        return child1;
+            return child1;
         }
     }
     if(intersection2!= 0){
@@ -169,14 +165,8 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
 
             GeneralEvent* intersection = horizontalPlan.intersect3Plans(plan1, plan2);
             if(intersection== 0) {
-                if(edge->isParallel(v1->getEdge2())){
-                    std::cerr << "parallel!! ";
-                }
-                std::cerr << "merde!"<< std::endl;
-                if(plan1 == plan2) {
-                    std::cerr << "merde encore plus!" << std::endl;
-                    std::cerr << activePlan.size() << std::endl;
-                }
+                (*reconstruction3d->error) = true;
+                return;
             }
 
 
@@ -194,14 +184,8 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
 
             GeneralEvent* intersection = horizontalPlan.intersect3Plans(plan1, plan2);
             if(intersection== 0) {
-                if(edge->isParallel(v2->getEdge2())){
-                    std::cerr << "parallel!! ";
-                }
-                std::cerr << "merde!"  << std::endl;
-                if(plan1 == plan2) {
-                    std::cerr << "merde encore plus!" << std::endl;
-                    std::cerr << activePlan.size() << std::endl;
-                }
+                (*reconstruction3d->error) = true;
+                return;
             }
 
             Vertex vertex(intersection->getX(), intersection->getY(), intersection->getZ());
@@ -222,6 +206,7 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
         if(edge->getVertex1() != edge->getDirectionPlan()->getVertex()) {
             std::cerr << "plan Error" << std::endl;
             std::cerr << *edge->getVertex1() << " -> " << *edge->getDirectionPlan()->getVertex() << std::endl;
+            (*reconstruction3d->error) = true;
         }
     }
 }
@@ -233,8 +218,6 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
         if(*i==old){
             found = true;
             activePlan.erase(i);
-            //activePlan.insert(i,new1);
-            //activePlan.insert(i,new2);
             activePlan.push_back(new1);
             activePlan.push_back(new2);
 
@@ -246,7 +229,6 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
                 priorityQueue->pop();
 
                 bool toPush = true;
-
 
                 if(event->isGeneralEvent()){
                     GeneralEvent* e = (GeneralEvent*) event;
@@ -260,11 +242,6 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
                                 break;
                             } else {
                                 toPush = false;
-                                if(!old->isValid()){
-                                    std::cerr << " devrait pas etre possible mais... edges child must intersect eh"<< std::endl;
-                                } else {
-                                    std::cerr <<  "doevrait pas arriver grrrrr"<< std::endl;
-                                }
                             }
                         }
                     }

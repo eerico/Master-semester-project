@@ -29,6 +29,8 @@ void EdgeEvent::handle(Reconstruction3D *reconstruction3D)
             GeneralEvent* newIntersection1 = horizontalPlan.intersect3Plans(plan1, currentPlan);
             if(newIntersection1 == 0 ) {
                 std::cerr << "Error 14" << std::endl;
+                (*reconstruction3D->error) = true;
+                return;
             }
 
             Vertex newIntersectionVertex1(newIntersection1->getX(), newIntersection1->getY(), newIntersection1->getZ());
@@ -47,6 +49,8 @@ void EdgeEvent::handle(Reconstruction3D *reconstruction3D)
 
             if(newIntersection2 == 0 ) {
                 std::cerr << "Error 15" << std::endl;
+                (*reconstruction3D->error) = true;
+                return;
             }
             Vertex newIntersectionVertex2(newIntersection2->getX(), newIntersection2->getY(), newIntersection2->getZ());
 
