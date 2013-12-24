@@ -595,7 +595,7 @@ bool FloorPlanAndProfileExtractor::extract(OMMesh * inputMesh, Vertex*& floorPla
     }    
     
     recenter(plans);
-    rescale(plans);      
+    rescale(plans);
     
     // construct all profiles
     profileConstruction(inputMesh, plans);

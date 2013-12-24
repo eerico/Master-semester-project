@@ -70,15 +70,18 @@ void ObjectViewer::draw() {
 }
 
 void ObjectViewer::drawTriangles() {
-    GLfloat light0_position[] = { -0.5f, 1.0f, 1.0f, 0.0f };
+    //GLfloat light0_position[] = { -0.5f, 1.0f, 1.0f, 0.0f };
+    qglviewer::Vec cameraPosition = camera()->position();
+    GLfloat light0_position[] = { cameraPosition[0], cameraPosition[1], cameraPosition[2], 0.0f };
     //GLfloat light1_position[] = { -0.5f, 0.0f, 1.0f, 0.0f };
-    GLfloat light_term[] = { /*0.6f, 0.6f, 0.6f*/ 0.8f, 0.8f, 0.8f};
-    GLfloat ambient_term[] = { /*0.5f, 0.5f, 0.5f,*/ 0.7f, 0.7f, 0.7f, 1.0f };
+    GLfloat light_term[] = {0.8f, 0.8f, 0.8f};
+    GLfloat light_specular_term[] = { 1.0f, 1.0f, 1.0f};
+    GLfloat ambient_term[] = {0.15f, 0.15f, 0.15f, 1.0f };
     glShadeModel(GL_SMOOTH);
 
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_term );
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_term );
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular_term );
     /*glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, light_term );
     glLightfv(GL_LIGHT1, GL_SPECULAR, light_term );*/
@@ -103,7 +106,8 @@ void ObjectViewer::drawTriangles() {
     glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_material_term);
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular_term);
 
-    qglviewer::Vec normalFloor(0.0f, 0.0f, 1.0f);
+    qglviewer::Vec normalFloor(cameraPosition);
+    normalFloor.normalize();
 
     glNormal3fv(normalFloor);
     glVertex3fv(qglviewer::Vec(-10, 10, 0));
