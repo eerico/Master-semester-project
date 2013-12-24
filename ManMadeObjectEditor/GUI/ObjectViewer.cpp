@@ -13,8 +13,8 @@ void ObjectViewer::init() {
     startAnimation();
 
     setGridIsDrawn();
-    setAxisIsDrawn();
-    setFPSIsDisplayed(true);
+    setAxisIsDrawn(false);
+    //setFPSIsDisplayed(true);
 
     /*glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -102,11 +102,11 @@ void ObjectViewer::drawTriangles() {
     GLfloat diffuse_material_term[] = { floorColor[0], floorColor[1], floorColor[2], 1.0 };
     GLfloat specular_term[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-    glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_material_term);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_material_term);
+    //glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_material_term);
+    //glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_material_term);
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular_term);
 
-    qglviewer::Vec normalFloor(cameraPosition);
+    /*qglviewer::Vec normalFloor(cameraPosition);
     normalFloor.normalize();
 
     glNormal3fv(normalFloor);
@@ -117,7 +117,7 @@ void ObjectViewer::drawTriangles() {
     glNormal3fv(normalFloor);
     glVertex3fv(qglviewer::Vec(100, -100, 0));
     glVertex3fv(qglviewer::Vec(100, 100, 0));
-    glVertex3fv(qglviewer::Vec(-100, 100, 0));
+    glVertex3fv(qglviewer::Vec(-100, 100, 0));*/
 
 
     // draw the triangle
