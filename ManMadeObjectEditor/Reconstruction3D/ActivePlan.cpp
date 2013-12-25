@@ -3,7 +3,6 @@
 
 ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* reconstruction3d): reconstruction3d(reconstruction3d)
 {
-
     // faire une arraylist de edge pour representer sa.
     // changer comment on detecte les intersection
 
@@ -323,7 +322,13 @@ void ActivePlan::eliminateParallelNeighbor()
 
         float dotProduct = nx1*nx2 + ny1*ny2 + nz1*nz2;
 
-        if(currentEdge->isParallel(nextEdge) || std::abs(std::abs(dotProduct) - 1.0f) < 0.0001f) {
+        //////
+        // new version
+        if(currentEdge->isParallel(nextEdge) && std::abs(/*std::abs(*/dotProduct/*) */- 1.0f) < 0.0001f) {
+
+        //////
+        // old version
+        //if(currentEdge->isParallel(nextEdge) || std::abs(std::abs(dotProduct) - 1.0f) < 0.0001f) {
             activePlan.erase(activePlan.begin() + i);
             i--;
             size--;
