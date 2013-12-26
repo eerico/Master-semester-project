@@ -324,7 +324,7 @@ void ActivePlan::eliminateParallelNeighbor()
 
         //////
         // new version
-        if(currentEdge->isParallel(nextEdge) && std::abs(/*std::abs(*/dotProduct/*) */- 1.0f) < 0.0001f) {
+        if(currentEdge->isParallel(nextEdge) && std::abs(/*std::abs(*/dotProduct/*) */- 1.0f) < 0.000001f /*0.0001f*/) {
 
         //////
         // old version
