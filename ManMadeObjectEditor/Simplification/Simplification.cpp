@@ -9,6 +9,7 @@ Simplification::Simplification(std::vector<Curve *> *curveArray, MeshManager* me
 }
 
 void Simplification::simplifyFloorPlan() {
+    // apply the simplification algorithm for every curve
     foreach(Curve* curve, *curveArray) {
         if (curve->size > 2) {
             simplifyFloorPlan(curve, false);
@@ -20,6 +21,8 @@ void Simplification::simplifyFloorPlan() {
 }
 
 void Simplification::simplifyFloorPlan(Curve* curve, bool forPreview) {
+    // if the curve is less than 3 vertices, there is nothing to simplify and
+    // we want the floor plan to have at least 3 vertices
     if (curve->size < 3 || meshManager->getFloorPlanSize() == 3) {
         return;
     }
@@ -45,6 +48,9 @@ void Simplification::simplifyFloorPlan(Curve* curve, bool forPreview) {
         iterator = iterator->getNeighbor2();
     }
 
+    // if the distant of the farthest vertex is above a threshold then this
+    // vertex must not be deleted and the simplification algorithm is recursively done
+    // at the left and right side of this vertex
     if(maxDistance > threshold) {
 
         Curve* leftCurve = new Curve;
@@ -63,6 +69,9 @@ void Simplification::simplifyFloorPlan(Curve* curve, bool forPreview) {
         delete leftCurve;
         delete rightCurve;
     } else {
+        // the more distant vertex in the curve is below the threshold.
+        // We will thus delete all vertex defining by the current curve (except the first and last vertex)
+
         Profile* oldProfile = curve->begin->getEdge2()->getProfile();
         delete curve->begin->getEdge2();
         Vertex* iterator = curve->begin->getNeighbor2();
@@ -98,6 +107,7 @@ void Simplification::simplifyFloorPlan(Curve* curve, bool forPreview) {
 }
 
 void Simplification::simplifyProfile() {
+    // apply the simplification algorithm for every curve
     foreach(Curve* curve, *curveArray) {
         if (curve->size > 2) {
             simplifyProfile(curve, false);
@@ -108,6 +118,7 @@ void Simplification::simplifyProfile() {
 }
 
 void Simplification::simplifyProfile(Curve* curve, bool forPreview) {
+    // if the curve is less than 3 vertices, there is nothing to simplify
     if (curve->size < 3) {
         return;
     }
@@ -133,6 +144,9 @@ void Simplification::simplifyProfile(Curve* curve, bool forPreview) {
         iterator = iterator->getNeighbor2();
     }
 
+    // if the distant of the farthest vertex is above a threshold then this
+    // vertex must not be deleted and the simplification algorithm is recursively done
+    // at the left and right side of this vertex
     if(maxDistance > threshold) {
         Curve* leftCurve = new Curve;
         leftCurve->begin = curve->begin;
@@ -150,6 +164,9 @@ void Simplification::simplifyProfile(Curve* curve, bool forPreview) {
         delete leftCurve;
         delete rightCurve;
     } else {
+        // the more distant vertex in the curve is below the threshold.
+        // We will thus delete all vertex defining by the current curve (except the first and last vertex)
+
         delete curve->begin->getEdge2();
         Vertex* iterator = curve->begin->getNeighbor2();
         for(int i(0); i < curve->size - 2; ++i) {
