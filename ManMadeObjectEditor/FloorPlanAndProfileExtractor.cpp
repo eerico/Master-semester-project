@@ -281,18 +281,23 @@ bool FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
 }
 
 void FloorPlanAndProfileExtractor::planOrientation(std::vector<Vertex* > &level){
-    Edge* edge = level[0]->getEdge2();
+    unsigned int counter(0);
 
-    float v1 = (level[0]->getNeighbor2()->getX() - level[0]->getX());
-    float v2 =  level[0]->getNeighbor2()->getY() - level[0]->getY();
+    for(unsigned int i(0); i < level.size(); ++i) {
+        Edge* edge = level[i]->getEdge2();
 
-    float a=edge->getNormal()[0][0];
-    float b =edge->getNormal()[0][1];
+        float v1 = (level[i]->getNeighbor2()->getX() - level[i]->getX());
+        float v2 =  level[i]->getNeighbor2()->getY() - level[i]->getY();
 
-    //check if the real normal and the one we compute point are in the same direction
-    float dot  =  Utils::dotProduct(-v2,v1,(*edge->getNormal())[0],(*edge->getNormal())[1]);
+        //check if the real normal and the one we compute point are in the same direction
+        float dot  =  Utils::dotProduct(-v2,v1,(*edge->getNormal())[0],(*edge->getNormal())[1]);
 
-    if(dot < 0){ //if it is the case reverse the chain
+        if(dot < 0) {
+            counter++;
+        }
+    }
+
+    if(counter > level.size() / 2){ //if it is the case reverse the chain
         Vertex* tempV;
         Edge* tempE;
         foreach (Vertex* v, level) {
