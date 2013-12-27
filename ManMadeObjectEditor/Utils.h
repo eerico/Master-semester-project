@@ -22,6 +22,8 @@ class Vertex;
  */
 class Utils
 {
+private:
+    const static char * startXML_Element;
 public:
     Utils();
 
@@ -115,8 +117,20 @@ public:
                              float x2, float y2, float z2,
                              float& x, float& y, float& z);
 
+    /**
+     * @brief CreateXMLFile, generate a pseudo xml file (since the order must strictly respect this format), that represent the 3d object managed by meshmanager
+     * @param meshmanager: the manager containig the 3d model to save
+     * @param filename: location where you want to save the file
+     */
     static void CreateXMLFile(MeshManager* meshmanager, QString &filename);
+
+    /**
+     * @brief readXML: read from a pseudo xml file (see CreateXMLFile) a 3d object that will be managed by meshmanager
+     * @param meshmanager the object that will manage the 3d object
+     * @param filename location where the xml file reside
+     */
     static void readXML(MeshManager* meshmanager, QString &filename);
+
 
 };
 

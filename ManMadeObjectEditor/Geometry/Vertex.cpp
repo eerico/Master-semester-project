@@ -185,12 +185,14 @@ void Vertex::writeXML(QXmlStreamWriter* xmlWriter){
 
 Vertex* Vertex::readXML(QXmlStreamReader &xml){
 
-    if(xml.tokenType() != QXmlStreamReader::StartElement &&
-            xml.name() == "Vertex") {
+    if(xml.tokenType() != QXmlStreamReader::StartElement ||
+            xml.name() != "Vertex") {
         return 0;
     }
     float x;
     float y;
+
+    //read vertex attibutes hence the 2 coordinates:
     QXmlStreamAttributes attributes = xml.attributes();
 
     if(attributes.hasAttribute("X") && attributes.hasAttribute("Y")) {

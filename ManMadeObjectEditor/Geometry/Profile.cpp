@@ -305,10 +305,11 @@ void Profile::writeXML(QXmlStreamWriter* xmlWriter){
 }
 
 std::pair<QString, Profile*> Profile::readXML(QXmlStreamReader &xml){
-    /* Let's check that we're really getting an Edge. */
+    //check if there is something wrong
     std::pair<QString, Profile*> pair;
     if(xml.tokenType() != QXmlStreamReader::StartElement &&
-            xml.name() == "Profile") {
+            xml.name() != "Profile") {
+        pair.second=0;
         return pair;
     }
 
@@ -316,24 +317,25 @@ std::pair<QString, Profile*> Profile::readXML(QXmlStreamReader &xml){
     Vertex* tempVertex;
     Vertex* tempVertex2;
 
-    /* Let's get the attributes for person */
+    //get the profile attibute hence its color:
     QXmlStreamAttributes attributes = xml.attributes();
-    /* Let's check that person has id attribute. */
     if(attributes.hasAttribute("color")) {
         pair.first = attributes.value("color").toString();
     }
-    /* Next element... */
+
     xml.readNext();
-    /*
-     * We're going to loop over the things because the order might change.
-     * We'll continue the loop until we hit an EndElement named person.
-     */
+
+    //read all vertices of this profile
     while(!(xml.tokenType() == QXmlStreamReader::EndElement &&
             xml.name() == "Profile")) {
         if(xml.tokenType() == QXmlStreamReader::StartElement) {
-            /* We've found first name. */
+
             if(xml.name() == "Vertex") {
                 tempVertex2 = Vertex::readXML(xml);
+                if(tempVertex2 == 0){
+                    pair.second=0;
+                    return pair;
+                }
                 if(firstVertex == 0){
                     firstVertex = tempVertex2;
                     tempVertex = firstVertex;
@@ -349,11 +351,15 @@ std::pair<QString, Profile*> Profile::readXML(QXmlStreamReader &xml){
                     tempVertex = tempVertex2;
                 }
 
+            } else {
+                //we don't care if there are other information maybe the xml contains simply somthing more than needed
             }
         }
         xml.readNext();//read end element
         xml.readNext();
     }
+
+    //build the profile and return it
     pair.second = new Profile(true);
     delete pair.second->pVertex;
     pair.second->pVertex = firstVertex;

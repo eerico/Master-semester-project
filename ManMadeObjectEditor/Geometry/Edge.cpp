@@ -328,38 +328,43 @@ void Edge::writeXML(QXmlStreamWriter* xmlWriter){
 std::pair<QString, Edge*> Edge::readXML(QXmlStreamReader &xml){
     std::pair<QString, Edge*> pair;
 
-    /* Let's check that we're really getting an Edge. */
-    if(xml.tokenType() != QXmlStreamReader::StartElement &&
-            xml.name() == "Edge") {
+    //check if there is something wrong
+    if(xml.tokenType() != QXmlStreamReader::StartElement ||
+            xml.name() != "Edge") {
+        pair.second = 0;
         return pair;
     }
 
     Vertex* vertex1;
     Vertex* vertex2;
-    /* Let's get the attributes for person */
+    //get the attibute that is the profile (its color)
     QXmlStreamAttributes attributes = xml.attributes();
-    /* Let's check that person has id attribute. */
     if(attributes.hasAttribute("profile")) {
         pair.first = attributes.value("profile").toString();
     }
-    /* Next element... */
+
+    //now read the 2 vertices
     xml.readNext();
-    /*
-     * We're going to loop over the things because the order might change.
-     * We'll continue the loop until we hit an EndElement named person.
-     */
     if(xml.name() == "Vertex" && !(xml.tokenType() == QXmlStreamReader::EndElement &&
                                    xml.name() == "Edge") && xml.tokenType() == QXmlStreamReader::StartElement) {
         vertex1 = Vertex::readXML(xml);
+        if(vertex1 == 0){
+            pair.second=0;
+            return pair;
+        }
     }
-
     xml.readNext();//read end element of first vertex
     xml.readNext(); //read vertex 2
 
     if(xml.name() == "Vertex" && !(xml.tokenType() == QXmlStreamReader::EndElement &&
                                    xml.name() == "Edge") && xml.tokenType() == QXmlStreamReader::StartElement) {
         vertex2 = Vertex::readXML(xml);
+        if(vertex1 == 0){
+            pair.second=0;
+            return pair;
+        }
     }
+    //finally generate the edge between the 2 vertices and return it
     pair.second = new Edge(vertex1, vertex2, 0);
 
     return pair;
