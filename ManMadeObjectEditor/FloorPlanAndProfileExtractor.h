@@ -57,7 +57,7 @@ private:
      * @param inputMesh the mesh load with OpenMesh
      * @param plans A vector that contain all floor plan at every level
      */
-    void profileConstruction(OMMesh* inputMesh, std::vector< std::vector< Vertex*> >& plans);
+    bool profileConstruction(OMMesh* inputMesh, std::vector< std::vector< Vertex*> >& plans);
 
     /**
      * @brief recenter

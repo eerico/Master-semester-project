@@ -28,7 +28,8 @@ void FloorPlanAndProfileExtractor::recenter(std::vector< std::vector< Vertex* > 
         Vertex* currentVertex = firstLevel[i];
         centerX += currentVertex->getX();
         centerY += currentVertex->getY();
-    }    
+    }
+    //find the center:
     centerX /= firstLevelSize;
     centerY /= firstLevelSize;
     
@@ -44,10 +45,10 @@ void FloorPlanAndProfileExtractor::recenter(std::vector< std::vector< Vertex* > 
 }
 
 void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >& plans) {
-    //scale the mesh such that the first floor plan is between [-1, 1]x[-1, 1]
+    //scale the mesh such that the first floor plan is inside the square [-1, 1]x[-1, 1] (- an eventual border margin)
     std::vector< Vertex* > firstLevel = plans[0];
 
-    // compute the minimum and maximum X and Y
+    // find the minimum and maximum X and Y
     float minX(FLT_MAX);
     float minY(FLT_MAX);
     
@@ -66,6 +67,7 @@ void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >
 
     // find the rescale factor
     float rescalFactor = std::max(std::max(std::max(maxX, maxY), -minX), -minY);
+
     // border can be used to avoid a perfect [-1, 1]x[-1, 1]
     rescalFactor += border * rescalFactor;
     
@@ -83,10 +85,9 @@ void FloorPlanAndProfileExtractor::rescale(std::vector< std::vector< Vertex* > >
     dy = dy / rescalFactor;
 }
 
-void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::vector<std::vector<Vertex * > > &plans) {
-
-    // For every two vertices, find the faces normals they have in common,
-    // construct the edge between them and associate a normal to this edge
+bool FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::vector<std::vector<Vertex * > > &plans) {
+    // For every two vertices (since is it possible to have multiple faces associated with them), find the faces that have normals in common,
+    // construct the edge between them and associate the normal to an edge
     for(unsigned int i(0); i < plans.size(); ++i){
         std::vector<Vertex* > level = plans[i];
         unsigned int numberVertexAtLevel = level.size();
@@ -99,6 +100,8 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
                     std::vector< OMMesh::FaceHandle>* neighborFaces = neighbor->getFaces();
                     OMMesh::Normal* normal = new OMMesh::Normal(0.0f, 0.0f, 0.0f);
                     
+                    //compare all faces of two neoghbour, if there are some faces in common remember the normal
+                    // since it will become the normal of the edge between these two neigbour
                     for(unsigned int k(0); k < currentFaces->size(); ++k) {
                         OMMesh::FaceHandle currentFace = (*currentFaces)[k];
                         for(unsigned int m(0); m < neighborFaces->size(); ++m) {
@@ -109,33 +112,39 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
                             }
                         }
                     }
+                    //since there can be multiple faces shared between 2 neighbour, we must normalize
                     normal->normalize();
                     
+                    //build the edge between the 2 neigbour and store the prevoiously computed normal
                     Edge* edge = new Edge(current, current->getNeighbor2());
                     edge->setNormal(normal);
+                    //link edge information inside the 2 vertices object
                     current->setEdge2(edge);
                     neighbor->setEdge1(edge);
                 } else {
                     std::cerr << "Vertex Invalid at level " << i << std::endl;
-                    exit(EXIT_FAILURE);
+                    return false;
                 }
             }
         }
     }
     
+
+
     //check if the floorplan chain orientation is correct (otherwise reverse it)
     planOrientation(plans[0]);
     
+
     /*
      * Construct the profile:
      The algorithm works as follow: For every edge e1 on the first floor plan we will construct its profile
      Thus we take le floor plan at level 2, then 3 etc.. And for every edge ei at the level i
      if the two edges are not parallel, then they do not define a profile. If they are parallel,
      they can be associated with face in opposite direction. Thus we check the dot product between
-     the two edges (e1 and ei) normal and if this dot product is negativ, then the two edges normals doesnt
-     face toward the same direction and thus do not define a profile. if the dot product is positiv
-     then they can define a profile. In fact, more than one edge ei can pass all of these test, thus we
-     keep only the edge that is the nearest to e1.
+     the two edges (e1 and ei) normal and if this dot product is negative, then the two edges normals doesn't
+     face toward the same direction and thus do not define a profile. finally if the dot product is positive
+     then they can define a profile.
+     Hovewer, since more than one edge ei can pass all of these test, thus we keep only the edge that is the nearest to e1.
      Finally, given an edge e1 and an edge ei that define a part of the profile, we can add a vertex to the profile
      where the inclination is the distance between e1 and ei and the height is simply dy * i. The only question remaining
      is the sign of the inclination. To compute it, we use the normal n at e1 and the direction vector from e1 to ei called d.
@@ -154,19 +163,16 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
         ProfileDestructorManager::putProfile(currentProfile);
     }
 
-
-    //forach edge in the plan find the nearest edge in the previous floor
+    //forach edge in the plan find the nearest valid edge (see previous description) in the previous floor
     for(unsigned int j(1); j < plans.size(); ++j){
         std::vector<Vertex* > level = plans[j];
         unsigned int numberVertexAtLevel = level.size();
-
-
+        //store in a sorted list all edges by distance between edge and possible linked edge at a different level,
         std::priority_queue<AssociateEdges, std::vector<AssociateEdges>, AssociateEdgesComparator> priorityQueue;
 
 
+        //TODO: what we do??
         if (numberVertexAtLevel == 1) { //we can't know the edge normal
-
-
             /*Vertex* aloneVertex = level[0];
                  std::vector< OMMesh::FaceHandle>* faces = aloneVertex->getFaces();
                  OMMesh::Normal aloneVertexNormal(0.0f, 0.0f, 0.0f);
@@ -184,27 +190,25 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
                  }*/
 
 
-            // Maybe we should just do nothing
-        } else //if(j>0) {
-        {
+            //  we should just do nothing
+        } else{
             std::vector<Vertex* > previousLevel = plans[j-1];
             unsigned int numberVertexAtPreviousLevel = previousLevel.size();
 
+            //fist for each vertex at the previous level associate all valid candidate at this level
             for(unsigned int k(0); k < numberVertexAtPreviousLevel; ++k) {
-                // for every edge at this level
                 Edge* previousFloorEdge = previousLevel[k]->getEdge2();
                 OMMesh::Normal* previousFloorEdgeNormal = previousFloorEdge->getNormal();
-
+                // find all candidate in this level
                 for(unsigned int i(0); i < level.size(); ++i) {
                     Edge* currentFloorEdge = level[i]->getEdge2();
                     OMMesh::Normal* currentFloorEdgeNormal = currentFloorEdge->getNormal();
-
 
                     if(currentFloorEdge->isParallel(previousFloorEdge)) {
                         AssociateEdges associatedEdge;
                         //check also dot product between normals
                         float dotProduct = (*currentFloorEdgeNormal) | (*previousFloorEdgeNormal);
-                        //if the dot product is negativ, then the two edges normals doesnt face toward the same direction
+                        //if the dot product is negative, then the two edges normals doesnt face toward the same direction
                         if (dotProduct >= 0.0f) {
                             float x = previousFloorEdge->getVertex1()->getX() - currentFloorEdge->getVertex1()->getX();
                             float y = previousFloorEdge->getVertex1()->getY() - currentFloorEdge->getVertex1()->getY();
@@ -230,8 +234,8 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
             }
         }
 
-        //associate each edge of current floor to one of the previous one and add it to the profile.
-        std::vector< Edge* > alreadyAssociatedEdges;
+        //finally associate each edge of current floor to a single one of the previous one and add it to its profile.
+        std::vector< Edge* > alreadyAssociatedEdges;//remember all edges already associated to one in the previous floor
         while (!priorityQueue.empty()) {
             AssociateEdges associatedEdge = priorityQueue.top();
             priorityQueue.pop();
@@ -247,6 +251,7 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
             if(!found && associatedEdge.previousFloorEdge->getProfile() != 0){
 
                 //TODO what if previousFloorEdge profile = 0; (in previus step no association hence this profile doesn't exist anymore
+                //associate the new vertex to the profile
                 Profile* currentProfile = associatedEdge.previousFloorEdge->getProfile();
                 currentProfile->addVertexEnd(associatedEdge.newVertex);
                 associatedEdge.currentFloorEdge->setProfile(currentProfile);
@@ -264,17 +269,15 @@ void FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
 
     }
 
+    // find similar profile (decimate the number of profile) i.e 1profile is = to 2 but then al level 4 1 finish and 2 has other level we have to put 1 = 2 and remove 1
+    profileDecimation(firstLevel);
 
-
-
-    //TODO find similar profile i.e 1profile is = to 2 but then al level 4 1 finish and 2 has other level we have to put 1 = 2 and remove 1
-
-      profileDecimation(firstLevel);
-    //we can decimate the profile.
-
+    //now decimate the vertices inside all single  profiles.
       foreach (Vertex* floorVertex, firstLevel) {
         floorVertex->getEdge2()->getProfile()->vertexDecimation();
     }
+
+    return true;
 }
 
 void FloorPlanAndProfileExtractor::planOrientation(std::vector<Vertex* > &level){
@@ -286,10 +289,10 @@ void FloorPlanAndProfileExtractor::planOrientation(std::vector<Vertex* > &level)
     float a=edge->getNormal()[0][0];
     float b =edge->getNormal()[0][1];
 
-    //check if the real normal and the one we compute point in the same direction
+    //check if the real normal and the one we compute point are in the same direction
     float dot  =  Utils::dotProduct(-v2,v1,(*edge->getNormal())[0],(*edge->getNormal())[1]);
 
-    if(dot < 0){ //reverse the chain
+    if(dot < 0){ //if it is the case reverse the chain
         Vertex* tempV;
         Edge* tempE;
         foreach (Vertex* v, level) {
@@ -441,7 +444,7 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
     }
     
 
-    //build chain at every level  //////what if a vertex has only a neighbour???
+    //build chains at every level  //////TODO what if a vertex has only a neighbour???
     foreach (std::vector<Vertex* > level, plans) {
         if (level.size() < 3) {
             if(level.size() > 1){
@@ -456,10 +459,13 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
             continue;
         }
 
+        //add all verices in a level to a chain, or multiple ones
         while (level.size()!=0){
             Vertex* firstVertex = level[0];
             Vertex* currentVertex = level[0];
             Vertex* nextVertex;
+            //build a single chain (first element of the chain is the the actual first one in the level)
+            //notice that this chain don't have to contains all vertices of a level!
             for(unsigned int i(0); i < level.size(); i++) {
                 nextVertex = currentVertex->getNeighbor2();
                 if(nextVertex == 0){
@@ -491,8 +497,11 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
                 return false;
             }
 
+            //assure that all vertices in the level are inside a chain otherwise add them again to the level
+            //(hence we will try to find another chain at this level)
             std::vector<Vertex* > tempLevel;
             for (unsigned int i(0); i < level.size(); i++){
+                //if not true = not in a chain add back to the level, we must find a chain for this vertex
                 if(!level[i]->isValid() && level[i]->getNeighbor2()!=0){
                     tempLevel.push_back(level[i]);
                 } else if(!level[i]->isValid()) {
@@ -524,6 +533,7 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
                     break;
                 }
             }
+            //replace with neigbour
             if(same){
                 vertex->getNeighbor1()->setNeighbor2(vertex->getNeighbor2());
                 vertex->getNeighbor2()->setNeighbor1(vertex->getNeighbor1());
@@ -536,7 +546,7 @@ bool FloorPlanAndProfileExtractor::extractAllPlans(std::vector<std::vector<Verte
         }
     }       
     
-    //remove invalid vertex
+    //remove all invalid vertex (since they have been repalced and are no longer required)
     for(unsigned int i(0); i < plans.size(); ++i){
         std::vector<Vertex* > level = plans[i];
         std::vector<Vertex* > newLevel;
@@ -598,13 +608,14 @@ bool FloorPlanAndProfileExtractor::extract(OMMesh * inputMesh, Vertex*& floorPla
     rescale(plans);
     
     // construct all profiles
-    profileConstruction(inputMesh, plans);
+    if(!profileConstruction(inputMesh, plans)){
+        return false;
+    }
     
     std::vector<Vertex* > firstFloorPlanlevel = plans[0];
 
-    //decimate the profiles
-  //  profileDecimation(firstFloorPlanlevel);
     
+    //finally set variables that will permit the usage of this reconstruction
     floorPlanSize = firstFloorPlanlevel.size();
     floorPlan = firstFloorPlanlevel[0];
     currentProfile = floorPlan->getEdge2()->getProfile();
@@ -617,7 +628,8 @@ bool FloorPlanAndProfileExtractor::extract(OMMesh * inputMesh, Vertex*& floorPla
 }
 
 
-/*void FloorPlanAndProfileExtractor::profileDecimation(std::vector<Vertex * > &firstFloorPlanlevel) {
+/*TODO DEPRECATED VERSION, THIS VERSION ONLY REMOVE EXACTLY SIMILAR PROFILE DO NOT CONSIDER ALL CASE (2 prfile that are euqal until one of the 2 end should be the put togheter)
+ *void FloorPlanAndProfileExtractor::profileDecimation(std::vector<Vertex * > &firstFloorPlanlevel) {
     foreach (Vertex* vertexP, firstFloorPlanlevel) {
         foreach (Vertex* vertexC, firstFloorPlanlevel) {
             if(vertexC != vertexP && vertexC->getEdge2()->getProfile()!= vertexP->getEdge2()->getProfile()){

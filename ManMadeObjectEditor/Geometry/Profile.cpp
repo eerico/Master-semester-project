@@ -211,8 +211,8 @@ void Profile::vertexDecimation() {
             Utils::normalize(fromCurrentToNextX, fromCurrentToNextY);
             
             float dotProduct = Utils::dotProduct(fromPreviousToCurrentX, fromPreviousToCurrentY, fromCurrentToNextX, fromCurrentToNextY);
-            
-            if (std::abs(1.0 - dotProduct) < 0.001f) {
+
+            if (std::abs(1.0 - dotProduct) < 0.005f || (std::abs(fromPreviousToCurrentX) < 0.01 && std::abs(fromPreviousToCurrentY) < 0.01)) {
                 //we can remove this vertex, because it is on a line
                 
                 next->setEdge1(previous->replaceNeighbour(current, next) );
@@ -253,8 +253,8 @@ Profile* Profile::isEquivalent(Profile* compareProfile) {
     Vertex* compare = compareProfile->getProfileVertex();
     Vertex* current = pVertex;
     while(current != 0 && compare!= 0) {
-        // test if the two vertices different
-        if((std::abs(compare->getX() - current->getX()) > 0.01f) || (std::abs(compare->getY() != current->getY())> 0.01f)){
+        // test if the two vertices different are to be considered different
+        if((std::abs(compare->getX() - current->getX()) > 0.04f) || (std::abs(compare->getY() != current->getY())> 0.04f)){
             break;
         }
         // they are the same, thus test the next one

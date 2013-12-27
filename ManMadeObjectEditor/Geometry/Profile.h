@@ -57,7 +57,7 @@ public:
     /**
      * @brief isEquivalent
      * @param compareProfile
-     * @return retrun the "most complete profile" if the two profile are considered equivalent 0 otherwise.
+     * @return return the "most complete profile" if the two profile are considered equivalent 0 otherwise.
      *most complete profile and equivalent means that one profile is contained in the other and we return the biggest one.
      */
     Profile* isEquivalent(Profile* compareProfile);
