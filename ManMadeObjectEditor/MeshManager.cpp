@@ -216,17 +216,17 @@ void MeshManager::loadMesh(QString fileName) {
     OpenMesh::IO::Options option;
     if (OpenMesh::IO::read_mesh(*inputMesh, fileName.toLocal8Bit().constData(), option)){
 
-		// compute the vertex normals if the mesh doesnt provide them
-		if (!option.check(OpenMesh::IO::Options::VertexNormal )) {
-			inputMesh->update_normals();
+        // compute the vertex normals if the mesh doesnt provide them
+        if (!option.check(OpenMesh::IO::Options::VertexNormal )) {
+            inputMesh->update_normals();
         }
-	} else {
-		std::cerr << "Error while reading the mesh" << std::endl;
+    } else {
+        std::cerr << "Error while reading the mesh" << std::endl;
 
-		delete inputMesh;
-		inputMesh = 0;
-		
-		return;
+        delete inputMesh;
+        inputMesh = 0;
+
+        return;
     }
 
     // extract the floor plans and the profiles
@@ -278,7 +278,11 @@ void MeshManager::emitNewFloorPlan(){
 
 void MeshManager::createNewProfileForSelectedEdge() {
     if(edgeSelected != 0) {
-        Profile*  newProfileForSelectedEdge = currentProfile->copy();//new Profile(false);
+        // copy the profile of the selected edge
+        Profile*  newProfileForSelectedEdge = currentProfile->copy();
+
+        // assign this copy to the selected edge and thus separate it from the other
+        // same profile
         edgeSelected->setProfile(newProfileForSelectedEdge);
         ProfileDestructorManager::putProfile(newProfileForSelectedEdge);
         currentProfile = newProfileForSelectedEdge;
