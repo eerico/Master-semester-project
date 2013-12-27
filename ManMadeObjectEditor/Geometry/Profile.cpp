@@ -312,7 +312,6 @@ std::pair<QString, Profile*> Profile::readXML(QXmlStreamReader &xml){
         return pair;
     }
 
-
     Vertex* firstVertex=0;
     Vertex* tempVertex;
     Vertex* tempVertex2;
@@ -330,37 +329,37 @@ std::pair<QString, Profile*> Profile::readXML(QXmlStreamReader &xml){
      * We'll continue the loop until we hit an EndElement named person.
      */
     while(!(xml.tokenType() == QXmlStreamReader::EndElement &&
-                xml.name() == "Profile")) {
-            if(xml.tokenType() == QXmlStreamReader::StartElement) {
-                /* We've found first name. */
-                if(xml.name() == "Vertex") {
-                    tempVertex2 = Vertex::readXML(xml);
-                    if(firstVertex == 0){
-                        firstVertex = tempVertex2;
-                        tempVertex = firstVertex;
+            xml.name() == "Profile")) {
+        if(xml.tokenType() == QXmlStreamReader::StartElement) {
+            /* We've found first name. */
+            if(xml.name() == "Vertex") {
+                tempVertex2 = Vertex::readXML(xml);
+                if(firstVertex == 0){
+                    firstVertex = tempVertex2;
+                    tempVertex = firstVertex;
 
-                    } else {
+                } else {
 
-                        tempVertex->setNeighbor2(tempVertex2);
-                        Edge* tedge = new Edge(tempVertex, tempVertex2);
-                        tempVertex->setEdge2(tedge);
+                    tempVertex->setNeighbor2(tempVertex2);
+                    Edge* tedge = new Edge(tempVertex, tempVertex2);
+                    tempVertex->setEdge2(tedge);
 
-                        tempVertex2->setNeighbor1(tempVertex);
-                        tempVertex2->setEdge1(tedge);
-                        tempVertex = tempVertex2;
-                    }
-
+                    tempVertex2->setNeighbor1(tempVertex);
+                    tempVertex2->setEdge1(tedge);
+                    tempVertex = tempVertex2;
                 }
+
             }
-            xml.readNext();//read end element
-            xml.readNext();
         }
-        pair.second = new Profile(true);
-        delete pair.second->pVertex;
-        pair.second->pVertex = firstVertex;
-        pair.second->profileVertexIterator = firstVertex;
-        delete pair.second->profileColorIdentification;
-        pair.second->profileColorIdentification = new QColor(pair.first);
+        xml.readNext();//read end element
+        xml.readNext();
+    }
+    pair.second = new Profile(true);
+    delete pair.second->pVertex;
+    pair.second->pVertex = firstVertex;
+    pair.second->profileVertexIterator = firstVertex;
+    delete pair.second->profileColorIdentification;
+    pair.second->profileColorIdentification = new QColor(pair.first);
 
     return pair;
 }

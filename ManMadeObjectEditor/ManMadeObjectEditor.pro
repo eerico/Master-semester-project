@@ -18,7 +18,6 @@ SOURCES +=\
     GarbageCollector/ProfileDestructorManager.cpp \
     Utils.cpp \
     MeshManager.cpp \
-    Test.cpp \
     GUI/ObjectViewer.cpp \
     GUI/FloorScene.cpp \
     GUI/FloorAndProfileViewer.cpp \
@@ -62,7 +61,6 @@ HEADERS  += \
     GarbageCollector/ProfileDestructorManager.h \
     Utils.h \
     MeshManager.h \
-    Test.h \
     GUI/ObjectViewer.h \
     GUI/FloorScene.h \
     GUI/FloorAndProfileViewer.h \

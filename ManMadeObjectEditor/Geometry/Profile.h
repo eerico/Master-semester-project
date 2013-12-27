@@ -70,14 +70,23 @@ public:
 
     /**
      * @brief resetDirectionPlan
-     * reset the currrent direction plan to be the first one
+     * reset the current direction plan to be the first one
      */
     void resetDirectionPlan(); 
 
     QColor* getProfileColorIdentification();
 
+    /**
+     * @brief getProfileVertexIterator
+     * @return The iteration used to know the current direction plan
+     * of this profile
+     */
     Vertex* getProfileVertexIterator();
 
+    /**
+     * @brief copy
+     * @return a copy of this profile
+     */
     Profile* copy();
 
     void printProfile();
@@ -91,6 +100,8 @@ private:
     // the vertex at the current direction plan
     Vertex* pVertex;
 
+    // an iterator used to know the current direction plan when we do the
+    // 3D reconstruction
     Vertex* profileVertexIterator;
 
     // the color identification of this profile
@@ -103,7 +114,7 @@ private:
      */
     void initProfileSkewedLine(int numSample);
 
-    /**
+    /** DEPRECATED
      * @brief initProfileBezier
      * Create a profile using a bezier curve
      * @param numSample The number of sample to take

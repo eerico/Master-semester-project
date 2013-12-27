@@ -94,8 +94,21 @@ public:
      */
     Edge* removeVertex();
 
+    /**
+     * @brief distance
+     * Compute the distance between this vertex and the vertex passed in parameter
+     * @param vertex
+     * @return the distance between the two vertices
+     */
     float distance(Vertex* vertex);
 
+    /**
+     * @brief operator <<
+     * Used to directly print the vertex information
+     * @param out
+     * @param v
+     * @return
+     */
     friend std::ostream& operator<< (std::ostream& out, Vertex& v);
 
     void writeXML(QXmlStreamWriter* xmlWriter);

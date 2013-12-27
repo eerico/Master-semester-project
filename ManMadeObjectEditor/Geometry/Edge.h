@@ -69,15 +69,29 @@ public:
     float distance(Edge* edge);
 
     /**
-     * @brief distance
-     * Compute the distance between the edge and the vertex
+     * @brief distanceXY
+     * compute the edge vertex distance
+     * only on X and Y coordinates
      * @param vertex
      * @return The distance between the edge and the vertex
      */
     float distanceXY(Vertex* vertex);
 
+    /**
+     * @brief lineDistance
+     * Compute the distance between two parallel edges (considered as infinite lines)
+     * @param edge
+     * @return the distance
+     */
     float lineDistance(Edge* edge);
 
+    /**
+     * @brief lineDistance
+     * compute the edge (considered as a line) vertex distance
+     * only on X and Y coordinates
+     * @param vertex
+     * @return the distance
+     */
     float lineDistance(Vertex* vertex);
 
 
@@ -109,6 +123,13 @@ public:
      */
     bool existIntersection(Edge* edge);
 
+    /**
+     * @brief operator <<
+     * Used to directly print the edge information
+     * @param out
+     * @param v
+     * @return
+     */
     friend std::ostream& operator<< (std::ostream& out, Edge& v);
 
     void writeXML(QXmlStreamWriter* xmlWriter);
@@ -138,8 +159,9 @@ private:
     // If the edge is valid or not
     bool valid;
 
+    // the direction plan associated with the edge (used during the
+    // 3D reconstruction)
     Plan* directionPlan;
-
 };
 
 #endif // EDGE_H
