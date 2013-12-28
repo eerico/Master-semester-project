@@ -7,7 +7,7 @@
 /**
  * @brief The AllPlanScene class
  * This class is a scene used to show all floors levels found with
- * the algorithm used to construct the floor plan and the profiles
+ * the algorithm used to extract the floor plan and the profiles
  */
 class AllPlanScene : public QGraphicsScene
 {
