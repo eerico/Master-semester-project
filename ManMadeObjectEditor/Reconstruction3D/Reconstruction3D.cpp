@@ -11,6 +11,7 @@ Reconstruction3D::Reconstruction3D(Vertex* floorPlan, unsigned int floorPlanSize
 {
     priorityQueue = new std::priority_queue<Event*, std::vector<Event*>, EventComparator>;
 
+    // create the vector where the computed triangle will be pushed
     this->triangles = new std::vector<qglviewer::Vec* >;
 
     error = new bool;
@@ -33,11 +34,11 @@ void Reconstruction3D::reconstruct()
 
     activePlan = new ActivePlan(floorPlan, floorPlanSize, this);
     activePlan->eliminateParallelNeighbor();
-    activePlan->computeIntersections(); // mettre seulement ceux qui sont a la bonne heuteur
+    activePlan->computeIntersections();
     activePlan->addEdgeDirectionEvent();
     activePlan->checkConsistency();
 
-
+    // now we take every event and handle them
     while(!priorityQueue->empty()) {
         Event* event = priorityQueue->top();
         priorityQueue->pop();
@@ -51,6 +52,8 @@ void Reconstruction3D::reconstruct()
             return;
         }
 
+        // handle all event that are more or less at the current height (based on the clustering used
+        // in the general event)
         if(!priorityQueue->empty()) {
             Event* nextEvent = priorityQueue->top();
             while((std::abs(nextEvent->getZ() - currentHeight) < deltaHeight) && !priorityQueue->empty()) {
@@ -69,6 +72,8 @@ void Reconstruction3D::reconstruct()
             }
         }
 
+        // now we have handle all event at the current height
+
         //clear the piority queue
         while(!priorityQueue->empty()) {
             Event* event = priorityQueue->top();
@@ -76,7 +81,10 @@ void Reconstruction3D::reconstruct()
             delete event;
         }
 
+        // if there is more to do
         if(activePlan->size() > 2){
+            // make the current active plan flat (all vertices
+            // will be moved to the current height)
             activePlan->updateAtCurrentHeight(currentHeight);
             if((*error)) {
                 errorHandling();
@@ -88,15 +96,20 @@ void Reconstruction3D::reconstruct()
         }
     }
 
+    //The reconstruction is done
+
     //reset to inital state
     Vertex* currentVertex = floorPlan;
     for(unsigned int i(0); i < floorPlanSize ; ++i) {
+        // move the iterator on the fiest direction plan for every profile
         currentVertex->getEdge2()->getProfile()->resetDirectionPlan();
         currentVertex = currentVertex->getNeighbor2();
     }
 
     // delete old data and
     // copy new triangles into the triangles to show
+    // If an error has occured during the 3d reconstruction, we will
+    // return the previous working 3D reconstruction
     unsigned int trianglesSize = trianglesToShow->size();
     for(unsigned int i(0); i < trianglesSize; ++i) {
         delete (*trianglesToShow)[i];

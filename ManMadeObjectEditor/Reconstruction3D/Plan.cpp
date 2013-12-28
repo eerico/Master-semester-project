@@ -22,6 +22,7 @@ Plan::Plan(float vertexX, float vertexY, float vertexZ,
 Plan::Plan(Plan* oldPlan, Vertex* vertex1, Profile* profile)
     :vertex(vertex1), profile(profile)
 {
+    // copy the old direction plan
     float nxTmp;
     float nyTmp;
     float nzTmp;
@@ -143,6 +144,8 @@ void Plan::getNormal(float& nx, float& ny, float& nz) {
 
 void Plan::computePlanNormal()
 {
+    // pointZ and pointZ2 must be the same
+
     float nx(0.0f);
     float ny(0.0f);
     float nz(0.0f);
@@ -153,20 +156,25 @@ void Plan::computePlanNormal()
 
     Utils::normalize(a, b);
 
+    // find the direction of the plan defined by the profile
     Vertex* profileVertex = profile->getProfileVertexIterator();
     Vertex* nextProfileVertex = profileVertex->getNeighbor2();
 
+    // extract its direction (in profile coordinates)
     float w = nextProfileVertex->getX() - profileVertex->getX();
     float z = nextProfileVertex->getY() - profileVertex->getY();
 
-    //est ce correct ou bien sa joue pas avec orientation des edges ?
+    // find the orientation of the plan (normal to the edge)
     float wx = b;
     float wy = -a;
 
+    // we have the value of the direction (in profile coordinates) and the orientation of the plan. We can find its
+    // direction in the world coordinates
     float d = w * wx;
     float e = w * wy;
     float f = z;
 
+    // using the direction of the plan and its orientation, we can compute its normal
     Utils::crossProduct(d, e, f, a, b, c, nx, ny, nz);
     Utils::normalize(nx, ny, nz);
 
