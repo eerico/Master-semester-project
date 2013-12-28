@@ -15,15 +15,18 @@ ProfileMergeScene::ProfileMergeScene(std::vector<Vertex *> *newProfile, MeshMana
 }
 
 void ProfileMergeScene::revert() {
+    // for each profile, revert its color
     foreach(Profile* profile, profileToRevertColor) {
         Vertex* iterator = profile->getProfileVertex();
         while(iterator != 0) {
+            //revert the ellipse color/brush
             QGraphicsEllipseItem* ellipse = iterator->getEllipse();
             ellipse->setPen(oldEllipsePen);
             ellipse->setBrush(oldEllipseBrush);
 
             if(iterator->getNeighbor2() != 0) {
                 QGraphicsLineItem* lineItem = iterator->getEdge2()->getLineItem();
+                // revert the line item pen
                 lineItem->setPen(oldLinePen);
             }
 
@@ -43,6 +46,7 @@ void ProfileMergeScene::loadProfile() {
         }
     }
 
+    //find which profile we must load
     if(firstScene) {
         if(currentEdgeSelected != 0) {
             profile = currentEdgeSelected ->getProfile();
@@ -57,8 +61,10 @@ void ProfileMergeScene::loadProfile() {
         }
     }
 
+    // this profile will have its color/brush modified
     profileToRevertColor.push_back(profile);
 
+    // load the profile vertices
     Vertex* iterator = profile->getProfileVertex();
     while(iterator != 0) {
         QGraphicsEllipseItem* ellipse = iterator->getEllipse();
@@ -82,13 +88,14 @@ void ProfileMergeScene::loadProfile() {
         ellipse->setPen(vertexPen);
         ellipse->setBrush(vertexBrush);
 
+        // load the vertex
         this->addItem(ellipse);
 
         iterator->setValid(true);
         iterator = iterator->getNeighbor2();
     }
 
-
+    // load the profile edges
     iterator = profile->getProfileVertex();
     while(iterator != 0) {
         if(iterator->getNeighbor2() != 0) {
@@ -140,10 +147,14 @@ void ProfileMergeScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) {
                     valid = false;
                 }
 
+                // if the selected vertex is correct
                 if(valid) {
+                    //the currently selected vertex will be part of the merged profile
                     newProfile->push_back(iterator);
+                    // this vertex cannot be selected again
                     iterator->invalid();
 
+                    // show the selected vertices
                     QPen pen = ellipse->pen();
                     pen.setColor(Qt::blue);
                     ellipse->setPen(pen);

@@ -395,10 +395,6 @@ void FloorScene::loadFloorPlan() {
     meshManager->setUpdateOnMesh();
 }
 
-Edge* FloorScene::getSelectedEdge() {
-    return edgeSelected;
-}
-
 void FloorScene::setEdgeSelected(Edge* edge) {
     edgeSelected = edge;
     meshManager->setEdgeSelected(edge);

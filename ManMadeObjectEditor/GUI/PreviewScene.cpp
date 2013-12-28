@@ -35,12 +35,8 @@ void PreviewScene::loadPreview(std::vector<Vertex*>* vertexToShow) {
         Vertex* neighbor = currentVertex->getNeighbor2();
 
         if (neighbor == 0) {
-            //delete currentVertex;
             continue;
         }
-
-        //delete currentVertex->getEdge2();
-        //delete currentVertex;
 
         float xn = neighbor->getX();
         float yn = neighbor->getY();

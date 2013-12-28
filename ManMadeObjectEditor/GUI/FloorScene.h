@@ -28,8 +28,6 @@ public:
     FloorScene(MeshManager* meshManager);
     ~FloorScene();
 
-    Edge* getSelectedEdge();
-
 signals:
     /**
      * @brief newProfileSelected
@@ -99,6 +97,13 @@ private:
      */
     void basicCircle(QPoint* mousePos, int numSample);
 
+    /**
+     * @brief basicCross
+     * Create a new floor plan with a cross where the center of the cross
+     * is defined by centerX and centerY
+     * @param centerX
+     * @param centerY
+     */
     void basicCross(float centerX, float centerY);
 
     /**
@@ -110,6 +115,7 @@ private:
 
     void setEdgeSelected(Edge* edge);
 
+    // the currently selected edge
     Edge* edgeSelected;
 
     // Used to know if a vertex is currently being moved with the mouse, and thus using action

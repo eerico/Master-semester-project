@@ -16,11 +16,7 @@ void ObjectViewer::init() {
     setAxisIsDrawn(false);
     //setFPSIsDisplayed(true);
 
-    /*glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CW); // front face -> clock wise enumeration*/
-
-    this->camera()->setPosition(qglviewer::Vec(0.0533285f, 2.13141f, 0.707263f));
+    this->camera()->setPosition(qglviewer::Vec(0.0533285f, -2.13141f, 0.707263f));
     this->camera()->setUpVector(qglviewer::Vec(0.0f, 0.0f, 1.0f));
     this->camera()->lookAt(qglviewer::Vec(0.0f, 0.0f, 0.0f));
 
@@ -70,10 +66,9 @@ void ObjectViewer::draw() {
 }
 
 void ObjectViewer::drawTriangles() {
-    //GLfloat light0_position[] = { -0.5f, 1.0f, 1.0f, 0.0f };
+    //defined the light position and color
     qglviewer::Vec cameraPosition = camera()->position();
     GLfloat light0_position[] = { cameraPosition[0], cameraPosition[1], cameraPosition[2], 0.0f };
-    //GLfloat light1_position[] = { -0.5f, 0.0f, 1.0f, 0.0f };
     GLfloat light_term[] = {0.8f, 0.8f, 0.8f};
     GLfloat light_specular_term[] = { 1.0f, 1.0f, 1.0f};
     GLfloat ambient_term[] = {0.15f, 0.15f, 0.15f, 1.0f };
@@ -82,43 +77,23 @@ void ObjectViewer::drawTriangles() {
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_term );
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular_term );
-    /*glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, light_term );
-    glLightfv(GL_LIGHT1, GL_SPECULAR, light_term );*/
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_term);
 
 
     glEnable(GL_LIGHT0);
-    //glEnable(GL_LIGHT1);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
 
     glBegin(GL_TRIANGLES);
 
-    //draw the floor of the scene
-    qglviewer::Vec floorColor(0.12f, 0.42f, 0.23f);
-
-    GLfloat ambient_material_term[] = { floorColor[0], floorColor[1], floorColor[2], 1.0 };
-    GLfloat diffuse_material_term[] = { floorColor[0], floorColor[1], floorColor[2], 1.0 };
+    //define the object color
+    GLfloat ambient_material_term[] = { color[0], color[1], color[2], 1.0 };
+    GLfloat diffuse_material_term[] = { color[0], color[1], color[2], 1.0 };
     GLfloat specular_term[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-    //glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_material_term);
-    //glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_material_term);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_material_term);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_material_term);
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular_term);
-
-    /*qglviewer::Vec normalFloor(cameraPosition);
-    normalFloor.normalize();
-
-    glNormal3fv(normalFloor);
-    glVertex3fv(qglviewer::Vec(-10, 10, 0));
-    glVertex3fv(qglviewer::Vec(-10, -10, 0));
-    glVertex3fv(qglviewer::Vec(10, -10, 0));
-
-    glNormal3fv(normalFloor);
-    glVertex3fv(qglviewer::Vec(100, -100, 0));
-    glVertex3fv(qglviewer::Vec(100, 100, 0));
-    glVertex3fv(qglviewer::Vec(-100, 100, 0));*/
-
 
     // draw the triangle
     const std::vector<qglviewer::Vec * >* triangles = meshManager->getTriangles();
@@ -127,12 +102,6 @@ void ObjectViewer::drawTriangles() {
     float normalX(0.0f);
     float normalY(0.0f);
     float normalZ(0.0f);
-
-    ambient_material_term[0] = color[0]; ambient_material_term[1] =  color[1]; ambient_material_term[2] =  color[2];
-    diffuse_material_term[0] = color[0]; diffuse_material_term[1] = color[1]; diffuse_material_term[2] = color[2];
-
-    glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_material_term);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_material_term);
 
     for( unsigned int i(0); i < size; i = i + 3) {
 
@@ -159,7 +128,7 @@ void ObjectViewer::drawTriangles() {
 
             // draw the triangle
             glNormal3fv(normal);
-            glVertex3fv(vertex1); //Utiliser color
+            glVertex3fv(vertex1);
 
             glNormal3fv(normal);
             glVertex3fv(vertex2);
