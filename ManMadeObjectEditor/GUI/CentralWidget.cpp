@@ -27,9 +27,6 @@ CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
     // by default, hide this view
     allPlanView->hide();
 
-
-
-
     showChains = new QCheckBox("Show all chains and active plans");
     layout->addWidget(showChains, 2, 0);
 
@@ -63,9 +60,7 @@ CentralWidget::CentralWidget(QWidget* parent, MeshManager* meshManager) :
     QObject::connect(meshManager, SIGNAL(newProfileCreatedForSelectedEdge()), profileScene, SLOT(newProfileSelected()));
     QObject::connect(meshManager, SIGNAL(newProfileCreatedForSelectedEdge()), this, SLOT(changeProfileColorIndication()));
     QObject::connect(meshManager, SIGNAL(drawWithoutDeleteOldProfile()), profileScene, SLOT(drawWithoutDeleteOldProfile()));
-
     QObject::connect(meshManager, SIGNAL(newProfileSelected()), profileScene, SLOT(newProfileSelected()));
-
     QObject::connect(meshManager, SIGNAL(updateColorIndicationGUI()), this, SLOT(changeProfileColorIndication()));
 
     this->setLayout(layout);
@@ -143,7 +138,7 @@ void CentralWidget::allPlans() {
         hideAllPlans();
     }
 
-    // automatically ajdust the size and repaint the widget when the user shows or hides the all plan view
+    // automatically adjust the size and repaint the widget when the user shows or hides the all plan view
     this->adjustSize();
     this->parentWidget()->adjustSize();
     this->repaint();
@@ -192,11 +187,6 @@ void CentralWidget::uncheckShowPlans() {
     showPlans->setChecked(false);
 }
 
-
-
-//////////////////////////////////////////////////////////////
-
-
 void CentralWidget::valueSliderChainsChanged(int level) {    
     allChainScene->loadPlan(level, AllChainScene::Chain1);
     allChainAfterAlgorithmScene->loadPlan(level, AllChainScene::Chain2);
@@ -210,39 +200,48 @@ void CentralWidget::allChains() {
         hideAllChains();
     }
 
+    // automatically adjust the size and repaint the widget when the user shows or hides the views
     this->adjustSize();
     this->parentWidget()->adjustSize();
     this->repaint();
 }
 
 void CentralWidget::showAllChains() {
+    // if there is nothing to show, dont try to show something
     if (meshManager->getChains().size() == 0) {
         return;
     }
 
+    // create the slider used to select which chains/active plan level the user want to see
     levelChainSelector = new QSlider(Qt::Horizontal);
 
     levelChainSelector->setMinimum(0);
     levelChainSelector->setMaximum(std::max(meshManager->getChains().size() - 1, meshManager->getActivePlanDebug().size() - 1));
     layout->addWidget(levelChainSelector, 1, 3);
 
+    // show the views and the slider
     allChainView->show();
     allChainAfterAlgorithmView->show();
     allActivePlanView->show();
     levelChainSelector->show();
 
+    // load the selected informations
     allChainScene->loadPlan(levelChainSelector->value(), AllChainScene::Chain1);
     allChainAfterAlgorithmScene->loadPlan(levelChainSelector->value(), AllChainScene::Chain2);
     allActivePlanScene->loadPlan(levelChainSelector->value(), AllChainScene::ActivePlan);
 
+    // connect the signal emitted by the slider when its value changed to the slot that will load the
+    // chains/active plan at a given level defined by the value of the slider
     QObject::connect(levelChainSelector, SIGNAL(valueChanged(int)), this, SLOT(valueSliderChainsChanged(int)));
 }
 
 void CentralWidget::hideAllChains() {
+    // hide the views
     allChainView->hide();
     allChainAfterAlgorithmView->hide();
     allActivePlanView->hide();
 
+    // the slider is no more usefull
     if(levelChainSelector != 0) {
         levelChainSelector->hide();
         QObject::disconnect(levelChainSelector, SIGNAL(valueChanged(int)), this, SLOT(valueSliderChainsChanged(int)));

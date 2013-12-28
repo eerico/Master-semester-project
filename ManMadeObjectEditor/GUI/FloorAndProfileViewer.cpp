@@ -102,9 +102,10 @@ void FloorAndProfileViewer::createViewMenu() {
     viewMenu->addAction(flatAction);
     QObject::connect(flatAction, SIGNAL(triggered()), objViewer, SLOT(flatMode()));
 
+    // TODO futur work
     smoothAction = new QAction(tr("&Smooth"), this);
-    viewMenu->addAction(smoothAction);
-    QObject::connect(smoothAction, SIGNAL(triggered()), objViewer, SLOT(smoothMode()));
+    //viewMenu->addAction(smoothAction);
+    //QObject::connect(smoothAction, SIGNAL(triggered()), objViewer, SLOT(smoothMode()));
 
     pointAction = new QAction(tr("&Point"), this);
     viewMenu->addAction(pointAction);
