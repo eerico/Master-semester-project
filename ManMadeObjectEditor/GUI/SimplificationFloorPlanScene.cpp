@@ -6,10 +6,12 @@ SimplificationFloorPlanScene::SimplificationFloorPlanScene(MeshManager *meshMana
     this->setSceneRect(QRectF(0, 0, 400, 600));
     loadFloorPlan();
 
+    // the first curve
     currentCurve = new Curve;
 }
 
 SimplificationFloorPlanScene::~SimplificationFloorPlanScene() {
+    // delete all created data
     foreach(Curve* curve, *curveArray) {
         delete curve;
     }
@@ -27,6 +29,8 @@ void SimplificationFloorPlanScene::revertColor() {
     unsigned int size = meshManager->getFloorPlanSize();
     Vertex* iterator = meshManager->getFloorPlan();
     Edge* currentEdge = iterator->getEdge2();
+
+    // revert every ellipse and line item pen and brush
     for(unsigned int i(0); i < size; ++i) {
         QGraphicsEllipseItem* ellipse = iterator->getEllipse();
         QGraphicsLineItem* lineItem = currentEdge->getLineItem();
@@ -50,6 +54,8 @@ void SimplificationFloorPlanScene::loadFloorPlan() {
     unsigned int size = meshManager->getFloorPlanSize();
     Vertex* iterator = meshManager->getFloorPlan();
     Edge* currentEdge = iterator->getEdge2();
+
+    // load every vertices and edges in this scene
     for(unsigned int i(0); i < size; ++i) {
         QGraphicsEllipseItem* ellipse = iterator->getEllipse();
         QGraphicsLineItem* lineItem = currentEdge->getLineItem();
@@ -57,7 +63,6 @@ void SimplificationFloorPlanScene::loadFloorPlan() {
         oldPenEllipse.push_back(ellipse->pen());
         oldBrushEllipse.push_back(ellipse->brush());
         oldPenLine.push_back(lineItem->pen());
-
 
         QPen vertexPen;
         QBrush vertexBrush;
@@ -74,6 +79,7 @@ void SimplificationFloorPlanScene::loadFloorPlan() {
         linePen.setColor(Qt::black);
         lineItem->setPen(linePen);
 
+        // add the ellipse and the line item in this scene
         this->addItem(ellipse);
         this->addItem(lineItem);
 
@@ -97,6 +103,7 @@ void SimplificationFloorPlanScene::mousePressEvent(QGraphicsSceneMouseEvent* mou
                 if(currentCurve->begin == 0) {
                     // we start a new curve
                     currentCurve->begin = iterator;
+                    // we add its color identification
                     currentCurve->color.setRgb(std::rand()%256, std::rand()%256, std::rand()%256);
 
                     QPen pen = ellipse->pen();
@@ -105,10 +112,13 @@ void SimplificationFloorPlanScene::mousePressEvent(QGraphicsSceneMouseEvent* mou
 
                     iterator->invalid();
                 } else {
+                    // we finish the current curve
+
                     //check validity of the curve
                     Vertex* iterator2 = currentCurve->begin->getNeighbor2();
                     bool curveValid = true;
-                    // check if all vertices between the begining and the end are valid
+                    // check if all vertices between the begining and the end are valid (not already
+                    // in another curve)
                     while(iterator2 != iterator) {
                         if(!iterator2->isValid()) {
                             curveValid = false;
@@ -148,6 +158,7 @@ void SimplificationFloorPlanScene::updateSceneEllipseAndLineColor() {
 
     currentCurve->size = 1;
 
+    // update the curve color
     while(begin != end) {
         //update edge color
         edgeToChangeColor = begin->getEdge2();

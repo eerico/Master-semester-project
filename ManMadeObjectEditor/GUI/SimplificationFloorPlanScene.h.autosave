@@ -52,7 +52,6 @@ private:
      * curve he has already defined
      */
     void updateSceneEllipseAndLineColor();
-
 };
 
 #endif // SIMPLIFICATIONFLOORPLANSCENE_H
