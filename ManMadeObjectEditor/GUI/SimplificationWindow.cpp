@@ -5,7 +5,8 @@ SimplificationWindow::SimplificationWindow(MeshManager* meshManager, bool floorP
     , meshManager(meshManager), floorPlanSimplification(floorPlanSimplification), buttonPressed(false)
     , previewSize(0)
 {
-
+    // Create the correct scene (either to simplify the floor plan
+    // or the profile)
     if(floorPlanSimplification) {
         scene = new SimplificationFloorPlanScene(meshManager, &curveArray);
     } else {
@@ -13,24 +14,21 @@ SimplificationWindow::SimplificationWindow(MeshManager* meshManager, bool floorP
     }
     view = new BasicQGraphicsView(scene);
 
+    // Create the preview
     previewScene = new PreviewScene;
     previewView = new BasicQGraphicsView(previewScene);
 
+    // Create all layout
     gridLayout = new QGridLayout;
     hBoxLayoutScene = new QHBoxLayout;
     hBoxLayout = new QHBoxLayout;
     formLayout = new QFormLayout;
 
+    // construct the window
     this->setLayout(gridLayout);
     gridLayout->addLayout(hBoxLayoutScene, 0, 0);
     hBoxLayoutScene->addWidget(view);
     hBoxLayoutScene->addWidget(previewView);
-
-    /*thresholdBox = new QDoubleSpinBox;
-    thresholdBox->setRange(0.0, 2.0);
-    thresholdBox->setSingleStep(0.01);
-    thresholdBox->setValue(0.01);
-    thresholdBox->setDecimals(2);*/
 
     thresholdSlider = new QSlider(Qt::Horizontal);
     thresholdSlider->setRange(0, 200);
@@ -54,6 +52,7 @@ SimplificationWindow::SimplificationWindow(MeshManager* meshManager, bool floorP
     hBoxLayout->addWidget(okButton);
     hBoxLayout->addWidget(cancelButton);
 
+    // connect the buttons with their actions
     connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
 
@@ -80,6 +79,8 @@ void SimplificationWindow::ok(){
     Simplification simplification(&curveArray, meshManager, (float)thresholdSlider->value() / 100.0f);
 
     if(floorPlanSimplification) {
+        // Simplify the floor plan
+        // The floor plan must have at least 3 vertices
         if(previewSize >= 3) {
             scene->revertColor();
             simplification.simplifyFloorPlan();
@@ -88,6 +89,7 @@ void SimplificationWindow::ok(){
             return;
         }
     } else {
+        // Simplify the profile
         scene->revertColor();
         simplification.simplifyProfile();
     }
@@ -95,13 +97,14 @@ void SimplificationWindow::ok(){
     close();
 }
 
-void SimplificationWindow::cancel(){
-
+void SimplificationWindow::cancel() {
     scene->revertColor();
 
     if(floorPlanSimplification) {
+        // draw again the floor plan
         meshManager->emitNewFloorPlan();
     } else {
+        // draw again the profile in the profile scene
         meshManager->emitDrawWithoutDeleteOldProfile();
     }
     buttonPressed = true;
@@ -113,8 +116,10 @@ void SimplificationWindow::closeEvent(QCloseEvent *event) {
         scene->revertColor();
 
         if(floorPlanSimplification) {
+            // draw again the floor plan
             meshManager->emitNewFloorPlan();
         } else {
+            // draw again the profile in the profile scene
             meshManager->emitDrawWithoutDeleteOldProfile();
         }
     }
@@ -130,6 +135,8 @@ void SimplificationWindow::keyPressEvent(QKeyEvent *e){
 }
 
 void SimplificationWindow::valueSliderChanged(int thresholdValue) {
+    // Apply the simplification algorithm on the preview only if
+    // the user has defined some curve
     if(curveArray.size() == 0) {
         return;
     }
@@ -138,6 +145,7 @@ void SimplificationWindow::valueSliderChanged(int thresholdValue) {
 
     Simplification simplification(&curveArray, meshManager, threshold);
 
+    // Apply the simplification algorithm for the preview
     std::vector<Vertex*>* preview;
     if(floorPlanSimplification) {
         preview = simplification.simplifyFloorPlanPreview();

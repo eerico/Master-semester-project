@@ -36,7 +36,7 @@ protected:
     // The current curve that is currently constructed
     Curve* currentCurve;
 
-    // the array containing all curve
+    // The array containing all curve
     std::vector< Curve* >* curveArray;
 
     /**

@@ -109,6 +109,7 @@ void SimplificationProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouse
                 if(currentCurve->begin == 0) {
                     // we start a new curve
                     currentCurve->begin = iterator;
+                    // we add its color identification
                     currentCurve->color.setRgb(std::rand()%256, std::rand()%256, std::rand()%256);
 
                     QPen pen = ellipse->pen();
@@ -117,10 +118,13 @@ void SimplificationProfileScene::mousePressEvent(QGraphicsSceneMouseEvent* mouse
 
                     iterator->invalid();
                 } else {
+                    // we finish the current curve
+
                     //check validity of the curve
                     Vertex* iterator2 = currentCurve->begin->getNeighbor2();
                     bool curveValid = true;
-                    // check if all vertices between the begining and the end are valid
+                    // check if all vertices between the begining and the end are valid (not already
+                    // in another curve)
                     while(iterator2 != iterator && iterator2 != 0) {
                         if(!iterator2->isValid()) {
                             curveValid = false;
@@ -164,6 +168,7 @@ void SimplificationProfileScene::updateSceneEllipseAndLineColor() {
 
     currentCurve->size = 1;
 
+    // update the curve color
     while(begin != end) {
         //update edge color
         edgeToChangeColor = begin->getEdge2();
