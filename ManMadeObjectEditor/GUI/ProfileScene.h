@@ -36,6 +36,10 @@ public slots:
      */
     void newProfileSelected();
 
+    /**
+     * @brief drawWithoutDeleteOldProfile
+     * Draw the profile without removing the old loaded data
+     */
     void drawWithoutDeleteOldProfile();
 
 private:
