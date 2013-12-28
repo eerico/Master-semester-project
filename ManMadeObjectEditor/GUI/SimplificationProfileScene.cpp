@@ -6,10 +6,12 @@ SimplificationProfileScene::SimplificationProfileScene(MeshManager *meshManager,
     this->setSceneRect(QRectF(0, 0, 400, 600));
     loadProfile();
 
+    // the first curve
     currentCurve = new Curve;
 }
 
 SimplificationProfileScene::~SimplificationProfileScene() {
+    // delete all created data
     foreach(Curve* curve, *curveArray) {
         delete curve;
     }
@@ -27,6 +29,7 @@ void SimplificationProfileScene::revertColor() {
     Profile* profile = meshManager->getCurrentProfile();
     Vertex* iterator = profile->getProfileVertex();
     int i(0);
+    // revert every ellipse and line item pen and brush
     while(iterator != 0){
         QGraphicsEllipseItem* ellipse = iterator->getEllipse();
 
@@ -52,8 +55,9 @@ void SimplificationProfileScene::revertColor() {
 void SimplificationProfileScene::loadProfile() {
     Profile* profile = meshManager->getCurrentProfile();
     Vertex* iterator = profile->getProfileVertex();
-
     Edge* currentEdge;
+
+    // load every vertices and edges in this scene
     while(iterator != 0) {
         QGraphicsEllipseItem* ellipse = iterator->getEllipse();
         oldPenEllipse.push_back(ellipse->pen());
@@ -69,6 +73,7 @@ void SimplificationProfileScene::loadProfile() {
         ellipse->setPen(vertexPen);
         ellipse->setBrush(vertexBrush);
 
+        // add the ellipse in this scene
         this->addItem(ellipse);
 
 
@@ -83,6 +88,7 @@ void SimplificationProfileScene::loadProfile() {
             linePen.setColor(Qt::black);
             lineItem->setPen(linePen);
 
+            // add the line item in this scene
             this->addItem(lineItem);
         }
 
