@@ -35,32 +35,6 @@ public:
      */
     void closeEvent(QCloseEvent* event);
 
-    /**
-     * @brief createMenuBar
-     * Create the menu bar
-     */
-    void createMenuBar();
-
-    /**
-     * @brief createFileMenu
-     * Create the file menu
-     */
-    void createFileMenu();
-
-    /**
-     * @brief createViewMenu
-     * Create the view menu
-     */
-    void createViewMenu();
-
-    /**
-     * @brief createAboutMenu
-     * Create the about menu
-     */
-    void createAboutMenu();
-
-    void createEditMenu();
-
 public slots:
     /**
      * @brief openFile
@@ -81,16 +55,42 @@ public slots:
      */
     void aboutQtMessageBox();
 
+    /**
+     * @brief createSimplificationFloorPlanWindow
+     * Create the window used to do the simplification algorithm
+     * on the floor plan
+     */
     void createSimplificationFloorPlanWindow();
 
+    /**
+     * @brief createSimplificationProfileWindow
+     * Create the window used to do the simplification algorithm
+     * on the profile
+     */
     void createSimplificationProfileWindow();
 
+    /**
+     * @brief closeSimplificationWindow
+     * Action perfomred when the simplification window is closed
+     */
     void closeSimplificationWindow();
 
+    /**
+     * @brief createProfileMergeWindow
+     * Create the window used to merge the profiles
+     */
     void createProfileMergeWindow();
 
+    /**
+     * @brief closeProfileMergeWindow
+     * Action performed when the window used to merge profiles is closed
+     */
     void closeProfileMergeWindow();
 
+    /**
+     * @brief saveXML
+     * Action performed when the user want to export into an xml file
+     */
     void  saveXML();
 
 signals:
@@ -134,14 +134,49 @@ private:
     // tells the object viewer to do not show any 3D representation
     QAction* noViewAction;
 
+    // the edit menu with its associated action
     QMenu* editMenu;
     QAction* addNewProfileAction;
     QAction* floorPlanSimplificationAction;
     QAction* profileSimplificationAction;
     QAction* profileMergeAction;
 
+    // the simplification window
     SimplificationWindow* simplificationWindow;
+
+    // the window used to merge the profile
     ProfileMergeWindow* profileMergeWindow;
+
+
+    /**
+     * @brief createMenuBar
+     * Create the menu bar
+     */
+    void createMenuBar();
+
+    /**
+     * @brief createFileMenu
+     * Create the file menu
+     */
+    void createFileMenu();
+
+    /**
+     * @brief createViewMenu
+     * Create the view menu
+     */
+    void createViewMenu();
+
+    /**
+     * @brief createAboutMenu
+     * Create the about menu
+     */
+    void createAboutMenu();
+
+    /**
+     * @brief createEditMenu
+     * Create the edit menu
+     */
+    void createEditMenu();
 };
 
 #endif // FLOORANDPROFILEVIEWER_H
