@@ -3,10 +3,8 @@
 
 ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* reconstruction3d): reconstruction3d(reconstruction3d)
 {
-    // faire une arraylist de edge pour representer sa.
-    // changer comment on detecte les intersection
-
-    //build a copy of the received plan:
+    // Build a copy of the received floor plan
+    // We can then update the vertices without modifying the floor plan
     Vertex* iterator = planVertex;
     unsigned int size = planSize;
 
@@ -49,22 +47,24 @@ ActivePlan::ActivePlan(Vertex *planVertex, int planSize, Reconstruction3D* recon
 
     firstVertex->setEdge1(cloneEdge);
     previousVertex->setEdge2(cloneEdge);
-
 }
 
 void ActivePlan::computeIntersections()
 {
+    // Take two valid neighboring edges
     foreach(Edge* edge1, activePlan) {
         if(edge1->isValid()) {
             Edge* edge2 = edge1->getVertex2()->getEdge2();
             if(edge2->isValid()) {
 
+                // Take a third valid edge
                 foreach(Edge* edge3, activePlan) {
                     if(edge3->isValid()) {
                         if(edge3 == edge1 || edge3 == edge2) {
                             continue;
                         }
 
+                        // Take their associated direction plan
                         Plan * plan1 = edge1->getDirectionPlan();
                         Plan * plan2 = edge2->getDirectionPlan();
                         Plan * plan3 = edge3->getDirectionPlan();
@@ -84,6 +84,8 @@ void ActivePlan::computeIntersections()
                                     }
                                 } else {
                                     float currentLowestHeight = reconstruction3d->priorityQueue->top()->getZ();
+                                    // Only add the usefull intersection (that will be treated because we will
+                                    // recompute them after having updated the active plan height)
                                     if((intersection->getZ() - currentLowestHeight) < reconstruction3d->deltaHeight) {
                                         if(isIntersectionCorrect(intersection, edge3)){
                                             intersection->addEdge(edge1);
@@ -104,6 +106,10 @@ void ActivePlan::computeIntersections()
 
 bool ActivePlan::isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3)
 {
+    // The intersection has been computed between two neighbor and another edge. For the two neighbor, the
+    // intersection is valid but for the third edge, we have to compute if the intesection is really on the edges
+
+    // Compute the edge (edge3) at the height of the intersection
     Plan horizontalPlan (0.f,0.f,intersection->getZ());
     GeneralEvent * intersection1 = horizontalPlan.intersect3Plans(edge3->getDirectionPlan(), edge3->getVertex1()->getEdge1()->getDirectionPlan());
     GeneralEvent * intersection2 = horizontalPlan.intersect3Plans(edge3->getDirectionPlan(), edge3->getVertex2()->getEdge2()->getDirectionPlan());
@@ -118,17 +124,21 @@ bool ActivePlan::isIntersectionCorrect(GeneralEvent* intersection, Edge* edge3)
     Edge edge(&v1,&v2);
 
     Vertex intersectionVertex(intersection->getX(),intersection->getY(), intersection->getZ());
+
+    // check if the intersection (vertex) is really on the edge (edge3) at its height
     return (edge.distanceXY(&intersectionVertex) < 0.001);
 }
 
 Edge *ActivePlan::isIntersectionWithChildCorrect(GeneralEvent *intersection, Edge *old, Edge *child1, Edge *child2)
 {  
+    // compute the edge (old) at the height of the intersection
     Plan horizontalPlan (0.f,0.f, intersection->getZ());
     GeneralEvent * intersection1 = horizontalPlan.intersect3Plans(old->getDirectionPlan(), old->getVertex1()->getEdge1()->getDirectionPlan());
     GeneralEvent * intersection2 = horizontalPlan.intersect3Plans(old->getDirectionPlan(), old->getVertex2()->getEdge2()->getDirectionPlan());
 
     Vertex intersectionVertex(intersection->getX(),intersection->getY(), intersection->getZ());
 
+    // check with which child the intersection is correct
     if(intersection1!=0){
         Vertex v1(intersection1->getX(),intersection1->getY(),intersection1->getZ());
         Edge edge(&v1, child1->getVertex2());
@@ -149,6 +159,8 @@ Edge *ActivePlan::isIntersectionWithChildCorrect(GeneralEvent *intersection, Edg
 
 void ActivePlan::updateAtCurrentHeight(float currentHeight)
 {
+    // for each edge if one of the vertex is not at the current height, then update its height
+    // and draw the associated triangles
     foreach(Edge* edge, activePlan) {
         if(!edge->isValid()) {
             continue;
@@ -158,7 +170,9 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
         Vertex* v2 = edge->getVertex2();
         Plan horizontalPlan (0.f, 0.f, currentHeight);
 
+        // check if the vertex1 is at the current height
         if(v1->getZ() < currentHeight) {
+            //compute the vertex at the current height
             Plan* plan1 = v1->getEdge1()->getDirectionPlan();
             Plan* plan2 = edge->getDirectionPlan();
 
@@ -168,16 +182,19 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
                 return;
             }
 
-
             Vertex vertex(intersection->getX(), intersection->getY(), intersection->getZ());
             addNewTriangle(v1, v2, &vertex);
             addNewTriangle(v1->getEdge1()->getVertex1(), v1, &vertex);
 
+            // update the vertex coordinates
             v1->setX(vertex.getX());
             v1->setY(vertex.getY());
             v1->setZ(currentHeight);
         }
+
+        //check if vertex2 is at the current height
         if(v2->getZ() < currentHeight) {
+            //compute the vertex at the current height
             Plan* plan1 = edge->getDirectionPlan();
             Plan* plan2 = v2->getEdge2()->getDirectionPlan();
 
@@ -191,6 +208,7 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
             addNewTriangle(v1, v2, &vertex);
             addNewTriangle(v2, v2->getEdge2()->getVertex2(), &vertex);
 
+            // update the vertex coordinates
             v2->setX(vertex.getX());
             v2->setY(vertex.getY());
             v2->setZ(currentHeight);
@@ -212,7 +230,12 @@ void ActivePlan::updateAtCurrentHeight(float currentHeight)
 
 void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
 {
+    // one edge (old) has been splitted into two new edge (new 1 and new2)
+    // we must thus find the old edge in the active plna, remove it, replace it by the two new edges
+    // and do this for every event in the priority queue
+
     bool found = false;
+    // find the old edges in the priority queue
     for(std::vector<Edge*>::iterator i= activePlan.begin(); !found && i!= activePlan.end(); i++){
         if(*i==old){
             found = true;
@@ -220,9 +243,9 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
             activePlan.push_back(new1);
             activePlan.push_back(new2);
 
-
             std::priority_queue<Event*, std::vector<Event*>, EventComparator>* priorityQueue = reconstruction3d->priorityQueue;
             std::vector<Event*> tempVector;
+            // find the old edge in the priority queue
             while(!priorityQueue->empty()){
                 Event* event = priorityQueue->top();
                 priorityQueue->pop();
@@ -230,10 +253,11 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
                 bool toPush = true;
 
                 if(event->isGeneralEvent()){
+                    // a general event has a set of edges where we must check if the old edge is inside of this set
                     GeneralEvent* e = (GeneralEvent*) event;
                     for( std::set<Edge*, GeneralEvent::EdgePointerComparator>::iterator it= e->getEdges()->begin() ; it != e->getEdges()->end(); it++){
                         if(*it == old){
-
+                            // we have found the old edge. We must now found if we must replace the old edge by the new1 or the new2
                             Edge * intersectingEdge = isIntersectionWithChildCorrect(e, old, new1, new2);
                             if(intersectingEdge!= 0){
                                 e->getEdges()->erase(old);
@@ -245,6 +269,7 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
                         }
                     }
                 } else {
+                    // an edge event has a vector of edge where we must check if the old edge is inside of this vector
                     EdgeEvent* e = (EdgeEvent*) event;
                     std::vector<Edge*>* edges = e->getEdges();
                     unsigned int size = edges->size();
@@ -259,10 +284,13 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
                     }
                 }
                 if(toPush){
+                    // the event has been removed from the priority queue. We stored
+                    // them and finally add them again in the priority queue
                     tempVector.push_back(event);
                 }
             }
             foreach (Event* event, tempVector) {
+                // add again the events in the priority queue
                 priorityQueue->push(event);
             }
 
@@ -276,6 +304,7 @@ void ActivePlan::insert2Edges(Edge *old, Edge *new1, Edge *new2)
 void ActivePlan::getActivePlanCopy(std::vector< std::vector< Edge* > >* copy) {
     std::vector< Edge* > currentLevel;
     foreach(Edge* e, activePlan) {
+        // copy the active plan at the current level
         Vertex* v1 = e->getVertex1();
         Vertex* v2 = e->getVertex2();
         currentLevel.push_back(new Edge(new Vertex(v1->getX(), v1->getY(), v1->getZ()), new Vertex(v2->getX(), v2->getY(), v2->getZ())));
@@ -287,6 +316,8 @@ void ActivePlan::removeInvalidEdges() {
     unsigned int size = activePlan.size();
     for(unsigned int i(0); i < size; ++i) {
         Edge* currentEdge = activePlan[i];
+        // find all invalid edges and edges where their two vertices are the same
+        // and remove it
         if(!currentEdge->isValid() || (currentEdge->getVertex1() == currentEdge->getVertex2())) {
             activePlan.erase(activePlan.begin() + i);
             i--;
@@ -295,10 +326,10 @@ void ActivePlan::removeInvalidEdges() {
     }
 }
 
-// a utiliser quand tout est au meme niveau !!
-// il faudrait faire une check de sureter histoire d etre bien sure que quand on l appele c est effectivement le cas..
 void ActivePlan::eliminateParallelNeighbor()
 {
+    // All vertices in the current active plan must have the same height to
+    // check if two neighbor are parallel. We first check if it is the case.
     float currentLevel = reconstruction3d->currentHeight;
     foreach(Edge* edge, activePlan) {
         Vertex* v2 = edge->getVertex2();
@@ -307,6 +338,7 @@ void ActivePlan::eliminateParallelNeighbor()
         }
     }
 
+    // for each edge and its neighbor, we check if they are parallel
     unsigned int size = activePlan.size();
     for(unsigned int i(0); i < size; ++i) {
         Edge* currentEdge = activePlan[i];
@@ -322,13 +354,11 @@ void ActivePlan::eliminateParallelNeighbor()
 
         float dotProduct = nx1*nx2 + ny1*ny2 + nz1*nz2;
 
-        //////
-        // new version
-        if(currentEdge->isParallel(nextEdge) && std::abs(/*std::abs(*/dotProduct/*) */- 1.0f) < 0.000001f /*0.0001f*/) {
-
-        //////
-        // old version
-        //if(currentEdge->isParallel(nextEdge) || std::abs(std::abs(dotProduct) - 1.0f) < 0.0001f) {
+        // check if the two edge are parallel and if they are in the same direction
+        // (This means that we will not be able to find intersection betwee this
+        // two neighbor and another edge)
+        if(currentEdge->isParallel(nextEdge) && std::abs(dotProduct- 1.0f) < 0.000001f) {
+            // Then we remove the current edge
             activePlan.erase(activePlan.begin() + i);
             i--;
             size--;
@@ -336,7 +366,7 @@ void ActivePlan::eliminateParallelNeighbor()
             Vertex* nextV1 = nextEdge->getVertex1();
             Vertex* currentV1 = currentEdge->getVertex1();
 
-            //add a triangle to avoir holes because of precision problem
+            //add a triangle to avoid holes because of precision problem
             Vertex* nextV2 = nextEdge->getVertex2();
             if((nextV1->distance(currentV1) > 0.00001f)
                     && (nextV1->distance(nextV2) > 0.00001f)
@@ -344,6 +374,7 @@ void ActivePlan::eliminateParallelNeighbor()
                 addNewTriangle(currentV1, nextV1, nextV2);
             }
 
+            // We replace the next edge and current edge by the next edge
             nextV1->setX(currentV1->getX());
             nextV1->setY(currentV1->getY());
             nextV1->setZ(currentV1->getZ());
@@ -369,6 +400,7 @@ float ActivePlan::size()
 
 void ActivePlan::checkConsistency()
 {
+    // Check different state of the active plan
     foreach(Edge* edge, activePlan) {
         if(!edge->isValid()) {
             continue;
@@ -422,25 +454,32 @@ void ActivePlan::checkConsistency()
 void ActivePlan::addEdgeDirectionEvent()
 {
     std::vector<EdgeEvent*> edgeEvents;
+    // for each edge, we create their associated edge event
     foreach(Edge* currentEdge, activePlan) {
+        // an edge event is when the profile change (the angle defining the direction plan)
         Vertex* currentProfileVertex = currentEdge->getProfile()->getProfileVertexIterator();
         currentProfileVertex = currentProfileVertex->getNeighbor2();
+
         while(currentProfileVertex != 0 && currentProfileVertex->getNeighbor2() != 0) {
+            // only add edge event above the current height
             if(currentProfileVertex->getY() > reconstruction3d->currentHeight + reconstruction3d->deltaHeight) {
 
                 bool found = false;
+                // find if there is already an edge event for the current profile and at the same height
                 foreach(EdgeEvent* event, edgeEvents) {
                     if(event->getFirstEdge()->getProfile() == currentEdge->getProfile()) {
                         if(std::abs(event->getZ() - currentProfileVertex->getY()) < 0.000001f ) {
+                            // there is already an edge event, thus we dont have to create a new one. We just add
+                            // the edge to the edge vector associated with this edge event
                             event->addEdge(currentEdge);
                             found = true;
                             break;
                         }
-                        // on peut eviter de mettre les event trop haut
                     }
                 }
 
                 if(!found) {
+                    // we dont have found an edge event. We create a new one
                     EdgeEvent* edgeDirectionEvent = new EdgeEvent(currentProfileVertex->getY(), currentEdge);
                     edgeEvents.push_back(edgeDirectionEvent);
                 }
@@ -449,6 +488,7 @@ void ActivePlan::addEdgeDirectionEvent()
         }
     }
 
+    // add all edge event in the priority queue
     foreach(EdgeEvent* event, edgeEvents) {
         reconstruction3d->priorityQueue->push(event);
     }
