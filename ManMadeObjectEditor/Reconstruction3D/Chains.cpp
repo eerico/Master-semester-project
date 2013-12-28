@@ -13,6 +13,7 @@ Chains::Chains(GeneralEvent* intersection, std::vector<qglviewer::Vec *> *triang
     Vertex* first = 0;
     Vertex* last = 0;
 
+    // for each edge
     for(unsigned int i(0); i < size; ++i) {
         std::vector< Edge* >* currentChain = new std::vector< Edge* >;
         Edge* currentEdge = edges[i];
@@ -21,12 +22,14 @@ Chains::Chains(GeneralEvent* intersection, std::vector<qglviewer::Vec *> *triang
         last = currentEdge->getVertex2();
         currentChain->push_back(currentEdge);
 
+        // we find all consecutive edge of the current edge
         for(unsigned int j(i+1); j < size; ++j) {
             Edge* comparedEdge = edges[j];
 
             Vertex* vertex1 = comparedEdge->getVertex1();
             Vertex* vertex2 = comparedEdge->getVertex2();
 
+            // a consecutive edge has a vertex in common with the current edge
             if(vertex1 == first) {
                 currentChain->insert(currentChain->begin(), comparedEdge);
                 edges.erase(edges.begin() + j);
@@ -71,12 +74,16 @@ Chains::~Chains() {
 void Chains::intraChainHandling() {
 
     unsigned int chainsSize = chainList.size();
+
+    //for each chain
     for(unsigned int j(0); j < chainsSize; ++j) {
         std::vector< Edge* >* currentChain = chainList[j];
         unsigned int currentChainSize = currentChain->size();
 
+        // apply the intra chain algorithm on each chain
         if (currentChainSize > 2) {
 
+            // find the two external edges
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[currentChainSize - 1];
 
@@ -106,6 +113,8 @@ void Chains::intraChainHandling() {
 
             addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
             addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
+
+            // All interior edges will shrink to 0 and will thus be replaced by the intersection
 
             //reassign the vertices
             Vertex* vertex1 = firstEdge->getVertex1();
@@ -145,6 +154,7 @@ void Chains::intraChainHandling() {
             }
         } else if (currentChainSize == 2) {
 
+            // find the two external edges
             Edge* firstEdge = (*currentChain)[0];
             Edge* lastEdge = (*currentChain)[1];
 
@@ -166,6 +176,8 @@ void Chains::intraChainHandling() {
 
             addNewTriangle(firstEdge->getVertex1(), firstEdge->getVertex2(), intersectionVertex);
             addNewTriangle(lastEdge->getVertex1(), lastEdge->getVertex2(), intersectionVertex);
+
+            // There is no interior edge. We update the common vertex between the two external edges
 
             //reassign the vertices
             Vertex* vertex1 = firstEdge->getVertex1();
@@ -193,23 +205,32 @@ void Chains::intraChainHandling() {
 
 bool Chains::interChainHandling() {
     unsigned int chainsSize = chainList.size();
+    // the inter chain algorithm works only if we have more than 1 chain
     if (chainsSize < 2) {
         return false;
     }
 
+    // used to store the state of the chains after the inter chain
+    // algorithm
     std::vector< std::vector< Edge* >* > allChainAfterAlgorithm;
 
     bool edgeSplitted = false;
+
+    // for every two consecutive edges, we apply the inter chain algorithm
     for(unsigned int i(0); i < chainsSize ; i++) {
+        // take the two consecutive edges
         std::vector< Edge* >* chain1 = chainList[i];
         std::vector< Edge* >* chain2 = chainList[(i+1) % chainsSize];
 
         Vertex* intersectionVertex = new Vertex(intersection->getX(), intersection->getY(), intersection->getZ());
         GeneralDestructorManager::putObject(intersectionVertex);
 
+        // the last edge of the chain 1
         Edge* lastEdgeChain1(0);
+        // the first edge of the chain 2
         Edge* firstEdgeChain2(0);
 
+        // if a chain is composed of only one edge, this edge is splitted into two edges
         if(chain1->size() == 1) {
             Edge* newEdge1(0);
             Edge* newEdge2(0);
@@ -217,6 +238,7 @@ bool Chains::interChainHandling() {
             Edge* chainEdge = (*chain1)[0];
             splitEdgeAtCorner(chainEdge, newEdge1, newEdge2);
 
+            // the old edge becomes invalid
             chainEdge->invalid();
             addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
 
@@ -237,6 +259,7 @@ bool Chains::interChainHandling() {
             Edge* chainEdge = (*chain2)[0];
             splitEdgeAtCorner(chainEdge, newEdge1, newEdge2);
 
+            // the old edge becomes invalid
             chainEdge->invalid();
             addNewTriangle(chainEdge->getVertex1(), chainEdge->getVertex2(), newEdge1->getVertex2());
 
@@ -250,6 +273,9 @@ bool Chains::interChainHandling() {
             firstEdgeChain2 = (*chain2)[0];
         }
 
+        // Now we connect the last edge of the chain 1 (e1) with the first edge of the chain 2 (e2)
+        // e2 - e1
+
         // set the edge and vertex information
         lastEdgeChain1->setVertex1(intersectionVertex);
         lastEdgeChain1->getDirectionPlan()->setVertex(lastEdgeChain1->getVertex1());
@@ -262,7 +288,7 @@ bool Chains::interChainHandling() {
         intersectionVertex->setEdge2(lastEdgeChain1);
         intersectionVertex->setNeighbor2(lastEdgeChain1->getVertex2());
 
-
+        // store the current chain state
         std::vector< Edge* >* chainAfterAlgorithm = new std::vector< Edge* >;
         chainAfterAlgorithm->push_back(lastEdgeChain1);
         chainAfterAlgorithm->push_back(firstEdgeChain2);
@@ -270,10 +296,12 @@ bool Chains::interChainHandling() {
         allChainAfterAlgorithm.push_back(chainAfterAlgorithm);
     }
 
+    // delete the old data
     foreach(std::vector< Edge* >* currentChain, chainList) {
         delete currentChain;
     }
 
+    // replace the old data by the new one
     chainList = allChainAfterAlgorithm;
 
     return edgeSplitted;
@@ -281,26 +309,29 @@ bool Chains::interChainHandling() {
 
 void Chains::splitEdgeAtCorner(Edge *edgeToSplit, Edge*& newEdge1, Edge*& newEdge2)
 {
+    // create the corner where the edgeToSplit will be splitted
     Vertex* cornerVertex = new Vertex(intersection->getX(), intersection->getY(), intersection->getZ());
     GeneralDestructorManager::putObject(cornerVertex);
 
+    //create the two new edges
     newEdge1 = new Edge(edgeToSplit->getVertex1(), cornerVertex, edgeToSplit->getProfile());
     newEdge2 = new Edge(cornerVertex, edgeToSplit->getVertex2(), edgeToSplit->getProfile());
     GeneralDestructorManager::putObject(newEdge1);
     GeneralDestructorManager::putObject(newEdge2);
 
+    // create the two new direction plan
     Plan* oldPlan = edgeToSplit->getDirectionPlan();
     Plan* plan1 = new Plan(oldPlan, newEdge1->getVertex1(), newEdge1->getProfile());
     GeneralDestructorManager::putObject(plan1);
-    //plan1->computePlanNormal();
 
     Plan* plan2 = new Plan(oldPlan, newEdge2->getVertex1(), newEdge2->getProfile());
     GeneralDestructorManager::putObject(plan2);
-    //plan2->computePlanNormal();
 
+    // assign the two direction plans
     newEdge1->setDirectionPlan(plan1);
     newEdge2->setDirectionPlan(plan2);
 
+    // link the new edges
     cornerVertex->setEdge1(newEdge1);
     cornerVertex->setEdge2(newEdge2);
     newEdge1->getVertex1()->setNeighbor2(cornerVertex);
@@ -319,6 +350,7 @@ void Chains::getChains(std::vector< std::vector<std::vector<Edge *> > >* chainsA
     std::vector< std::vector< Edge* >* > ;
     std::vector<std::vector<Edge *> > chains;
 
+    // cerate a copy of the current chains
     foreach(std::vector< Edge* >* currentChain, chainList) {
         std::vector< Edge* > edgeVector;
         foreach(Edge* e, *currentChain) {

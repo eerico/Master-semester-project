@@ -11,7 +11,10 @@
 #include "../MeshManager.h"
 #include "../GarbageCollector/ProfileDestructorManager.h"
 
-
+/**
+ * @brief The ProfileMergeWindow class
+ * This class is the window used when merging the two profiles
+ */
 class ProfileMergeWindow: public QDialog
 {
     Q_OBJECT

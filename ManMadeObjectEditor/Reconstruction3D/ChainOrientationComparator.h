@@ -5,6 +5,10 @@
 #include "../Geometry/Vertex.h"
 #include "../Utils.h"
 
+/**
+ * @brief The ChainOrientationComparator class
+ * This class is used to sort the chains using their orientation
+ */
 class ChainOrientationComparator
 {
 public:
