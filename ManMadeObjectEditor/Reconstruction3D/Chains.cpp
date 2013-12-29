@@ -76,6 +76,7 @@ void Chains::intraChainHandling() {
     unsigned int chainsSize = chainList.size();
 
     //for each chain
+    int erased = 0;
     for(unsigned int j(0); j < chainsSize; ++j) {
         std::vector< Edge* >* currentChain = chainList[j];
         unsigned int currentChainSize = currentChain->size();
@@ -107,7 +108,8 @@ void Chains::intraChainHandling() {
 
                     addNewTriangle(edgeInvalid->getVertex1(), edgeInvalid->getVertex2(), intersectionVertex);
                 }
-                chainList.erase(chainList.begin() + j);
+                chainList.erase(chainList.begin() + (j - erased));
+                erased++;
                 continue;
             }
 
