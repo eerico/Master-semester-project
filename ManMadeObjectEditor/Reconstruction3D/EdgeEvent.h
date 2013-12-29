@@ -7,7 +7,7 @@
 
 /**
  * @brief The EdgeEvent class
- * This class represent an edge event. An edge event occurs when a profile change its angle.
+ * This class represents an edge event. An edge event occurs when a profile change its angle.
  * Every edge in the floor plan has a profile.
  *
  */
