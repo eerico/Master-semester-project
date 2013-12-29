@@ -128,12 +128,6 @@ bool FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
             }
         }
     }
-    
-
-
-    //check if the floorplan chain orientation is correct (otherwise reverse it)
-    planOrientation(plans[0]);
-    
 
     /*
      * Construct the profile:
@@ -283,6 +277,14 @@ bool FloorPlanAndProfileExtractor::profileConstruction(OMMesh* inputMesh, std::v
 void FloorPlanAndProfileExtractor::planOrientation(std::vector<Vertex* > &level){
     unsigned int counter(0);
 
+    // Here we have used the Y coordinate as the height and we have transformed the coordinates
+    // such that the height in our vertices is defined by the z value. We thus have
+    // to apply this transformation on our coordinates
+    for(unsigned int i(0); i < level.size(); ++i) {
+        Vertex* vertex = level[i];
+        vertex->setY(-vertex->getY());
+    }
+
     for(unsigned int i(0); i < level.size(); ++i) {
         Edge* edge = level[i]->getEdge2();
 
@@ -308,7 +310,6 @@ void FloorPlanAndProfileExtractor::planOrientation(std::vector<Vertex* > &level)
 
             v->setNeighbor2(tempV);
             v->setEdge2(tempE);
-
         }
     }
 }
@@ -616,6 +617,9 @@ bool FloorPlanAndProfileExtractor::extract(OMMesh * inputMesh, Vertex*& floorPla
     if(!profileConstruction(inputMesh, plans)){
         return false;
     }
+
+    //check if the floorplan chain orientation is correct (otherwise reverse it)
+    planOrientation(plans[0]);
     
     std::vector<Vertex* > firstFloorPlanlevel = plans[0];
 
