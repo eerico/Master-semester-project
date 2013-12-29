@@ -263,7 +263,7 @@ void Utils::readXML(MeshManager* meshmanager, QString &filename){
     //check if there was some problem: Error handling.
     if(xml.hasError() || error){
         QMessageBox::critical(0,
-                              "Error paring XML",
+                              "Error parsing XML",
                               xml.errorString(),
                               QMessageBox::Ok);
     }

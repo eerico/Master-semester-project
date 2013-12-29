@@ -310,6 +310,11 @@ void FloorPlanAndProfileExtractor::planOrientation(std::vector<Vertex* > &level)
 
             v->setNeighbor2(tempV);
             v->setEdge2(tempE);
+
+            Edge* edge1 = v->getEdge1();
+            edge1->setVertex2(v);
+            Edge* edge2 = v->getEdge2();
+            edge2->setVertex1(v);
         }
     }
 }
