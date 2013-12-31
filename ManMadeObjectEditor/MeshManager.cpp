@@ -293,9 +293,11 @@ void MeshManager::createNewProfileForSelectedEdge() {
 
 void MeshManager::setEdgeSelected(Edge* edge) {
     if(mergeOptionRunning) {
-        previousEdgeSelected = edgeSelected;
-        edgeSelected = edge;
-        emit newEdgeSelected();
+        if(edge != edgeSelected) {
+            previousEdgeSelected = edgeSelected;
+            edgeSelected = edge;
+            emit newEdgeSelected();
+        }
     } else {
         edgeSelected = edge;
     }
