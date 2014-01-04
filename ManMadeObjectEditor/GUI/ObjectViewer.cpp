@@ -21,6 +21,7 @@ void ObjectViewer::init() {
     this->camera()->lookAt(qglviewer::Vec(0.0f, 0.0f, 0.0f));
 
     this->setBackgroundColor(QColor(255,255,255));
+    camera()->setSceneRadius(10);
     resize(800, 600);
 }
 
