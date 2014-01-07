@@ -11,7 +11,7 @@ Vertex::Vertex(float x, float y, bool addFaces, bool valid)
     if(addFaces){
         faces = new std::vector<OMMesh::FaceHandle>;
     }
-
+    vertexPen.setCosmetic(true);
 }
 
 Vertex::Vertex(float x, float y, float z)

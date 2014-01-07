@@ -8,6 +8,7 @@ Edge::Edge(Vertex * vertex1, Vertex * vertex2, Profile * p)
     , directionPlan(0), GarbageCollectorObject()
 {
     edgePen.setWidth(3);
+    edgePen.setCosmetic(true);
 }
 
 Edge::~Edge()
