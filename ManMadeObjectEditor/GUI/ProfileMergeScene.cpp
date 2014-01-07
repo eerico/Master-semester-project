@@ -3,7 +3,7 @@
 ProfileMergeScene::ProfileMergeScene(std::vector<Vertex *> *newProfile, MeshManager* meshManager, bool firstScene)
     :QGraphicsScene(), meshManager(meshManager), newProfile(newProfile), firstScene(firstScene), profile(0)
 {
-    this->setSceneRect(QRectF(0, 0, 400, 600));
+    this->setSceneRect(QRectF(0, 0, 4000, 6000));
 
     oldLinePen.setWidth(3);
     oldEllipsePen.setWidth(5);

@@ -17,6 +17,9 @@ float Utils::distance(float x1, float y1, float x2, float y2) {
 }
 
 void Utils::adjustCoordinates3DToScene(float& x, float& y, float width, float height) {
+
+    width = width / 10.0f;
+    height = height / 10.0f;
     // from 3D to Scene coord
     float width_2 = width/ 2.0f;
     float height_2 = height / 2.0f;
@@ -24,8 +27,8 @@ void Utils::adjustCoordinates3DToScene(float& x, float& y, float width, float he
     x = x * width_2;
     y = y * width_2;
 
-    y = height_2 - y;
-    x = x + width_2;
+    y = /*height_2*/ - y + 10.0f * height_2;
+    x = x + /*width_2*/ 10.0f * width_2;
 }
 
 void Utils::adjustCoordinatesSceneTo3D(float& x, float& y, float width, float height) {
@@ -36,8 +39,8 @@ void Utils::adjustCoordinatesSceneTo3D(float& x, float& y, float width, float he
     y = height_2  - y;
     x = -width_2 + x;
 
-    x = x/width_2;
-    y = y/width_2;
+    x = x/width_2 * 10.0f;
+    y = y/width_2 * 10.0f;
 }
 
 void Utils::normalize(float &n_x, float &n_y) {

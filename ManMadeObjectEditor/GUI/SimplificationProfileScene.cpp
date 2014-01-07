@@ -3,7 +3,7 @@
 SimplificationProfileScene::SimplificationProfileScene(MeshManager *meshManager, std::vector< Curve* >* curveArray)
     : SimplificationScene(meshManager, curveArray)
 {
-    this->setSceneRect(QRectF(0, 0, 400, 600));
+    this->setSceneRect(QRectF(0, 0, 4000, 6000));
     loadProfile();
 
     // the first curve

@@ -4,10 +4,14 @@ BasicQGraphicsView::BasicQGraphicsView(QGraphicsScene* parent): QGraphicsView(pa
 {
     //Use ScrollHand Drag Mode to enable Panning
     setDragMode(ScrollHandDrag);
+
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 void BasicQGraphicsView::wheelEvent(QWheelEvent* event) {
-    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    //setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 
     // Scale the view / do the zoom
     double scaleFactor = 1.15;

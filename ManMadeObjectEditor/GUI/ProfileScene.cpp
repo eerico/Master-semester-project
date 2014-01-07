@@ -8,7 +8,7 @@ ProfileScene::ProfileScene(MeshManager* meshManager)
     , currentlyMovingVertex(0), isVertexMoving(false)
 {
     // set the scene size
-    this->setSceneRect(QRectF(0, 0, 400, 600));
+    this->setSceneRect(QRectF(0, 0, 4000, 6000));
 }
 
 ProfileScene::~ProfileScene()

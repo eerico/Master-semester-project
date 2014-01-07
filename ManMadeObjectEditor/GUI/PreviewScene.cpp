@@ -4,7 +4,7 @@ const int PreviewScene::vertexRadius(2);
 
 PreviewScene::PreviewScene()
 {
-    this->setSceneRect(QRectF(0, 0, 400, 600));
+    this->setSceneRect(QRectF(0, 0, 4000, 6000));
 }
 
 void PreviewScene::loadPreview(std::vector<Vertex*>* vertexToShow) {

@@ -8,7 +8,7 @@ FloorScene::FloorScene(MeshManager * meshManager)
     , edgeSelected(0)
 {
     // set the scene size
-    this->setSceneRect(QRectF(0, 0, 400, 600));
+    this->setSceneRect(QRectF(0, 0, 4000, 6000));
 }
 
 FloorScene::~FloorScene()

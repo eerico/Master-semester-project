@@ -139,7 +139,8 @@ void CentralWidget::allPlans() {
     }
 
     // automatically adjust the size and repaint the widget when the user shows or hides the all plan view
-    this->adjustSize();
+    //this->adjustSize();
+
     this->parentWidget()->adjustSize();
     this->repaint();
 }
@@ -201,7 +202,7 @@ void CentralWidget::allChains() {
     }
 
     // automatically adjust the size and repaint the widget when the user shows or hides the views
-    this->adjustSize();
+    //this->adjustSize();
     this->parentWidget()->adjustSize();
     this->repaint();
 }
