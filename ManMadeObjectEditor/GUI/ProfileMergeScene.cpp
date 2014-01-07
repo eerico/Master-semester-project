@@ -61,6 +61,11 @@ void ProfileMergeScene::loadProfile() {
         }
     }
 
+    QList<QGraphicsItem*> items = this->items();
+    foreach(QGraphicsItem* item, items) {
+        this->removeItem(item);
+    }
+
     // this profile will have its color/brush modified
     profileToRevertColor.push_back(profile);
 
