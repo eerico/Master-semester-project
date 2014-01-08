@@ -29,9 +29,6 @@ SOURCES +=\
     Geometry/Edge.cpp \
     GUI/ProfileScene.cpp \
     Reconstruction3D/Reconstruction3D.cpp \
-    #Reconstruction3D/Plan.cpp \
-    #Reconstruction3D/ActivePlan.cpp \
-    #Reconstruction3D/Chains.cpp \
     GUI/AllChainScene.cpp \
     GarbageCollector/GeneralDestructorManager.cpp \
     GUI/SimplificationWindow.cpp \
@@ -49,12 +46,6 @@ SOURCES +=\
     Reconstruction3D/EdgeEvent.cpp \
     Reconstruction3D/Chains.cpp
     GUI/PreviewScene.cpp \
-    #Reconstruction3D_old/Reconstruction3D.cpp \
-    #Reconstruction3D_old/Plan.cpp \
-    #Reconstruction3D_old/Chain.cpp \
-    #Reconstruction3D_old_Tom_Kelly/Reconstruction3D.cpp \
-    #Reconstruction3D_old_Tom_Kelly/Plan.cpp \
-    #Reconstruction3D_old_Tom_Kelly/Chain.cpp
 
 HEADERS  += \
     FloorPlanAndProfileExtractor.h \
@@ -72,26 +63,10 @@ HEADERS  += \
     Geometry/Edge.h \
     GUI/ProfileScene.h \
     Reconstruction3D/Reconstruction3D.h \
-    #Reconstruction3D/Plan.h \
-    #Reconstruction3D/IntersectionComparator.h \
-    #Reconstruction3D/Intersection.h \
-    #Reconstruction3D/ActivePlan.h \
-    #Reconstruction3D/Chains.h \
-    #Reconstruction3D/ChainOrientationComparator.h \
     GUI/AllChainScene.h \
     GarbageCollector/GarbageCollectorObject.h \
     GarbageCollector/GeneralDestructorManager.h \
     GUI/SimplificationWindow.h \
-    #Reconstruction3D_old/Reconstruction3D.h \
-    #Reconstruction3D_old/Plan.h \
-    #Reconstruction3D_old/Intersection.h \
-    #Reconstruction3D_old/IntersectionComparator.h \
-    #Reconstruction3D_old/Chain.h \
-    #Reconstruction3D_old_Tom_Kelly/Reconstruction3D.h \
-    #Reconstruction3D_old_Tom_Kelly/Plan.h \
-    #Reconstruction3D_old_Tom_Kelly/IntersectionComparator.h \
-    #Reconstruction3D_old_Tom_Kelly/Intersection.h \
-    #Reconstruction3D_old_Tom_Kelly/Chain.h
     Simplification/Curve.h \
     Simplification/Simplification.h \
     GUI/SimplificationFloorPlanScene.h \
