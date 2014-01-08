@@ -1,7 +1,7 @@
-This project need:
+This project needs:
 -libQGLViewer (2.4.0)
 -OpenMesh (2.4)
--Qt 5.1.1
+-Qt (5.1.1)
 
 The ManMadeObjectEditor.pro must be updated accordingly.
 
@@ -11,8 +11,8 @@ How to use:
 -Delete vertices using right-click + shift.
 -Move the scene using the left-click.
 
--When simplififying either the floor plan or the profile (assuming the simplification window is open), use right-click on a vertex
-to define the begining and again right click on an other vertex to define the end of the
+-When simplifying either the floor plan or the profile (assuming the simplification window is open), use right-click on a vertex
+to define the beginning and again right click on an other vertex to define the end of the
 part that will be simplified. Do not try to play with the floor plan or the profile when
 the simplification window is open.
 
